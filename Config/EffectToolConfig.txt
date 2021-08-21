@@ -1,0 +1,50 @@
+GUID	标题	资源类型	检查类型	路径	参数	危险等级	是否参与特效检测	是否参与CICD检测	是否检查子目录	备注
+1	128: Textures\Character\Fashion	1	0	Assets\Art\Effects\Textures\Character\Fashion	2;2	1	True	True	True	
+2	64: Textures\Common\Mask	1	0	Assets\Art\Effects\Textures\Common\Mask	1;1	1	True	True	True	
+3	128: Textures\Common\Noise	1	0	Assets\Art\Effects\Textures\Common\Noise	2;2	1	True	True	True	
+4	256: Textures\Fashion	1	0	Assets\Art\Effects\Textures\Fashion	3;3	1	True	True	True	
+5	128: Textures\Features\Elec	1	0	Assets\Art\Effects\Textures\Features\Elec	2;2	1	True	True	True	
+6	128: Textures\Features\Fire	1	0	Assets\Art\Effects\Textures\Features\Fire	2;2	1	True	True	True	
+7	128: Textures\Features\Pattern	1	0	Assets\Art\Effects\Textures\Features\Pattern	2;2	1	True	True	True	
+8	128: Textures\Features\Ray	1	0	Assets\Art\Effects\Textures\Features\Ray	2;2	1	True	True	True	
+9	128: Textures\Features\Smoke	1	0	Assets\Art\Effects\Textures\Features\Smoke	2;2	1	True	True	True	
+10	128: Textures\Features\Snow	1	0	Assets\Art\Effects\Textures\Features\Snow	2;2	1	True	True	True	
+11	128: Textures\Features\Star	1	0	Assets\Art\Effects\Textures\Features\Star	2;2	1	True	True	True	
+12	128: Textures\Features\Trail	1	0	Assets\Art\Effects\Textures\Features\Trail	2;2	1	True	True	True	
+13	128: Textures\Features\Vein	1	0	Assets\Art\Effects\Textures\Features\Vein	2;2	1	True	True	True	
+14	128: Textures\Features\Water	1	0	Assets\Art\Effects\Textures\Features\Water	2;2	1	True	True	True	
+15	128: Textures\GamePlay\AbilitiesCards	1	0	Assets\Art\Effects\Textures\GamePlay\AbilitiesCards	2;2	1	True	True	True	
+16	128: Textures\GamePlay\Aerocraft	1	0	Assets\Art\Effects\Textures\GamePlay\Aerocraft	2;2	1	True	True	True	
+17	128: Textures\GamePlay\Backpack	1	0	Assets\Art\Effects\Textures\GamePlay\Backpack	2;2	1	True	True	True	
+18	128: Textures\GamePlay\Buff	1	0	Assets\Art\Effects\Textures\GamePlay\Buff	2;2	1	True	True	True	
+19	128: Textures\GamePlay\Carrier	1	0	Assets\Art\Effects\Textures\GamePlay\Carrier	2;2	1	True	True	True	
+20	128: Textures\GamePlay\Edge	1	0	Assets\Art\Effects\Textures\GamePlay\Edge	2;2	1	True	True	True	
+21	128: Textures\GamePlay\EffBG	1	0	Assets\Art\Effects\Textures\GamePlay\EffBG	2;2	1	True	True	True	
+22	128: Textures\GamePlay\Expression	1	0	Assets\Art\Effects\Textures\GamePlay\Expression	2;2	1	True	True	True	
+23	128: Textures\GamePlay\Item	1	0	Assets\Art\Effects\Textures\GamePlay\Item	2;2	1	True	True	True	
+24	128: Textures\GamePlay\MapEventFight	1	0	Assets\Art\Effects\Textures\GamePlay\MapEventFight	2;2	1	True	True	True	
+25	128: Textures\GamePlay\Object	1	0	Assets\Art\Effects\Textures\GamePlay\Object	2;2	1	True	True	True	
+26	128: Textures\GamePlay\Other\SequenceMap	1	0	Assets\Art\Effects\Textures\GamePlay\Other\SequenceMap	2;2	1	True	True	True	
+27	128: Textures\GamePlay\Show	1	0	Assets\Art\Effects\Textures\GamePlay\Show	2;2	1	True	True	True	
+28	128: Textures\GamePlay\Tricks	1	0	Assets\Art\Effects\Textures\GamePlay\Tricks	2;2	1	True	True	True	
+29	128: Textures\GamePlay\War	1	0	Assets\Art\Effects\Textures\GamePlay\War	2;2	1	True	True	True	
+30	128: Textures\GamePlay\Weapon	1	0	Assets\Art\Effects\Textures\GamePlay\Weapon	2;2	1	True	True	True	
+31	128: Textures\Object\Carrier	1	0	Assets\Art\Effects\Textures\Object\Carrier	2;2	1	True	True	True	
+32	128: Textures\Object\Item	1	0	Assets\Art\Effects\Textures\Object\Item	2;2	1	True	True	True	
+33	128: Textures\Object\MapEventFight	1	0	Assets\Art\Effects\Textures\Object\MapEventFight	2;2	1	True	True	True	
+34	128: Textures\SpecialLarge	1	0	Assets\Art\Effects\Textures\SpecialLarge	2;2	1	True	True	True	
+35	128: Textures\UI	1	0	Assets\Art\Effects\Textures\UI	2;2	1	True	True	True	
+36	128: Textures\Weapon	1	0	Assets\Art\Effects\Textures\Weapon	2;2	1	True	True	True	
+37	检测整个项目中全部粒子特效的 Sub-Emitters 错误	3	8	Assets	0	1	False	False	True	
+38	功能测试-001-Mesh UV 信息	0	0	Assets/ToBundle/Map/AirWall	True;True;True;True	0	False	False	True	
+39	功能测试-002-纹理的 Mip Maps 开关	1	1	Assets\Art\Characters\Textures\Aerocraft\Aerocraft_High	False	0	False	False	True	UI 表现的高模飞高高贴图 不需要 开启 mip maps
+40	功能测试-003-纹理的 Read/Write Enabled 开关	1	2	Assets/Art/Characters/Textures	True	0	False	False	True	人物皮肤需要动态合图, 因此需要开启 Read/write Enabled
+41	功能测试-005-动画状态机的剔除模式	2	0	Assets/ToBundle/Effect/Fashion	2	0	False	False	True	时装上特效的动画状态机的剔除方式必须是 Cull Completely
+42	功能测试-006-粒子系统的渲染方式	3	0	Assets/ToBundle/Effect/Fashion	0	0	False	False	True	
+43	功能测试-007-粒子系统阴影投射开关	3	1	Assets/ToBundle/Effect/Fashion	false	1	False	False	True	
+44	功能测试-008-粒子系统的接收阴影开关	3	2	Assets/ToBundle/Effect/Fashion	false	1	False	False	True	粒子系统应关闭阴影接收.
+45	功能测试-009-粒子特效 Mesh 的面数限制 : 200	3	3	Assets/ToBundle/Effect/Fashion	200	1	False	False	True	使用 Mesh 渲染制作的粒子特效, Mesh 的面数必须控制在 200 以下
+46	功能测试-010-粒子特效引用的 Mesh 上的冗余 UV 信息	3	4	Assets/ToBundle/Effect/Fashion	0	1	False	False	True	
+47	功能测试-011-粒子特效的碰撞器, 触发器设置	3	5	Assets/ToBundle/Effect/Fashion	0	1	False	False	True	
+48	功能测试-012-粒子特效预热	3	6	Assets/ToBundle/Effect/Fashion	0	1	False	False	True	
+49	功能测试-013-SubEmitter 检测	3	7	Assets/ToBundle/Effect/Fashion	false	1	True	False	True	
