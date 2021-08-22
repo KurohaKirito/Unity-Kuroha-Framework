@@ -26,11 +26,18 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
         /// 窗口矩形
         /// </summary>
         public static Rect windowCurrentRect;
+
+        #if UNITY_2019_3_OR_NEWER
+        [MenuItem("Kuroha/AssetSearchTool")]
+        #endif
+        private static void Menu()
+        {
+            Open(0);
+        }
         
         /// <summary>
         /// 打开窗口
         /// </summary>
-        /// <param name="type"></param>
         public static void Open(int type) {
             findTypeIndex = type;
             var window = GetWindow<AssetSearchWindow>("资源查找");

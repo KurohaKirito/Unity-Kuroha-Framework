@@ -13,17 +13,17 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
         /// 过滤器的默认值都是 -1, 即全选
         /// </summary>
         private static int referenceAssetFilter = -1;
-        
+
         /// <summary>
         /// 滑动条
         /// </summary>
         private static Vector2 referenceSearchScrollPosition = Vector2.zero;
-        
+
         /// <summary>
         /// 全局默认 margin
         /// </summary>
         private const float UI_DEFAULT_MARGIN = 5;
-        
+
         public static void OnGUI()
         {
             GUILayout.Space(UI_DEFAULT_MARGIN);
@@ -31,30 +31,36 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
             #region 显示出当前所有选中的游戏物体
 
             EditorGUILayout.LabelField("请选择需要查找引用的资源文件.");
-            
+
             if (Selection.assetGUIDs.IsNotNullAndEmpty())
             {
                 // 每 1 行显示物体的数量
-                const int COUNT_PER_ROW = 5;
+                var countPerRow = 5;
                 // 每个物体之间的间隔
                 const float ITEM_OFFSET = 5f;
 
                 var index = 0;
                 var countAll = Selection.assetGUIDs.Length;
+                if (countAll < 5)
+                {
+                    countPerRow = countAll;
+                }
                 var windowWidth = AssetSearchWindow.windowCurrentRect.width;
-                var objectWidth = (windowWidth - (COUNT_PER_ROW - 1) * ITEM_OFFSET) / COUNT_PER_ROW - ITEM_OFFSET;
+                var objectWidth = (windowWidth - (countPerRow - 1) * ITEM_OFFSET) / countPerRow - ITEM_OFFSET;
                 while (index < countAll)
                 {
                     EditorGUILayout.BeginHorizontal();
-                    for (var i = 0; i < COUNT_PER_ROW && index < countAll; i++, index++) {
+                    for (var i = 0; i < countPerRow && index < countAll; i++, index++)
+                    {
                         var path = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[index]);
                         var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-                        EditorGUILayout.ObjectField(asset, typeof(UnityEngine.Object), true,
-                            GUILayout.Width(objectWidth));
-                        if (i != COUNT_PER_ROW - 1) {
+                        EditorGUILayout.ObjectField(asset, typeof(UnityEngine.Object), true, GUILayout.Width(objectWidth));
+                        if (i != countPerRow - 1)
+                        {
                             GUILayout.Space(ITEM_OFFSET);
                         }
                     }
+
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -68,11 +74,13 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
             EditorGUILayout.BeginHorizontal();
             {
                 GUILayout.Label("过滤器", GUILayout.Width(100));
-                referenceAssetFilter = EditorGUILayout.MaskField(referenceAssetFilter, Enum.GetNames(typeof(AssetType)));
-                
+                referenceAssetFilter =
+                    EditorGUILayout.MaskField(referenceAssetFilter, Enum.GetNames(typeof(AssetType)));
+
                 GUILayout.FlexibleSpace();
-                
-                if (GUILayout.Button("Search", GUILayout.Width(100))) {
+
+                if (GUILayout.Button("Search", GUILayout.Width(100)))
+                {
                     ReferenceSearcher.Find(Selection.assetGUIDs);
                 }
             }
@@ -81,9 +89,9 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
             #endregion
 
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
-            
+
             #region 显示查询结果
-            
+
             referenceSearchScrollPosition = EditorGUILayout.BeginScrollView(referenceSearchScrollPosition);
             {
                 foreach (var key in ReferenceSearcher.references.Keys)
@@ -110,16 +118,20 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
                     GUILayout.Label($"引用对象:  共 {referenceAssets.Count} 个");
                     GUILayout.FlexibleSpace();
 
-                    if (GUILayout.Button("按名称排序", GUILayout.Width(100))) {
-                        referenceAssets.Sort((x, y) => {
+                    if (GUILayout.Button("按名称排序", GUILayout.Width(100)))
+                    {
+                        referenceAssets.Sort((x, y) =>
+                        {
                             var xAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(x);
                             var yAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(y);
                             return string.Compare(xAsset.name, yAsset.name, StringComparison.Ordinal);
                         });
                     }
 
-                    if (GUILayout.Button("按类型排序", GUILayout.Width(100))) {
-                        referenceAssets.Sort((x, y) => {
+                    if (GUILayout.Button("按类型排序", GUILayout.Width(100)))
+                    {
+                        referenceAssets.Sort((x, y) =>
+                        {
                             var xAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(x);
                             var yAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(y);
                             return AssetData.GetAssetType(xAsset, x).CompareTo(AssetData.GetAssetType(yAsset, y));
@@ -142,13 +154,13 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
                     }
 
                     #endregion
-                    
+
                     // 减少 UI 缩进
                     EditorGUI.indentLevel--;
                 }
             }
             EditorGUILayout.EndScrollView();
-            
+
             #endregion
         }
     }
