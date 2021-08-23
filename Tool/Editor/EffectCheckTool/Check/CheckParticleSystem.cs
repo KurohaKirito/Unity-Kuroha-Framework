@@ -395,7 +395,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                     // 错误 1: Sub-Emitters 为空
                     if (ReferenceEquals(subEmitter, null))
                     {
-                        var content = $"粒子特效的 Sub-Emitters 为空! : {assetPath} 子物件: {particle.name}";
+                        var content = $"粒子特效的 Sub-Emitters 为空! : {assetPath} 子物体: {particle.name} 的第 {index + 1} 个设置为空!";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleSubEmittersError, content, item));
                     }
                     else
@@ -413,7 +413,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
 
                         if (isError)
                         {
-                            var content = $"粒子特效 Sub-Emitters 设置错误: {assetPath} 子物件: {particle.name}";
+                            var content = $"粒子特效 Sub-Emitters 设置错误: {assetPath} 子物体: {particle.name} 的第 {index + 1} 个设置引用的 {subEmitter.name} 粒子系统不是子系统!";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleSubEmittersError, content, item));
                         }
                     }

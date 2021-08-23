@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.EffectCheckTool.ItemListView;
 using Kuroha.Tool.Editor.EffectCheckTool.ItemSetView;
@@ -55,42 +54,43 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// <param name="reportInfos">检测结果</param>
         public static void Check(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos)
         {
-            var fullPath = $"{Application.dataPath}/{itemData.path}";
-            var direction = new DirectoryInfo(fullPath);
-            var files = direction.GetFiles("*", SearchOption.AllDirectories);
-
-            for (var index = 0; index < files.Length; index++)
+            if (itemData.path.StartsWith("Assets"))
             {
-                ProgressBar.DisplayProgressBar("Prefab 资源排查", "排查中", index + 1, files.Length);
-                if (!files[index].Name.EndsWith(".prefab"))
+                var assetGuids = AssetDatabase.FindAssets("t:Prefab", new[] { itemData.path });
+                DebugUtil.Log($"CheckParticleSystem: 查询到了 {assetGuids.Length} 个预制体, 检测路径为: {itemData.path}");
+                
+                for (var index = 0; index < assetGuids.Length; index++)
                 {
-                    continue;
+                    ProgressBar.DisplayProgressBar("Prefab 资源排查", $"排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
+                    
+                    var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
+                    
+                    switch ((CheckOptions)itemData.checkType)
+                    {
+                        case CheckOptions.ObjectName:
+                            CheckObjectName(assetPath, itemData, ref reportInfos);
+                            break;
+
+                        case CheckOptions.ForbidCollision:
+                            CheckCollider(assetPath, itemData, ref reportInfos);
+                            break;
+
+                        case CheckOptions.DisableObject:
+                            CheckDisableObject(assetPath, itemData, ref reportInfos);
+                            break;
+
+                        case CheckOptions.TextureSize:
+                            CheckTextureSize(assetPath, itemData, ref reportInfos);
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
-
-                var assetPath = files[index].FullName
-                    .Substring(files[index].FullName.IndexOf("Assets", StringComparison.OrdinalIgnoreCase));
-
-                switch ((CheckOptions)itemData.checkType)
-                {
-                    case CheckOptions.ObjectName:
-                        CheckObjectName(assetPath, files[index], itemData, ref reportInfos);
-                        break;
-
-                    case CheckOptions.ForbidCollision:
-                        CheckForbidCollision(assetPath, files[index], itemData, ref reportInfos);
-                        break;
-
-                    case CheckOptions.DisableObject:
-                        CheckDisableObject(assetPath, files[index], itemData, ref reportInfos);
-                        break;
-
-                    case CheckOptions.TextureSize:
-                        CheckTextureSize(assetPath, files[index], itemData, ref reportInfos);
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+            }
+            else
+            {
+                DebugUtil.LogError("路径必须以 Assets 开头!");
             }
         }
 
@@ -98,10 +98,9 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// 检测: 命名
         /// </summary>
         /// <param name="assetPath">资源路径</param>
-        /// <param name="assetInfo">资源信息</param>
         /// <param name="item">检查项</param>
         /// <param name="report">检查结果</param>
-        private static void CheckObjectName(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private static void CheckObjectName(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (ReferenceEquals(asset, null))
@@ -121,16 +120,16 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 {
                     if (isCheckChinese && CharUtil.IsChinese(cha))
                     {
-                        var content = $"预制体名称中不能有中文: {assetInfo.FullName} 子物件: {transform.name}";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath,
-                            EffectCheckReportInfo.EffectCheckReportType.PrefabName, content, item));
+                        var content = $"预制体名称中不能有中文: {assetPath} 子物件: {transform.name}";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabName, content, item));
+                        break;
                     }
 
                     if (isCheckSpace && CharUtil.IsSpace(cha))
                     {
-                        var content = $"预制体名称中不能有空格: {assetInfo.FullName} 子物件: {transform.name}";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath,
-                            EffectCheckReportInfo.EffectCheckReportType.PrefabName, content, item));
+                        var content = $"预制体名称中不能有空格: {assetPath} 子物件: {transform.name}";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabName, content, item));
+                        break;
                     }
                 }
             }
@@ -140,10 +139,9 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// 检测: 禁止碰撞体
         /// </summary>
         /// <param name="assetPath">资源路径</param>
-        /// <param name="assetInfo">资源信息</param>
         /// <param name="item">检查项</param>
         /// <param name="report">检查结果</param>
-        private static void CheckForbidCollision(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private static void CheckCollider(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (ReferenceEquals(asset, null))
@@ -164,9 +162,8 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                     continue;
                 }
 
-                var content = $"预制体中不能有碰撞体: {assetInfo.FullName} 中的子物体 {transform.name}";
-                report.Add(EffectCheckReport.AddReportInfo(transform.gameObject, assetPath,
-                    EffectCheckReportInfo.EffectCheckReportType.PrefabForbidCollision, content, item));
+                var content = $"预制体中不能有碰撞体: {assetPath} 中的子物体 {transform.name}";
+                report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidCollision, content, item));
             }
         }
 
@@ -174,10 +171,9 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// 检测: 隐藏物体
         /// </summary>
         /// <param name="assetPath">资源路径</param>
-        /// <param name="assetInfo">资源信息</param>
         /// <param name="item">检查项</param>
         /// <param name="report">检查结果</param>
-        private static void CheckDisableObject(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private static void CheckDisableObject(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (ReferenceEquals(asset, null))
@@ -190,14 +186,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
 
             foreach (var transform in transforms)
             {
-                if (transform.gameObject.activeSelf)
+                if (transform.gameObject.activeSelf == false)
                 {
-                    continue;
+                    var content = $"预制体中有 Disable 的物体: {assetPath} 中的子物体 {transform.name}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject, content, item));
                 }
-
-                var content = $"预制体中有 Disable 物体: {assetInfo.FullName} 中的子物体 {transform.name}";
-                report.Add(EffectCheckReport.AddReportInfo(transform.gameObject, assetPath,
-                    EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject, content, item));
             }
         }
 
@@ -205,10 +198,9 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// 检测: 贴图大小
         /// </summary>
         /// <param name="assetPath">资源路径</param>
-        /// <param name="assetInfo">资源信息</param>
         /// <param name="item">检查项</param>
         /// <param name="report">检查结果</param>
-        private static void CheckTextureSize(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private static void CheckTextureSize(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (ReferenceEquals(asset, null))
@@ -219,34 +211,40 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
 
             var transforms = asset.GetComponentsInChildren<Transform>(true);
 
+            // 获取最大尺寸, 用于比较
             var parameter = item.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
             var width = Convert.ToInt32(textureSizeOptions[Convert.ToInt32(parameter[0])]);
             var height = Convert.ToInt32(textureSizeOptions[Convert.ToInt32(parameter[1])]);
 
             foreach (var transform in transforms)
             {
-                var meshRenderer = transform.GetComponent<MeshRenderer>();
-                if (meshRenderer == null || meshRenderer.sharedMaterials == null)
+                var renderer = transform.GetComponent<Renderer>();
+                if (renderer != null && renderer.sharedMaterials != null)
                 {
-                    continue;
-                }
-
-                foreach (var material in meshRenderer.sharedMaterials)
-                {
-                    if (material.mainTexture == null)
+                    foreach (var material in renderer.sharedMaterials)
                     {
-                        continue;
+                        if (material != null)
+                        {
+                            var textureNames = material.GetTexturePropertyNames();
+                            foreach (var textureName in textureNames)
+                            {
+                                var texture = material.GetTexture(textureName);
+                                if (texture != null)
+                                {
+                                    if (texture.width > width || texture.height > height)
+                                    {
+                                        var content = $"纹理尺寸超出限制: {texture.width}X{texture.height}\t物体: {assetPath} 中的子物体 {transform.name}";
+                                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var content = $"预制体 {assetPath} 中的子物体 {transform.name} 上引用的 Material 为空!";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                        }
                     }
-
-                    if (material.mainTexture.width <= width && material.mainTexture.height <= height)
-                    {
-                        continue;
-                    }
-
-                    var content =
-                        $"纹理尺寸为: {material.mainTexture.width}X{material.mainTexture.height}\t物体: {assetInfo.FullName} 中的子物体 {transform.name}";
-                    report.Add(EffectCheckReport.AddReportInfo(transform.gameObject, assetPath,
-                        EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
                 }
             }
         }
