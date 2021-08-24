@@ -35,7 +35,12 @@
             /// <summary>
             /// 模型
             /// </summary>
-            Model = 5
+            Model = 5,
+            
+            /// <summary>
+            /// 通用检查
+            /// </summary>
+            Asset = 6
         }
     }
 }

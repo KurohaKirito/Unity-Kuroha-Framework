@@ -44,7 +44,10 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
             // 3
             TextureSize,
             TextureMipMaps,
-            TextureReadWriteEnable
+            TextureReadWriteEnable,
+            
+            // 1
+            AssetName
         }
 
         /// <summary>

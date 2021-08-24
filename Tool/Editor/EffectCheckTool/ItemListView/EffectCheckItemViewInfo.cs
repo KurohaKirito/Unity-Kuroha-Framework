@@ -8,7 +8,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
         /// <summary>
         /// 检查项唯一标识
         /// </summary>
-        public string guid;
+        public readonly string guid;
 
         /// <summary>
         /// 检查项标题
@@ -74,8 +74,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
         /// <param name="cicdEnable"></param>
         /// <param name="isCheckSubFile"></param>
         /// <param name="remark"></param>
-        public CheckItemInfo(string guid, string title, EffectToolData.AssetsType assetsType, int checkType,
-            string path,
+        public CheckItemInfo(string guid, string title, EffectToolData.AssetsType assetsType, int checkType, string path,
             string parameter, int dangerLevel, bool effectEnable, bool cicdEnable, bool isCheckSubFile, string remark)
         {
             this.guid = guid;

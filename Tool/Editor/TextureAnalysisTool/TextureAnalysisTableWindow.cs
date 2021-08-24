@@ -489,7 +489,9 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
         /// <param name="dataList"></param>
         private static void OnRowSelect(List<TextureAnalysisData> dataList)
         {
-            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<Texture>(dataList[0].texturePath));
+            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dataList[0].texturePath);
+            EditorGUIUtility.PingObject(obj);
+            Selection.activeObject = obj;
         }
 
         /// <summary>

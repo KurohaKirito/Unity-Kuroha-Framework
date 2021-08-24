@@ -17,7 +17,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
         #if UNITY_2019_3_OR_NEWER
         private static string ConfigFilePath => $"{Application.dataPath}/Kuroha/Config/EffectToolConfig.txt";
         #else
-        private static string ConfigFilePath => $"{Application.dataPath}/Script/Effect/Editor/AssetTool/Config/EffectToolConfig.txt";
+        private static string ConfigFilePath => $"{Application.dataPath}/Art/Effects/EffectToolConfig.txt";
         #endif
         
         /// <summary>

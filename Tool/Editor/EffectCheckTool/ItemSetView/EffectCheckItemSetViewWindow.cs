@@ -15,6 +15,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
         /// <summary>
         /// [GUI] 子检查项参数记录
         /// </summary>
+        public static string ParameterString1 { get; set; }
+        
+        /// <summary>
+        /// [GUI] 子检查项参数记录
+        /// </summary>
         public static int ParameterInt1 { get; set; }
 
         /// <summary>
@@ -177,6 +182,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                     OnGUI_CheckModel();
                     break;
 
+                case EffectToolData.AssetsType.Asset:
+                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckAsset.checkOptions);
+                    OnGUI_CheckAsset();
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -448,6 +458,30 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                     GUILayout.EndHorizontal();
                     break;
 
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        /// <summary>
+        /// 绘制 Asset 检查页面
+        /// </summary>
+        private static void OnGUI_CheckAsset()
+        {
+            var modeType = (CheckAsset.CheckOptions)itemInfo.checkType;
+            var oldAlignment = UnityEngine.GUI.skin.label.alignment;
+
+            switch (modeType)
+            {
+                case CheckAsset.CheckOptions.AssetName:
+                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+                    ParameterString1 = EditorGUILayout.TextField("命名的正则表达式规则", ParameterString1);
+                    itemInfo.parameter = ParameterString1;
+                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+                    GUILayout.Label("描述: 命名规则检测");
+                    UnityEngine.GUI.skin.label.alignment = oldAlignment;
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

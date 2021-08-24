@@ -104,6 +104,9 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                     repaired = true;
                     break;
 
+                case EffectToolData.AssetsType.Asset:
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -207,6 +210,10 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                 case EffectCheckReportInfo.EffectCheckReportType.TextureReadWriteEnable:
                     break;
 
+                // 1
+                case EffectCheckReportInfo.EffectCheckReportType.AssetName:
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

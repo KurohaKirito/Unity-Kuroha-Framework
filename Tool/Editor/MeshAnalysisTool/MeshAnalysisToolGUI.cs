@@ -63,7 +63,7 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
                     GUILayout.EndVertical();
 
                     GUILayout.BeginVertical("Box");
-                    trisVertsObject = EditorGUILayout.ObjectField("选择待检查的预制体", trisVertsObject, typeof(GameObject), false, GUILayout.Width(UI_SELECTION_WIDTH)) as GameObject;
+                    trisVertsObject = EditorGUILayout.ObjectField("选择待检查的预制体", trisVertsObject, typeof(GameObject), true, GUILayout.Width(UI_SELECTION_WIDTH)) as GameObject;
                     GUILayout.EndVertical();
 
                     GUILayout.BeginVertical("Box");

@@ -68,14 +68,14 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                     }
                     GUILayout.EndVertical();
                     
-                    GUILayout.BeginVertical("Box");
+                    if (detectType == TextureAnalysisData.DetectType.Path)
                     {
-                        if (detectType == TextureAnalysisData.DetectType.Path)
+                        GUILayout.BeginVertical("Box");
                         {
                             detectPath = EditorGUILayout.TextField("输入待检查目录: ", detectPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                         }
+                        GUILayout.EndVertical();
                     }
-                    GUILayout.EndVertical();
 
                     GUILayout.Space(UI_DEFAULT_MARGIN);
                     GUILayout.Label($"2. 点击开始按钮, 开始分析.");

@@ -80,7 +80,7 @@ namespace Kuroha.Util.Editor
             // 最大可采样数
             var sampleCountMax = samplePointCount;
             // 迭代上限, 迭代次数越多结果越准确
-            var iterateMax = 300;
+            var iterateMax = 1000;
             // 计数器
             var counter = 0;
 
@@ -103,18 +103,22 @@ namespace Kuroha.Util.Editor
             var initColor = new Color(0, 0, 0);
             while (samplePoints.Count > 0 && sampleCountMax > 0 && iterateMax-- > 0)
             {
-                // 在这些点中随便选一个采样点进行范围随机
-                var next = (int)Mathf.Lerp(0, samplePoints.Count - 1, UnityEngine.Random.value);
+                // 在这些点中随便选一个采样点
+                var next = (int) Mathf.Lerp(0, samplePoints.Count - 1, UnityEngine.Random.value);
                 var sample = samplePoints[next];
-                // 是否找到临近分布点标志
+                
+                // 定义 "是否找到临近分布点" 标志
                 var found = false;
+                
                 // 迭代 30 次, 找到泊松分布点
                 const int LOOP = 30;
+                
                 // 采样半径为 1 像素
                 const float RADIUS = 1;
 
-                for (var j = 0; j < LOOP; j++)
+                for (var i = 0; i < LOOP; i++)
                 {
+                    // 随机周长
                     var angle = 2 * Mathf.PI * UnityEngine.Random.value;
                     var r = Mathf.Sqrt(UnityEngine.Random.value * 3 * RADIUS + RADIUS);
 

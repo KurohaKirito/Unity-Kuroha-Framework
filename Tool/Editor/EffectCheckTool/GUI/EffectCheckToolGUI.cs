@@ -106,16 +106,17 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.GUI
                 codeCheckFlag = true;
                 
                 var reportEnumCount = Enum.GetNames(typeof(EffectCheckReportInfo.EffectCheckReportType)).Length;
+                
                 var checkAnimatorEnumCount = Enum.GetNames(typeof(CheckAnimator.CheckOptions)).Length;
                 var checkMeshEnumCount = Enum.GetNames(typeof(CheckMesh.CheckOptions)).Length;
                 var checkModelEnumCount = Enum.GetNames(typeof(CheckModel.CheckOptions)).Length;
                 var checkParticleEnumCount = Enum.GetNames(typeof(CheckParticleSystem.CheckOptions)).Length;
                 var checkPrefabEnumCount = Enum.GetNames(typeof(CheckPrefab.CheckOptions)).Length;
                 var checkTextureEnumCount = Enum.GetNames(typeof(CheckTexture.CheckOptions)).Length;
+                var checkAssetEnumCount = Enum.GetNames(typeof(CheckAsset.CheckOptions)).Length;
 
-                var sum = checkAnimatorEnumCount + checkMeshEnumCount +
-                          checkModelEnumCount + checkParticleEnumCount +
-                          checkPrefabEnumCount + checkTextureEnumCount;
+                var sum = checkAnimatorEnumCount + checkMeshEnumCount + checkModelEnumCount + checkParticleEnumCount +
+                          checkPrefabEnumCount + checkTextureEnumCount + checkAssetEnumCount;
                 
                 if (reportEnumCount != sum)
                 {
@@ -187,7 +188,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.GUI
                             case EffectToolData.AssetsType.ParticleSystem:
                                 CheckParticleSystem.Check(checkItemInfo, ref reportInfos);
                                 break;
-                        
+
+                            case EffectToolData.AssetsType.Asset:
+                                CheckAsset.Check(checkItemInfo, ref reportInfos);
+                                break;
+                            
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }

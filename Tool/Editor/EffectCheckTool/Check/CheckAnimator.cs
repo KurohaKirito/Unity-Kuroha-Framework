@@ -51,6 +51,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 var fullPath = Path.GetFullPath(itemData.path);
                 var direction = new DirectoryInfo(fullPath);
                 var files = direction.GetFiles("*", SearchOption.AllDirectories);
+                
                 for (var index = 0; index < files.Length; index++)
                 {
                     ProgressBar.DisplayProgressBar("Animator 资源排查", $"排查中: {index + 1}/{files.Length}", index + 1, files.Length);
@@ -64,7 +65,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                     switch ((CheckOptions)itemData.checkType)
                     {
                         case CheckOptions.CullMode:
-                            CheckCullingMode(assetPath, files[index], itemData, ref reportInfos);
+                            CheckCullingMode(assetPath, itemData, ref reportInfos);
                             break;
 
                         default:
@@ -82,11 +83,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// 检测: 剔除模式
         /// </summary>
         /// <param name="assetPath">资源路径</param>
-        /// <param name="assetInfo">资源信息</param>
         /// <param name="item">检查项</param>
         /// <param name="report">检查结果</param>
-        private static void CheckCullingMode(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private static void CheckCullingMode(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
+            var fullName = System.IO.Path.GetFullPath(assetPath);
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             
             if (ReferenceEquals(asset, null) == false)
@@ -99,7 +100,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                     if (animator.cullingMode != cullingMode)
                     {
                         var gameObject = animator.gameObject;
-                        var content = $"状态机剔除模式错误: {assetInfo.FullName} 子物件: {gameObject.name}, 当前动画剔除模式: {animator.cullingMode} >>> {cullingMode}";
+                        var content = $"状态机剔除模式错误: {fullName} 子物件: {gameObject.name}, 当前动画剔除模式: {animator.cullingMode} >>> {cullingMode}";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.AnimatorCullMode, content, item));
                     }
                 }

@@ -39,7 +39,7 @@ GUID	标题	资源类型	检查类型	路径	参数	危险等级	是否参与特
 38	功能测试-001-Mesh UV 信息	0	0	Assets/ToBundle/Map/AirWall	True;True;True;True	0	False	False	True	
 39	功能测试-003-纹理的 Mip Maps 开关	1	1	Assets\Art\Characters\Textures\Aerocraft\Aerocraft_High	False	0	False	False	True	UI 表现的高模飞高高贴图 不需要 开启 mip maps
 40	功能测试-004-纹理的 Read/Write Enabled 开关	1	2	Assets/Art/Characters/Textures	True	0	False	False	True	人物皮肤需要动态合图, 因此需要开启 Read/write Enabled
-41	功能测试-005-动画状态机的剔除模式必须是 Cull Completely	2	0	Assets/ToBundle/Effect/Fashion	2	0	True	False	True	时装上特效的动画状态机的剔除方式必须是 Cull Completely
+41	功能测试-005-动画状态机的剔除模式必须是 Cull Completely	2	0	Assets/ToBundle/Effect/Fashion	2	0	False	False	True	时装上特效的动画状态机的剔除方式必须是 Cull Completely
 42	功能测试-006-粒子系统的渲染方式	3	0	Assets/ToBundle/Effect/Fashion	4	0	False	False	True	
 43	功能测试-007-粒子系统的阴影投射开关	3	1	Assets/ToBundle/Effect/Fashion	false	1	False	False	True	
 44	功能测试-008-粒子系统的接收阴影开关	3	2	Assets/ToBundle/Effect/Fashion	false	1	False	False	True	粒子系统应关闭阴影接收.
@@ -53,6 +53,7 @@ GUID	标题	资源类型	检查类型	路径	参数	危险等级	是否参与特
 52	功能测试-016-不具有 collider 后缀的预制体中不能有碰撞器	4	1	Assets/ToBundle/Effect/Fashion	False;False	1	False	False	True	
 53	功能测试-017-预制体中的隐藏物体检测	4	2	Assets/ToBundle/Effect/Fashion	False;False	1	False	False	True	
 54	功能测试-018-预制体中引用的纹理最大 256	4	3	Assets/ToBundle/Effect/Fashion	2;2	1	False	False	True	
-55	功能测试-019-模型必须关闭读写设置	5	0	Assets/Art/Characters/Models/Fashion	False;False	1	True	False	True	
-56	功能测试-020-模型必须关闭阴影投射	5	1	Assets/Art/Characters/Models/Fashion	False;False;False;False	1	True	False	True	
-57	功能测试-021-模型必须关闭法线导入	5	2	Assets/Art/Characters/Models/Fashion	False;False;False;False	1	True	False	True	
+55	功能测试-019-模型必须关闭读写设置	5	0	Assets/Art/Characters/Models/Fashion	False;False	1	False	False	True	
+56	功能测试-020-模型必须关闭阴影投射	5	1	Assets/Art/Characters/Models/Fashion	False;False;False;False	1	False	False	True	
+57	功能测试-021-模型必须关闭法线导入	5	2	Assets/Art/Characters/Models/Fashion	False;False;False;False	1	False	False	True	
+58	功能测试-022-指定目录下的命名规则检测	6	0	Assets/Art/Effects/Textures/Common/Galaxy	^Galaxy	1	True	False	True	

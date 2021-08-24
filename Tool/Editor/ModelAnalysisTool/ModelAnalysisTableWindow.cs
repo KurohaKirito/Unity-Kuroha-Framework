@@ -209,8 +209,8 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
             dataList.Add(new ModelAnalysisData
             {
                 id = dataList.Count + 1,
-                tris = resultVerts,
-                verts = resultTris,
+                tris = resultTris,
+                verts = resultVerts,
                 assetName = "总和",
                 assetPath = string.Empty,
             });
@@ -460,7 +460,9 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// <param name="dataList"></param>
         private static void OnRowSelect(List<ModelAnalysisData> dataList)
         {
-            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<GameObject>(dataList[0].assetPath));
+            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dataList[0].assetPath);
+            EditorGUIUtility.PingObject(obj);
+            Selection.activeObject = obj;
         }
 
         /// <summary>
