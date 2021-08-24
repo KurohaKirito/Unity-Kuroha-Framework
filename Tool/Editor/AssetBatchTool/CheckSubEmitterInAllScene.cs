@@ -25,7 +25,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             // 遍历场景
             for (var index = 0; index < scenePaths.Length; index++)
             {
-                ProgressBar.DisplayProgressBar("进度", $"{index + 1}/{scenePaths.Length}", index + 1, scenePaths.Length);
+                ProgressBar.DisplayProgressBar("检测中", $"{index + 1}/{scenePaths.Length}", index + 1, scenePaths.Length);
                 
                 var path = scenePaths[index];
                 if (path.IndexOf("scenes/main", StringComparison.OrdinalIgnoreCase) >= 0)

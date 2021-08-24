@@ -45,7 +45,7 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.Searcher
                 {
                     var com = threadPool.completedTaskCount;
                     var all = threadPool.taskCount;
-                    EditorUtility.DisplayProgressBar("正在分析", $"{com}/{all}", com / (float)all);
+                    Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("正在分析", $"{com}/{all}", com, all);
                 }
                 EditorUtility.ClearProgressBar();
 

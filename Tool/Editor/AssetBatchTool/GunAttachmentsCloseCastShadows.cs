@@ -85,20 +85,19 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
 
             var direction = new DirectoryInfo(fullPath);
             var files = direction.GetFiles("*", SearchOption.AllDirectories);
-            for (var i = 0; i < files.Length; i++)
+            for (var index = 0; index < files.Length; index++)
             {
-                if (ProgressBar.DisplayProgressBarCancel("枪械部件自动修复工具", $"自动修复中: {i}/{files.Length}",
-                    i, files.Length))
+                if (ProgressBar.DisplayProgressBarCancel("枪械部件阴影投射自动修复中", $"{index + 1}/{files.Length}", index + 1, files.Length))
                 {
                     return;
                 }
 
-                if (!files[i].Name.EndsWith(".prefab"))
+                if (!files[index].Name.EndsWith(".prefab"))
                 {
                     continue;
                 }
 
-                var assetPath = "Assets" + files[i].FullName.Replace(Application.dataPath.Replace("/", "\\"), "");
+                var assetPath = "Assets" + files[index].FullName.Replace(Application.dataPath.Replace("/", "\\"), "");
                 var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
                 var lodGroups = asset.GetComponentsInChildren<LODGroup>(true);
                 if (lodGroups.Length <= 0) continue;

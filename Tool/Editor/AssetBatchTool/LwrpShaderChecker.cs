@@ -114,18 +114,13 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             {
                 Kuroha.Util.Release.DebugUtil.Log($"共找到了 {assetPaths.Count} 个资源!");
 
-                var counter = 0;
-                var repair = new List<string>();
-                var result = new List<string>();
-                var particleSystemObjList = new List<string>();
-                var meshRendererObjList = new List<string>();
                 var prefabs = new List<GameObject>();
 
                 #region 读取预制体
 
                 for (var index = 0; index < assetPaths.Count; index++)
                 {
-                    ProgressBar.DisplayProgressBar("读取资源中", $"{index + 1}/{assetPaths.Count}", (index + 1), assetPaths.Count);
+                    ProgressBar.DisplayProgressBar("读取资源中", $"{index + 1}/{assetPaths.Count}", index + 1, assetPaths.Count);
                     if (lwrpShaderToggleDetectLevelEditor)
                     {
                         prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(assetPaths[index]));
@@ -141,6 +136,11 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 #endregion
 
                 // 遍历预制体
+                var counter = 0;
+                var repair = new List<string>();
+                var result = new List<string>();
+                var particleSystemObjList = new List<string>();
+                var meshRendererObjList = new List<string>();
                 foreach (var prefab in prefabs)
                 {
                     if (ProgressBar.DisplayProgressBarCancel("检测中", $"{++counter}/{prefabs.Count}", counter, prefabs.Count))
