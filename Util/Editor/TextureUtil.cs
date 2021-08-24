@@ -31,11 +31,7 @@ namespace Kuroha.Util.Editor
         {
             if (ReferenceEquals(source, null) == false)
             {
-                var renderTexture = RenderTexture.GetTemporary(
-                    source.width, source.height, 0,
-                    RenderTextureFormat.Default,
-                    RenderTextureReadWrite.Linear);
-
+                var renderTexture = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
                 Graphics.Blit(source, renderTexture);
 
                 var previous = RenderTexture.active;
@@ -76,8 +72,7 @@ namespace Kuroha.Util.Editor
                 renderTextureHeight = currentTextureHeight / 8;
             }
 
-            var renderTexture = RenderTexture.GetTemporary(renderTextureWidth, renderTextureHeight, 0,
-                RenderTextureFormat.Default, RenderTextureReadWrite.Default);
+            var renderTexture = RenderTexture.GetTemporary(renderTextureWidth, renderTextureHeight, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Default);
             Graphics.Blit(texture, renderTexture);
 
             // 总采样数
@@ -163,6 +158,7 @@ namespace Kuroha.Util.Editor
                 }
             }
 
+            RenderTexture.ReleaseTemporary(renderTexture);
             return true;
         }
 

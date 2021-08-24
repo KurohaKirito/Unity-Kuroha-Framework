@@ -18,7 +18,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             BundleAssetCounter,
             AssetDeleteTool,
             LwrpShaderChecker,
-            UnusedAssetChecker
+            UnusedAssetChecker,
+            CheckSubEmitterInAllScene
         }
 
         /// <summary>
@@ -31,7 +32,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             "捆绑包资源数量分析",
             "资源批量删除工具",
             "粒子 LWRP 材质引用检测器",
-            "废弃资源检测工具"
+            "废弃资源检测工具",
+            "场景粒子 Sub-Emitter 检测"
         };
 
         /// <summary>
@@ -148,6 +150,10 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                         UnusedAssetCleaner.OnGUI();
                         break;
 
+                    case BatchType.CheckSubEmitterInAllScene:
+                        CheckSubEmitterInAllScene.OnGUI();
+                        break;
+                    
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

@@ -87,13 +87,18 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
             }
 
             // 初始化字体风格
-            fontStyleRed = new GUIStyle();
-            fontStyleYellow = new GUIStyle();
-            fontStyleRed.alignment = TextAnchor.MiddleLeft;
-            fontStyleYellow.alignment = TextAnchor.MiddleLeft;
-            fontStyleRed.normal.textColor = new Color((float)203 / 255, (float)27 / 255, (float)69 / 255);
-            fontStyleYellow.normal.textColor = new Color((float)226 / 255, (float)148 / 255, (float)59 / 255);
+            fontStyleRed = new GUIStyle
+            {
+                alignment = TextAnchor.MiddleLeft,
+                normal = {textColor = new Color((float) 203 / 255, (float) 27 / 255, (float) 69 / 255)}
+            };
 
+            fontStyleYellow = new GUIStyle
+            {
+                alignment = TextAnchor.MiddleLeft,
+                normal = {textColor = new Color((float) 226 / 255, (float) 148 / 255, (float) 59 / 255)}
+            };
+            
             // 初始化表格
             InitTable();
         }

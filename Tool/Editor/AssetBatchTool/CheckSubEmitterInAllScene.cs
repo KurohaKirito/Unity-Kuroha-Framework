@@ -12,6 +12,66 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
     /// </summary>
     public static class CheckSubEmitterInAllScene
     {
+        /// <summary>
+        /// 折叠框
+        /// </summary>
+        private static bool gunPiecesFoldout = true;
+        
+        /// <summary>
+        /// 枪械路径
+        /// </summary>
+        private static string gunPiecesPath = "ToBundle/Skin/Items";
+        
+        /// <summary>
+        /// 全局默认 margin
+        /// </summary>
+        private const float UI_DEFAULT_MARGIN = 5;
+
+        /// <summary>
+        /// 全局按钮的宽度
+        /// </summary>
+        private const float UI_BUTTON_WIDTH = 120;
+        
+        /// <summary>
+        /// 全局按钮的高度
+        /// </summary>
+        private const float UI_BUTTON_HEIGHT = 25;
+        
+        /// <summary>
+        /// 全局输入框的宽度
+        /// </summary>
+        private const float UI_INPUT_AREA_WIDTH = 400;
+        
+        public static void OnGUI()
+        {
+            GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+            
+            gunPiecesFoldout = EditorGUILayout.Foldout(gunPiecesFoldout, "检测场景中的粒子系统的 Sub-Emitter 错误", true);
+            if (gunPiecesFoldout)
+            {
+                GUILayout.Space(UI_DEFAULT_MARGIN);
+                GUILayout.BeginVertical("Box");
+                {
+                    EditorGUILayout.LabelField("1. 输入待检测场景的路径. 默认为 Assets 根目录.");
+                    GUILayout.BeginVertical("Box");
+                    gunPiecesPath = EditorGUILayout.TextField("Input Path To Detect", gunPiecesPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    GUILayout.EndVertical();
+
+                    EditorGUILayout.LabelField("2. 点击按钮, 开始检测.");
+                    GUILayout.BeginVertical("Box");
+                    UnityEngine.GUI.enabled = string.IsNullOrEmpty(gunPiecesPath) == false;
+                    if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                    {
+                        Check();
+                    }
+
+                    UnityEngine.GUI.enabled = true;
+                    GUILayout.EndVertical();
+                }
+                GUILayout.EndVertical();
+            }
+        }
+        
         private static void Check()
         {
             // 获得所有场景的资源路径

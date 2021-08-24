@@ -61,7 +61,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     UnityEngine.GUI.enabled = string.IsNullOrEmpty(gunPiecesPath) == false;
                     if (GUILayout.Button("Fix", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
-                        CloseCastShadows();
+                        Fix();
                     }
 
                     UnityEngine.GUI.enabled = true;
@@ -74,7 +74,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 关闭阴影投射
         /// </summary>
-        private static void CloseCastShadows()
+        private static void Fix()
         {
             var fullPath = Path.Combine(Application.dataPath, gunPiecesPath);
             if (!Directory.Exists(fullPath))

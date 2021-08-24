@@ -140,7 +140,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
             GUILayout.Label("CICD", checkItemGUIStyle);
             GUILayout.Space(24);
             GUILayout.Label("Effect", checkItemGUIStyle);
-            GUILayout.Space(120);
+            GUILayout.Space(140);
             GUILayout.Label("标题", checkItemGUIStyle);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();

@@ -4,7 +4,6 @@ using Kuroha.Util.Editor;
 using Kuroha.Util.Release;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Kuroha.Tool.Editor.TextureAnalysisTool
 {
@@ -46,22 +45,12 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
             textureA = TextureUtil.CopyTexture(textureA) as Texture2D;
             if (ReferenceEquals(textureA, null))
             {
-                DebugUtil.LogWarning("图片导入格式不是 2D 纹理, 请检查!", AssetDatabase.LoadAssetAtPath<Object>(assetPathA));
+                DebugUtil.LogWarning("图片导入格式不是 2D 纹理, 请检查!", AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPathA));
                 return;
             }
 
-            // 转换为 PNG 结果不是很理想
-            // var bytesA = textureA.EncodeToPNG();
-            // var baserA = Convert.ToBase64String(bytesA);
-            // AddResultBase64(baserA, assetPathA);
-
-            // 转换为 TGA 结果不是很理想
-            // var bytesA = textureA.EncodeToTGA();
-            // var baserA = Convert.ToBase64String(bytesA);
-            // AddResultBase64(baserA, assetPathA);
-
-            // 转换为 JPG 会丢失透明度
-            var bytesA = textureA.EncodeToJPG();
+            // 转换为 PNG 或 TGA (EncodeToPNG 和 EncodeToTGA 两者选其一, 均可实现效果)
+            var bytesA = textureA.EncodeToPNG();
             var baserA = Convert.ToBase64String(bytesA);
             AddResultBase64(baserA, assetPathA);
         }

@@ -17,8 +17,7 @@ namespace Kuroha.GUI.Editor
         /// <param name="currentPage">当前为第几页</param>
         /// <param name="beginIndex">当前页开始下标</param>
         /// <param name="endIndex">当前页结束下标</param>
-        public static void Pager(int dataCount, int countPerPage, ref int currentPage, out int beginIndex,
-            out int endIndex)
+        public static void Pager(int dataCount, int countPerPage, ref int currentPage, out int beginIndex, out int endIndex)
         {
             if (dataCount <= 0 || countPerPage <= 0 || currentPage <= 0)
             {

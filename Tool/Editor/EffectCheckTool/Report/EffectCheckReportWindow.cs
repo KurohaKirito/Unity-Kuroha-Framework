@@ -133,7 +133,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
             #region 全部问题列表 分页显示
 
             OnGUI_PageManager();
-            DebugUtil.Log($"分页显示 => 开始索引: {indexBegin}, 结束索引: {indexEnd}");
+            
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(position.height));
             {
                 if (indexBegin >= 0 && indexBegin <= EffectCheckReport.reportInfos.Count &&
