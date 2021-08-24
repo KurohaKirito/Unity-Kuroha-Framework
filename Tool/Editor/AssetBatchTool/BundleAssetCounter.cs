@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kuroha.Util.Release;
 using UnityEditor;
 using UnityEngine;
 
@@ -125,27 +126,22 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 // 异常
                 if (subDir.Length > 0 && files.Length > 0)
                 {
-                    var assembly = System.Reflection.Assembly.GetAssembly(typeof(SceneView));
-                    var logEntries = assembly.GetType("UnityEditor.LogEntries");
-                    var clearConsoleMethod = logEntries.GetMethod("Clear");
-                    clearConsoleMethod?.Invoke(new object(), null);
-                    Kuroha.Util.Release.DebugUtil.LogError($"文件夹和资源同级: {allDirectory[index].FullName}");
+                    DebugUtil.ClearConsole();
+                    DebugUtil.LogError($"文件夹和资源同级: {allDirectory[index].FullName}");
                     
                     // 打印路径名
                     foreach (var dir in subDir)
                     {
-                        if (dir.Name.Equals(".git"))
+                        if (dir.Name.Equals(".git") == false)
                         {
-                            continue;
+                            Kuroha.Util.Release.DebugUtil.Log($"其中子目录有: {dir.FullName}");
                         }
-
-                        Kuroha.Util.Release.DebugUtil.Log($"子目录有: {dir.FullName}");
                     }
 
                     // 打印文件名
                     foreach (var file in files)
                     {
-                        Kuroha.Util.Release.DebugUtil.Log($"子文件有: {file.FullName}");
+                        Kuroha.Util.Release.DebugUtil.Log($"其中子文件有: {file.FullName}");
                     }
 
                     return;

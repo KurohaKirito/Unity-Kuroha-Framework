@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Kuroha.Util.Release;
 using UnityEngine;
 
 #if UNITY_2019_2_OR_NEWER == false
@@ -68,11 +69,11 @@ public static class AutoCheckTool
             
             #endif
             
-            Debug.Log("CICD Detect Completed!");
+            DebugUtil.Log("CICD Detect Completed!");
         }
         catch (Exception e)
         {
-            Debug.Log($"CICD Detect Error: {e}");
+            DebugUtil.Log($"CICD Detect Error: {e}");
             throw;
         }
     }

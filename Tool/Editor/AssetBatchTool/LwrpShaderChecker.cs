@@ -92,7 +92,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     GUILayout.BeginHorizontal("Box");
                     if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
-                        DetectParticleSystemShader();
+                        Detect();
                     }
                     GUILayout.EndHorizontal();
                     UnityEditor.EditorGUI.indentLevel--;
@@ -104,7 +104,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 检测粒子特效的 Shader
         /// </summary>
-        private static void DetectParticleSystemShader()
+        private static void Detect()
         {
             // 获取相对目录下所有的预制体
             var guids = AssetDatabase.FindAssets("t:Prefab", new []{lwrpShaderPath});

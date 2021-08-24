@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Kuroha.Util.Release;
 using UnityEditor;
-using UnityEngine;
 
 namespace Kuroha.Tool.Editor.AssetBatchTool
 {
@@ -15,7 +15,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
 
             // 获取指定路径下的 SO 文件
             var guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] { "Assets/ToBundle/ScriptableObject/Buff" });
-            Debug.Log($"一共查询到了 {guids.Length} 个 SO 文件");
+            DebugUtil.Log($"一共查询到了 {guids.Length} 个 SO 文件");
 
             foreach (var guid in guids)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Kuroha.GUI.Editor;
+using Kuroha.Util.Release;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -40,7 +41,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     continue;
                 }
 
-                Debug.Log($"当前检测的场景是: {path}");
+                DebugUtil.Log($"当前检测的场景是: {path}");
                 var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
 
                 var rootObjects = scene.GetRootGameObjects();
@@ -52,7 +53,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                         if (particle.subEmitters.enabled)
                         {
                             var subEmittersCount = particle.subEmitters.subEmittersCount;
-                            Debug.LogError($"场景: {scene.name}, 根物体: {root.name}, 粒子系统: {particle.name} 启用了 {subEmittersCount} 个 Sub-Emitter");
+                            DebugUtil.LogError($"场景: {scene.name}, 根物体: {root.name}, 粒子系统: {particle.name} 启用了 {subEmittersCount} 个 Sub-Emitter");
 
                             if (subEmittersCount <= 0)
                             {
@@ -83,7 +84,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                                     continue;
                                 }
 
-                                Debug.LogError($"Sub-EmittersError: 场景: {scene.name}, 根物体: {root.name}, 子物体: {particle.gameObject.name}");
+                                DebugUtil.LogError($"Sub-EmittersError: 场景: {scene.name}, 根物体: {root.name}, 子物体: {particle.gameObject.name}");
                             }
                         }
                     }
