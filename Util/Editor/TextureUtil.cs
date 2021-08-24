@@ -240,7 +240,7 @@ namespace Kuroha.Util.Editor
             {
                 for (var i = 0; i < guids.Length; i++)
                 {
-                    ProgressBar.DisplayProgressBar("Texture", "资源获取中", i, guids.Length);
+                    ProgressBar.DisplayProgressBar("Texture", $"资源获取中: {i + 1}/{guids.Length}", i + 1, guids.Length);
 
                     var assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
                     var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);

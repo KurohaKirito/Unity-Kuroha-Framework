@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using Kuroha.Util.Release;
+using UnityEditor;
 using UnityEngine;
 
 namespace Kuroha.Util.Editor
@@ -139,6 +141,50 @@ namespace Kuroha.Util.Editor
             }
 
             return result;
+        }
+        
+        /// <summary>
+        /// 拷贝文件夹到新的文件夹
+        /// </summary>
+        /// <param name="sourcePath">源文件所在目录</param>
+        /// <param name="savePath">保存的目标目录</param>
+        /// <returns>true:拷贝成功; false:拷贝失败</returns>
+        public static void CopyFolderToAssetsFolder(string sourcePath, string savePath)
+        {
+            var sourceDirs = new List<string>();
+            var sourceFiles = new List<string>();
+
+            sourceDirs.Add(sourcePath);
+            for (var index = 0; index < sourceDirs.Count; index++)
+            {
+                sourceDirs.AddRange(Directory.GetDirectories(sourceDirs[index]));
+                sourceFiles.AddRange(Directory.GetFiles(sourceDirs[index]));
+            }
+
+            Debug.Log($"共需要 {sourceDirs.Count} 个目录, {sourceFiles.Count} 个文件");
+
+            foreach (var sourceDir in sourceDirs)
+            {
+                var targetFolder = sourceDir.Replace(sourcePath, savePath);
+                var newFolderName = targetFolder.Replace('\\', '/').Split('/').Last();
+                var parentFolder =
+                    targetFolder.Substring(targetFolder.IndexOf("Assets", StringComparison.OrdinalIgnoreCase));
+                parentFolder = parentFolder.Replace('\\', '/').Replace($"/{newFolderName}", "");
+
+                Debug.Log($"创建目录: {parentFolder}, {newFolderName}");
+                AssetDatabase.CreateFolder(parentFolder, newFolderName);
+            }
+
+            foreach (var sourceFile in sourceFiles)
+            {
+                var targetFile = sourceFile.Replace(sourcePath, savePath);
+                Debug.Log($"创建文件: {targetFile}");
+
+                File.Copy(sourceFile, targetFile, true);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
     }
 }

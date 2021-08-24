@@ -5,7 +5,7 @@ using UnityEditor;
 
 public static class SolidTextureDetect
 {
-    public static void Detect(List<Dictionary<string, string>> results)
+    public static void Detect()
     {
         // 获取全部纹理
         TextureUtil.GetTexturesInPath(new[] { "Assets/Art/Effects/Textures" }, out var textures, out var texturePaths);
@@ -13,13 +13,12 @@ public static class SolidTextureDetect
         // 检测每一张纹理
         for (var index = 0; index < textures.Count; index++)
         {
-            ProgressBar.DisplayProgressBar("Texture", "纹理检测中", index + 1, textures.Count);
+            ProgressBar.DisplayProgressBar("Texture", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
             
             if (texturePaths[index].EndsWith(".png") || texturePaths[index].EndsWith(".tga"))
             {
                 // 检测纹理的导入类型必须为: Texture2D
                 var textureImporter = (TextureImporter)AssetImporter.GetAtPath(texturePaths[index]);
-                
                 if (ReferenceEquals(textureImporter, null) == false)
                 {
                     if (textureImporter.textureShape == TextureImporterShape.Texture2D)
@@ -38,7 +37,8 @@ public static class SolidTextureDetect
                                     { "负责人", "傅佳亿" },
                                     { "备注", $"人工确认并修复, 当前尺寸: {textures[index].width} X {textures[index].height}" }
                                 };
-                                results.Add(result);
+                                
+                                AutoCheckTool.results.Add(result);
                             }
                         }
                     }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Kuroha.Tool.Editor.AssetBatchTool
 {
+    // 统计各个文件夹下 Prefab 的数量, 判断哪些 AssetBundle 包过大
     public static class AssetBatchToolGUI
     {
         /// <summary>

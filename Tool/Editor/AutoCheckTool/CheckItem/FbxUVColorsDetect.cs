@@ -7,11 +7,11 @@ using UnityEditor;
 using UnityEngine;
 
 // 检测特定路径下 fbx 模型文件的 mesh 网格中的 uv2 uv3 uv4 colors 信息
-public class FbxUVColorsDetect
+public static class FbxUVDetect
 {
     private const string FOLDER_PARTICLE = "Assets/Scenes/Models/CombatIsland/Building";
     
-    public void Detect()
+    public static void Detect()
     {
         // 获取相对目录下所有的预制体
         var guids = AssetDatabase.FindAssets("t:Model", new[] {FOLDER_PARTICLE});
@@ -44,11 +44,11 @@ public class FbxUVColorsDetect
         var result = new List<string>();
 
         const string PRE = @"C:\Workspace\Sausage\";
-            for (var i = 0; i<allFBXPath.Count;
-        i++)
+        
+        for (var i = 0; i<allFBXPath.Count; i++)
         {
-            if (ProgressBar.DisplayProgressBarCancel($"修复: {allFBXName[i]}", $"{i} / {allFBXPath.Count}",
-                i, allFBXPath.Count)) {
+            if (ProgressBar.DisplayProgressBarCancel($"修复: {allFBXName[i]}", $"{i + 1} / {allFBXPath.Count}", i + 1, allFBXPath.Count))
+            {
                 DebugUtil.Log($"一共检测出 {fixedCountUV2} 个 UV2");
                 DebugUtil.Log($"一共检测出 {fixedCountUV3} 个 UV3");
                 DebugUtil.Log($"一共检测出 {fixedCountUV4} 个 UV4");
@@ -138,9 +138,5 @@ public class FbxUVColorsDetect
 
         // 输出结果到文件中
         File.WriteAllLines(@"C:\printCollider.md", result);
-    }
-
-    public List<Dictionary<string, string>> GetResult() {
-        throw new System.NotImplementedException();
     }
 }
