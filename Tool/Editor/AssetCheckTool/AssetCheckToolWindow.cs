@@ -2,6 +2,7 @@
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.AssetBatchTool;
 using Kuroha.Tool.Editor.EffectCheckTool.GUI;
+using Kuroha.Tool.Editor.FashionAnalysisTool;
 using Kuroha.Tool.Editor.MeshAnalysisTool;
 using Kuroha.Tool.Editor.ModelAnalysisTool;
 using Kuroha.Tool.Editor.TextureAnalysisTool;
@@ -67,7 +68,7 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
         /// </summary>
         private void OnEnable()
         {
-            toolBarNames = new[] {"特效检测", "模型统计分析", "贴图统计分析", "网格统计分析", "批处理"};
+            toolBarNames = new[] {"特效检测", "时装分析工具", "模型统计分析", "贴图统计分析", "网格统计分析", "批处理"};
             
             #if UNITY_2019_2_OR_NEWER == false
                 toolbarData = new Toolbar.ToolbarData(800, 16, toolBarNames);
@@ -97,6 +98,7 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
 
             actions = new Action[] {
                 EffectCheckToolGUI.OnGUI,
+                FashionAnalysisGUI.OnGUI,
                 ModelAnalysisGUI.OnGUI,
                 TextureAnalysisGUI.OnGUI,
                 MeshAnalysisToolGUI.OnGUI,
