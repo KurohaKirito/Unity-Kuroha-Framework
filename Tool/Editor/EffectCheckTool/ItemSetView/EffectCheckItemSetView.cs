@@ -56,7 +56,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                 {
                     if (itemDic.ContainsKey(lineData[0]))
                     {
-                        DebugUtil.LogError($"表中有重复数据需要删除, 重复 ID 为: {lineData[0]}");
+                        DebugUtil.LogError("表中有重复数据需要删除: " + lineData[0]);
                     }
                     else
                     {
