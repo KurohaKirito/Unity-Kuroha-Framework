@@ -38,7 +38,7 @@ public static class SolidTextureDetect
                                     { "备注", $"人工确认并修复, 当前尺寸: {textures[index].width} X {textures[index].height}" }
                                 };
                                 
-                                AutoCheckTool.results.Add(result);
+                                //AutoCheckTool.results.Add(result);
                             }
                         }
                     }

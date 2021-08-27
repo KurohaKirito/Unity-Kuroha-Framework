@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Kuroha.GUI.Editor;
 using Kuroha.GUI.Editor.Table;
 using Kuroha.Util.Editor;
 using Kuroha.Util.Release;
@@ -45,7 +44,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
         {
             var window = GetWindow<FashionAnalysisTableWindow>(true);
             window.minSize = new Vector2(1200, 1000);
-            window.maxSize = new Vector2(1200, 1000);
+            window.maxSize = window.minSize;
         }
 
         /// <summary>
@@ -107,7 +106,10 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                     {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        //table = new FashionAnalysisTable(space, min, dataList, true, true, 50, 50, columns, OnFilterEnter, OnExportPressed, OnRowSelect);
+                        table = new FashionAnalysisTable(
+                            space, min, dataList, 
+                            true, true, 50, 50, columns,
+                            OnFilterEnter, OnExportPressed, OnRowSelect);
                     }
                 }
             }
@@ -119,8 +121,13 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
         /// <returns></returns>
         private static List<FashionAnalysisData> InitData()
         {
+            var idCounter = 0;
             var dataList = new List<FashionAnalysisData>();
-            var counter = 0;
+            CollectParticleSystemMeshInfo(ref idCounter, dataList);
+            CollectMeshFilterMeshInfo(ref idCounter, dataList);
+            CollectSkinnedMeshRendererMeshInfo(ref idCounter, dataList);
+            
+            Debug.LogError($"共检测出了 {dataList.Count} 条数据");
 
             #region 获取全部的纹理并检测
 
@@ -140,38 +147,98 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             // }
 
             #endregion
-            
-            DebugUtil.Log($"共检测了 {counter} 张贴图");
 
             return dataList;
+        }
+
+        #region 收集 Mesh 信息
+
+        private static void CollectParticleSystemMeshInfo(ref int id, in List<FashionAnalysisData> dataList)
+        {
+            var player1 = GameObject.Find("Player1").transform;
+            var roleBox1 = player1.GetChild(0);
+            var model1 = roleBox1.GetChild(0);
+            var role1 = model1.GetChild(0);
+            
+            var particles = role1.GetComponentsInChildren<ParticleSystem>(true);
+            foreach (var particleSystem in particles)
+            {
+                var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
+                if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
+                {
+                    var mesh = renderer.mesh;
+                    dataList.Add(new FashionAnalysisData {
+                        id = ++id,
+                        tris = mesh.triangles.Length / 3,
+                        verts = mesh.vertices.Length,
+                        uv2 = mesh.uv2.Length,
+                        uv3 = mesh.uv3.Length,
+                        uv4 = mesh.uv4.Length,
+                        colors = mesh.colors.Length,
+                        meshName = mesh.name,
+                        meshPath = AssetDatabase.GetAssetPath(mesh)
+                    });
+                }
+            }
+        }
+        
+        private static void CollectMeshFilterMeshInfo(ref int id, in List<FashionAnalysisData> dataList) {
+            
+        }
+        
+        private static void CollectSkinnedMeshRendererMeshInfo(ref int id, in List<FashionAnalysisData> dataList) {
+            
+        }
+
+        #endregion
+
+        private static void CopyToFourRole()
+        {
+            // 获取所有的角色父物体 Player1 Player2 Player3 Player4
+            var player1 = GameObject.Find("Player1");
+            var player2 = GameObject.Find("Player1");
+            var player3 = GameObject.Find("Player1");
+            var player4 = GameObject.Find("Player1");
+            
+            var roleBox1 = player1.transform.GetChild(0);
+            var roleBox2 = player2.transform.GetChild(0);
+            var roleBox3 = player3.transform.GetChild(0);
+            var roleBox4 = player4.transform.GetChild(0);
+            
+            var model1 = roleBox1.transform.GetChild(0);
+        }
+
+        private static void CollectParticleSystemInfo()
+        {
+            // var animators = role1.GetComponentsInChildren<Animator>(true);
+            // var animatorList = new List<Animator>(animators);
+            // animatorList.RemoveAt(0);
+            // DebugUtil.Log($"共检测了 {animatorList.Count} 个动画");
+            // foreach (var animator in animatorList) {
+            //     DebugUtil.LogError($"{animator.name}", animator.transform);
+            // }
+
+            // var renderers = role1.GetComponentsInChildren<Renderer>(true);
+            // var rendererList = new List<Renderer>(renderers);
+            // DebugUtil.Log($"共检测了 {rendererList.Count} 个渲染器");
+            // foreach (var renderer in rendererList) {
+            //     DebugUtil.LogError($"{renderer.name}", renderer.transform);
+            // }
         }
 
         /// <summary>
         /// 获取全部的纹理
         /// </summary>
-        /// <param name="type">检测类型</param>
         /// <param name="texturesPath">纹理贴图所在的路径</param>
         /// <param name="assets">返回的资源</param>
         /// <param name="assetPaths">返回的资源路径</param>
         /// <returns></returns>
-        private static void GetAllTexture(FashionAnalysisData.DetectType type, string texturesPath, out List<Texture> assets, out List<string> assetPaths)
+        private static void GetAllTexture(string texturesPath, out List<Texture> assets, out List<string> assetPaths)
         {
             assets = new List<Texture>();
             assetPaths = new List<string>();
 
-            switch (type)
-            {
-                case FashionAnalysisData.DetectType.Scene:
-                    TextureUtil.GetTexturesInScene(out assets, out assetPaths);
-                    break;
-
-                case FashionAnalysisData.DetectType.Path:
-                    TextureUtil.GetTexturesInPath(new[] { texturesPath }, out assets, out assetPaths);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
+            TextureUtil.GetTexturesInScene(out assets, out assetPaths);
         }
 
         /// <summary>
@@ -186,7 +253,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             var isHad = false;
             foreach (var data in dataList)
             {
-                if (data.texturePath == assetPath)
+                if (data.meshPath == assetPath)
                 {
                     isHad = true;
                 }
@@ -212,15 +279,15 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             }
 
             // 汇总数据
-            dataList.Add(new FashionAnalysisData
-            {
-                id = counter,
-                width = asset.width,
-                height = asset.height,
-                isSolid = isSolid,
-                textureName = asset.name,
-                texturePath = assetPath
-            });
+            // dataList.Add(new FashionAnalysisData
+            // {
+            //     id = counter,
+            //     width = asset.width,
+            //     height = asset.height,
+            //     isSolid = isSolid,
+            //     textureName = asset.name,
+            //     texturePath = assetPath
+            // });
         }
 
         /// <summary>
@@ -262,7 +329,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                     autoResize = false,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) =>
-                        string.Compare(dataA.textureName, dataB.textureName, StringComparison.Ordinal),
+                        string.Compare(dataA.meshName, dataB.meshName, StringComparison.Ordinal),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -272,12 +339,14 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                         cellRect.xMin += 20f;
 
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("RawImage Icon"));
-                        EditorGUI.LabelField(cellRect, data.textureName.Contains("/")
-                            ? data.textureName.Split('/').Last()
-                            : data.textureName.Split('\\').Last());
+                        EditorGUI.LabelField(cellRect, data.meshName.Contains("/")
+                            ? data.meshName.Split('/').Last()
+                            : data.meshName.Split('\\').Last());
                     }
                 },
 
+                /*
+                
                 new CommonTableColumn<FashionAnalysisData>
                 {
                     headerContent = new GUIContent("Width"),
@@ -402,6 +471,8 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                         }
                     }
                 }
+                
+                */
             };
         }
 
@@ -450,9 +521,9 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
         /// 行选中事件
         /// </summary>
         /// <param name="dataList"></param>
-        private static void OnRowSelect(List<FashionAnalysisData> dataList)
+        private static void OnRowSelect(in List<FashionAnalysisData> dataList)
         {
-            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dataList[0].texturePath);
+            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dataList[0].meshPath);
             EditorGUIUtility.PingObject(obj);
             Selection.activeObject = obj;
         }
@@ -462,7 +533,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
         /// </summary>
         /// <param name="file"></param>
         /// <param name="dataList"></param>
-        private static void OnExportPressed(string file, List<FashionAnalysisData> dataList)
+        private static void OnExportPressed(string file, in List<FashionAnalysisData> dataList)
         {
             if (dataList.Count <= 0)
             {
@@ -477,7 +548,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
 
             foreach (var data in dataList)
             {
-                File.AppendAllText(file, $"{data.id}\t{data.textureName}\t{data.width}\t{data.height}\n");
+                File.AppendAllText(file, $"{data.id}\t{data.meshName}\t{data.tris}\t{data.verts}\n");
             }
         }
 
@@ -493,10 +564,10 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             var isMatched = false;
             var maskChars = Convert.ToString(mask, 2).Reverse().ToArray();
 
-            if (ColumnFilter1() || ColumnFilter2() || ColumnFilter3() || ColumnFilter4() || ColumnFilter5() || ColumnFilter6())
-            {
-                isMatched = true;
-            }
+            // if (ColumnFilter1() || ColumnFilter2() || ColumnFilter3() || ColumnFilter4() || ColumnFilter5() || ColumnFilter6())
+            // {
+            //     isMatched = true;
+            // }
 
             #region Local Function
 
@@ -517,7 +588,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                     return false;
                 }
 
-                return data.textureName.ToLower().Contains(filterText.ToLower());
+                return data.meshName.ToLower().Contains(filterText.ToLower());
             }
 
             bool ColumnFilter3()
@@ -529,12 +600,12 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
 
                 if (int.TryParse(filterText, out var verts))
                 {
-                    if (data.width > verts)
+                    if (data.verts > verts)
                     {
                         return true;
                     }
                 }
-                else if (data.width.ToString().ToLower().Contains(filterText.ToLower()))
+                else if (data.verts.ToString().ToLower().Contains(filterText.ToLower()))
                 {
                     return true;
                 }
@@ -551,12 +622,12 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
 
                 if (int.TryParse(filterText, out int tris))
                 {
-                    if (data.height > tris)
+                    if (data.tris > tris)
                     {
                         return true;
                     }
                 }
-                else if (data.height.ToString().ToLower().Contains(filterText.ToLower()))
+                else if (data.tris.ToString().ToLower().Contains(filterText.ToLower()))
                 {
                     return true;
                 }
@@ -564,6 +635,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                 return false;
             }
 
+            /*
             bool ColumnFilter5()
             {
                 if (maskChars.Length < 5 || maskChars[4] != '1')
@@ -589,6 +661,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                 return data.repeatInfo.ToLower().Contains(filterText.ToLower());
             }
 
+            */
             #endregion
 
             return isMatched;

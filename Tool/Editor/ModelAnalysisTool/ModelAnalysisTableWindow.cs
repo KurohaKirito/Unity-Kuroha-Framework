@@ -458,7 +458,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// 行选中事件
         /// </summary>
         /// <param name="dataList"></param>
-        private static void OnRowSelect(List<ModelAnalysisData> dataList)
+        private static void OnRowSelect(in List<ModelAnalysisData> dataList)
         {
             var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dataList[0].assetPath);
             EditorGUIUtility.PingObject(obj);
@@ -470,7 +470,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// </summary>
         /// <param name="file"></param>
         /// <param name="dataList"></param>
-        private static void OnExportPressed(string file, List<ModelAnalysisData> dataList)
+        private static void OnExportPressed(string file, in List<ModelAnalysisData> dataList)
         {
             if (dataList.Count <= 0)
             {

@@ -36,7 +36,7 @@ public static class RepeatTextureDetect
                 { "备注", "请使用 '贴图统计分析工具' 查看详细结果, 进行人工确认并修复!" }
             };
                                 
-            AutoCheckTool.results.Add(result);
+            //AutoCheckTool.results.Add(result);
         }
     }
 }

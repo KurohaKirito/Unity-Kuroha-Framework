@@ -17,7 +17,7 @@ public static class UnusedMaterialDetect
                 {"负责人", "傅佳亿"},
                 {"备注", "可用工具批量删除(删除前请仔细确认)"}
             };
-            AutoCheckTool.results.Add(result);
+            //AutoCheckTool.results.Add(result);
         }
     }
 }

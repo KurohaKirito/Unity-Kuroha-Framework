@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_2019_2_OR_NEWER == false
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Kuroha.Util.Release;
@@ -33,3 +34,4 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         }
     }
 }
+#endif

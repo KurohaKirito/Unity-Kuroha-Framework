@@ -24,11 +24,6 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
         private const float UI_BUTTON_HEIGHT = 25;
 
         /// <summary>
-        /// 检测类型
-        /// </summary>
-        private static FashionAnalysisData.DetectType detectType = FashionAnalysisData.DetectType.Path;
-
-        /// <summary>
         /// 折叠框
         /// </summary>
         private static bool fashionAnalysisFoldout = true;

@@ -487,7 +487,7 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
         /// 行选中事件
         /// </summary>
         /// <param name="dataList"></param>
-        private static void OnRowSelect(List<TextureAnalysisData> dataList)
+        private static void OnRowSelect(in List<TextureAnalysisData> dataList)
         {
             var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dataList[0].texturePath);
             EditorGUIUtility.PingObject(obj);
@@ -499,7 +499,7 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
         /// </summary>
         /// <param name="file"></param>
         /// <param name="dataList"></param>
-        private static void OnExportPressed(string file, List<TextureAnalysisData> dataList)
+        private static void OnExportPressed(string file, in List<TextureAnalysisData> dataList)
         {
             if (dataList.Count <= 0)
             {

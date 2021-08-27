@@ -71,6 +71,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// <param name="report">检查结果</param>
         private static void CheckAssetName(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
+            #if UNITY_2019_2_OR_NEWER == false
             // 文件名
             assetPath = assetPath.Replace('\\', '/');
             var assetName = assetPath.Split('/').GetLast();
@@ -87,6 +88,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 var content = $"资源命名错误! 资源路径: {fullName}";
                 report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.AssetName, content, item));
             }
+            #endif
         }
     }
 }

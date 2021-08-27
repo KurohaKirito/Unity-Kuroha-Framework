@@ -1,10 +1,26 @@
 ﻿using System.Collections.Generic;
 using Kuroha.Tool.Editor.EffectCheckTool.GUI;
+using Kuroha.Util.Release;
+using UnityEditor;
 
 public static class EffectDetect
 {
+    /// <summary>
+    /// 自动检测使用
+    /// </summary>
     public static void Detect()
     {
+        Check();
+    }
+
+    /// <summary>
+    /// 执行检测
+    /// </summary>
+    /// <param name="isExportFile">是否导出文件, 默认导出文件</param>
+    public static List<Dictionary<string, string>> Check(bool isExportFile = true)
+    {
+        var results = new List<Dictionary<string, string>>();
+        
         // 调用特效检测
         var reportInfos = EffectCheckToolGUI.Detect(true);
         
@@ -13,14 +29,22 @@ public static class EffectDetect
         {
             var result = new Dictionary<string, string>
             {
-                {"错误名称", "纹理尺寸超出限制大小"},
+                {"错误信息", $"{reportInfo.content}"},
                 {"资源路径", reportInfo.assetPath},
                 {"错误等级", "Error"},
                 {"负责人", "傅佳亿"},
-                {"备注", $"人工确认并修复, {reportInfo.content}" }
+                {"备注", "可使用资源检测工具中的特效检测工具查看详细信息" }
             };
 
-            AutoCheckTool.results.Add(result);
+            results.Add(result);
         }
+
+        if (isExportFile)
+        {
+            AutoCheckTool.ExportResult(results);
+            DebugUtil.Log("Effect Check Completed!");
+        }
+
+        return results;
     }
 }
