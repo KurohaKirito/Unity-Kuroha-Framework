@@ -27,10 +27,16 @@ public static class AutoCheckTool
         results.AddRange(UnusedTextureDetect.Check(false));
         
         // 检测 Assets/Art/Effects/Textures 下的资源与文件夹同级问题
-        results.AddRange(FolderAndAssetsDetect.Check(false));
+        results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Textures", 50, false));
         
         // 检测 Assets/Art/Effects/Materials 下是否存在无引用材质球
         results.AddRange(UnusedMaterialDetect.Check(false));
+        
+        // 检测 Assets/Art/Effects/Materials 下哪些材质球使用了 LWRP 着色器
+        results.AddRange(MaterialShaderDetect.Check(false));
+        
+        // 检测 Assets/Art/Effects/Materials 下的资源与文件夹同级问题
+        results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Materials", 50, false));
 
         ExportResult(results);
         

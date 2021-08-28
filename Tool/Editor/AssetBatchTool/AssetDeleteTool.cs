@@ -38,7 +38,9 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            assetDeleteToolFoldout = EditorGUILayout.Foldout(assetDeleteToolFoldout, "资源批量删除工具", true);
+            assetDeleteToolFoldout = EditorGUILayout.Foldout(assetDeleteToolFoldout, 
+                AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.AssetDeleteTool], true);
+            
             if (assetDeleteToolFoldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);

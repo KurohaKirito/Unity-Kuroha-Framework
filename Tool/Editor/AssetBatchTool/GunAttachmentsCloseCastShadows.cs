@@ -45,7 +45,9 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
             
-            gunPiecesFoldout = EditorGUILayout.Foldout(gunPiecesFoldout, "批量关闭枪械配件的阴影投射", true);
+            gunPiecesFoldout = EditorGUILayout.Foldout(gunPiecesFoldout,
+                AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.GunAttachmentsCloseCastShadows], true);
+            
             if (gunPiecesFoldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);

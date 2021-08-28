@@ -28,10 +28,13 @@ public static class EffectDetect
         foreach (var reportInfo in reportInfos)
         {
             var length = reportInfo.content.IndexOf(',');
-            if (length <= 0) {
+            
+            if (length <= 0)
+            {
                 length = reportInfo.content.IndexOf('!');
             }
-            if (length <= 0) {
+            if (length <= 0)
+            {
                 length = reportInfo.content.IndexOf(':');
             }
             

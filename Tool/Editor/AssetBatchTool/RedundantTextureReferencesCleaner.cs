@@ -54,7 +54,9 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            unusedMaterialFoldout = EditorGUILayout.Foldout(unusedMaterialFoldout, "材质球冗余纹理引用清除器", true);
+            unusedMaterialFoldout = EditorGUILayout.Foldout(unusedMaterialFoldout,
+                AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.RedundantTextureReferencesCleaner], true);
+            
             if (unusedMaterialFoldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);

@@ -35,12 +35,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             /// </summary>
             public bool isFoldersAndAssets;
         }
-        
-        /// <summary>
-        /// 折叠狂
-        /// </summary>
-        private static bool bundleAssetCounterFoldout = true;
-        
+
         /// <summary>
         /// 全局默认 margin
         /// </summary>
@@ -60,6 +55,11 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// 全局输入框的宽度
         /// </summary>
         private const float UI_INPUT_AREA_WIDTH = 400;
+        
+        /// <summary>
+        /// 折叠框
+        /// </summary>
+        private static bool foldout = true;
         
         /// <summary>
         /// 每个捆绑包中资源的最大数量
@@ -83,8 +83,10 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            bundleAssetCounterFoldout = EditorGUILayout.Foldout(bundleAssetCounterFoldout, "捆绑包资源数量分析", true);
-            if (bundleAssetCounterFoldout)
+            foldout = EditorGUILayout.Foldout(foldout,
+                AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.BundleAssetCounter], true);
+            
+            if (foldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 GUILayout.BeginVertical("Box");
@@ -240,7 +242,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 }
                 else if (result.isOverMaxLimit)
                 {
-                    var log = $"路径 {dir} 下有 {result.assets.Count} 个预制体资源, 超出最大限制!";
+                    var log = $"路径 {dir} 下有 {result.assets.Count} 个资源, 超出最大限制!";
                     
                     if (isExportFile)
                     {
@@ -254,7 +256,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 }
                 else if (result.assets != null)
                 {
-                    var log = $"路径 {dir} 下有 {result.assets.Count} 个预制体资源!";
+                    var log = $"路径 {dir} 下有 {result.assets.Count} 个资源!";
                     
                     if (isExportFile)
                     {

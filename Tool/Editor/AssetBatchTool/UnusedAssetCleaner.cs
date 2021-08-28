@@ -62,7 +62,9 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             
             GUILayout.Space (2 * UI_DEFAULT_MARGIN);
 
-            unusedAssetFoldout = EditorGUILayout.Foldout (unusedAssetFoldout, "废弃 (无引用) 资源检测", true);
+            unusedAssetFoldout = EditorGUILayout.Foldout (unusedAssetFoldout,
+                AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.UnusedAssetChecker], true);
+            
             if (unusedAssetFoldout)
             {
                 GUILayout.Space (UI_DEFAULT_MARGIN);

@@ -15,12 +15,12 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 折叠框
         /// </summary>
-        private static bool gunPiecesFoldout = true;
+        private static bool foldout = true;
         
         /// <summary>
         /// 枪械路径
         /// </summary>
-        private static string gunPiecesPath = "ToBundle/Skin/Items";
+        private static string path = "ToBundle/Skin/Items";
         
         /// <summary>
         /// 全局默认 margin
@@ -46,20 +46,22 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
             
-            gunPiecesFoldout = EditorGUILayout.Foldout(gunPiecesFoldout, "检测场景中的粒子系统的 Sub-Emitter 错误", true);
-            if (gunPiecesFoldout)
+            foldout = EditorGUILayout.Foldout(foldout,
+                AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.CheckSubEmitterInAllScene], true);
+            
+            if (foldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 GUILayout.BeginVertical("Box");
                 {
                     EditorGUILayout.LabelField("1. 输入待检测场景的路径. 默认为 Assets 根目录.");
                     GUILayout.BeginVertical("Box");
-                    gunPiecesPath = EditorGUILayout.TextField("Input Path To Detect", gunPiecesPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    path = EditorGUILayout.TextField("Input Path To Detect", path, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     GUILayout.EndVertical();
 
                     EditorGUILayout.LabelField("2. 点击按钮, 开始检测.");
                     GUILayout.BeginVertical("Box");
-                    UnityEngine.GUI.enabled = string.IsNullOrEmpty(gunPiecesPath) == false;
+                    UnityEngine.GUI.enabled = string.IsNullOrEmpty(path) == false;
                     if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
                         Check();
