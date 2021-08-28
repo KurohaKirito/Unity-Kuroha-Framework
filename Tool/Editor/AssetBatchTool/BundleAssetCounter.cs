@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Kuroha.Util.Release;
+using Kuroha.Util.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +8,34 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
 {
     public static class BundleAssetCounter
     {
+        public struct BundleAssetCounterData
+        {
+            /// <summary>
+            /// 当前文件夹路径
+            /// </summary>
+            public System.IO.DirectoryInfo currentFolder;
+
+            /// <summary>
+            /// 资源数量
+            /// </summary>
+            public List<System.IO.FileInfo> assets;
+
+            /// <summary>
+            /// 文件夹数量
+            /// </summary>
+            public List<System.IO.DirectoryInfo> folders;
+
+            /// <summary>
+            /// 是否超出最大数量
+            /// </summary>
+            public bool isOverMaxLimit;
+
+            /// <summary>
+            /// 是否文件夹和资源同级
+            /// </summary>
+            public bool isFoldersAndAssets;
+        }
+        
         /// <summary>
         /// 折叠狂
         /// </summary>
@@ -37,22 +64,17 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 每个捆绑包中资源的最大数量
         /// </summary>
-        private static int bundleAssetCounterLogMaxCount = 70;
+        private static int maxCount = 70;
         
         /// <summary>
         /// 检测的路径
         /// </summary>
-        private static string bundleAssetCounterPath = @"Assets\ToBundle\";
-        
-        /// <summary>
-        /// 检测的资源的类型
-        /// </summary>
-        private static string bundleAssetCounterType = "*.prefab";
+        private static string folderPath = @"Assets\ToBundle\";
         
         /// <summary>
         /// 是否在控制台输出检测结果
         /// </summary>
-        private static bool bundleAssetCounterLogSwitch;
+        private static bool logSwitch = true;
 
         /// <summary>
         /// 绘制界面
@@ -67,32 +89,27 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 GUILayout.BeginVertical("Box");
                 {
-                    EditorGUILayout.LabelField("1. 是否在控制台输出检测结果.");
+                    EditorGUILayout.LabelField("1. 是否在控制台输出检测结果");
                     GUILayout.BeginVertical("Box");
-                    bundleAssetCounterLogSwitch = EditorGUILayout.Toggle("Print Console", bundleAssetCounterLogSwitch, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    logSwitch = EditorGUILayout.Toggle("Print Console", logSwitch, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     GUILayout.EndVertical();
                 
-                    EditorGUILayout.LabelField("2. 设定每个捆绑包中资源的最大数量, 检测到超出数量的包会输出警告.");
+                    EditorGUILayout.LabelField("2. 设定每个捆绑包中资源的最大数量, 检测到超出数量的包会输出警告");
                     GUILayout.BeginVertical("Box");
-                    bundleAssetCounterLogMaxCount = EditorGUILayout.IntField("Max Count", bundleAssetCounterLogMaxCount, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    maxCount = EditorGUILayout.IntField("Max Count", maxCount, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     GUILayout.EndVertical();
                 
-                    EditorGUILayout.LabelField("3. 设定检测的资源的类型.");
+                    EditorGUILayout.LabelField("3. 设定检测的路径");
                     GUILayout.BeginVertical("Box");
-                    bundleAssetCounterType = EditorGUILayout.TextField("Asset Type", bundleAssetCounterType, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    folderPath = EditorGUILayout.TextField("Asset Path", folderPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     GUILayout.EndVertical();
                 
-                    EditorGUILayout.LabelField("4. 设定检测的路径.");
+                    EditorGUILayout.LabelField("4. 点击按钮开始检测");
                     GUILayout.BeginVertical("Box");
-                    bundleAssetCounterPath = EditorGUILayout.TextField("Asset Path", bundleAssetCounterPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
-                    GUILayout.EndVertical();
-                
-                    EditorGUILayout.LabelField("5. 点击按钮, 开始检测.");
-                    GUILayout.BeginVertical("Box");
-                    UnityEngine.GUI.enabled = string.IsNullOrEmpty(bundleAssetCounterPath) == false && string.IsNullOrEmpty(bundleAssetCounterType) == false;
+                    UnityEngine.GUI.enabled = string.IsNullOrEmpty(folderPath) == false;
                     if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
-                        Count(bundleAssetCounterPath);
+                        Process(Count(folderPath, maxCount), logSwitch, true);
                     }
                     UnityEngine.GUI.enabled = true;
                     GUILayout.EndVertical();
@@ -105,85 +122,157 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// 计算指定路径下所有最底层文件夹中资源的数量
         /// </summary>
         /// <param name="path">指定路径</param>
-        private static void Count(string path)
+        /// <param name="max">最大数量</param>
+        public static List<BundleAssetCounterData> Count(string path, int max)
         {
-            var detectResult = new Dictionary<System.IO.DirectoryInfo, int>();
-            var allDirectory = new List<System.IO.DirectoryInfo>
-            {
-                new System.IO.DirectoryInfo(path)
-            };
-
-            for (var index = 0; index < allDirectory.Count; index++)
-            {
-                // 获取路径中所有的子文件夹
-                var subDir = allDirectory[index].GetDirectories();
-
-                // 获取路径中所有的特定类型的资源
-                var files = allDirectory[index].GetFiles("*.prefab", System.IO.SearchOption.TopDirectoryOnly);
-                
-                // Kuroha.Util.Release.DebugUtil.Log($"共检测到了 {files.Length} 个指定类型的资源.");
-
-                // 异常
-                if (subDir.Length > 0 && files.Length > 0)
-                {
-                    DebugUtil.ClearConsole();
-                    DebugUtil.LogError($"文件夹和资源同级: {allDirectory[index].FullName}");
-                    
-                    // 打印路径名
-                    foreach (var dir in subDir)
-                    {
-                        if (dir.Name.Equals(".git") == false)
-                        {
-                            Kuroha.Util.Release.DebugUtil.Log($"其中子目录有: {dir.FullName}");
-                        }
-                    }
-
-                    // 打印文件名
-                    foreach (var file in files)
-                    {
-                        Kuroha.Util.Release.DebugUtil.Log($"其中子文件有: {file.FullName}");
-                    }
-
-                    return;
-                }
-
-                // 中间层
-                if (subDir.Length > 0 && files.Length == 0)
-                {
-                    allDirectory.AddRange(subDir);
-                }
-
-                // 底层
-                else if (subDir.Length == 0 && files.Length > 0)
-                {
-                    detectResult.Add(allDirectory[index], files.Length);
-                }
-            }
-
-            //输出结果
-            var result = new List<string>();
-            var resultList = detectResult.Keys.Where(key => key.Name.Equals(".git") == false).ToList();
+            // 定义结果集
+            var detectResult = new List<BundleAssetCounterData>();
             
-            // Kuroha.Util.Release.DebugUtil.Log($"共有 {resultList.Count} 个存在指定资源的文件夹.");
-            foreach (var key in resultList)
+            // 检测路径队伍
+            var allDirectory = new List<System.IO.DirectoryInfo>();
+            var fullPath = PathUtil.GetAssetPath(path);
+            allDirectory.Add(new System.IO.DirectoryInfo(fullPath));
+            
+            // 进度计数器
+            var progressBar = 0;
+
+            // 执行检测
+            while (progressBar < allDirectory.Count)
             {
-                var dir = key.FullName.Substring(key.FullName.IndexOf("Assets", StringComparison.Ordinal));
-                var log = $"路径 {dir} 下有 {detectResult[key]} 个预制体资源";
-                var go = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dir);
+                Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("文件夹检测中", $"{progressBar + 1}/{allDirectory.Count}", progressBar + 1, allDirectory.Count);
+
+                // 定义当前检测路径
+                var currentPath = allDirectory[progressBar];
                 
-                if (detectResult[key] > bundleAssetCounterLogMaxCount)
+                // 获取 当前检测路径 中所有的子文件夹
+                var dirs = currentPath.GetDirectories();
+                
+                // 获取 当前检测路径 中所有文件
+                var files = currentPath.GetFiles("*.*", System.IO.SearchOption.TopDirectoryOnly);
+                files = files.Where(f => f.Name.EndsWith(".meta") == false).ToArray();
+
+                #region 分析
+
+                // 文件夹和资源同级
+                if (dirs.Length > 0 && files.Length > 0)
                 {
-                    result.Add(log);
-                    Kuroha.Util.Release.DebugUtil.Log($"<color=#DB4D6D>{log}</color>", go);
+                    detectResult.Add(new BundleAssetCounterData
+                    {
+                        currentFolder = currentPath,
+                        assets = files.ToList(),
+                        folders = dirs.ToList(),
+                        isOverMaxLimit = true,
+                        isFoldersAndAssets = true
+                    });
+                    
+                    allDirectory.AddRange(dirs);
                 }
-                else if (bundleAssetCounterLogSwitch)
+
+                // 中间层文件夹
+                else if (dirs.Length > 0 && files.Length == 0)
                 {
-                    Kuroha.Util.Release.DebugUtil.Log(log, go);
+                    detectResult.Add(new BundleAssetCounterData
+                    {
+                        currentFolder = currentPath,
+                        assets = null,
+                        folders = dirs.ToList(),
+                        isOverMaxLimit = false,
+                        isFoldersAndAssets = false
+                    });
+                    
+                    allDirectory.AddRange(dirs);
+                }
+
+                // 底层文件夹
+                else if (dirs.Length == 0 && files.Length > 0)
+                {
+                    var isOverMaxLimit = files.Length > max;
+                    
+                    detectResult.Add(new BundleAssetCounterData
+                    {
+                        currentFolder = currentPath,
+                        assets = files.ToList(),
+                        folders = null,
+                        isOverMaxLimit = isOverMaxLimit,
+                        isFoldersAndAssets = false
+                    });
+                }
+
+                #endregion
+                
+                progressBar++;
+            }
+
+            return detectResult;
+        }
+
+        /// <summary>
+        /// 提炼整理检测结果
+        /// </summary>
+        /// <param name="detectResult">未经处理的检测结果</param>
+        /// <param name="isConsole">是否输出到控制台</param>
+        /// <param name="isExportFile">是否将结果导出文件</param>
+        private static void Process(in List<BundleAssetCounterData> detectResult, bool isConsole, bool isExportFile)
+        {
+            // 删除掉名为 .git 的文件夹
+            var results = detectResult.Where(t => t.currentFolder.Name.Equals(".git") == false).ToList();
+            
+            // 输出结果
+            var logList = new List<string>();
+            foreach (var result in results)
+            {
+                var dir = PathUtil.GetAssetPath(result.currentFolder.FullName);
+                var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dir);
+                
+                if (result.isFoldersAndAssets)
+                {
+                    var log = $"路径 {dir} 下同时存在文件夹和资源, 文件夹有 {result.folders.Count} 个, 文件有 {result.assets.Count} 个!";
+                    
+                    if (isExportFile)
+                    {
+                        logList.Add(log);
+                    }
+                    
+                    if (isConsole)
+                    {
+                        Kuroha.Util.Release.DebugUtil.LogError(log, obj);
+                    }
+                }
+                else if (result.isOverMaxLimit)
+                {
+                    var log = $"路径 {dir} 下有 {result.assets.Count} 个预制体资源, 超出最大限制!";
+                    
+                    if (isExportFile)
+                    {
+                        logList.Add(log);
+                    }
+                    
+                    if (isConsole)
+                    {
+                        Kuroha.Util.Release.DebugUtil.Log($"<color=#DB4D6D>{log}</color>", obj);
+                    }
+                }
+                else if (result.assets != null)
+                {
+                    var log = $"路径 {dir} 下有 {result.assets.Count} 个预制体资源!";
+                    
+                    if (isExportFile)
+                    {
+                        logList.Add(log);
+                    }
+                    
+                    if (isConsole)
+                    {
+                        Kuroha.Util.Release.DebugUtil.Log(log, obj);
+                    }
                 }
             }
 
-            // 导出结果
-            System.IO.File.WriteAllLines("C:\\AssetCounter.txt", result);
+            // 导出结果到文件
+            if (isExportFile)
+            {
+                System.IO.File.WriteAllLines("C:\\AssetCounter.txt", logList);
+            }
         }
     }
 }

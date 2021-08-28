@@ -1,12 +1,27 @@
 ﻿using System.Collections.Generic;
 using Kuroha.GUI.Editor;
 using Kuroha.Util.Editor;
+using Kuroha.Util.Release;
 using UnityEditor;
 
 public static class SolidTextureDetect
 {
+    /// <summary>
+    /// 自动检测使用
+    /// </summary>
     public static void Detect()
     {
+        Check();
+    }
+    
+    /// <summary>
+    /// 执行检测
+    /// </summary>
+    /// <param name="isExportFile">是否导出文件, 默认导出文件</param>
+    public static List<Dictionary<string, string>> Check(bool isExportFile = true)
+    {
+        var results = new List<Dictionary<string, string>>();
+        
         // 获取全部纹理
         TextureUtil.GetTexturesInPath(new[] { "Assets/Art/Effects/Textures" }, out var textures, out var texturePaths);
         
@@ -38,12 +53,20 @@ public static class SolidTextureDetect
                                     { "备注", $"人工确认并修复, 当前尺寸: {textures[index].width} X {textures[index].height}" }
                                 };
                                 
-                                //AutoCheckTool.results.Add(result);
+                                results.Add(result);
                             }
                         }
                     }
                 }
             }
         }
+        
+        if (isExportFile)
+        {
+            AutoCheckTool.ExportResult(results);
+            DebugUtil.Log("Solid Color Texture Check Completed!");
+        }
+
+        return results;
     }
 }

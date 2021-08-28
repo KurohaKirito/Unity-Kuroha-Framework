@@ -52,7 +52,7 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
         /// 资源检测工具
         /// </summary>
         #if UNITY_2019_2_OR_NEWER == false
-        [MenuItem("Funny/资源检测工具")]
+        [MenuItem("Funny/资源检测工具/Asset Check Tool")]
         #else
         [MenuItem("Kuroha/AssetTool")]
         #endif

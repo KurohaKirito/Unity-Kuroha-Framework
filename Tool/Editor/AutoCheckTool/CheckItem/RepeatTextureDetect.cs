@@ -2,11 +2,26 @@
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.TextureAnalysisTool;
 using Kuroha.Util.Editor;
+using Kuroha.Util.Release;
 
 public static class RepeatTextureDetect
 {
+    /// <summary>
+    /// 自动检测使用
+    /// </summary>
     public static void Detect()
     {
+        Check();
+    }
+    
+    /// <summary>
+    /// 执行检测
+    /// </summary>
+    /// <param name="isExportFile">是否导出文件, 默认导出文件</param>
+    public static List<Dictionary<string, string>> Check(bool isExportFile = true)
+    {
+        var results = new List<Dictionary<string, string>>();
+        
         // 获取全部纹理
         TextureUtil.GetTexturesInPath(new[] { "Assets/Art/Effects/Textures" }, out var textures, out var texturePaths);
 
@@ -33,10 +48,18 @@ public static class RepeatTextureDetect
                 { "资源路径", repeatTextureInfo.assetPaths[0] },
                 { "错误等级", "Error" },
                 { "负责人", "傅佳亿" },
-                { "备注", "请使用 '贴图统计分析工具' 查看详细结果, 进行人工确认并修复!" }
+                { "备注", "请使用贴图统计分析工具查看详细的检测结果, 进行人工确认并修复!" }
             };
-                                
-            //AutoCheckTool.results.Add(result);
+            
+            results.Add(result);
         }
+        
+        if (isExportFile)
+        {
+            AutoCheckTool.ExportResult(results);
+            DebugUtil.Log("Repeat Texture Check Completed!");
+        }
+
+        return results;
     }
 }

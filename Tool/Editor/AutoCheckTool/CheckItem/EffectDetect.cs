@@ -27,9 +27,19 @@ public static class EffectDetect
         // 整理数据
         foreach (var reportInfo in reportInfos)
         {
+            var length = reportInfo.content.IndexOf(',');
+            if (length <= 0) {
+                length = reportInfo.content.IndexOf('!');
+            }
+            if (length <= 0) {
+                length = reportInfo.content.IndexOf(':');
+            }
+            
+            var errorTitle = reportInfo.content.Substring(0, length);
+            
             var result = new Dictionary<string, string>
             {
-                {"错误信息", $"{reportInfo.content}"},
+                {"错误信息", errorTitle},
                 {"资源路径", reportInfo.assetPath},
                 {"错误等级", "Error"},
                 {"负责人", "傅佳亿"},
