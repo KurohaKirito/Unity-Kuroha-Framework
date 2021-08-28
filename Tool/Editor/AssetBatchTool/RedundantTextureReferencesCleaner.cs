@@ -20,12 +20,12 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 折叠框
         /// </summary>
-        private static bool unusedMaterialFoldout = true;
+        private static bool foldout = true;
 
         /// <summary>
         /// 检测路径
         /// </summary>
-        private static string unusedMaterialPath = "Assets/Art";
+        private static string path = "Assets/Art/Effects/Materials";
 
         /// <summary>
         /// 全局默认 margin
@@ -54,10 +54,10 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            unusedMaterialFoldout = EditorGUILayout.Foldout(unusedMaterialFoldout,
+            foldout = EditorGUILayout.Foldout(foldout,
                 AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.RedundantTextureReferencesCleaner], true);
             
-            if (unusedMaterialFoldout)
+            if (foldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 GUILayout.BeginVertical("Box");
@@ -65,7 +65,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     GUILayout.Label("1. 输入待检测的材质球资源的路径. (Assets/相对路径)");
                     GUILayout.BeginVertical("Box");
                     {
-                        unusedMaterialPath = EditorGUILayout.TextField("Material Path:", unusedMaterialPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                        path = EditorGUILayout.TextField("Material Path:", path, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     }
                     GUILayout.EndVertical();
 
@@ -98,47 +98,50 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         private static void Check()
         {
             // 获取相对目录下所有的材质球文件
-            var guids = AssetDatabase.FindAssets("t:Material", new []{unusedMaterialPath});
+            var guids = AssetDatabase.FindAssets("t:Material", new []{path});
             var materials = new List<Material>();
-            foreach (var guid in guids) {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                materials.Add(AssetDatabase.LoadAssetAtPath<Material>(path));
+            foreach (var guid in guids)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                materials.Add(AssetDatabase.LoadAssetAtPath<Material>(assetPath));
             }
             Kuroha.Util.Release.DebugUtil.Log($"Find {materials.Count} Materials!");
             
             // 遍历材质
-            var repairCounter = 0;
+            var errorCounter = 0;
             for (var index = 0; index < materials.Count; index++)
             {
                 ProgressBar.DisplayProgressBar("检测中", $"{index + 1}/{materials.Count}", index + 1, materials.Count);
-                if (RepairMaterial(materials[index]))
+                if (Detect(materials[index], isAutoRepair))
                 {
-                    repairCounter++;
+                    errorCounter++;
                 }
             }
 
-            Kuroha.Util.Release.DebugUtil.Log($"RepairCounter: 共检测出 {repairCounter} 个问题.");
+            Kuroha.Util.Release.DebugUtil.Log($"RepairCounter: 共检测出 {errorCounter} 个问题.");
         }
 
         /// <summary>
         /// 修复纹理中冗余的纹理引用问题
         /// </summary>
-        /// <param name="material"></param>
+        /// <param name="material">待检测的材质球</param>
+        /// <param name="repair">是否自动修复</param>
         /// <returns></returns>
-        private static bool RepairMaterial(Material material)
+        public static bool Detect(Material material, bool repair)
         {
             var isError = false;
-            var strBuilder = new StringBuilder();
 
             // 获取材质球中引用的全部纹理的 GUID (不包含冗余的引用)
             Kuroha.Util.Editor.TextureUtil.GetTexturesInMaterial(material, out var textures);
             var textureGUIDs = textures.Select(textureData => textureData.guid).ToList();
             
             // 直接以文本形式逐行读取 Material 文件 (包含全部的纹理引用)
+            var strBuilder = new StringBuilder();
             var materialPathName = Path.GetFullPath(AssetDatabase.GetAssetPath(material));
             using (var reader = new StreamReader(materialPathName))
             {
-                var regex = new Regex(@"\s+guid:\s+(\w+),");
+                var regex = new Regex("(?<=guid: ).*(?=, type:)");
+                
                 var line = reader.ReadLine();
                 while (line != null)
                 {
@@ -148,25 +151,27 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                         var match = regex.Match(line);
                         if (match.Success)
                         {
-                            var guid = match.Groups[1].Value;
+                            var guid = match.Value;
                             if (textureGUIDs.Contains(guid) == false)
                             {
                                 // 是冗余引用
                                 isError = true;
                                 
                                 // 将 fileID 赋值为 0 来清除引用关系
-                                var guidLength = line.IndexOf("fileID:", StringComparison.Ordinal) + 7;
-                                strBuilder.AppendLine(line.Substring(0, guidLength) + " 0}");
+                                var fileIDPosition = line.IndexOf("fileID:", StringComparison.Ordinal) + 7;
+                                strBuilder.AppendLine(line.Substring(0, fileIDPosition) + " 0}");
+                                line = reader.ReadLine();
+                                continue;
                             }
                         }
                     }
-
+                    
                     strBuilder.AppendLine(line);
                     line = reader.ReadLine();
                 }
             }
 
-            if (isAutoRepair)
+            if (repair)
             {
                 using (var writer = new StreamWriter(materialPathName))
                 {

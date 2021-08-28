@@ -38,6 +38,9 @@ public static class AutoCheckTool
         // 检测 Assets/Art/Effects/Materials 下的资源与文件夹同级问题
         results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Materials", 50, false));
 
+        // 检测 Assets/Art/Effects/Materials 下材质球的冗余纹理引用问题
+        results.AddRange(RedundantTextureReferencesDetect.Check(false));
+
         ExportResult(results);
         
         DebugUtil.Log("Auto Check Completed!");
