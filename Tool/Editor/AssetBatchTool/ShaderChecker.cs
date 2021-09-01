@@ -134,7 +134,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             {
                 for (var index = 0; index < assetPaths.Count; index++)
                 {
-                    ProgressBar.DisplayProgressBar("读取资源中", $"{index + 1}/{assetPaths.Count}", index + 1, assetPaths.Count);
+                    ProgressBar.DisplayProgressBar("特定 Shader 引用检测工具", $"加载预制体中: {index + 1}/{assetPaths.Count}", index + 1, assetPaths.Count);
 
                     if (detectLevelEditor)
                     {
@@ -151,7 +151,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             var counter = 0;
             foreach (var prefab in prefabs)
             {
-                ProgressBar.DisplayProgressBar("获取材质球", $"{++counter}/{prefabs.Count}", counter, prefabs.Count);
+                ProgressBar.DisplayProgressBar("特定 Shader 引用检测工具", $"加载材质球中: {++counter}/{prefabs.Count}", counter, prefabs.Count);
                 
                 var renderers = new List<Renderer>();
                 renderers.AddRange(prefab.GetComponentsInChildren<Renderer>(true));

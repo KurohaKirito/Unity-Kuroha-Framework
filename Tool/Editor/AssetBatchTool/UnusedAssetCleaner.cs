@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -149,7 +148,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             
             foreach (var key in references.Keys)
             {
-                if (Kuroha.GUI.Editor.ProgressBar.DisplayProgressBarCancel("结果筛选中", $"{++counter}/{keyCount}", counter, keyCount))
+                if (Kuroha.GUI.Editor.ProgressBar.DisplayProgressBarCancel("无引用资源分析工具", $"正在整理结果: {++counter}/{keyCount}", counter, keyCount))
                 {
                     break;
                 }

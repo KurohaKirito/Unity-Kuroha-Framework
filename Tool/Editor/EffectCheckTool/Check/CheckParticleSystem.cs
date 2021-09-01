@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.EffectCheckTool.ItemListView;
 using Kuroha.Tool.Editor.EffectCheckTool.Report;
@@ -71,9 +72,19 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
 
                 for (var index = 0; index < assetGuids.Length; index++)
                 {
-                    ProgressBar.DisplayProgressBar("Particle 资源排查", $"排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
+                    ProgressBar.DisplayProgressBar("特效检测工具", $"Particle 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
 
                     var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
+                    var pattern = itemData.writePathRegex;
+                    if (string.IsNullOrEmpty(pattern) == false)
+                    {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(assetPath))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     switch ((CheckOptions)itemData.checkType)
                     {
                         case CheckOptions.SubEmittersError:

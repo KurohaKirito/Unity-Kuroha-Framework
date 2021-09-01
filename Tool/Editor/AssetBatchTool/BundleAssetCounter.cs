@@ -141,7 +141,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             // 执行检测
             while (progressBar < allDirectory.Count)
             {
-                Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("文件夹检测中", $"{progressBar + 1}/{allDirectory.Count}", progressBar + 1, allDirectory.Count);
+                Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("批处理工具", $"同级问题检测中: {progressBar + 1}/{allDirectory.Count}", progressBar + 1, allDirectory.Count);
 
                 // 定义当前检测路径
                 var currentPath = allDirectory[progressBar];

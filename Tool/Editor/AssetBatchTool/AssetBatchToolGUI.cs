@@ -19,7 +19,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             AssetDeleteTool = 3,
             MaterialShaderChecker = 4,
             UnusedAssetChecker = 5,
-            CheckSubEmitterInAllScene = 6
+            CheckSubEmitterInAllScene = 6,
+            FbxUVColorsChecker = 7
         }
 
         /// <summary>
@@ -33,7 +34,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             "资源批量删除工具",
             "材质球的着色器引用检测器",
             "废弃资源检测工具",
-            "场景粒子 Sub-Emitter 检测"
+            "场景粒子 Sub-Emitter 检测",
+            "模型 UV 信息检查器"
         };
 
         /// <summary>

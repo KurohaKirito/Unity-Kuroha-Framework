@@ -111,7 +111,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             var errorCounter = 0;
             for (var index = 0; index < materials.Count; index++)
             {
-                ProgressBar.DisplayProgressBar("检测中", $"{index + 1}/{materials.Count}", index + 1, materials.Count);
+                ProgressBar.DisplayProgressBar("批处理工具", $"材质冗余纹理检测中: {index + 1}/{materials.Count}", index + 1, materials.Count);
                 if (Detect(materials[index], isAutoRepair))
                 {
                     errorCounter++;

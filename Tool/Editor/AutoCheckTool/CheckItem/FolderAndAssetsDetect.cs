@@ -47,7 +47,7 @@ public static class FolderAndAssetsDetect
                     var assetPath = PathUtil.GetAssetPath(asset.FullName);
                     var result = new Dictionary<string, string>
                     {
-                        {"错误信息", "资源与文件夹同级"},
+                        {"错误名称", "资源与文件夹同级"},
                         {"资源路径", assetPath},
                         {"错误等级", "Error"},
                         {"负责人", "傅佳亿"},

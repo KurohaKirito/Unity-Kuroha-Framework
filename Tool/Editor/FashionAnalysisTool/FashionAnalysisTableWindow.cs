@@ -133,7 +133,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
 
             // for (var index = 0; index < textures.Count; index++)
             // {
-            //     ProgressBar.DisplayProgressBar("Texture", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
+            //     ProgressBar.DisplayProgress("Texture", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
             //
             //     // 判断后缀
             //     if (paths[index].EndsWith(".png") || paths[index].EndsWith(".tga"))

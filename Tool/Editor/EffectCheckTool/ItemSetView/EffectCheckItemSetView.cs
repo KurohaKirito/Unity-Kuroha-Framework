@@ -79,7 +79,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
             var lines = new string[configData.Count + 1];
 
             // 配置文件标题行
-            lines[0] = "GUID\t标题\t资源类型\t检查类型\t路径\t参数\t危险等级\t是否参与特效检测\t是否参与CICD检测\t是否检查子目录\t备注";
+            lines[0] = "GUID\t标题\t资源类型\t检查类型\t路径\t白名单规则\t参数\t危险等级\t是否参与特效检测\t是否参与CICD检测\t是否检查子目录\t备注";
 
             // 配置文件数据行
             for (var i = 0; i < configData.Count; i++)
@@ -92,6 +92,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                     Convert.ToInt32(itemData.assetsType).ToString(),
                     Convert.ToInt32(itemData.checkType).ToString(),
                     itemData.path,
+                    itemData.writePathRegex,
                     itemData.parameter,
                     itemData.dangerLevel.ToString(),
                     itemData.effectEnable.ToString(),
@@ -104,7 +105,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
             }
 
             var directory = Path.GetDirectoryName(ConfigFilePath);
-            if (directory != null && !Directory.Exists(directory))
+            if (directory != null && Directory.Exists(directory) == false)
             {
                 Directory.CreateDirectory(directory);
             }

@@ -141,7 +141,7 @@ namespace Kuroha.Tool.Editor.AssetViewer
                         var count = objects.Length;
                         for (var index = 0; index < count; index++)
                         {
-                            ProgressBar.DisplayProgressBar("搜索图标中", $"{index + 1}/{count}", index + 1, count);
+                            ProgressBar.DisplayProgressBar("Unity 图标显示工具", $"搜索图标中: {index + 1}/{count}", index + 1, count);
 
                             if (objects[index] is Texture2D texture2D)
                             {

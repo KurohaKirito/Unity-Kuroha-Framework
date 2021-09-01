@@ -34,6 +34,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
         /// 待检查资源的类型路径
         /// </summary>
         public string path;
+        
+        /// <summary>
+        /// 检测路径白名单规则
+        /// </summary>
+        public string writePathRegex;
 
         /// <summary>
         /// 危险等级
@@ -63,18 +68,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="guid"></param>
-        /// <param name="title"></param>
-        /// <param name="assetsType"></param>
-        /// <param name="checkType"></param>
-        /// <param name="path"></param>
-        /// <param name="parameter"></param>
-        /// <param name="dangerLevel"></param>
-        /// <param name="effectEnable"></param>
-        /// <param name="cicdEnable"></param>
-        /// <param name="isCheckSubFile"></param>
-        /// <param name="remark"></param>
-        public CheckItemInfo(string guid, string title, EffectToolData.AssetsType assetsType, int checkType, string path,
+        public CheckItemInfo(string guid, string title, EffectToolData.AssetsType assetsType, int checkType, string path, string writePathRegex,
             string parameter, int dangerLevel, bool effectEnable, bool cicdEnable, bool isCheckSubFile, string remark)
         {
             this.guid = guid;
@@ -82,6 +76,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
             this.assetsType = assetsType;
             this.checkType = checkType;
             this.path = path;
+            this.writePathRegex = writePathRegex;
             this.parameter = parameter;
             this.dangerLevel = dangerLevel;
             this.effectEnable = effectEnable;
@@ -106,6 +101,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
             assetsType = item.assetsType;
             checkType = item.checkType;
             path = item.path;
+            writePathRegex = item.writePathRegex;
             parameter = item.parameter;
             dangerLevel = item.dangerLevel;
             effectEnable = item.effectEnable;
@@ -130,12 +126,13 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
             assetsType = (EffectToolData.AssetsType)Convert.ToInt32(data[2]);
             checkType = Convert.ToInt32(data[3]);
             path = data[4];
-            parameter = data[5];
-            dangerLevel = Convert.ToInt32(data[6]);
-            effectEnable = bool.Parse(data[7]);
-            cicdEnable = bool.Parse(data[8]);
-            isCheckSubFile = Convert.ToBoolean(data[9]);
-            remark = data[10];
+            writePathRegex = data[5];
+            parameter = data[6];
+            dangerLevel = Convert.ToInt32(data[7]);
+            effectEnable = bool.Parse(data[8]);
+            cicdEnable = bool.Parse(data[9]);
+            isCheckSubFile = Convert.ToBoolean(data[10]);
+            remark = data[11];
         }
     }
 }

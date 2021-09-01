@@ -28,7 +28,7 @@ public static class RepeatTextureDetect
         // 检测每一张纹理
         for (var index = 0; index < textures.Count; index++)
         {
-            ProgressBar.DisplayProgressBar("Texture", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
+            ProgressBar.DisplayProgressBar("重复纹理检测工具", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
             
             if (texturePaths[index].EndsWith(".png") || texturePaths[index].EndsWith(".tga"))
             {

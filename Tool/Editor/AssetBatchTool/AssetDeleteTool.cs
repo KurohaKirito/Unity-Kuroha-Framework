@@ -14,7 +14,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 折叠框
         /// </summary>
-        private static bool assetDeleteToolFoldout = true;
+        private static bool foldout = true;
         
         /// <summary>
         /// 全局默认 margin
@@ -38,10 +38,9 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            assetDeleteToolFoldout = EditorGUILayout.Foldout(assetDeleteToolFoldout, 
-                AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.AssetDeleteTool], true);
+            foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.AssetDeleteTool], true);
             
-            if (assetDeleteToolFoldout)
+            if (foldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 GUILayout.BeginVertical("Box");

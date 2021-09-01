@@ -26,9 +26,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         /// <param name="content">问题的描述</param>
         /// <param name="itemData">检查项的具体信息</param>
         /// <returns>"待修复问题" 页面信息</returns>
-        public static EffectCheckReportInfo AddReportInfo(Object asset, string assetPath,
-            EffectCheckReportInfo.EffectCheckReportType effectCheckReportType,
-            string content, CheckItemInfo itemData)
+        public static EffectCheckReportInfo AddReportInfo(Object asset, string assetPath, EffectCheckReportInfo.EffectCheckReportType effectCheckReportType, string content, CheckItemInfo itemData)
         {
             var reportInfo = new EffectCheckReportInfo
             {
@@ -53,21 +51,22 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         {
             var count = reportInfos.Count;
 
-            for (var i = reportInfos.Count - 1; i >= 0; i--)
+            for (var i = count - 1; i >= 0; i--)
             {
-                if (ProgressBar.DisplayProgressBarCancel("一键修复", $"修复中 {count - i}/{count}", count - i, count))
+                if (ProgressBar.DisplayProgressBarCancel("一键修复", $"问题修复中: {count - i}/{count}", count - i, count))
                 {
                     break;
                 }
 
-                // 没有勾选的问题项不进行修复
-                if (!reportInfos[i].isEnable)
+                // 每一个问题项左侧都会有一个勾选框, 没有勾选的问题项不进行修复
+                if (reportInfos[i].isEnable)
                 {
-                    continue;
+                    Repair(reportInfos[i]);
                 }
-
-                Repair(reportInfos[i]);
             }
+            
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
 
         /// <summary>
@@ -76,24 +75,20 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         /// <param name="effectCheckReportInfo">问题项</param>
         public static void Repair(EffectCheckReportInfo effectCheckReportInfo)
         {
-            var repaired = false;
-
             switch (effectCheckReportInfo.assetType)
             {
                 case EffectToolData.AssetsType.Animator:
                     RepairAnimator.Repair(effectCheckReportInfo);
-                    repaired = true;
                     break;
 
                 case EffectToolData.AssetsType.ParticleSystem:
-                    RepairParticle.Repair(effectCheckReportInfo);
-                    repaired = true;
                     break;
 
                 case EffectToolData.AssetsType.Mesh:
                     break;
 
                 case EffectToolData.AssetsType.Texture:
+                    RepairTexture.Repair(effectCheckReportInfo);
                     break;
 
                 case EffectToolData.AssetsType.Prefab:
@@ -101,7 +96,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
 
                 case EffectToolData.AssetsType.Model:
                     RepairModel.Repair(effectCheckReportInfo);
-                    repaired = true;
                     break;
 
                 case EffectToolData.AssetsType.Asset:
@@ -109,12 +103,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                 
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-
-            if (repaired)
-            {
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
             }
         }
 
@@ -142,10 +130,12 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
             /*
              * 目前支持自动修复的内容仅有:
              *
-             * 动画系统-Cull Mode 剔除模式
-             * FBX-读写
-             * FBX-阴影投射
-             * FBX-Normals 平滑处理
+             * Animator     -   Cull Mode
+             * FBX          -   Read Write Enable
+             * FBX          -   CastShadow
+             * FBX          -   NormalsImport
+             * Texture      -   MipMaps
+             * Texture      -   Read Write Enable
              */
 
             var isCanRepair = false;
@@ -206,8 +196,10 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                 case EffectCheckReportInfo.EffectCheckReportType.TextureSize:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.TextureReadWriteEnable:
+                    isCanRepair = true;
                     break;
 
                 // 1

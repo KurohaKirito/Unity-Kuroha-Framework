@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Kuroha.Tool.Editor.AssetSearchTool.Data;
 using Kuroha.Tool.Release;
 using Kuroha.Util.Release;
-using UnityEditor;
 
 namespace Kuroha.Tool.Editor.AssetSearchTool.Searcher
 {
@@ -46,7 +44,7 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.Searcher
                 {
                     var com = threadPool.completedTaskCount;
                     var all = threadPool.taskCount;
-                    Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("正在分析", $"{com}/{all}", com, all);
+                    Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("字符串引用分析工具", $"引用分析中: {com}/{all}", com, all);
                 }
 
                 #region 遍历每一个任务中的查询结果, 并汇总到字典中

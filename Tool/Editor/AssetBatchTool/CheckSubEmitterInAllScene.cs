@@ -87,24 +87,24 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             // 遍历场景
             for (var index = 0; index < scenePaths.Length; index++)
             {
-                ProgressBar.DisplayProgressBar("检测中", $"{index + 1}/{scenePaths.Length}", index + 1, scenePaths.Length);
+                ProgressBar.DisplayProgressBar("批处理工具", $"Sub-Emitter 检测中: {index + 1}/{scenePaths.Length}", index + 1, scenePaths.Length);
                 
-                var path = scenePaths[index];
-                if (path.IndexOf("scenes/main", StringComparison.OrdinalIgnoreCase) >= 0)
+                var scenePath = scenePaths[index];
+                if (scenePath.IndexOf("scenes/main", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     continue;
                 }
-                if (path.IndexOf("levelEditor", StringComparison.OrdinalIgnoreCase) >= 0)
+                if (scenePath.IndexOf("levelEditor", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     continue;
                 }
-                if (path.IndexOf("maps/editor", StringComparison.OrdinalIgnoreCase) >= 0)
+                if (scenePath.IndexOf("maps/editor", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     continue;
                 }
 
-                DebugUtil.Log($"当前检测的场景是: {path}");
-                var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+                DebugUtil.Log($"当前检测的场景是: {scenePath}");
+                var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
                 var rootObjects = scene.GetRootGameObjects();
                 foreach (var root in rootObjects)

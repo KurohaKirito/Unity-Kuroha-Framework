@@ -56,7 +56,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
             else
             {
                 EffectCheckItemSetViewWindow.itemInfo = new CheckItemInfo(
-                    string.Empty, string.Empty, EffectToolData.AssetsType.Mesh, 0, string.Empty,
+                    string.Empty, string.Empty, EffectToolData.AssetsType.Mesh, 0, string.Empty, string.Empty,
                     string.Empty, 0, true, false, true, string.Empty);
             }
         }

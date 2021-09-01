@@ -1,9 +1,6 @@
 ﻿using System;
 using Kuroha.Tool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.Editor.EffectCheckTool.Report;
-using Kuroha.Util.Release;
-using UnityEditor;
-using UnityEngine;
 
 namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
 {

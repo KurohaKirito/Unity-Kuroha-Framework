@@ -140,6 +140,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
             itemInfo.title = EditorGUILayout.TextField("标题", itemInfo.title);
             itemInfo.assetsType = (EffectToolData.AssetsType)EditorGUILayout.EnumPopup("资源类型", itemInfo.assetsType);
             itemInfo.path = EditorGUILayout.TextField("相对路径", itemInfo.path);
+            itemInfo.writePathRegex = EditorGUILayout.TextField("路径白名单规则(正则)", itemInfo.writePathRegex);
             itemInfo.isCheckSubFile = EditorGUILayout.Toggle("是否检测子目录", itemInfo.isCheckSubFile);
             itemInfo.effectEnable = EditorGUILayout.Toggle("是否参与特效检测", itemInfo.effectEnable);
             itemInfo.cicdEnable = EditorGUILayout.Toggle("是否参与 CICD 检测", itemInfo.cicdEnable);
@@ -475,7 +476,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
             {
                 case CheckAsset.CheckOptions.AssetName:
                     UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
-                    ParameterString1 = EditorGUILayout.TextField("命名的正则表达式规则", ParameterString1);
+                    ParameterString1 = EditorGUILayout.TextField("命名规则(正则)", ParameterString1);
                     itemInfo.parameter = ParameterString1;
                     UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
                     GUILayout.Label("描述: 命名规则检测");

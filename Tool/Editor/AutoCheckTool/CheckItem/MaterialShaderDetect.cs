@@ -34,7 +34,7 @@ public static class MaterialShaderDetect
         {
             for (var index = 0; index < assetPaths.Count; index++)
             {
-                ProgressBar.DisplayProgressBar("读取资源中", $"{index + 1}/{assetPaths.Count}", index + 1, assetPaths.Count);
+                ProgressBar.DisplayProgressBar("指定 Shader 引用检测工具", $"加载材质中: {index + 1}/{assetPaths.Count}", index + 1, assetPaths.Count);
 
                 var material = AssetDatabase.LoadAssetAtPath<Material>(assetPaths[index]);
                 
@@ -55,7 +55,7 @@ public static class MaterialShaderDetect
         {
             var result = new Dictionary<string, string>
             {
-                {"错误信息", "材质球引用了 Lightweight Render Pipeline 着色器"},
+                {"错误名称", "材质球引用了 Lightweight Render Pipeline 着色器"},
                 {"资源路径", path},
                 {"错误等级", "Error"},
                 {"负责人", "傅佳亿"},

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using Kuroha.Tool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.Editor.EffectCheckTool.Report;
 using Kuroha.Util.Release;
@@ -45,16 +43,12 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
         /// <param name="effectCheckReportInfo"></param>
         private static void RepairReadWriteEnable(EffectCheckReportInfo effectCheckReportInfo)
         {
-            var assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(effectCheckReportInfo.asset));
-            if (ReferenceEquals(assetImporter, null) == false)
+            var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
+            if (ReferenceEquals(modelImporter, null) == false)
             {
-                var modelImporter = assetImporter as ModelImporter;
-                if (ReferenceEquals(modelImporter, null) == false)
-                {
-                    modelImporter.isReadable = false;
-                    EditorUtility.SetDirty(effectCheckReportInfo.asset);
-                    EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
-                }
+                modelImporter.isReadable = false;
+                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }
 
@@ -93,53 +87,13 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
         /// <param name="effectCheckReportInfo"></param>
         private static void RepairNormals(EffectCheckReportInfo effectCheckReportInfo)
         {
-            var fullPath = Path.GetFullPath(AssetDatabase.GetAssetPath(effectCheckReportInfo.asset));
-            var metaPath = $"{fullPath}.meta";
-            metaPath = metaPath.Replace("\\", "/");
-
-            var streamReader = new StreamReader(metaPath);
-            var newMeta = new List<string>();
-
-            var line = streamReader.ReadLine();
-            while (string.IsNullOrEmpty(line) == false)
+            var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
+            if (ReferenceEquals(modelImporter, null) == false)
             {
-                line = line.Replace("\n", "");
-
-                if (line.IndexOf("normalImportMode: 0", StringComparison.Ordinal) != -1)
-                {
-                    line = "    normalImportMode: 2";
-                }
-
-                if (line.IndexOf("tangentImportMode: 3", StringComparison.Ordinal) != -1)
-                {
-                    line = "    tangentImportMode: 2";
-                }
-
-                if (line.IndexOf("blendShapeNormalImportMode: 1", StringComparison.Ordinal) != -1)
-                {
-                    line = "    blendShapeNormalImportMode: 2";
-                }
-
-                newMeta.Add(line);
-                line = streamReader.ReadLine();
+                modelImporter.importNormals = ModelImporterNormals.None;
+                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
-
-            streamReader.Close();
-            File.Delete(metaPath);
-
-            var metaTempPath = $"{metaPath}.tmp";
-            var writer = new StreamWriter(metaTempPath);
-            foreach (var each in newMeta)
-            {
-                writer.WriteLine(each);
-            }
-
-            writer.Close();
-
-            File.Copy(metaTempPath, metaPath);
-            File.Delete(metaTempPath);
-            EditorUtility.SetDirty(effectCheckReportInfo.asset);
-            EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
         }
     }
 }

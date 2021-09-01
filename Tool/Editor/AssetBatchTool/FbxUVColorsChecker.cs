@@ -2,19 +2,118 @@
 using System.IO;
 using System.Linq;
 using Kuroha.GUI.Editor;
+using Kuroha.Tool.Editor.AssetBatchTool;
 using Kuroha.Util.Release;
 using UnityEditor;
 using UnityEngine;
 
 // 检测特定路径下 fbx 模型文件的 mesh 网格中的 uv2 uv3 uv4 colors 信息
-public static class FbxUVDetect
+public static class FbxUVColorsChecker
 {
-    private const string FOLDER_PARTICLE = "Assets/Scenes/Models/CombatIsland/Building";
+    /// <summary>
+    /// 待检测文件夹
+    /// </summary>
+    private static string folderPath;
+        
+    /// <summary>
+    /// 折叠框
+    /// </summary>
+    private static bool foldout = true;
+        
+    /// <summary>
+    /// 全局默认 margin
+    /// </summary>
+    private const float UI_DEFAULT_MARGIN = 5;
+
+    /// <summary>
+    /// 全局按钮的宽度
+    /// </summary>
+    private const float UI_BUTTON_WIDTH = 120;
+        
+    /// <summary>
+    /// 全局按钮的高度
+    /// </summary>
+    private const float UI_BUTTON_HEIGHT = 25;
+
+    private static bool uv2;
+    private static bool uv3;
+    private static bool uv4;
+    private static bool colors;
+    
+    /// <summary>
+    /// 绘制界面
+    /// </summary>
+    public static void OnGUI()
+    {
+        GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+
+        foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.FbxUVColorsChecker], true);
+
+        if (foldout)
+        {
+            GUILayout.Space(UI_DEFAULT_MARGIN);
+            
+            GUILayout.BeginVertical("Box");
+            {
+                EditorGUILayout.LabelField("1. 选择检测路径");
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.BeginVertical(GUILayout.Width(UI_BUTTON_WIDTH + 60));
+                    {
+                        GUILayout.BeginHorizontal("Box");
+                        {
+                            if (GUILayout.Button("Select Folder", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                            {
+                                folderPath = EditorUtility.OpenFolderPanel("Select File", folderPath, "Art");
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    
+                        GUILayout.Space(UI_DEFAULT_MARGIN);
+
+                        GUILayout.Label("2. 选择允许存在的属性. (勾选: 允许)");
+                        uv2 = EditorGUILayout.ToggleLeft("UV2", uv2);
+                        uv3 = EditorGUILayout.ToggleLeft("UV3", uv3);
+                        uv4 = EditorGUILayout.ToggleLeft("UV4", uv4);
+                        colors = EditorGUILayout.ToggleLeft("Colors", colors);
+                        
+                        
+                        
+                        
+                        
+                        GUILayout.Label("2. 点击按钮, 执行删除.");
+                        GUILayout.BeginHorizontal("Box");
+                        {
+                            if (GUILayout.Button("Delete Assets", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                            {
+                                //AssetUtil.DeleteAsset(ref filePath);
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    GUILayout.EndVertical();
+
+                    GUILayout.BeginVertical();
+                    GUILayout.Space(UI_DEFAULT_MARGIN);
+                    // if (string.IsNullOrEmpty(filePath))
+                    // {
+                    //     filePath = "请选择文件...";
+                    // }
+                    // GUILayout.Label(filePath, "WordWrapLabel", GUILayout.Width(200));
+                    GUILayout.EndVertical();
+                }
+                
+                GUILayout.EndHorizontal();
+            }
+                
+            GUILayout.EndVertical();
+        }
+    }
     
     public static void Detect()
     {
         // 获取相对目录下所有的预制体
-        var guids = AssetDatabase.FindAssets("t:Model", new[] {FOLDER_PARTICLE});
+        var guids = AssetDatabase.FindAssets("t:Model", new[] {"FOLDER_PARTICLE"});
         var assetPaths = new List<string>(guids.Select(AssetDatabase.GUIDToAssetPath));
 
         #region 剥离路径和文件名并打印出来
@@ -47,7 +146,7 @@ public static class FbxUVDetect
         
         for (var i = 0; i<allFBXPath.Count; i++)
         {
-            if (ProgressBar.DisplayProgressBarCancel($"修复: {allFBXName[i]}", $"{i + 1} / {allFBXPath.Count}", i + 1, allFBXPath.Count))
+            if (ProgressBar.DisplayProgressBarCancel($"模型 UV 信息分析工具: {allFBXName[i]}", $"分析中: {i + 1} / {allFBXPath.Count}", i + 1, allFBXPath.Count))
             {
                 DebugUtil.Log($"一共检测出 {fixedCountUV2} 个 UV2");
                 DebugUtil.Log($"一共检测出 {fixedCountUV3} 个 UV3");

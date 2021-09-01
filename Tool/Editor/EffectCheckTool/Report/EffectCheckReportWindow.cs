@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Kuroha.Tool.Editor.EffectCheckTool.ItemSetView;
-using Kuroha.Util.Release;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,7 +30,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         /// <summary>
         /// 全局按钮的宽度
         /// </summary>
-        private const float UI_BUTTON_WIDTH = 120;
+        private const float UI_BUTTON_WIDTH = 100;
 
         /// <summary>
         /// 全局按钮的高度
@@ -40,9 +38,9 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         private const float UI_BUTTON_HEIGHT = 25;
 
         /// <summary>
-        /// [GUI] 分页管理器: 当前页索引
+        /// [GUI] 分页管理器: 当前页
         /// </summary>
-        private int curPageIndex;
+        private int curPage = 1;
 
         /// <summary>
         /// [GUI] 分页管理器: 当前页中数据的开始索引
@@ -120,11 +118,12 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
 
             #region 一键修复
 
-            if (GUILayout.Button("一键修复", GUILayout.Width(UI_BUTTON_WIDTH),
-                GUILayout.Height(UI_BUTTON_HEIGHT)))
+            UnityEngine.GUI.enabled = CanRepairCount(EffectCheckReport.reportInfos) > 0;
+            if (GUILayout.Button("一键修复", GUILayout.Width(UI_BUTTON_WIDTH), GUILayout.Height(UI_BUTTON_HEIGHT)))
             {
                 EffectCheckReport.AllRepair();
             }
+            UnityEngine.GUI.enabled = true;
 
             #endregion
 
@@ -132,7 +131,8 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
 
             #region 全部问题列表 分页显示
 
-            OnGUI_PageManager();
+            Kuroha.GUI.Editor.PageManager.Pager(EffectCheckReport.reportInfos.Count, COUNT_PER_PAGE,
+                ref curPage, out indexBegin, out indexEnd);
             
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(position.height));
             {
@@ -151,6 +151,23 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
             GUILayout.EndScrollView();
 
             #endregion
+        }
+
+        /// <summary>
+        /// 计算得出可以自动修复的问题的数量
+        /// </summary>
+        /// <returns></returns>
+        private int CanRepairCount(in List<EffectCheckReportInfo> reportInfos)
+        {
+            var count = 0;
+            foreach (var reportInfo in reportInfos)
+            {
+                if (EffectCheckReport.RepairOrSelect(reportInfo.effectCheckReportType)) {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -181,6 +198,8 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                     if (GUILayout.Button("修复", GUILayout.Width(UI_BUTTON_WIDTH / 2)))
                     {
                         EffectCheckReport.Repair(effectCheckReportInfo);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
                     }
                 }
 
@@ -189,84 +208,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                     EffectCheckReport.Ping(effectCheckReportInfo);
                 }
             }
-        }
-
-        /// <summary>
-        /// 分页管理器
-        /// </summary>
-        private void OnGUI_PageManager()
-        {
-            var count = EffectCheckReport.reportInfos.Count;
-
-            pageCount = count / COUNT_PER_PAGE;
-            if (count % COUNT_PER_PAGE != 0)
-            {
-                pageCount++;
-            }
-
-            if (curPageIndex < 0)
-            {
-                curPageIndex = 0;
-            }
-
-            if (curPageIndex > pageCount - 1)
-            {
-                curPageIndex = pageCount - 1;
-            }
-
-            indexBegin = curPageIndex * COUNT_PER_PAGE;
-
-            if (curPageIndex + 1 < pageCount)
-            {
-                indexEnd = indexBegin + COUNT_PER_PAGE - 1;
-            }
-            else
-            {
-                var remainder = count % COUNT_PER_PAGE;
-                indexEnd = remainder == 0
-                    ? indexBegin + COUNT_PER_PAGE - 1
-                    : indexBegin + remainder - 1;
-            }
-
-            GUILayout.BeginHorizontal();
-            UnityEngine.GUI.enabled = curPageIndex > 0;
-            if (GUILayout.Button("首页", GUILayout.Width(UI_BUTTON_WIDTH), GUILayout.Height(UI_BUTTON_HEIGHT)))
-            {
-                curPageIndex = 0;
-            }
-
-            if (GUILayout.Button("上一页", GUILayout.Width(UI_BUTTON_WIDTH), GUILayout.Height(UI_BUTTON_HEIGHT)))
-            {
-                curPageIndex--;
-                if (curPageIndex < 0)
-                {
-                    curPageIndex = 0;
-                }
-            }
-
-            UnityEngine.GUI.enabled = curPageIndex < pageCount - 1;
-            if (GUILayout.Button("下一页", GUILayout.Width(UI_BUTTON_WIDTH),
-                GUILayout.Height(UI_BUTTON_HEIGHT)))
-            {
-                curPageIndex++;
-                if (curPageIndex > pageCount - 1)
-                {
-                    curPageIndex = pageCount - 1;
-                }
-            }
-
-            if (GUILayout.Button("末页", GUILayout.Width(UI_BUTTON_WIDTH),
-                GUILayout.Height(UI_BUTTON_HEIGHT)))
-            {
-                curPageIndex = pageCount - 1;
-            }
-
-            GUILayout.Space(2 * UI_DEFAULT_MARGIN);
-            GUILayout.Label(pageCount > 0 ? $"第 {curPageIndex + 1} 页 / 共 {pageCount} 页" : "无数据",
-                GUILayout.Height(UI_BUTTON_HEIGHT));
-
-            UnityEngine.GUI.enabled = true;
-            GUILayout.EndHorizontal();
         }
     }
 }

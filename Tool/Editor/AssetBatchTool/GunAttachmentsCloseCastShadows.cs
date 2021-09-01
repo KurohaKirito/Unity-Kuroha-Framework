@@ -89,7 +89,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             var files = direction.GetFiles("*", SearchOption.AllDirectories);
             for (var index = 0; index < files.Length; index++)
             {
-                if (ProgressBar.DisplayProgressBarCancel("枪械部件阴影投射自动修复中", $"{index + 1}/{files.Length}", index + 1, files.Length))
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"枪械部件阴影投射自动修复中: {index + 1}/{files.Length}", index + 1, files.Length))
                 {
                     return;
                 }

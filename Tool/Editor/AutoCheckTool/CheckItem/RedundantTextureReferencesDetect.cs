@@ -33,14 +33,14 @@ public static class RedundantTextureReferencesDetect
         var materialCount = materials.Count;
         for (var index = 0; index < materialCount; index++)
         {
-            ProgressBar.DisplayProgressBar("检测中", $"{index + 1}/{materialCount}", index + 1, materialCount);
+            ProgressBar.DisplayProgressBar("材质球冗余纹理检测工具", $"材质球检测中: {index + 1}/{materialCount}", index + 1, materialCount);
 
             var material = materials[index];
             if (RedundantTextureReferencesCleaner.Detect(material, false))
             {
                 var result = new Dictionary<string, string>
                 {
-                    {"错误信息", "材质球中存在冗余的纹理引用"},
+                    {"错误名称", "材质球中存在冗余的纹理引用"},
                     {"资源路径", AssetDatabase.GetAssetPath(material)},
                     {"错误等级", "Error"},
                     {"负责人", "傅佳亿"},

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Kuroha.Tool.Editor.EffectCheckTool.GUI;
 using Kuroha.Util.Release;
-using UnityEditor;
 
 public static class EffectDetect
 {
@@ -42,7 +41,7 @@ public static class EffectDetect
             
             var result = new Dictionary<string, string>
             {
-                {"错误信息", errorTitle},
+                {"错误名称", errorTitle},
                 {"资源路径", reportInfo.assetPath},
                 {"错误等级", "Error"},
                 {"负责人", "傅佳亿"},
