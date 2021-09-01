@@ -51,10 +51,10 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
         /// <summary>
         /// 资源检测工具
         /// </summary>
-        #if UNITY_2019_2_OR_NEWER == false
-        [MenuItem("Funny/资源检测工具/Asset Check Tool")]
-        #else
+        #if Kuroha
         [MenuItem("Kuroha/AssetTool")]
+        #else
+        [MenuItem("Funny/资源检测工具/Asset Check Tool")]
         #endif
         public static void Open()
         {
@@ -70,10 +70,10 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
         {
             toolBarNames = new[] {"特效检测", "时装检测工具", "模型统计分析", "贴图统计分析", "网格统计分析", "批处理"};
             
-            #if UNITY_2019_2_OR_NEWER == false
-                toolbarData = new Toolbar.ToolbarData(800, 16, toolBarNames);
+            #if UNITY_2019_3_OR_NEWER
+            toolbarData = new Toolbar.ToolbarData(800, 320, toolBarNames);
             #else
-                toolbarData = new Toolbar.ToolbarData(800, 320, toolBarNames);
+            toolbarData = new Toolbar.ToolbarData(800, 16, toolBarNames);
             #endif
             
             titleStyle = new GUIStyle

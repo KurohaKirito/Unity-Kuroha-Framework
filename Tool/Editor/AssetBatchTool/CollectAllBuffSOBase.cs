@@ -1,4 +1,5 @@
-﻿#if UNITY_2019_2_OR_NEWER == false
+﻿#if Kuroha == false
+
 using System.Collections.Generic;
 using System.IO;
 using System.Text;

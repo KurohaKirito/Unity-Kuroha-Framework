@@ -27,7 +27,7 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
         /// </summary>
         public static Rect windowCurrentRect;
 
-        #if UNITY_2019_3_OR_NEWER
+        #if Kuroha
         [MenuItem("Kuroha/AssetSearchTool")]
         #endif
         private static void Menu()

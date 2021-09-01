@@ -1,12 +1,8 @@
-﻿#if UNITY_2019_2_OR_NEWER == false
+﻿#if UNITY_2019_3_OR_NEWER == false
 using UnityEngine;
-#endif
 
-// ReSharper disable once CheckNamespace
 public static class UnityUtil
 {
-    #if UNITY_2019_2_OR_NEWER == false
-    
     public static bool TryGetComponent<T>(this Component source, out T component) where T : Component
     {
         return (component = source.GetComponent<T>()) != null;
@@ -21,6 +17,5 @@ public static class UnityUtil
     {
         return (component = source.GetComponent<T>()) != null;
     }
-    
-    #endif
 }
+#endif

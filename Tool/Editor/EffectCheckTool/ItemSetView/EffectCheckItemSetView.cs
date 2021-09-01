@@ -14,7 +14,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
         /// <summary>
         /// 配置文件的路径
         /// </summary>
-        #if UNITY_2019_3_OR_NEWER
+        #if Kuroha
         private static string ConfigFilePath => $"{Application.dataPath}/Kuroha/Config/EffectToolConfig.txt";
         #else
         private static string ConfigFilePath => $"{Application.dataPath}/Art/Effects/EffectToolConfig.txt";

@@ -1,4 +1,4 @@
-﻿#if UNITY_2019_3_OR_NEWER
+﻿#if Kuroha
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

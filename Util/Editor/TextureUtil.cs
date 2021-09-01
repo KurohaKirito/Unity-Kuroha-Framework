@@ -178,10 +178,10 @@ namespace Kuroha.Util.Editor
             assetPaths = new List<string>();
 
             // 获取全部的 Renderer
-            #if UNITY_2019_2_OR_NEWER == false
-                var renderers = UnityEngine.Object.FindObjectsOfType<Renderer>();
+            #if UNITY_2019_3_OR_NEWER
+            var renderers = UnityEngine.Object.FindObjectsOfType<Renderer>(true);
             #else
-                var renderers = UnityEngine.Object.FindObjectsOfType<Renderer>(true);
+            var renderers = UnityEngine.Object.FindObjectsOfType<Renderer>();
             #endif
             
             if (renderers.IsNotNullAndEmpty())

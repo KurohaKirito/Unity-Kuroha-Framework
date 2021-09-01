@@ -52,8 +52,8 @@ public static class AutoCheckTool
     /// <param name="results"></param>
     public static void ExportResult(in List<Dictionary<string,string>> results)
     {
-        #if UNITY_2019_2_OR_NEWER == false
-            
+        #if Kuroha == false
+
         // 将检测结果序列化为 json 文本
         var jsonList = new List<string>();
         foreach (var result in results)

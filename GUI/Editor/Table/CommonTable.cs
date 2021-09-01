@@ -65,6 +65,7 @@ namespace Kuroha.GUI.Editor.Table
             FilterFunction = onFilterFunction;
             ExportFunction = onExportFunction;
             SelectFunction = onSelectFunction;
+            // ReSharper disable once CoVariantArrayConversion
             MultiColumnHeaderState = new MultiColumnHeaderState(columns);
         }
 

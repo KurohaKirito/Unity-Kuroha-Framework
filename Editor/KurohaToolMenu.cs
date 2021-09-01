@@ -1,5 +1,4 @@
-﻿#if UNITY_2019_3_OR_NEWER
-
+﻿#if Kuroha
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.AssetCheckTool;
 using Kuroha.Tool.Editor.AssetSearchTool.GUI;

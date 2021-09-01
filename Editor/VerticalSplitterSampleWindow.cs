@@ -1,5 +1,4 @@
-﻿#if UNITY_2019_3_OR_NEWER
-
+﻿#if Kuroha
 using Kuroha.GUI.Editor.Splitter;
 using UnityEditor;
 using UnityEngine;
@@ -39,5 +38,4 @@ namespace Kuroha.Editor
         }
     }
 }
-
 #endif
