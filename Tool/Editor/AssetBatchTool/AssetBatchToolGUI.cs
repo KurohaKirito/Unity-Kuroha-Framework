@@ -1,5 +1,6 @@
 ﻿using System;
 using Kuroha.GUI.Editor.Splitter;
+using Kuroha.Util.Release;
 using UnityEditor;
 using UnityEngine;
 
@@ -155,8 +156,13 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     case BatchType.CheckSubEmitterInAllScene:
                         CheckSubEmitterInAllScene.OnGUI();
                         break;
+
+                    case BatchType.FbxUVColorsChecker:
+                        FbxUVColorsChecker.OnGUI();
+                        break;
                     
                     default:
+                        DebugUtil.LogError("忘记注册 OnGUI 事件了!");
                         throw new ArgumentOutOfRangeException();
                 }
             }

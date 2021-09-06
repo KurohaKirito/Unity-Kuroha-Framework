@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Kuroha.GUI.Editor;
+using Kuroha.Util.Editor;
 using Kuroha.Util.Release;
 using UnityEditor;
 using UnityEngine;
@@ -48,15 +49,16 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.FbxUVColorsChecker], true);
+            var title = AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.FbxUVColorsChecker];
+            foldout = EditorGUILayout.Foldout(foldout, title, true);
 
             if (foldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
-            
                 GUILayout.BeginVertical("Box");
                 {
                     EditorGUILayout.LabelField("1. 选择检测路径");
+                
                     GUILayout.BeginHorizontal();
                     {
                         GUILayout.BeginVertical(GUILayout.Width(UI_BUTTON_WIDTH + 60));
@@ -65,28 +67,27 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                             {
                                 if (GUILayout.Button("Select Folder", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                                 {
-                                    folderPath = EditorUtility.OpenFolderPanel("Select File", folderPath, "Art");
+                                    folderPath = EditorUtility.OpenFolderPanel("Select Folder", folderPath, "Art");
                                 }
                             }
                             GUILayout.EndHorizontal();
-                    
+                        
                             GUILayout.Space(UI_DEFAULT_MARGIN);
-
+                        
                             GUILayout.Label("2. 选择允许存在的属性. (勾选: 允许)");
                             uv2 = EditorGUILayout.ToggleLeft("UV2", uv2);
                             uv3 = EditorGUILayout.ToggleLeft("UV3", uv3);
                             uv4 = EditorGUILayout.ToggleLeft("UV4", uv4);
                             colors = EditorGUILayout.ToggleLeft("Colors", colors);
-                        
-                        
-                        
-                        
-                        
-                            GUILayout.Label("2. 点击按钮, 执行删除.");
+                            
+                            GUILayout.Space(UI_DEFAULT_MARGIN);
+                            
+                            GUILayout.Label("3. 点击按钮, 开始检测");
                             GUILayout.BeginHorizontal("Box");
                             {
-                                if (GUILayout.Button("Delete Assets", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                                if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                                 {
+                                    DebugUtil.Log("开始检测!");
                                     //AssetUtil.DeleteAsset(ref filePath);
                                 }
                             }
@@ -96,11 +97,11 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
 
                         GUILayout.BeginVertical();
                         GUILayout.Space(UI_DEFAULT_MARGIN);
-                        // if (string.IsNullOrEmpty(filePath))
-                        // {
-                        //     filePath = "请选择文件...";
-                        // }
-                        // GUILayout.Label(filePath, "WordWrapLabel", GUILayout.Width(200));
+                        if (string.IsNullOrEmpty(folderPath))
+                        {
+                            folderPath = "请选择待检测文件夹...";
+                        }
+                        GUILayout.Label(folderPath, "WordWrapLabel", GUILayout.Width(200));
                         GUILayout.EndVertical();
                     }
                 
@@ -111,10 +112,14 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             }
         }
     
+        /// <summary>
+        /// 执行检测
+        /// </summary>
         public static void Detect()
         {
-            // 获取相对目录下所有的预制体
-            var guids = AssetDatabase.FindAssets("t:Model", new[] {"FOLDER_PARTICLE"});
+            // 获取目录下所有的模型
+            var assetPath = PathUtil.GetAssetPath(folderPath);
+            var guids = AssetDatabase.FindAssets("t:Model", new[] {assetPath});
             var assetPaths = new List<string>(guids.Select(AssetDatabase.GUIDToAssetPath));
 
             #region 剥离路径和文件名并打印出来
@@ -130,7 +135,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 allFBXName.Add(fileName);
             }
 
-            File.WriteAllLines(@"C:\printVirtual.md", allFBXName);
+            File.WriteAllLines(@"C:\PrintVirtual.md", allFBXName);
 
             #endregion
 
@@ -144,8 +149,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             var result = new List<string>();
 
             const string PRE = @"C:\Workspace\Sausage\";
-        
-            for (var i = 0; i<allFBXPath.Count; i++)
+
+            for (var i = 0; i < allFBXPath.Count; i++)
             {
                 if (ProgressBar.DisplayProgressBarCancel($"模型 UV 信息分析工具: {allFBXName[i]}", $"分析中: {i + 1} / {allFBXPath.Count}", i + 1, allFBXPath.Count))
                 {
@@ -237,7 +242,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             DebugUtil.Log($"一共检测出 {fixedCountColors} 个 Colors");
 
             // 输出结果到文件中
-            File.WriteAllLines(@"C:\printCollider.md", result);
+            File.WriteAllLines(@"C:\PrintCollider.md", result);
         }
     }
 }
