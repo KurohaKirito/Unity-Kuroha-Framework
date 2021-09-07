@@ -148,17 +148,75 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// <param name="report">检查结果</param>
         private static void CheckSize(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
-            var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+            // 参数标准
             var parameter = item.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
             var widthIndex = Convert.ToInt32(parameter[0]);
             var heightIndex = Convert.ToInt32(parameter[1]);
             var width = Convert.ToInt32(sizeOptions[widthIndex]);
             var height = Convert.ToInt32(sizeOptions[heightIndex]);
+            
+            // 读取导入设置
+            var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
 
-            if (asset.width > width || asset.height > height)
+            // 原始尺寸
+            TextureUtil.GetTextureOriginalSize(textureImporter, out var originWidth, out var originHeight);
+            if (ReferenceEquals(textureImporter, null) == false)
             {
-                var content = $"文件尺寸不规范, 路径为: {assetInfo.FullName} 当前大小: ({asset.width}X{asset.height}) >>> 规范大小: ({width}X{height})";
-                report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                if (textureImporter.textureShape == TextureImporterShape.TextureCube) 
+                {
+                    originWidth /= 2;
+                }
+                
+                if (originWidth > width || originHeight > height)
+                {
+                    #region Android
+
+                    if (TextureUtil.GetTextureSizeAndroid(textureImporter, out var maxSizeAndroid))
+                    {
+                        if (maxSizeAndroid > width || maxSizeAndroid > height)
+                        {
+                            var content = $"Android: 纹理尺寸过大, 路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Android 导入设置: {maxSizeAndroid} >>> 规范: ({width}X{height})";
+                            var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                        }
+                    }
+                    else
+                    {
+                        TextureUtil.GetTextureSizeDefault(textureImporter, out var maxSizeDefault);
+                        if (maxSizeDefault > width || maxSizeDefault > height)
+                        {
+                            var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                            var content = $"未启用 Android 导入, 资源路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {maxSizeDefault} >>> 规范: ({width}X{height})";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                        }
+                    }
+
+                    #endregion
+
+                    #region iPhone
+
+                    if (TextureUtil.GetTextureSizeIPhone(textureImporter, out var maxSizeIPhone))
+                    {
+                        if (maxSizeIPhone > width || maxSizeIPhone > height)
+                        {
+                            var content = $"iPhone: 纹理尺寸过大, 路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 iPhone 导入设置: {maxSizeIPhone} >>> 规范: ({width}X{height})";
+                            var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                        }
+                    }
+                    else
+                    {
+                        TextureUtil.GetTextureSizeDefault(textureImporter, out var maxSizeDefault);
+                        if (maxSizeDefault > width || maxSizeDefault > height)
+                        {
+                            var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                            var content = $"未启用 iPhone 导入, 资源路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {maxSizeDefault} >>> 规范: ({width}X{height})";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                        }
+                    }
+
+                    #endregion 
+                }
             }
         }
 

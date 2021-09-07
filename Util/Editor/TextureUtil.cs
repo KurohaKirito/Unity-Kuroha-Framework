@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Kuroha.GUI.Editor;
 using Kuroha.Util.Release;
@@ -164,6 +165,63 @@ namespace Kuroha.Util.Editor
 
             RenderTexture.ReleaseTemporary(renderTexture);
             return true;
+        }
+        
+        /// <summary>
+        /// 获取 Unity 纹理的原始尺寸
+        /// </summary>
+        /// <param name="textureImporter"></param>
+        /// <param name="originWidth"></param>
+        /// <param name="originHeight"></param>
+        public static void GetTextureOriginalSize(TextureImporter textureImporter, out int originWidth, out int originHeight)
+        {
+            if (textureImporter == null)
+            {
+                originWidth = 0;
+                originHeight = 0;
+                return;
+            }
+
+            var args = new object[] { 0, 0 };
+            var method = typeof(TextureImporter).GetMethod("GetWidthAndHeight", BindingFlags.NonPublic | BindingFlags.Instance);
+            method?.Invoke(textureImporter, args);
+
+            originWidth = (int) args[0];
+            originHeight = (int) args[1];
+        }
+        
+        /// <summary>
+        /// 获取纹理导入设置的最大尺寸 (Default)
+        /// </summary>
+        /// <param name="textureImporter">纹理导入器</param>
+        /// <param name="maxSize">返回: 最大尺寸</param>
+        public static void GetTextureSizeDefault(TextureImporter textureImporter, out int maxSize)
+        {
+            maxSize = textureImporter.GetDefaultPlatformTextureSettings().maxTextureSize;
+        }
+
+        /// <summary>
+        /// 获取纹理导入设置的最大尺寸 (Android)
+        /// </summary>
+        /// <param name="textureImporter">纹理导入器</param>
+        /// <param name="maxSize">返回: 最大尺寸</param>
+        /// <returns>是否存在 Android 平台覆写</returns>
+        public static bool GetTextureSizeAndroid(TextureImporter textureImporter, out int maxSize)
+        {
+            // 参数名可选: "Standalone", "Web", "iPhone", "Android", "WebGL", "Windows Store Apps", "PS4", "XboxOne", "Nintendo Switch", "tvOS".
+            return textureImporter.GetPlatformTextureSettings("Android", out maxSize, out _);
+        }
+        
+        /// <summary>
+        /// 获取纹理导入设置的最大尺寸 (iPhone)
+        /// </summary>
+        /// <param name="textureImporter">纹理导入器</param>
+        /// <param name="maxSize">返回: 最大尺寸</param>
+        /// <returns>是否存在 iPhone 平台覆写</returns>
+        public static bool GetTextureSizeIPhone(TextureImporter textureImporter, out int maxSize)
+        {
+            // 参数名可选: "Standalone", "Web", "iPhone", "Android", "WebGL", "Windows Store Apps", "PS4", "XboxOne", "Nintendo Switch", "tvOS".
+            return textureImporter.GetPlatformTextureSettings("iPhone", out maxSize, out _);
         }
 
         /// <summary>
