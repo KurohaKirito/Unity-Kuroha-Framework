@@ -18,6 +18,28 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         }
         
         /// <summary>
+        /// 错误类型
+        /// </summary>
+        public enum ErrorType {
+            /// <summary>
+            /// 本应具有引用的资源却无引用
+            /// </summary>
+            NoneReference,
+            /// <summary>
+            /// 本应无引用的资源却有引用
+            /// </summary>
+            HadReference
+        }
+
+        /// <summary>
+        /// 错误信息
+        /// </summary>
+        public struct ErrorInfo {
+            public ErrorType type;
+            public string assetPath;
+        }
+        
+        /// <summary>
         /// 检测的路径
         /// </summary>
         private static string unusedDetectPath;
@@ -51,15 +73,6 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// 全局输入框的宽度
         /// </summary>
         private const float UI_INPUT_AREA_WIDTH = 400;
-        
-        /// <summary>
-        /// 配置文件的路径
-        /// </summary>
-        #if Kuroha
-        private static string WhiteList => $"{Application.dataPath}/Kuroha/Config/UnusedAssetWhiteList.txt";
-        #else
-        private static string WhiteList => $"{Application.dataPath}/Art/Effects/UnusedAssetWhiteList.txt";
-        #endif
 
         /// <summary>
         /// 绘制界面
@@ -136,11 +149,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 检测
         /// </summary>
-        public static List<string> Detect(UnusedAssetType detectType, string detectPath, bool isAutoCheck)
+        public static List<ErrorInfo> Detect(UnusedAssetType detectType, string detectPath, bool isAutoCheck)
         {
-            // 白名单
-            var whiteList = File.ReadAllLines(WhiteList);
-            
             // 获取目录下全部指定类型的资源的 guid
             var enumStr = Enum.GetName(typeof(UnusedAssetType), detectType);
             var typeStr = $"t:{enumStr}";
@@ -156,7 +166,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             // 整理结果
             var counter = 0;
             var resultExport = new List<string>();
-            var resultAuto = new List<string>();
+            var resultAuto = new List<ErrorInfo>();
             
             foreach (var key in references.Keys)
             {
@@ -169,28 +179,29 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 var referenceCount = references[key].Count;
                 // 获取资源的路径
                 var assetPath = AssetDatabase.GUIDToAssetPath(key);
-                // 统计全部的引用情况
-                resultExport.Add ($"资源 {assetPath} 被引用 {references[key].Count} 次!");
 
-                // 统计全部没有被引用的资源
-                if (referenceCount <= 0)
+                // 问题资源 1: 不在 "特定文件夹" 内, 但却无引用
+                if (assetPath.IndexOf("editor", StringComparison.OrdinalIgnoreCase) < 0 && referenceCount <= 0) {
+                    resultAuto.Add(new ErrorInfo {
+                        type = ErrorType.NoneReference,
+                        assetPath = assetPath
+                    });
+                    resultExport.Add ($"错误: 资源 {assetPath} 被引用 {references[key].Count} 次!");
+                }
+                
+                // 问题资源 2: 明明放在 "特定文件夹" 内, 但却有引用
+                else if (assetPath.IndexOf("editor", StringComparison.OrdinalIgnoreCase) >= 0 && referenceCount > 0)
                 {
-                    var isHad = false;
-                    foreach (var white in whiteList)
-                    {
-                        // Assets/Art/Effects/Materials/Common/Noise/Noise_11_uv.mat
-                        var whiteFile = assetPath.Replace('\\', '/');
-                        if (white.Equals(whiteFile))
-                        {
-                            isHad = true;
-                            break;
-                        }
-                    }
+                    resultAuto.Add(new ErrorInfo {
+                        type = ErrorType.HadReference,
+                        assetPath = assetPath
+                    });
+                    resultExport.Add ($"错误: 资源 {assetPath} 被引用 {references[key].Count} 次!");
+                }
 
-                    if (isHad == false)
-                    {
-                        resultAuto.Add(assetPath);
-                    }
+                // 正确资源
+                else {
+                    resultExport.Add ($"正确: 资源 {assetPath} 被引用 {references[key].Count} 次!");
                 }
             }
             

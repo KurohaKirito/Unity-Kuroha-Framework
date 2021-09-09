@@ -21,23 +21,37 @@ public static class UnusedTextureDetect
         var results = new List<Dictionary<string, string>>();
         
         // 执行检测
-        var paths = UnusedAssetCleaner.Detect(
+        var errorInfos = UnusedAssetCleaner.Detect(
             UnusedAssetCleaner.UnusedAssetType.Texture,
             "Assets/Art/Effects/Textures",
             true);
     
-        foreach (var path in paths)
+        foreach (var info in errorInfos)
         {
-            var result = new Dictionary<string, string> 
+            if (info.type == UnusedAssetCleaner.ErrorType.NoneReference)
             {
-                {"错误名称", "无引用的纹理资源"},
-                {"资源路径", path},
-                {"错误等级", "Error"},
-                {"负责人", "傅佳亿"},
-                {"备注", "可使用批量删除工具进行批量删除, 删除前请仔细确认."}
-            };
-
-            results.Add(result);
+                var result = new Dictionary<string, string>
+                {
+                    {"错误名称", "未放置在无引用文件夹下的无引用贴图资源"},
+                    {"资源路径", info.assetPath},
+                    {"错误等级", "Error"},
+                    {"负责人", "傅佳亿"},
+                    {"备注", "请确认是否需要移动到无引用文件夹"}
+                };
+                results.Add(result);
+            }
+            else if (info.type == UnusedAssetCleaner.ErrorType.HadReference)
+            {
+                var result = new Dictionary<string, string>
+                {
+                    {"错误名称", "放置在无引用文件夹下的有引用贴图资源"},
+                    {"资源路径", info.assetPath},
+                    {"错误等级", "Error"},
+                    {"负责人", "傅佳亿"},
+                    {"备注", "请确认是否需要移出无引用文件夹"}
+                };
+                results.Add(result);
+            }
         }
         
         if (isExportFile)
