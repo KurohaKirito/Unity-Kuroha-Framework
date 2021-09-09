@@ -40,35 +40,39 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
             if (itemData.path.StartsWith("Assets"))
             {
                 var fullPath = System.IO.Path.GetFullPath(itemData.path);
-                var direction = new DirectoryInfo(fullPath);
-                var files = direction.GetFiles("*", SearchOption.AllDirectories);
-                for (var index = 0; index < files.Length; index++)
+                if (Directory.Exists(fullPath))
                 {
-                    ProgressBar.DisplayProgressBar("特效检测工具", $"Mesh 排查中: {index + 1}/{files.Length}", index + 1, files.Length);
-                    if (files[index].Name.EndsWith(".meta"))
-                    {
-                        continue;
-                    }
-
-                    var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                    var pattern = itemData.writePathRegex;
-                    if (string.IsNullOrEmpty(pattern) == false)
-                    {
-                        var regex = new Regex(pattern);
-                        if (regex.IsMatch(assetPath))
+                    var direction = new DirectoryInfo(fullPath);
+                    var files = direction.GetFiles("*", SearchOption.AllDirectories);
+                    for (var index = 0; index < files.Length; index++)
+                    { 
+                        ProgressBar.DisplayProgressBar("特效检测工具", $"Mesh 排查中: {index + 1}/{files.Length}", index + 1, files.Length);
+                        if (files[index].Name.EndsWith(".meta"))
                         {
                             continue;
+                            
                         }
-                    }
-                    
-                    switch ((CheckOptions)itemData.checkType)
-                    {
-                        case CheckOptions.MeshUV:
-                            CheckSkinnedMeshRenderer(assetPath, files[index], itemData, ref reportInfos);
-                            CheckMeshFilter(assetPath, files[index], itemData, ref reportInfos);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+    
+                        var assetPath = PathUtil.GetAssetPath(files[index].FullName);
+                        var pattern = itemData.writePathRegex;
+                        if (string.IsNullOrEmpty(pattern) == false)
+                        { 
+                            var regex = new Regex(pattern);
+                            if (regex.IsMatch(assetPath))
+                            {
+                                continue;
+                            }
+                        }
+                        
+                        switch ((CheckOptions)itemData.checkType)
+                        {
+                            case CheckOptions.MeshUV:
+                                CheckSkinnedMeshRenderer(assetPath, files[index], itemData, ref reportInfos);
+                                CheckMeshFilter(assetPath, files[index], itemData, ref reportInfos);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
                 }
             }

@@ -50,36 +50,38 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
             if (itemData.path.StartsWith("Assets"))
             {
                 var fullPath = Path.GetFullPath(itemData.path);
-                var direction = new DirectoryInfo(fullPath);
-                var files = direction.GetFiles("*", SearchOption.AllDirectories);
-                
-                for (var index = 0; index < files.Length; index++)
+                if (Directory.Exists(fullPath))
                 {
-                    ProgressBar.DisplayProgressBar("特效检测工具", $"Animator 排查中: {index + 1}/{files.Length}", index + 1, files.Length);
-                    if (files[index].Name.EndsWith(".meta"))
+                    var direction = new DirectoryInfo(fullPath);
+                    var files = direction.GetFiles("*", SearchOption.AllDirectories);
+                    for (var index = 0; index < files.Length; index++)
                     {
-                        continue;
-                    }
-
-                    var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                    var pattern = itemData.writePathRegex;
-                    if (string.IsNullOrEmpty(pattern) == false)
-                    {
-                        var regex = new Regex(pattern);
-                        if (regex.IsMatch(assetPath))
+                        ProgressBar.DisplayProgressBar("特效检测工具", $"Animator 排查中: {index + 1}/{files.Length}", index + 1, files.Length);
+                        if (files[index].Name.EndsWith(".meta"))
                         {
                             continue;
                         }
-                    }
 
-                    switch ((CheckOptions)itemData.checkType)
-                    {
-                        case CheckOptions.CullMode:
-                            CheckCullingMode(assetPath, itemData, ref reportInfos);
-                            break;
+                        var assetPath = PathUtil.GetAssetPath(files[index].FullName);
+                        var pattern = itemData.writePathRegex;
+                        if (string.IsNullOrEmpty(pattern) == false)
+                        {
+                            var regex = new Regex(pattern);
+                            if (regex.IsMatch(assetPath))
+                            {
+                                continue;
+                            }
+                        }
 
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        switch ((CheckOptions)itemData.checkType)
+                        {
+                            case CheckOptions.CullMode:
+                                CheckCullingMode(assetPath, itemData, ref reportInfos);
+                                break;
+
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
                 }
             }

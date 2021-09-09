@@ -51,6 +51,15 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// 全局输入框的宽度
         /// </summary>
         private const float UI_INPUT_AREA_WIDTH = 400;
+        
+        /// <summary>
+        /// 配置文件的路径
+        /// </summary>
+        #if Kuroha
+        private static string WhiteList => $"{Application.dataPath}/Kuroha/Config/UnusedAssetWhiteList.txt";
+        #else
+        private static string WhiteList => $"{Application.dataPath}/Art/Effects/UnusedAssetWhiteList.txt";
+        #endif
 
         /// <summary>
         /// 绘制界面
@@ -129,6 +138,9 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// </summary>
         public static List<string> Detect(UnusedAssetType detectType, string detectPath, bool isAutoCheck)
         {
+            // 白名单
+            var whiteList = File.ReadAllLines(WhiteList);
+            
             // 获取目录下全部指定类型的资源的 guid
             var enumStr = Enum.GetName(typeof(UnusedAssetType), detectType);
             var typeStr = $"t:{enumStr}";
@@ -163,7 +175,22 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 // 统计全部没有被引用的资源
                 if (referenceCount <= 0)
                 {
-                    resultAuto.Add (assetPath);
+                    var isHad = false;
+                    foreach (var white in whiteList)
+                    {
+                        // Assets/Art/Effects/Materials/Common/Noise/Noise_11_uv.mat
+                        var whiteFile = assetPath.Replace('\\', '/');
+                        if (white.Equals(whiteFile))
+                        {
+                            isHad = true;
+                            break;
+                        }
+                    }
+
+                    if (isHad == false)
+                    {
+                        resultAuto.Add(assetPath);
+                    }
                 }
             }
             
