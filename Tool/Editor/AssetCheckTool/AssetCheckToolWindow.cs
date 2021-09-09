@@ -98,7 +98,9 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
 
             actions = new Action[] {
                 EffectCheckToolGUI.OnGUI,
-                FashionAnalysisGUI.OnGUI,
+                () => {
+                    FashionAnalysisGUI.OnGUI(this);
+                },
                 ModelAnalysisGUI.OnGUI,
                 TextureAnalysisGUI.OnGUI,
                 MeshAnalysisToolGUI.OnGUI,
@@ -106,6 +108,14 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
                     AssetBatchToolGUI.OnGUI(this);
                 }
             };
+        }
+
+        /// <summary>
+        /// 重置 ToolBar
+        /// </summary>
+        public void ResetToolBarIndex() {
+            toolBarIndex = 0;
+            Repaint();
         }
 
         /// <summary>

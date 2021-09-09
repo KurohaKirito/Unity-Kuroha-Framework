@@ -13,7 +13,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
     {
         private static bool isCollider;
         private static GameObject prefab;
-        private static bool isBirthIsland;
+        private static bool isDetectCurrentScene;
 
         private int resultTris;
         private int resultVerts;
@@ -29,11 +29,11 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// <summary>
         /// 打开窗口
         /// </summary>
-        public static void Open(bool collider, GameObject asset, bool birthIsland)
+        public static void Open(bool collider, GameObject asset, bool detectCurrentScene)
         {
             prefab = asset;
             isCollider = collider;
-            isBirthIsland = birthIsland;
+            isDetectCurrentScene = detectCurrentScene;
 
             var window = GetWindow<ModelAnalysisTableWindow>(true);
             window.minSize = new Vector2(1000, 600);
@@ -124,7 +124,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         {
             if (forceUpdate || table == null)
             {
-                if (prefab != null || isBirthIsland)
+                if (prefab != null || isDetectCurrentScene)
                 {
                     var dataList = InitRows(isCollider);
                     if (dataList != null)
@@ -151,7 +151,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
             var dataList = new List<ModelAnalysisData>();
             var meshCount = 0;
 
-            if (isBirthIsland)
+            if (isDetectCurrentScene)
             {
                 if (isDetectCollider)
                 {

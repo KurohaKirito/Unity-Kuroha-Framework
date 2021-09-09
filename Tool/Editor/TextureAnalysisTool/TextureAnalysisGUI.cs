@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace Kuroha.Tool.Editor.TextureAnalysisTool
@@ -32,6 +33,11 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
         /// 待检测目录
         /// </summary>
         private static string detectPath = "Art/Effects/Textures";
+        
+        /// <summary>
+        /// 待检测游戏物体
+        /// </summary>
+        private static GameObject detectGameObject;
 
         /// <summary>
         /// 检测类型
@@ -58,8 +64,9 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                 {
                     EditorGUILayout.LabelField("1. 当前支持两种检查类型");
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.LabelField("(1) Path:  \t 检查指定目录下的纹理, 目录必须是 Assets/ 的相对目录.");
-                    EditorGUILayout.LabelField("(2) Scene: \t 检查当前场景中的纹理.");
+                    EditorGUILayout.LabelField("(1) Path:        \t检查指定目录下的纹理, 目录必须是 Assets/ 的相对目录.");
+                    EditorGUILayout.LabelField("(2) Scene:       \t检查当前场景中所引用的纹理.");
+                    EditorGUILayout.LabelField("(3) Game Object: \t检查指定游戏物体中所引用的纹理.");
                     EditorGUI.indentLevel--;
                     
                     GUILayout.BeginVertical("Box");
@@ -67,14 +74,31 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                         detectType = (TextureAnalysisData.DetectType)EditorGUILayout.EnumPopup("选择检查类型", detectType, GUILayout.Width(240));
                     }
                     GUILayout.EndVertical();
-                    
-                    if (detectType == TextureAnalysisData.DetectType.Path)
-                    {
-                        GUILayout.BeginVertical("Box");
-                        {
-                            detectPath = EditorGUILayout.TextField("输入待检查目录: ", detectPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
-                        }
-                        GUILayout.EndVertical();
+
+                    switch (detectType) {
+                        case TextureAnalysisData.DetectType.Scene:
+                            break;
+                        case TextureAnalysisData.DetectType.Path:
+                            {
+                                GUILayout.BeginVertical("Box");
+                                {
+                                    detectPath = EditorGUILayout.TextField("输入待检查目录: ", detectPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                                }
+                                GUILayout.EndVertical();
+                            }
+                            break;
+                        case TextureAnalysisData.DetectType.GameObject:
+                            {
+                                GUILayout.BeginVertical("Box");
+                                {
+                                    detectGameObject = EditorGUILayout.ObjectField("选择检测的游戏物体: ", detectGameObject,
+                                        typeof(GameObject), true, GUILayout.Width(UI_INPUT_AREA_WIDTH)) as GameObject;
+                                }
+                                GUILayout.EndVertical();
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
 
                     GUILayout.Space(UI_DEFAULT_MARGIN);

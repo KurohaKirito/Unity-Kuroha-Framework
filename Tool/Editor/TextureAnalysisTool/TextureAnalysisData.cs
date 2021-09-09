@@ -15,7 +15,12 @@
             /// <summary>
             /// 检测指定路径
             /// </summary>
-            Path
+            Path,
+            
+            /// <summary>
+            /// 检测特定游戏物体及其所有子物体
+            /// </summary>
+            GameObject
         }
 
         public int id;
