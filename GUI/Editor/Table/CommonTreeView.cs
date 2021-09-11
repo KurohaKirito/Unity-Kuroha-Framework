@@ -49,8 +49,7 @@ namespace Kuroha.GUI.Editor.Table
 
         #endregion
 
-        public void OnExportGUI(Vector2 exportPosition, bool isDrawExport, float exportWidth, float filterHeight,
-            List<T> dataList)
+        public void OnExportGUI(Vector2 exportPosition, bool isDrawExport, float exportWidth, float filterHeight, List<T> dataList)
         {
             const float EXPORT_OFFSET = -1;
 

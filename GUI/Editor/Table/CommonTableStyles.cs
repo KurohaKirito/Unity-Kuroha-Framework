@@ -16,8 +16,7 @@ namespace Kuroha.GUI.Editor.Table
         public static readonly GUIContent filterDisable = new GUIContent("Disable All|Disables all filters.");
         public static readonly GUIContent filterInvert = new GUIContent("Invert Result|Inverts the filtered results.");
 
-        public static readonly GUIContent filterSelection =
-            new GUIContent("Lock Selection|Limits the table contents to the active selection.");
+        public static readonly GUIContent filterSelection = new GUIContent("Lock Selection|Limits the table contents to the active selection.");
 
         public static readonly GUIStyle searchField = "SearchTextField";
         public static readonly GUIStyle searchFieldCancelButton = "SearchCancelButton";

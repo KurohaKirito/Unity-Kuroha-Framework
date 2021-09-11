@@ -259,10 +259,59 @@ namespace Kuroha.Util.Editor
                                 if (ReferenceEquals(material, null) == false)
                                 {
                                     // 获取材质引用的全部纹理
-                                    GetAllTexturesInMaterial(material, out List<TextureData> textures);
+                                    GetAllTexturesInMaterial(material, out var textures);
                                     if (textures.Count > 0)
                                     {
                                         // 遍历纹理
+                                        foreach (var data in textures)
+                                        {
+                                            if (ReferenceEquals(data.asset, null) == false)
+                                            {
+                                                assets.Add(data.asset);
+                                                assetPaths.Add(data.path);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取指定的游戏物体中 MeshRenderer 和 SkinnedMeshRenderer 所引用到的全部纹理  (不包含冗余纹理)
+        /// </summary>
+        /// <param name="gameObject">指定的游戏物体</param>
+        /// <param name="assets">返回查询到的纹理资源本身</param>
+        /// <param name="assetPaths">返回查询到的纹理资源所在的 Asset 相对路径</param>
+        public static void GetTexturesInGameObject(GameObject gameObject, out List<Texture> assets, out List<string> assetPaths)
+        {
+            // 定义结果
+            assets = new List<Texture>();
+            assetPaths = new List<string>();
+
+            // 获取全部的 Renderer
+            var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
+            if (renderers.IsNotNullAndEmpty())
+            {
+                foreach (var renderer in renderers)
+                {
+                    if (renderer != null)
+                    {
+                        // 获取全部的材质
+                        var materials = renderer.sharedMaterials;
+                        if (materials.IsNotNullAndEmpty())
+                        {
+                            foreach (var material in materials)
+                            {
+                                if (ReferenceEquals(material, null) == false)
+                                {
+                                    // 获取全部纹理
+                                    GetAllTexturesInMaterial(material, out var textures);
+                                    if (textures.Count > 0)
+                                    {
                                         foreach (var data in textures)
                                         {
                                             if (ReferenceEquals(data.asset, null) == false)

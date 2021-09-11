@@ -47,14 +47,20 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
         /// 待检测路径
         /// </summary>
         private static string detectPath;
+        
+        /// <summary>
+        /// 待检测游戏物体
+        /// </summary>
+        private static GameObject detectGameObject;
 
         /// <summary>
         /// 打开窗口
         /// </summary>
-        public static void Open(TextureAnalysisData.DetectType type, string path)
+        public static void Open(TextureAnalysisData.DetectType type, string path, GameObject obj)
         {
             detectType = type;
             detectPath = path;
+            detectGameObject = obj;
             var window = GetWindow<TextureAnalysisTableWindow>(true);
             window.minSize = new Vector2(1200, 1000);
             window.maxSize = new Vector2(1200, 1000);
@@ -135,9 +141,10 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
             var dataList = new List<TextureAnalysisData>();
             var counter = 0;
 
-            #region 获取全部的纹理并检测
-
+            // 获取全部的纹理
             GetAllTexture(detectType, detectPath, out var textures, out var paths);
+
+            // 遍历每一张贴图进行检测
             for (var index = 0; index < textures.Count; index++)
             {
                 ProgressBar.DisplayProgressBar("纹理分析工具", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
@@ -153,8 +160,6 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                 }
             }
 
-            #endregion
-            
             DebugUtil.Log($"共检测了 {counter} 张贴图");
 
             #region 处理重复纹理的检测结果数据
@@ -202,6 +207,10 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                     TextureUtil.GetTexturesInPath(new[] { texturesPath }, out assets, out assetPaths);
                     break;
 
+                case TextureAnalysisData.DetectType.GameObject:
+                    TextureUtil.GetTexturesInGameObject(detectGameObject, out assets, out assetPaths);
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

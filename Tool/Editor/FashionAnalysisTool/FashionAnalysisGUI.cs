@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.AssetCheckTool;
 using Kuroha.Tool.Editor.ModelAnalysisTool;
+using Kuroha.Tool.Editor.TextureAnalysisTool;
+using Kuroha.Util.Editor;
 using Kuroha.Util.Release;
 
 namespace Kuroha.Tool.Editor.FashionAnalysisTool
@@ -38,12 +39,17 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
         /// <summary>
         /// 大厅
         /// </summary>
-        private static GameObject lobby;
+        private static Transform players;
         
         /// <summary>
         /// 玩家游戏物体
         /// </summary>
         private static Transform player;
+        
+        /// <summary>
+        /// 角色游戏物体
+        /// </summary>
+        private static Transform role;
 
         /// <summary>
         /// 绘制界面
@@ -57,8 +63,22 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             }
             else
             {
-                lobby = GameObject.Find("LobbyScreen");
-                if (lobby == null)
+                if (players == null) {
+                    var transforms = AssetUtil.GetAllTransformInScene(AssetUtil.FindType.All);
+                    foreach (var transform in transforms)
+                    {
+                        if (transform.name == "Players")
+                        {
+                            if (transform.parent.name.IndexOf("LobbyScreen", StringComparison.OrdinalIgnoreCase) >= 0)
+                            {
+                                players = transform;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (players == null)
                 {
                     Kuroha.GUI.Editor.Dialog.SetListener(window.ResetToolBarIndex);
                     Kuroha.GUI.Editor.Dialog.Display("请先登录进入大厅", Dialog.DialogType.Message, "OK");
@@ -75,17 +95,20 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                         {
                             GUILayout.Space(UI_SPACE_PIXELS);
                             if (player == null) {
-                                player = lobby.transform.Find("Players/Player1");
+                                player = players.Find("Player1");
+                            }
+                            else if (role == null) {
+                                role = player.transform.Find("RoleBox/Model/Role");
                             }
                             EditorGUILayout.ObjectField("玩家游戏物体: Player1", player, typeof(Transform), true);
                             
-                            DrawButton("1. 模型检测: 统计整套时装所用到的模型的面数和顶点数", "Start", CollectMeshVertsAndTris);
+                            DrawButton("1. 模型检测: 统计整套时装所用到的模型的面数和顶点数", "Start", CollectMesh);
                             GUILayout.Space(UI_SPACE_PIXELS);
-                            DrawButton("2. 贴图检测: 统计整套时装所用到的全部贴图的尺寸", "Start", CollectMeshVertsAndTris);
+                            DrawButton("2. 贴图检测: 统计整套时装所用到的全部贴图的尺寸", "Start", CollectTextures);
                             GUILayout.Space(UI_SPACE_PIXELS);
-                            DrawButton("3. 动画检测: ", "Start", CollectMeshVertsAndTris);
+                            DrawButton("3. 动画检测: 检测时装中全部动画状态机的剔除模式, 在 Console 窗口查看检测结果", "Start", CollectAnimator);
                             GUILayout.Space(UI_SPACE_PIXELS);
-                            DrawButton("4. 特效检测: ", "Start", CollectMeshVertsAndTris);
+                            DrawButton("4. 特效检测: ", "Start", null);
                         }
                         GUILayout.EndVertical();
                     }
@@ -93,6 +116,12 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             }
         }
 
+        /// <summary>
+        /// 绘制按钮
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="button"></param>
+        /// <param name="action"></param>
         private static void DrawButton(string label, string button, Action action)
         {
             GUILayout.Label(label);
@@ -106,10 +135,48 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             GUILayout.EndVertical();
         }
 
-        private static void CollectMeshVertsAndTris()
+        /// <summary>
+        /// 统计分析 Mesh
+        /// </summary>
+        private static void CollectMesh()
         {
-            var role = player.transform.Find("RoleBox/Model/Role");
             ModelAnalysisTableWindow.Open(false, role.gameObject, false);
+        }
+
+        /// <summary>
+        /// 统计分析 Textures
+        /// </summary>
+        private static void CollectTextures()
+        {
+            TextureAnalysisTableWindow.Open(TextureAnalysisData.DetectType.GameObject, null, role.gameObject);
+        }
+
+        /// <summary>
+        /// 统计分析动画状态机
+        /// </summary>
+        private static void CollectAnimator()
+        {
+            var hadError = false;
+            var animators = role.gameObject.GetComponentsInChildren<Animator>(true);
+
+            foreach (var animator in animators)
+            {
+                if (animator.cullingMode != AnimatorCullingMode.CullCompletely)
+                {
+                    if (animator.transform.name != "Role")
+                    {
+                        hadError = true;
+                        var content1 = $"游戏物体 {animator.transform.name} 的动画剔除方式不正确!";
+                        var content2 = $"<color='red'>{animator.cullingMode}</color> => <color='green'>{AnimatorCullingMode.CullCompletely}</color>";
+                        DebugUtil.LogError($"{content1}\n{content2}", animator.gameObject);
+                    }
+                }
+            }
+
+            if (hadError == false)
+            {
+                DebugUtil.Log("<color='green'>动画状态机检测完毕, 未检测到问题.</color>");
+            }
         }
     }
 }
