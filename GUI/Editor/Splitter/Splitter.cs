@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
+using Kuroha.Util.Release;
 
 namespace Kuroha.GUI.Editor.Splitter
 {
@@ -13,7 +14,7 @@ namespace Kuroha.GUI.Editor.Splitter
             Vertical
         }
 
-        // 不允许子类访问
+        // 不允许子类访问的字段
         private EditorWindow editorWindow;
         private MouseCursor mouseCursor;
         private SplitMode splitMode;
@@ -21,7 +22,7 @@ namespace Kuroha.GUI.Editor.Splitter
         private bool isResizing;
         private bool isFreeze;
 
-        // 需要子类访问
+        // 需要子类访问的字段
         protected float barSize;
         protected float mainAreaSize;
 
@@ -105,10 +106,10 @@ namespace Kuroha.GUI.Editor.Splitter
         {
             var current = Event.current;
 
-            // 绘制主区域
+            // 绘制主区域内容
             mainGUI(MainRect(windowRect));
 
-            // 绘制子区域
+            // 绘制子区域内容
             subGUI(SubRect(windowRect));
 
             // 分割条全部有效区域 (可触发鼠标变化的整个区域, 外观上部分不显示)

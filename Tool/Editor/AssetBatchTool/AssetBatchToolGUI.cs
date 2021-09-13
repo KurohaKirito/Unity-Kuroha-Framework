@@ -67,7 +67,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             if (splitter == null)
             {
-                splitter = new VerticalSplitter(window, 210, 210, true);
+                splitter = new VerticalSplitter(window, 210, 210, false);
             }
             
             splitter.OnGUI(window.position, MainRect, SubRect);

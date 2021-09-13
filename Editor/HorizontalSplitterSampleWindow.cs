@@ -12,12 +12,12 @@ namespace Kuroha.Editor
         [MenuItem("Tools/Sample/HorizontalSplitterWindow")]
         private static void Open()
         {
-            GetWindow<HorizontalSplitterSampleWindow>();
+            GetWindow<HorizontalSplitterSampleWindow>("横向分割").minSize = new Vector2(150, 150);
         }
         
         private void OnGUI()
         {
-            horizontalSplitter ??= new HorizontalSplitter(this, 150, 150, false);
+            horizontalSplitter ??= new HorizontalSplitter(this, 50, 50, false);
             horizontalSplitter.OnGUI(position, MainRect, SubRect);
         }
         

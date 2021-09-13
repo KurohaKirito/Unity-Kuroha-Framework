@@ -1,5 +1,4 @@
 ﻿using System;
-using AssetCheckTool.Batch;
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.AssetBatchTool;
 using Kuroha.Tool.Editor.EffectCheckTool.GUI;
@@ -105,7 +104,8 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
                 ModelAnalysisGUI.OnGUI,
                 TextureAnalysisGUI.OnGUI,
                 MeshAnalysisToolGUI.OnGUI,
-                ParticleSystemProfiler.OnGUI,
+                MeshAnalysisToolGUI.OnGUI,
+                //ParticleSystemProfiler.OnGUI,
                 () => {
                     AssetBatchToolGUI.OnGUI(this);
                 }
