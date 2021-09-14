@@ -35,7 +35,11 @@ namespace Kuroha.GUI.Editor.Splitter
         /// <returns></returns>
         protected override RectOffset BarRectOffset()
         {
-            return barRectOffset ??= new RectOffset(7, 8, 0, 0);
+            if (ReferenceEquals(barRectOffset, null) == false)
+            {
+                barRectOffset = new RectOffset(7, 8, 0, 0);
+            }
+            return barRectOffset;
         }
 
         /// <summary>

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
-using Kuroha.Util.Release;
 
 namespace Kuroha.GUI.Editor.Splitter
 {
