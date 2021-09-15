@@ -105,6 +105,7 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
                 ModelAnalysisGUI.OnGUI,
                 TextureAnalysisGUI.OnGUI,
                 MeshAnalysisToolGUI.OnGUI,
+                MeshAnalysisToolGUI.OnGUI,
                 //ParticleSystemProfiler.OnGUI,
                 () => {
                     AssetBatchToolGUI.OnGUI(this);
