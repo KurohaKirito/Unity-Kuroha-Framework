@@ -12,7 +12,7 @@ namespace Kuroha.GUI.Editor.Splitter
         /// 默认分割条为 16 像素, 这里设置顶部 7 像素和 底部 8 像素都不显示, 仅显示中间的 1 个像素.
         /// 但是整个厚度为 16 像素的区域都可以触发鼠标变化, 可以触发拖拽.
         /// </summary>
-        private static RectOffset barRectOffset;
+        private static readonly RectOffset barRectOffset = new RectOffset(0, 0, 7, 8);
 
         /// <summary>
         /// 分割条大小
@@ -35,10 +35,6 @@ namespace Kuroha.GUI.Editor.Splitter
         /// <returns></returns>
         protected override RectOffset BarRectOffset()
         {
-            if (ReferenceEquals(barRectOffset, null) == false)
-            {
-                barRectOffset = new RectOffset(0, 0, 7, 8);
-            }
             return barRectOffset;
         }
 
