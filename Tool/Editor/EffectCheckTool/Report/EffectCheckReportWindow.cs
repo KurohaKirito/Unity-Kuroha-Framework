@@ -136,11 +136,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
             
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(position.height));
             {
-                if (indexBegin >= 0 && indexBegin <= EffectCheckReport.reportInfos.Count &&
-                    indexEnd >= 0 && indexEnd <= EffectCheckReport.reportInfos.Count &&
+                if (indexBegin >= 0 && indexBegin < EffectCheckReport.reportInfos.Count &&
+                    indexEnd >= 0 && indexEnd < EffectCheckReport.reportInfos.Count &&
                     indexBegin <= indexEnd)
                 {
-                    for (var index = indexBegin; index <= indexEnd; index++)
+                    for (var index = indexBegin; index <= indexEnd && index < EffectCheckReport.reportInfos.Count; index++)
                     {
                         GUILayout.BeginHorizontal("Box");
                         OnGUI_ShowItemReport(EffectCheckReport.reportInfos[index]);
@@ -157,7 +157,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         /// 计算得出可以自动修复的问题的数量
         /// </summary>
         /// <returns></returns>
-        private int CanRepairCount(in List<EffectCheckReportInfo> reportInfos)
+        private static int CanRepairCount(in List<EffectCheckReportInfo> reportInfos)
         {
             var count = 0;
             foreach (var reportInfo in reportInfos)

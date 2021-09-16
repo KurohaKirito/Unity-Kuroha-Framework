@@ -17,6 +17,14 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
 
         private int resultTris;
         private int resultVerts;
+        private int resultUV;
+        private int resultUV2;
+        private int resultUV3;
+        private int resultUV4;
+        private int resultColors;
+        private int resultTangents;
+        private int resultNormals;
+        
         private ModelAnalysisTable table;
         private GUIStyle fontStyleRed;
         private GUIStyle fontStyleYellow;
@@ -157,18 +165,25 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                 {
                     var meshColliders = FindObjectsOfType<MeshCollider>();
                     DetectMeshCollider(in dataList, in meshColliders);
-                    AddRowsSum(dataList);
                     meshCount += meshColliders.Length;
+                    
+                    AddRowsSum(dataList);
                 }
                 else
                 {
                     var meshFilters = FindObjectsOfType<MeshFilter>();
                     DetectMeshFilter(in dataList, in meshFilters);
                     meshCount += meshFilters.Length;
+                    
                     var skinnedMeshRenderers = FindObjectsOfType<SkinnedMeshRenderer>();
                     DetectSkinnedMeshRenderer(in dataList, in skinnedMeshRenderers);
-                    AddRowsSum(dataList);
                     meshCount += skinnedMeshRenderers.Length;
+                    
+                    var particleSystems = FindObjectsOfType<ParticleSystem>();
+                    DetectParticleSystem(in dataList, in particleSystems);
+                    meshCount += particleSystems.Length;
+                    
+                    AddRowsSum(dataList);
                 }
             }
             else
@@ -177,18 +192,25 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                 {
                     var meshColliders = prefab.GetComponentsInChildren<MeshCollider>();
                     DetectMeshCollider(in dataList, in meshColliders);
-                    AddRowsSum(dataList);
                     meshCount += meshColliders.Length;
+                    
+                    AddRowsSum(dataList);
                 }
                 else
                 {
                     var meshFilters = prefab.GetComponentsInChildren<MeshFilter>();
                     DetectMeshFilter(in dataList, in meshFilters);
                     meshCount += meshFilters.Length;
+                    
                     var skinnedMeshRenderers = prefab.GetComponentsInChildren<SkinnedMeshRenderer>();
                     DetectSkinnedMeshRenderer(in dataList, in skinnedMeshRenderers);
-                    AddRowsSum(dataList);
                     meshCount += skinnedMeshRenderers.Length;
+                    
+                    var particleSystems = prefab.GetComponentsInChildren<ParticleSystem>();
+                    DetectParticleSystem(in dataList, in particleSystems);
+                    meshCount += particleSystems.Length;
+                    
+                    AddRowsSum(dataList);
                 }
             }
 
@@ -211,6 +233,13 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                 id = dataList.Count + 1,
                 tris = resultTris,
                 verts = resultVerts,
+                uv = resultUV,
+                uv2 = resultUV2,
+                uv3 = resultUV3,
+                uv4 = resultUV4,
+                colors = resultColors,
+                normals = resultNormals,
+                tangents = resultTangents,
                 assetName = "总和",
                 assetPath = string.Empty,
             });
@@ -241,6 +270,13 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
 
                 resultVerts += sharedMesh.vertices.Length;
                 resultTris += sharedMesh.triangles.Length / 3;
+                resultUV += sharedMesh.uv.Length;
+                resultUV2 += sharedMesh.uv2.Length;
+                resultUV3 += sharedMesh.uv3.Length;
+                resultUV4 += sharedMesh.uv4.Length;
+                resultColors += sharedMesh.colors.Length;
+                resultTangents += sharedMesh.tangents.Length;
+                resultNormals += sharedMesh.normals.Length;
 
                 counter++;
                 dataList.Add(new ModelAnalysisData
@@ -248,6 +284,13 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     id = counter,
                     tris = sharedMesh.triangles.Length / 3,
                     verts = sharedMesh.vertices.Length,
+                    uv = sharedMesh.uv.Length,
+                    uv2 = sharedMesh.uv2.Length,
+                    uv3 = sharedMesh.uv3.Length,
+                    uv4 = sharedMesh.uv4.Length,
+                    colors = sharedMesh.colors.Length,
+                    normals = sharedMesh.normals.Length,
+                    tangents = sharedMesh.tangents.Length,
                     assetName = AssetDatabase.GetAssetPath(sharedMesh),
                     assetPath = AssetDatabase.GetAssetPath(sharedMesh),
                 });
@@ -279,6 +322,13 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
 
                 resultVerts += sharedMesh.vertices.Length;
                 resultTris += sharedMesh.triangles.Length / 3;
+                resultUV += sharedMesh.uv.Length;
+                resultUV2 += sharedMesh.uv2.Length;
+                resultUV3 += sharedMesh.uv3.Length;
+                resultUV4 += sharedMesh.uv4.Length;
+                resultColors += sharedMesh.colors.Length;
+                resultTangents += sharedMesh.tangents.Length;
+                resultNormals += sharedMesh.normals.Length;
 
                 counter++;
                 dataList.Add(new ModelAnalysisData
@@ -286,8 +336,67 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     id = counter,
                     tris = sharedMesh.triangles.Length / 3,
                     verts = sharedMesh.vertices.Length,
+                    uv = sharedMesh.uv.Length,
+                    uv2 = sharedMesh.uv2.Length,
+                    uv3 = sharedMesh.uv3.Length,
+                    uv4 = sharedMesh.uv4.Length,
+                    colors = sharedMesh.colors.Length,
+                    normals = sharedMesh.normals.Length,
+                    tangents = sharedMesh.tangents.Length,
                     assetName = AssetDatabase.GetAssetPath(sharedMesh),
                     assetPath = AssetDatabase.GetAssetPath(sharedMesh),
+                });
+            }
+        }
+        
+        /// <summary>
+        /// 检测 ParticleSystem
+        /// </summary>
+        /// <param name="dataList">行数据</param>
+        /// <param name="particleSystems">待检测组件</param>
+        private void DetectParticleSystem(in List<ModelAnalysisData> dataList, in ParticleSystem[] particleSystems)
+        {
+            var counter = 0;
+
+            foreach (var particleSystem in particleSystems)
+            {
+                if (ReferenceEquals(particleSystem, null))
+                {
+                    continue;
+                }
+
+                var mesh = particleSystem.GetComponent<ParticleSystemRenderer>().mesh;
+                if (ReferenceEquals(mesh, null))
+                {
+                    DebugUtil.LogError("粒子系统使用了 Mesh 粒子却没有指定 Mesh!", particleSystem.gameObject);
+                    continue;
+                }
+
+                resultVerts += mesh.vertices.Length;
+                resultTris += mesh.triangles.Length / 3;
+                resultUV += mesh.uv.Length;
+                resultUV2 += mesh.uv2.Length;
+                resultUV3 += mesh.uv3.Length;
+                resultUV4 += mesh.uv4.Length;
+                resultColors += mesh.colors.Length;
+                resultTangents += mesh.tangents.Length;
+                resultNormals += mesh.normals.Length;
+
+                counter++;
+                dataList.Add(new ModelAnalysisData
+                {
+                    id = counter,
+                    tris = mesh.triangles.Length / 3,
+                    verts = mesh.vertices.Length,
+                    uv = mesh.uv.Length,
+                    uv2 = mesh.uv2.Length,
+                    uv3 = mesh.uv3.Length,
+                    uv4 = mesh.uv4.Length,
+                    colors = mesh.colors.Length,
+                    normals = mesh.normals.Length,
+                    tangents = mesh.tangents.Length,
+                    assetName = AssetDatabase.GetAssetPath(mesh),
+                    assetPath = AssetDatabase.GetAssetPath(mesh),
                 });
             }
         }
@@ -450,7 +559,126 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                             EditorGUI.LabelField(cellRect, data.tris.ToString());
                         }
                     },
-                }
+                },
+                new CommonTableColumn<ModelAnalysisData>
+                {
+                    headerContent = new GUIContent("UV"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 50,
+                    minWidth = 50,
+                    maxWidth = 80,
+                    allowToggleVisibility = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => -dataA.uv.CompareTo(dataB.uv),
+                    DrawCell = (cellRect, data) =>
+                    {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.uv.ToString());
+                    },
+                },
+                new CommonTableColumn<ModelAnalysisData>
+                {
+                    headerContent = new GUIContent("UV2"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 50,
+                    minWidth = 50,
+                    maxWidth = 80,
+                    allowToggleVisibility = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => -dataA.uv2.CompareTo(dataB.uv2),
+                    DrawCell = (cellRect, data) =>
+                    {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.uv2.ToString());
+                    },
+                },
+                new CommonTableColumn<ModelAnalysisData>
+                {
+                    headerContent = new GUIContent("UV3"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 40,
+                    minWidth = 40,
+                    maxWidth = 80,
+                    allowToggleVisibility = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => -dataA.uv3.CompareTo(dataB.uv3),
+                    DrawCell = (cellRect, data) =>
+                    {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.uv3.ToString());
+                    },
+                },
+                new CommonTableColumn<ModelAnalysisData>
+                {
+                    headerContent = new GUIContent("UV4"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 40,
+                    minWidth = 40,
+                    maxWidth = 80,
+                    allowToggleVisibility = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => -dataA.uv4.CompareTo(dataB.uv4),
+                    DrawCell = (cellRect, data) =>
+                    {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.uv4.ToString());
+                    },
+                },
+                new CommonTableColumn<ModelAnalysisData>
+                {
+                    headerContent = new GUIContent("Colors"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 60,
+                    minWidth = 60,
+                    maxWidth = 80,
+                    allowToggleVisibility = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => -dataA.colors.CompareTo(dataB.colors),
+                    DrawCell = (cellRect, data) =>
+                    {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.colors.ToString());
+                    },
+                },
+                new CommonTableColumn<ModelAnalysisData>
+                {
+                    headerContent = new GUIContent("Tangents"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 70,
+                    minWidth = 70,
+                    maxWidth = 80,
+                    allowToggleVisibility = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => -dataA.tangents.CompareTo(dataB.tangents),
+                    DrawCell = (cellRect, data) =>
+                    {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.tangents.ToString());
+                    },
+                },
+                new CommonTableColumn<ModelAnalysisData>
+                {
+                    headerContent = new GUIContent("Normals"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 70,
+                    minWidth = 70,
+                    maxWidth = 80,
+                    allowToggleVisibility = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => -dataA.normals.CompareTo(dataB.normals),
+                    DrawCell = (cellRect, data) =>
+                    {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.normals.ToString());
+                    },
+                },
             };
         }
 

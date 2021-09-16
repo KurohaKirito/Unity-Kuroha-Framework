@@ -144,7 +144,7 @@ namespace Kuroha.Util.Editor
         }
         
         /// <summary>
-        /// 拷贝文件夹到新的文件夹
+        /// 拷贝源文件夹到新的文件夹
         /// </summary>
         /// <param name="sourcePath">源文件所在目录</param>
         /// <param name="savePath">保存的目标目录</param>
@@ -167,8 +167,7 @@ namespace Kuroha.Util.Editor
             {
                 var targetFolder = sourceDir.Replace(sourcePath, savePath);
                 var newFolderName = targetFolder.Replace('\\', '/').Split('/').Last();
-                var parentFolder =
-                    targetFolder.Substring(targetFolder.IndexOf("Assets", StringComparison.OrdinalIgnoreCase));
+                var parentFolder = targetFolder.Substring(targetFolder.IndexOf("Assets", StringComparison.OrdinalIgnoreCase));
                 parentFolder = parentFolder.Replace('\\', '/').Replace($"/{newFolderName}", "");
 
                 DebugUtil.Log($"创建目录: {parentFolder}, {newFolderName}");
@@ -185,6 +184,81 @@ namespace Kuroha.Util.Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// 将一个资源移动到新的目录下
+        /// </summary>
+        /// <param name="assetFilePath">包含待移动资源路径信息的文件</param>
+        /// <param name="newFolder">目标目录</param>
+        public static void MoveFileToNewFolder(ref string assetFilePath, string newFolder)
+        {
+            var configPath = assetFilePath;
+            var counter = 0;
+
+            using (var file = new StreamReader(configPath))
+            {
+                var line = file.ReadLine();
+
+                while (line.IsNotNullAndEmpty())
+                {
+                    if (MoveAsset(line, newFolder))
+                    {
+                        counter++;
+                    }
+                    else
+                    {
+                        DebugUtil.LogError($"移动失败: {line}", null, "red");
+                    }
+
+                    line = file.ReadLine();
+                }
+            }
+
+            DebugUtil.Log($"共成功移动了 {counter} 项资源!", null, "green");
+            
+            assetFilePath = "已执行移动!";
+        }
+        
+        /// <summary>
+        /// 将一个资源移动到新的目录下
+        /// </summary>
+        /// <param name="assetPath">资源路径</param>
+        /// <param name="newFolder">目标目录</param>
+        private static bool MoveAsset(string assetPath, string newFolder)
+        {
+            var success = false;
+            var oldPath = assetPath.Replace('\\', '/');
+            newFolder = newFolder.Replace('\\', '/');
+            
+            // 待移动资源
+            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(oldPath);
+            if (ReferenceEquals(asset, null) == false)
+            {
+                // 目标路径
+                var path = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(newFolder);
+                if (ReferenceEquals(path, null) == false)
+                {
+                    // 待移动资源完整名称
+                    var assetName = assetPath.Substring(assetPath.LastIndexOf("/", StringComparison.Ordinal));
+                    var newPath = newFolder + assetName;
+
+                    // 移动资源
+                    AssetDatabase.MoveAsset(oldPath, newPath);
+                    
+                    success = true;
+                }
+                else
+                {
+                    DebugUtil.Log("目标路径为空", null, "red");
+                }
+            }
+            else
+            {
+                DebugUtil.Log("资源为空", null, "red");
+            }
+
+            return success;
         }
     }
 }

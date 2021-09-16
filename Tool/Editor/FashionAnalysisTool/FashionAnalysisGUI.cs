@@ -8,6 +8,7 @@ using Kuroha.Tool.Editor.ModelAnalysisTool;
 using Kuroha.Tool.Editor.TextureAnalysisTool;
 using Kuroha.Util.Editor;
 using Kuroha.Util.Release;
+using UnityEngine.Rendering;
 
 namespace Kuroha.Tool.Editor.FashionAnalysisTool
 {
@@ -106,9 +107,10 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                             GUILayout.Space(UI_SPACE_PIXELS);
                             DrawButton("2. 贴图检测: 统计整套时装所用到的全部贴图的尺寸", "Start", CollectTextures);
                             GUILayout.Space(UI_SPACE_PIXELS);
-                            DrawButton("3. 动画检测: 检测时装中全部动画状态机的剔除模式, 在 Console 窗口查看检测结果", "Start", CollectAnimator);
+                            DrawButton("3. 动画检测: 检测时装中全部动画状态机的剔除模式, 在 Console 窗口查看检测结果", "Start", CheckAnimator);
                             GUILayout.Space(UI_SPACE_PIXELS);
-                            DrawButton("4. 特效检测: ", "Start", null);
+                            DrawButton("4. 粒子系统检测: ", "Start", CheckParticleSystem);
+                            GUILayout.Space(UI_SPACE_PIXELS);
                         }
                         GUILayout.EndVertical();
                     }
@@ -154,7 +156,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
         /// <summary>
         /// 统计分析动画状态机
         /// </summary>
-        private static void CollectAnimator()
+        private static void CheckAnimator()
         {
             var hadError = false;
             var animators = role.gameObject.GetComponentsInChildren<Animator>(true);
@@ -176,6 +178,66 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             if (hadError == false)
             {
                 DebugUtil.Log("<color='green'>动画状态机检测完毕, 未检测到问题.</color>");
+            }
+        }
+        
+        // 检测是否有隐藏游戏物体
+        
+        /// <summary>
+        /// 统计分析粒子系统
+        /// </summary>
+        private static void CheckParticleSystem()
+        {
+            var hadError = false;
+            var particleSystems = role.gameObject.GetComponentsInChildren<ParticleSystem>(true);
+
+            foreach (var particleSystem in particleSystems)
+            {
+                var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
+                
+                // 是否是 Mesh 粒子, 如果是, Mesh 的顶点信息, 三角面信息 > 300
+                if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
+                {
+                    var mesh = renderer.mesh;
+                    if (mesh == null)
+                    {
+                        DebugUtil.LogError($"特效 {particleSystem.transform.name} 使用了 Mesh 粒子但是没有指定 Mesh!", particleSystem.gameObject, "red");
+                    }
+                    else if (mesh.triangles.Length >= 900)
+                    {
+                        DebugUtil.LogError($"特效 {particleSystem.transform.name} 使用的 Mesh 粒子面数大于 300!", particleSystem.gameObject, "red");
+                    }
+                }
+                
+                // 预热是否关闭
+                if (particleSystem.main.prewarm)
+                {
+                    hadError = true;
+                    DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭预热!", particleSystem.gameObject, "red");
+                }
+
+                // 阴影是否关闭
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off)
+                {
+                    hadError = true;
+                    DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭阴影投射!", particleSystem.gameObject, "red");
+                }
+                
+                // 是否开启了碰撞器
+                
+                
+                
+                // 是否开启了触发器
+                
+                
+                
+                // UV UV2 UV3 UV4 Colors 信息
+                
+            }
+
+            if (hadError == false)
+            {
+                DebugUtil.Log("动画状态机检测完毕, 未检测到问题.", null, "green");
             }
         }
     }

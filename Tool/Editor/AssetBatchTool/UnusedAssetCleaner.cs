@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -179,10 +180,15 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 var referenceCount = references[key].Count;
                 // 获取资源的路径
                 var assetPath = AssetDatabase.GUIDToAssetPath(key);
-
+                // 特定文件夹
+                var regexRule = new Regex("(Material|Texture)Editor");
+                var success = regexRule.Match(assetPath).Success;
+                
                 // 问题资源 1: 不在 "特定文件夹" 内, 但却无引用
-                if (assetPath.IndexOf("editor", StringComparison.OrdinalIgnoreCase) < 0 && referenceCount <= 0) {
-                    resultAuto.Add(new ErrorInfo {
+                if (success == false && referenceCount <= 0)
+                {
+                    resultAuto.Add(new ErrorInfo
+                    {
                         type = ErrorType.NoneReference,
                         assetPath = assetPath
                     });
@@ -190,9 +196,10 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 }
                 
                 // 问题资源 2: 明明放在 "特定文件夹" 内, 但却有引用
-                else if (assetPath.IndexOf("editor", StringComparison.OrdinalIgnoreCase) >= 0 && referenceCount > 0)
+                else if (success && referenceCount > 0)
                 {
-                    resultAuto.Add(new ErrorInfo {
+                    resultAuto.Add(new ErrorInfo
+                    {
                         type = ErrorType.HadReference,
                         assetPath = assetPath
                     });
@@ -200,7 +207,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 }
 
                 // 正确资源
-                else {
+                else
+                {
                     resultExport.Add ($"正确: 资源 {assetPath} 被引用 {references[key].Count} 次!");
                 }
             }

@@ -14,14 +14,15 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// </summary>
         public enum BatchType
         {
-            RedundantTextureReferencesCleaner = 0,
-            GunAttachmentsCloseCastShadows = 1,
-            BundleAssetCounter = 2,
-            AssetDeleteTool = 3,
-            MaterialShaderChecker = 4,
-            UnusedAssetChecker = 5,
-            CheckSubEmitterInAllScene = 6,
-            FbxUVColorsChecker = 7
+            RedundantTextureReferencesCleaner,
+            GunAttachmentsCloseCastShadows,
+            BundleAssetCounter,
+            AssetDeleteTool,
+            AssetMoveTool,
+            MaterialShaderChecker,
+            UnusedAssetChecker,
+            CheckSubEmitterInAllScene,
+            FbxUVColorsChecker = 8
         }
 
         /// <summary>
@@ -33,6 +34,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             "关闭枪械配件阴影投射",
             "捆绑包资源数量分析",
             "资源批量删除工具",
+            "资源批量移动工具",
             "材质球的着色器引用检测器",
             "废弃资源检测工具",
             "场景粒子 Sub-Emitter 检测",
@@ -143,6 +145,10 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
 
                     case BatchType.AssetDeleteTool:
                         AssetDeleteTool.OnGUI();
+                        break;
+                    
+                    case BatchType.AssetMoveTool:
+                        AssetMoveTool.OnGUI();
                         break;
 
                     case BatchType.MaterialShaderChecker:
