@@ -61,7 +61,7 @@ public static class FolderAndAssetsDetect
         
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("FolderAndAssets Check Completed!");
         }
         

@@ -56,7 +56,7 @@ public static class UnusedTextureDetect
         
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("Unused Texture Check Completed!");
         }
 

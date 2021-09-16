@@ -22,7 +22,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             MaterialShaderChecker,
             UnusedAssetChecker,
             CheckSubEmitterInAllScene,
-            FbxUVColorsChecker = 8
+            FbxUVColorsChecker,
+            AutoCheckTool = 9
         }
 
         /// <summary>
@@ -38,7 +39,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             "材质球的着色器引用检测器",
             "废弃资源检测工具",
             "场景粒子 Sub-Emitter 检测",
-            "模型 UV 信息检查器"
+            "模型 UV 信息检查器",
+            "自动检测工具"
         };
 
         /// <summary>
@@ -165,6 +167,10 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
 
                     case BatchType.FbxUVColorsChecker:
                         FbxUVColorsChecker.OnGUI();
+                        break;
+
+                    case BatchType.AutoCheckTool:
+                        AutoCheckToolGUI.OnGUI();
                         break;
                     
                     default:

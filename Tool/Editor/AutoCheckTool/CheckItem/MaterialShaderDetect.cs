@@ -67,7 +67,7 @@ public static class MaterialShaderDetect
         
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("Material-Shader Check Completed!");
         }
 

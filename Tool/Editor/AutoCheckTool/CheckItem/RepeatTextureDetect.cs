@@ -56,7 +56,7 @@ public static class RepeatTextureDetect
         
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("Repeat Texture Check Completed!");
         }
 

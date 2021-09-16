@@ -56,7 +56,7 @@ public static class UnusedModelDetect
         
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("Unused Model Check Completed!");
         }
 

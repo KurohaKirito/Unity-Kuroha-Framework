@@ -53,7 +53,7 @@ public static class RedundantTextureReferencesDetect
 
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("RedundantTextureReferences Check Completed!");
         }
 

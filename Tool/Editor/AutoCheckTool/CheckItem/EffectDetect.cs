@@ -53,7 +53,7 @@ public static class EffectDetect
 
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("Effect Check Completed!");
         }
 

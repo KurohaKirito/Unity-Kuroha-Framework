@@ -63,7 +63,7 @@ public static class SolidTextureDetect
         
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("Solid Color Texture Check Completed!");
         }
 

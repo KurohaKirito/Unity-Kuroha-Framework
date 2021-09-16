@@ -56,7 +56,7 @@ public static class UnusedMaterialDetect
         
         if (isExportFile)
         {
-            AutoCheckTool.ExportResult(results);
+            AutoCheckToolGUI.ExportResult(results);
             DebugUtil.Log("Unused Material Check Completed!");
         }
 
