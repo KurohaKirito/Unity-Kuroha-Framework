@@ -11,7 +11,7 @@ namespace Kuroha.Tool.Release
         {
             if (SceneManager.GetActiveScene().name != "Main")
             {
-                SceneManager.LoadScene("Main");
+                //SceneManager.LoadScene("Main");
             }
         }
     }

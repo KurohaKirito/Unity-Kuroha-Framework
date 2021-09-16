@@ -5,10 +5,40 @@ using UnityEngine;
 namespace Kuroha.Util.Release
 {
     /// <summary>
+    /// List
+    /// </summary>
+    [Serializable]
+    public class JsonSerialization<T>
+    {
+        /// <summary>
+        /// 实际序列化的字段
+        /// </summary>
+        [SerializeField]
+        private List<T> data;
+        
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        public JsonSerialization(List<T> data)
+        {
+            this.data = data;
+        }
+
+        /// <summary>
+        /// 转换为字典返回
+        /// </summary>
+        /// <returns></returns>
+        public List<T> ToList()
+        {
+            return data;
+        }
+    }
+    
+    /// <summary>
     /// Dictionary
     /// </summary>
     [Serializable]
-    public class JsonClass<TKey, TValue> : ISerializationCallbackReceiver
+    public class JsonSerialization<TKey, TValue> : ISerializationCallbackReceiver
     {
         /// <summary>
         /// 实际序列化的字段
@@ -30,7 +60,7 @@ namespace Kuroha.Util.Release
         /// <summary>
         /// 构造方法
         /// </summary>
-        public JsonClass(Dictionary<TKey, TValue> data)
+        public JsonSerialization(Dictionary<TKey, TValue> data)
         {
             this.data = data;
         }
@@ -66,6 +96,20 @@ namespace Kuroha.Util.Release
         public Dictionary<TKey, TValue> ToDictionary()
         {
             return data;
+        }
+    }
+
+    public static class JsonUtil
+    {
+        /// <summary>
+        /// 生成 Json
+        /// </summary>
+        /// <param name="obj">数据</param>
+        /// <param name="filePathAndName">json 路径以及文件名</param>
+        public static void ToJsonFile(object obj, string filePathAndName)
+        {
+            var json = JsonUtility.ToJson(obj);
+            System.IO.File.WriteAllText(filePathAndName, json);
         }
     }
 }
