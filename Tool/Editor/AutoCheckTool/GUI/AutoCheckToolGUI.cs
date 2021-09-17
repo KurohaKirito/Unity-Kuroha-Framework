@@ -25,14 +25,46 @@ public static class AutoCheckToolGUI
     };
     
     /// <summary>
+    /// 折叠框
+    /// </summary>
+    private static bool foldout = true;
+    
+    /// <summary>
+    /// 全局默认 margin
+    /// </summary>
+    private const float UI_DEFAULT_MARGIN = 5;
+        
+    /// <summary>
+    /// 全局按钮的高度
+    /// </summary>
+    private const float UI_BUTTON_HEIGHT = 25;
+    
+    /// <summary>
     /// 绘制界面
     /// </summary>
     public static void OnGUI()
     {
-        for (var index = 0; index < checkItem.Length; index++)
+        GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+
+        foldout = EditorGUILayout.Foldout(foldout, "自动检测工具", true);
+            
+        if (foldout)
         {
-            GUILayout.Space(10);
-            checkToggle[index] = EditorGUILayout.ToggleLeft(checkItem[index], checkToggle[index]);
+            GUILayout.Space(UI_DEFAULT_MARGIN);
+            GUILayout.BeginVertical("Box");
+            {
+                for (var index = 0; index < checkItem.Length; index++)
+                {
+                    checkToggle[index] = EditorGUILayout.ToggleLeft(checkItem[index], checkToggle[index]);
+                    GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+                }
+                
+                if (GUILayout.Button("执行检测", GUILayout.Height(UI_BUTTON_HEIGHT)))
+                {
+                    Check();
+                }
+            }
+            GUILayout.EndVertical();
         }
     }
     

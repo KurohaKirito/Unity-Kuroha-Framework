@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.AssetBatchTool;
 using Kuroha.Util.Release;
@@ -26,14 +25,19 @@ public static class RedundantTextureReferencesDetect
         
         // 获取相对目录下所有的材质球文件
         var guids = AssetDatabase.FindAssets("t:Material", new []{"Assets/Art/Effects/Materials"});
-        var assetPaths = guids.Select(AssetDatabase.GUIDToAssetPath).ToList();
-        var materials = assetPaths.Select(AssetDatabase.LoadAssetAtPath<Material>).ToList();
+        var materials = new List<Material>(guids.Length);
+        for (var index = 0; index < guids.Length; index++)
+        {
+            ProgressBar.DisplayProgressBar("材质球冗余纹理检测工具", $"加载材质球: {index + 1}/{guids.Length}", index + 1, guids.Length);
+            var assetPath = AssetDatabase.GUIDToAssetPath(guids[index]);
+            materials.Add(AssetDatabase.LoadAssetAtPath<Material>(assetPath));
+        }
 
         // 遍历材质
         var materialCount = materials.Count;
         for (var index = 0; index < materialCount; index++)
         {
-            ProgressBar.DisplayProgressBar("材质球冗余纹理检测工具", $"材质球检测中: {index + 1}/{materialCount}", index + 1, materialCount);
+            ProgressBar.DisplayProgressBar("材质球冗余纹理检测工具", $"检测材质球: {index + 1}/{materialCount}", index + 1, materialCount);
 
             var material = materials[index];
             if (RedundantTextureReferencesCleaner.Detect(material, false))
