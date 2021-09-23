@@ -159,67 +159,45 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
             var dataList = new List<ModelAnalysisData>();
             var meshCount = 0;
 
-            if (isDetectCurrentScene)
+            if (isDetectCollider)
             {
-                if (isDetectCollider)
-                {
-                    var meshColliders = FindObjectsOfType<MeshCollider>();
-                    DetectMeshCollider(in dataList, in meshColliders);
-                    meshCount += meshColliders.Length;
-                    
-                    AddRowsSum(dataList);
-                }
-                else
-                {
-                    var meshFilters = FindObjectsOfType<MeshFilter>();
-                    DetectMeshFilter(in dataList, in meshFilters);
-                    meshCount += meshFilters.Length;
-                    
-                    var skinnedMeshRenderers = FindObjectsOfType<SkinnedMeshRenderer>();
-                    DetectSkinnedMeshRenderer(in dataList, in skinnedMeshRenderers);
-                    meshCount += skinnedMeshRenderers.Length;
-                    
-                    var particleSystems = FindObjectsOfType<ParticleSystem>();
-                    DetectParticleSystem(in dataList, in particleSystems);
-                    meshCount += particleSystems.Length;
-                    
-                    AddRowsSum(dataList);
-                }
+                var meshColliders = isDetectCurrentScene
+                    ? FindObjectsOfType<MeshCollider>()
+                    : prefab.GetComponentsInChildren<MeshCollider>();
+                DetectMeshCollider(in dataList, in meshColliders);
+                meshCount += meshColliders.Length;
             }
             else
             {
-                if (isDetectCollider)
-                {
-                    var meshColliders = prefab.GetComponentsInChildren<MeshCollider>();
-                    DetectMeshCollider(in dataList, in meshColliders);
-                    meshCount += meshColliders.Length;
-                    
-                    AddRowsSum(dataList);
-                }
-                else
-                {
-                    var meshFilters = prefab.GetComponentsInChildren<MeshFilter>();
-                    DetectMeshFilter(in dataList, in meshFilters);
-                    meshCount += meshFilters.Length;
-                    
-                    var skinnedMeshRenderers = prefab.GetComponentsInChildren<SkinnedMeshRenderer>();
-                    DetectSkinnedMeshRenderer(in dataList, in skinnedMeshRenderers);
-                    meshCount += skinnedMeshRenderers.Length;
-                    
-                    var particleSystems = prefab.GetComponentsInChildren<ParticleSystem>();
-                    DetectParticleSystem(in dataList, in particleSystems);
-                    meshCount += particleSystems.Length;
-                    
-                    AddRowsSum(dataList);
-                }
+                var meshFilters = isDetectCurrentScene
+                    ? FindObjectsOfType<MeshFilter>()
+                    : prefab.GetComponentsInChildren<MeshFilter>();
+                DetectMeshFilter(in dataList, in meshFilters);
+                meshCount += meshFilters.Length;
+
+                
+                var skinnedMeshRenderers = isDetectCurrentScene
+                    ? FindObjectsOfType<SkinnedMeshRenderer>()
+                    : prefab.GetComponentsInChildren<SkinnedMeshRenderer>();
+                DetectSkinnedMeshRenderer(in dataList, in skinnedMeshRenderers);
+                meshCount += skinnedMeshRenderers.Length;
+
+
+                var particleSystems = isDetectCurrentScene
+                    ? FindObjectsOfType<ParticleSystem>()
+                    : prefab.GetComponentsInChildren<ParticleSystem>();
+                DetectParticleSystem(in dataList, in particleSystems);
+                meshCount += particleSystems.Length;
             }
+            
+            AddRowsSum(dataList);
 
             if (meshCount <= 0)
             {
                 return null;
             }
 
-            DebugUtil.Log($"共检测出 {meshCount} 个 mesh 组件");
+            DebugUtil.Log($"共检测出 {meshCount} 个 mesh 资源");
             return dataList;
         }
 
@@ -246,14 +224,44 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         }
 
         /// <summary>
+        /// 增加一条检测结果
+        /// </summary>
+        private void AddResult(in List<ModelAnalysisData> dataList, Mesh mesh)
+        {
+            resultVerts += mesh.vertices.Length;
+            resultTris += mesh.triangles.Length / 3;
+            resultUV += mesh.uv.Length;
+            resultUV2 += mesh.uv2.Length;
+            resultUV3 += mesh.uv3.Length;
+            resultUV4 += mesh.uv4.Length;
+            resultColors += mesh.colors.Length;
+            resultTangents += mesh.tangents.Length;
+            resultNormals += mesh.normals.Length;
+            
+            dataList.Add(new ModelAnalysisData
+            {
+                id = dataList.Count + 1,
+                tris = mesh.triangles.Length / 3,
+                verts = mesh.vertices.Length,
+                uv = mesh.uv.Length,
+                uv2 = mesh.uv2.Length,
+                uv3 = mesh.uv3.Length,
+                uv4 = mesh.uv4.Length,
+                colors = mesh.colors.Length,
+                normals = mesh.normals.Length,
+                tangents = mesh.tangents.Length,
+                assetName = AssetDatabase.GetAssetPath(mesh),
+                assetPath = AssetDatabase.GetAssetPath(mesh),
+            });
+        }
+        
+        /// <summary>
         /// 检测 MeshCollider
         /// </summary>
         /// <param name="dataList">行数据</param>
         /// <param name="meshColliders">待检测组件</param>
         private void DetectMeshCollider(in List<ModelAnalysisData> dataList, in MeshCollider[] meshColliders)
         {
-            var counter = 0;
-
             foreach (var meshCollider in meshColliders)
             {
                 if (ReferenceEquals(meshCollider, null))
@@ -264,36 +272,11 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                 var sharedMesh = meshCollider.sharedMesh;
                 if (ReferenceEquals(sharedMesh, null))
                 {
-                    DebugUtil.LogError("使用了 MeshCollider 却没有指定 Mesh!", meshCollider.gameObject);
+                    DebugUtil.LogError("使用了 MeshCollider 却没有指定 Mesh!", meshCollider.gameObject, "red");
                     continue;
                 }
 
-                resultVerts += sharedMesh.vertices.Length;
-                resultTris += sharedMesh.triangles.Length / 3;
-                resultUV += sharedMesh.uv.Length;
-                resultUV2 += sharedMesh.uv2.Length;
-                resultUV3 += sharedMesh.uv3.Length;
-                resultUV4 += sharedMesh.uv4.Length;
-                resultColors += sharedMesh.colors.Length;
-                resultTangents += sharedMesh.tangents.Length;
-                resultNormals += sharedMesh.normals.Length;
-
-                counter++;
-                dataList.Add(new ModelAnalysisData
-                {
-                    id = counter,
-                    tris = sharedMesh.triangles.Length / 3,
-                    verts = sharedMesh.vertices.Length,
-                    uv = sharedMesh.uv.Length,
-                    uv2 = sharedMesh.uv2.Length,
-                    uv3 = sharedMesh.uv3.Length,
-                    uv4 = sharedMesh.uv4.Length,
-                    colors = sharedMesh.colors.Length,
-                    normals = sharedMesh.normals.Length,
-                    tangents = sharedMesh.tangents.Length,
-                    assetName = AssetDatabase.GetAssetPath(sharedMesh),
-                    assetPath = AssetDatabase.GetAssetPath(sharedMesh),
-                });
+                AddResult(dataList, sharedMesh);
             }
         }
 
@@ -304,8 +287,6 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// <param name="meshFilters">待检测组件</param>
         private void DetectMeshFilter(in List<ModelAnalysisData> dataList, in MeshFilter[] meshFilters)
         {
-            var counter = 0;
-
             foreach (var meshFilter in meshFilters)
             {
                 if (ReferenceEquals(meshFilter, null))
@@ -320,32 +301,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     continue;
                 }
 
-                resultVerts += sharedMesh.vertices.Length;
-                resultTris += sharedMesh.triangles.Length / 3;
-                resultUV += sharedMesh.uv.Length;
-                resultUV2 += sharedMesh.uv2.Length;
-                resultUV3 += sharedMesh.uv3.Length;
-                resultUV4 += sharedMesh.uv4.Length;
-                resultColors += sharedMesh.colors.Length;
-                resultTangents += sharedMesh.tangents.Length;
-                resultNormals += sharedMesh.normals.Length;
-
-                counter++;
-                dataList.Add(new ModelAnalysisData
-                {
-                    id = counter,
-                    tris = sharedMesh.triangles.Length / 3,
-                    verts = sharedMesh.vertices.Length,
-                    uv = sharedMesh.uv.Length,
-                    uv2 = sharedMesh.uv2.Length,
-                    uv3 = sharedMesh.uv3.Length,
-                    uv4 = sharedMesh.uv4.Length,
-                    colors = sharedMesh.colors.Length,
-                    normals = sharedMesh.normals.Length,
-                    tangents = sharedMesh.tangents.Length,
-                    assetName = AssetDatabase.GetAssetPath(sharedMesh),
-                    assetPath = AssetDatabase.GetAssetPath(sharedMesh),
-                });
+                AddResult(dataList, sharedMesh);
             }
         }
         
@@ -356,48 +312,25 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// <param name="particleSystems">待检测组件</param>
         private void DetectParticleSystem(in List<ModelAnalysisData> dataList, in ParticleSystem[] particleSystems)
         {
-            var counter = 0;
-
             foreach (var particleSystem in particleSystems)
             {
-                if (ReferenceEquals(particleSystem, null))
+                if (ReferenceEquals(particleSystem, null) == false)
                 {
-                    continue;
+                    var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
+                    var mesh = renderer.mesh;
+                
+                    if (ReferenceEquals(mesh, null))
+                    {
+                        if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
+                        {
+                            DebugUtil.LogError($"粒子系统 {particleSystem.transform.name} 使用 Mesh 方式渲染粒子, 却没有指定 Mesh!", particleSystem.gameObject, "red");
+                        }
+                    }
+                    else
+                    {
+                        AddResult(dataList, mesh);
+                    }
                 }
-
-                var mesh = particleSystem.GetComponent<ParticleSystemRenderer>().mesh;
-                if (ReferenceEquals(mesh, null))
-                {
-                    DebugUtil.LogError("粒子系统使用了 Mesh 粒子却没有指定 Mesh!", particleSystem.gameObject);
-                    continue;
-                }
-
-                resultVerts += mesh.vertices.Length;
-                resultTris += mesh.triangles.Length / 3;
-                resultUV += mesh.uv.Length;
-                resultUV2 += mesh.uv2.Length;
-                resultUV3 += mesh.uv3.Length;
-                resultUV4 += mesh.uv4.Length;
-                resultColors += mesh.colors.Length;
-                resultTangents += mesh.tangents.Length;
-                resultNormals += mesh.normals.Length;
-
-                counter++;
-                dataList.Add(new ModelAnalysisData
-                {
-                    id = counter,
-                    tris = mesh.triangles.Length / 3,
-                    verts = mesh.vertices.Length,
-                    uv = mesh.uv.Length,
-                    uv2 = mesh.uv2.Length,
-                    uv3 = mesh.uv3.Length,
-                    uv4 = mesh.uv4.Length,
-                    colors = mesh.colors.Length,
-                    normals = mesh.normals.Length,
-                    tangents = mesh.tangents.Length,
-                    assetName = AssetDatabase.GetAssetPath(mesh),
-                    assetPath = AssetDatabase.GetAssetPath(mesh),
-                });
             }
         }
 
@@ -408,8 +341,6 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// <param name="skinnedMeshRenderers">待检测组件</param>
         private void DetectSkinnedMeshRenderer(in List<ModelAnalysisData> dataList, in SkinnedMeshRenderer[] skinnedMeshRenderers)
         {
-            var counter = 0;
-
             foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
             {
                 if (ReferenceEquals(skinnedMeshRenderer, null))
@@ -417,25 +348,14 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     continue;
                 }
 
-                var sharedMesh = skinnedMeshRenderer.sharedMesh;
-                if (ReferenceEquals(sharedMesh, null))
+                var mesh = skinnedMeshRenderer.sharedMesh;
+                if (ReferenceEquals(mesh, null))
                 {
                     DebugUtil.LogError("使用了 SkinnedMeshRenderer 却没有指定 Mesh!", skinnedMeshRenderer.gameObject);
                     continue;
                 }
 
-                resultVerts += sharedMesh.vertices.Length;
-                resultTris += sharedMesh.triangles.Length / 3;
-
-                counter++;
-                dataList.Add(new ModelAnalysisData
-                {
-                    id = counter,
-                    tris = sharedMesh.triangles.Length / 3,
-                    verts = sharedMesh.vertices.Length,
-                    assetName = AssetDatabase.GetAssetPath(sharedMesh),
-                    assetPath = AssetDatabase.GetAssetPath(sharedMesh),
-                });
+                AddResult(dataList, mesh);
             }
         }
 
@@ -456,7 +376,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 120,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.id.CompareTo(dataA.id), // 排序
+                    Compare = (dataA, dataB, sortType) => dataA.id.CompareTo(dataB.id), // 排序
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -473,8 +393,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 500,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) =>
-                        -string.Compare(dataA.assetName, dataB.assetName, StringComparison.Ordinal),
+                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.assetName, dataB.assetName, StringComparison.Ordinal),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -501,7 +420,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 120,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.verts.CompareTo(dataB.verts),
+                    Compare = (dataA, dataB, sortType) => dataA.verts.CompareTo(dataB.verts),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -535,7 +454,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 120,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.tris.CompareTo(dataB.tris),
+                    Compare = (dataA, dataB, sortType) => dataA.tris.CompareTo(dataB.tris),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -569,7 +488,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 80,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.uv.CompareTo(dataB.uv),
+                    Compare = (dataA, dataB, sortType) => dataA.uv.CompareTo(dataB.uv),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -586,7 +505,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 80,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.uv2.CompareTo(dataB.uv2),
+                    Compare = (dataA, dataB, sortType) => dataA.uv2.CompareTo(dataB.uv2),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -603,7 +522,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 80,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.uv3.CompareTo(dataB.uv3),
+                    Compare = (dataA, dataB, sortType) => dataA.uv3.CompareTo(dataB.uv3),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -620,7 +539,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 80,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.uv4.CompareTo(dataB.uv4),
+                    Compare = (dataA, dataB, sortType) => dataA.uv4.CompareTo(dataB.uv4),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -637,7 +556,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 80,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.colors.CompareTo(dataB.colors),
+                    Compare = (dataA, dataB, sortType) => dataA.colors.CompareTo(dataB.colors),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -654,7 +573,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 80,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.tangents.CompareTo(dataB.tangents),
+                    Compare = (dataA, dataB, sortType) => dataA.tangents.CompareTo(dataB.tangents),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -671,7 +590,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     maxWidth = 80,
                     allowToggleVisibility = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => -dataA.normals.CompareTo(dataB.normals),
+                    Compare = (dataA, dataB, sortType) => dataA.normals.CompareTo(dataB.normals),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;

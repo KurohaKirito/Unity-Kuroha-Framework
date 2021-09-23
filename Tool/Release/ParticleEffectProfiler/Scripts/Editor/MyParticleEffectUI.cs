@@ -8,61 +8,60 @@ using UnityEngine;
 public class MyParticleEffectUI : Editor
 {
     private readonly string[] labelArray = new string[20];
+    private ParticleEffectScript Target => target as ParticleEffectScript;
 
     private void OnSceneGUI()
     {
-        var particleEffectScript = (ParticleEffectScript) target;
-
         var index = 0;
-        labelArray[index] = GetParticleEffectData.GetTextRuntimeMemorySize(particleEffectScript.gameObject);
-        labelArray[++index] = GetParticleEffectData.GetParticleSystemCount(particleEffectScript.gameObject);
+        labelArray[index] = GetParticleEffectData.GetTextRuntimeMemorySize(Target.gameObject);
+        labelArray[++index] = GetParticleEffectData.GetParticleSystemCount(Target.gameObject);
 
         if (EditorApplication.isPlaying)
         {
             labelArray[++index] = GetParticleEffectData.GetOnlyParticleEffectDrawCallStr();
-            labelArray[++index] = GetParticleEffectData.GetParticleCountStr(particleEffectScript);
-            labelArray[++index] = GetParticleEffectData.GetPixDrawAverageStr(particleEffectScript);
-            labelArray[++index] = GetParticleEffectData.GetPixActualDrawAverageStr(particleEffectScript);
-            labelArray[++index] = GetParticleEffectData.GetPixRateStr(particleEffectScript);
+            labelArray[++index] = GetParticleEffectData.GetParticleCountStr(Target);
+            labelArray[++index] = GetParticleEffectData.GetPixDrawAverageStr(Target);
+            labelArray[++index] = GetParticleEffectData.GetPixActualDrawAverageStr(Target);
+            labelArray[++index] = GetParticleEffectData.GetPixRateStr(Target);
         }
 
-        ShowUI(); 
+        DrawSceneGUI(); 
     }
 
-    void ShowUI()
+    private void DrawSceneGUI()
     {
-        //开始绘制GUI
         Handles.BeginGUI();
+        {
+            GUILayout.BeginArea(new Rect(10, 10, 300, 300));
+            {
+                var style = new GUIStyle
+                {
+                    richText = true,
+                    fontStyle = FontStyle.Bold
+                };
 
-        //规定GUI显示区域
-        GUILayout.BeginArea(new Rect(10, 10, 300, 300));
-        GUIStyle style = new GUIStyle();
-        style.richText = true;
-        style.fontStyle = FontStyle.Bold;
-
-        for (int i = 0; i < labelArray.Length; i++)
-		{
-            if (!string.IsNullOrEmpty(labelArray[i]))
-	        {
-		        GUILayout.Label(labelArray[i], style);
-	        }
-		}
-
-        GUILayout.EndArea();
-
+                foreach (var label in labelArray)
+                {
+                    if (string.IsNullOrEmpty(label) == false)
+                    {
+                        GUILayout.Label(label, style);
+                    }
+                }
+            }
+            GUILayout.EndArea();
+        }
         Handles.EndGUI();
     }
 
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-
-        ParticleEffectScript particleEffectScript = (ParticleEffectScript)target;
-
-        string autoCullingTips = GetParticleEffectData.GetCullingSupportedString(particleEffectScript.gameObject);
-        if (!string.IsNullOrEmpty(autoCullingTips))
+        
+        var autoCullingTips = GetParticleEffectData.GetCullingSupportedString(Target.gameObject);
+        
+        if (string.IsNullOrEmpty(autoCullingTips) == false)
         {
-            GUILayout.Label("ParticleSystem以下选项会导致无法自动剔除：", EditorStyles.whiteLargeLabel);
+            GUILayout.Label("ParticleSystem 以下选项会导致无法自动剔除: ", EditorStyles.whiteLargeLabel);
             GUILayout.Label(autoCullingTips);
         }
     }

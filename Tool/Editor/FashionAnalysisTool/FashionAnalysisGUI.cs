@@ -70,7 +70,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                     {
                         if (transform.name == "Players")
                         {
-                            if (transform.parent.name.IndexOf("LobbyScreen", StringComparison.OrdinalIgnoreCase) >= 0)
+                            if (transform.parent.name.IndexOf("LobbyScreen", StringComparison.Ordinal) >= 0)
                             {
                                 players = transform;
                                 break;
@@ -109,7 +109,9 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                             GUILayout.Space(UI_SPACE_PIXELS);
                             DrawButton("3. 动画检测: 检测时装中全部动画状态机的剔除模式, 在 Console 窗口查看检测结果", "Start", CheckAnimator);
                             GUILayout.Space(UI_SPACE_PIXELS);
-                            DrawButton("4. 粒子系统检测: ", "Start", CheckParticleSystem);
+                            DrawButton("4. 隐藏物体检测: ", "Start", CheckDisableObject);
+                            GUILayout.Space(UI_SPACE_PIXELS);
+                            DrawButton("5. 粒子系统检测: ", "Start", CheckParticleSystem);
                             GUILayout.Space(UI_SPACE_PIXELS);
                         }
                         GUILayout.EndVertical();
@@ -177,12 +179,32 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
 
             if (hadError == false)
             {
-                DebugUtil.Log("<color='green'>动画状态机检测完毕, 未检测到问题.</color>");
+                DebugUtil.Log($"动画状态机检测完毕, 共检测了 {animators.Length} 个动画状态机, 未检测到问题", null, "green");
             }
         }
         
-        // 检测是否有隐藏游戏物体
-        
+        /// <summary>
+        /// 检测是否有隐藏游戏物体
+        /// </summary>
+        private static void CheckDisableObject()
+        {
+            var hadError = false;
+            var transforms = role.gameObject.GetComponentsInChildren<Transform>(true);
+            foreach (var transform in transforms)
+            {
+                if (transform.gameObject.activeSelf == false)
+                {
+                    hadError = true;
+                    DebugUtil.LogError($"游戏物体 {transform.name} 为隐藏状态!", transform.gameObject, "red");
+                }
+            }
+            
+            if (hadError == false)
+            {
+                DebugUtil.Log($"隐藏游戏物体检测完毕, 共检测了 {transforms.Length} 个游戏物体, 未检测到问题.", null, "green");
+            }
+        }
+
         /// <summary>
         /// 统计分析粒子系统
         /// </summary>
@@ -195,7 +217,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
             {
                 var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
                 
-                // 是否是 Mesh 粒子, 如果是, Mesh 的顶点信息, 三角面信息 > 300
+                // 是否是 Mesh 粒子
                 if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
                 {
                     var mesh = renderer.mesh;
@@ -224,20 +246,23 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                 }
                 
                 // 是否开启了碰撞器
-                
-                
+                if (particleSystem.collision.enabled)
+                {
+                    hadError = true;
+                    DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭碰撞!", particleSystem.gameObject, "red");
+                }
                 
                 // 是否开启了触发器
-                
-                
-                
-                // UV UV2 UV3 UV4 Colors 信息
-                
+                if (particleSystem.trigger.enabled)
+                {
+                    hadError = true;
+                    DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭触发器!", particleSystem.gameObject, "red");
+                }
             }
 
             if (hadError == false)
             {
-                DebugUtil.Log("动画状态机检测完毕, 未检测到问题.", null, "green");
+                DebugUtil.Log($"粒子系统检测完毕, 共检测了 {particleSystems.Length} 个粒子系统, 未检测到问题.", null, "green");
             }
         }
     }

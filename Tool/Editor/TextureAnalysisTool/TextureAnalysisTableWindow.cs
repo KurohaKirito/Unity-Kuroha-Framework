@@ -296,7 +296,6 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                         EditorGUI.LabelField(cellRect, data.id.ToString());
                     }
                 },
-
                 new CommonTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Name"),
@@ -307,8 +306,7 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                     allowToggleVisibility = false,
                     autoResize = false,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) =>
-                        string.Compare(dataA.textureName, dataB.textureName, StringComparison.Ordinal),
+                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.textureName, dataB.textureName, StringComparison.Ordinal),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;
@@ -323,7 +321,6 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                             : data.textureName.Split('\\').Last());
                     }
                 },
-
                 new CommonTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Width"),
@@ -360,7 +357,6 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                         }
                     }
                 },
-
                 new CommonTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Height"),
@@ -397,7 +393,6 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                         }
                     }
                 },
-
                 new CommonTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Solid"),
@@ -424,7 +419,6 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                         }
                     }
                 },
-
                 new CommonTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Repeat"),
@@ -435,8 +429,7 @@ namespace Kuroha.Tool.Editor.TextureAnalysisTool
                     allowToggleVisibility = false,
                     autoResize = false,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => Kuroha.Util.Release.StringUtil.CompareByNumber(
-                        dataA.repeatInfo, dataB.repeatInfo, sortType),
+                    Compare = (dataA, dataB, sortType) => Kuroha.Util.Release.StringUtil.CompareByNumber(dataA.repeatInfo, dataB.repeatInfo, sortType),
                     DrawCell = (cellRect, data) =>
                     {
                         cellRect.height += 5f;

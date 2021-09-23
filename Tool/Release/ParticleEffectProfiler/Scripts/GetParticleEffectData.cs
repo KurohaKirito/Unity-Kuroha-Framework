@@ -68,7 +68,7 @@ public static class GetParticleEffectData
     }
 
     /// <summary>
-    /// 向外部返回 运行时内存占用 文本
+    /// 运行时内存占用
     /// </summary>
     /// <param name="go"></param>
     /// <returns></returns>
@@ -76,6 +76,7 @@ public static class GetParticleEffectData
     {
         const int MAX_TEXTURE_COUNT = 5;
         const int MAX_MEMORY_SIZE = 1000 * 1024;
+        
         var memorySize = GetRuntimeMemorySize(go, out var textureCount);
         var memorySizeStr = EditorUtility.FormatBytes(memorySize);
         var maxMemorySizeStr = EditorUtility.FormatBytes(MAX_MEMORY_SIZE);
@@ -101,10 +102,10 @@ public static class GetParticleEffectData
 
     public static int GetOnlyParticleEffectDrawCall()
     {
-        //因为 Camera 实际上渲染了两次，一次用作取样，一次用作显示。
-        //狂飙这里给出了详细的说明：https://networm.me/2019/07/28/unity-particle-effect-profiler/#drawcall-%E6%95%B0%E5%80%BC%E4%B8%BA%E4%BB%80%E4%B9%88%E6%AF%94%E5%AE%9E%E9%99%85%E5%A4%A7-2-%E5%80%8D
+        // 因为 Camera 实际上渲染了两次，一次用作取样，一次用作显示。
+        // 狂飙这里给出了详细的说明：https://networm.me/2019/07/28/unity-particle-effect-profiler/#drawcall-%E6%95%B0%E5%80%BC%E4%B8%BA%E4%BB%80%E4%B9%88%E6%AF%94%E5%AE%9E%E9%99%85%E5%A4%A7-2-%E5%80%8D
         var drawCall = UnityEditor.UnityStats.batches / 2;
-        if (maxDrawCall<drawCall)
+        if (maxDrawCall < drawCall)
         {
             maxDrawCall = drawCall;
         }
@@ -113,8 +114,8 @@ public static class GetParticleEffectData
 
     public static string GetOnlyParticleEffectDrawCallStr()
     {
-        int max = 10;
-        return string.Format("DrawCall: {0}   最高：{1}   建议：<{2}", FormatColorMax(GetOnlyParticleEffectDrawCall(), max), FormatColorMax(maxDrawCall, max), max);
+        const int MAX_DRAW_CALL = 10;
+        return $"DrawCall: {FormatColorMax(GetOnlyParticleEffectDrawCall(), MAX_DRAW_CALL)} 最高: {FormatColorMax(maxDrawCall, MAX_DRAW_CALL)} 建议: <{MAX_DRAW_CALL}";
     }
 
     public static string GetPixDrawAverageStr(ParticleEffectScript particleEffectGo)
@@ -163,7 +164,8 @@ public static class GetParticleEffectData
 
     private static string CheckCulling(ParticleSystem particleSystem)
     {
-        string text = "";
+        var text = "";
+        
         if (particleSystem.collision.enabled)
         {
             text += "\n勾选了 Collision";
@@ -173,7 +175,7 @@ public static class GetParticleEffectData
         {
             if (particleSystem.emission.rateOverDistance.curveMultiplier != 0)
             {
-                text += "\nEmission使用了Current(非线性运算)";
+                text += "\nEmission 使用了 Current(非线性运算)";
             }
         }
 
@@ -189,14 +191,14 @@ public static class GetParticleEffectData
                 || GetIsRandomized(particleSystem.forceOverLifetime.z)
                 || particleSystem.forceOverLifetime.randomized)
             {
-                text += "\nForce Over Lifetime使用了Current(非线性运算)";
+                text += "\nForce Over Lifetime 使用了 Current(非线性运算)";
             }
         } 
         if (particleSystem.inheritVelocity.enabled)
         {
             if (GetIsRandomized(particleSystem.inheritVelocity.curve))
             {
-                text += "\nInherit Velocity使用了Current(非线性运算)";
+                text += "\nInherit Velocity 使用了 Current(非线性运算)";
             }
         } 
         if (particleSystem.noise.enabled)
@@ -213,29 +215,27 @@ public static class GetParticleEffectData
                 || GetIsRandomized(particleSystem.rotationOverLifetime.y)
                 || GetIsRandomized(particleSystem.rotationOverLifetime.z))
             {
-                text += "\nRotation Over Lifetime使用了Current(非线性运算)";
+                text += "\nRotation Over Lifetime 使用了 Current(非线性运算)";
             }
         } 
         if (particleSystem.shape.enabled)
         {
-            ParticleSystemShapeType shapeType = (ParticleSystemShapeType)particleSystem.shape.shapeType;
+            var shapeType = particleSystem.shape.shapeType;
             switch (shapeType)
             {
                 case ParticleSystemShapeType.Cone:
                 case ParticleSystemShapeType.ConeVolume:
-#if UNITY_2017_1_OR_NEWER
                 case ParticleSystemShapeType.Donut:
-#endif
                 case ParticleSystemShapeType.Circle:
                     if(particleSystem.shape.arcMode != ParticleSystemShapeMultiModeValue.Random)
                     {
-                        text += "\nShape的Circle-Arc使用了Random模式";
+                        text += "\nShape 的 Circle-Arc 使用了 Random 模式";
                     }
                     break;
                 case ParticleSystemShapeType.SingleSidedEdge:
                     if (particleSystem.shape.radiusMode != ParticleSystemShapeMultiModeValue.Random)
                     {
-                        text += "\nShape的Edge-Radius使用了Random模式";
+                        text += "\nShape 的 Edge-Radius 使用了 Random 模式";
                     }
                     break;
                 default:
@@ -260,7 +260,7 @@ public static class GetParticleEffectData
                 || GetIsRandomized(particleSystem.velocityOverLifetime.y)
                 || GetIsRandomized(particleSystem.velocityOverLifetime.z))
             {
-                text += "\nVelocity Over Lifetime使用了Current(非线性运算)";
+                text += "\nVelocity Over Lifetime 使用了 Current(非线性运算)";
             }
         }
         if (particleSystem.limitVelocityOverLifetime.enabled)
@@ -273,14 +273,14 @@ public static class GetParticleEffectData
         }
         if (particleSystem.main.gravityModifierMultiplier != 0)
         {
-            text += "\nGravityModifier 不等于0";
+            text += "\nGravityModifier 不等于 0";
         }
         return text;
     }
 
     private static bool GetIsRandomized(ParticleSystem.MinMaxCurve minMaxCurve)
     {
-        bool flag = AnimationCurveSupportsProcedural(minMaxCurve.curveMax);
+        var flag = AnimationCurveSupportsProcedural(minMaxCurve.curveMax);
 
         bool result;
         if (minMaxCurve.mode != ParticleSystemCurveMode.TwoCurves && minMaxCurve.mode != ParticleSystemCurveMode.TwoConstants)
@@ -289,7 +289,7 @@ public static class GetParticleEffectData
         }
         else
         {
-            bool flag2 = AnimationCurveSupportsProcedural(minMaxCurve.curveMin);
+            var flag2 = AnimationCurveSupportsProcedural(minMaxCurve.curveMin);
             result = (flag && flag2);
         }
 
@@ -298,31 +298,31 @@ public static class GetParticleEffectData
 
     private static bool AnimationCurveSupportsProcedural(AnimationCurve curve)
     {
-        //switch (AnimationUtility.IsValidPolynomialCurve(curve)) //保护级别，无法访问，靠
-        //{
-        //    case AnimationUtility.PolynomialValid.Valid:
-        //        return true;
-        //    case AnimationUtility.PolynomialValid.InvalidPreWrapMode:
-        //        break;
-        //    case AnimationUtility.PolynomialValid.InvalidPostWrapMode:
-        //        break;
-        //    case AnimationUtility.PolynomialValid.TooManySegments:
-        //        break;
-        //}
+        // switch (AnimationUtility.IsValidPolynomialCurve(curve)) //保护级别，无法访问，靠
+        // {
+        //     case AnimationUtility.PolynomialValid.Valid:
+        //         return true;
+        //     case AnimationUtility.PolynomialValid.InvalidPreWrapMode:
+        //         break;
+        //     case AnimationUtility.PolynomialValid.InvalidPostWrapMode:
+        //         break;
+        //     case AnimationUtility.PolynomialValid.TooManySegments:
+        //         break;
+        // }
+        
         return false; //只能默认返回false了
     }
 
     private static string FormatColorValue(int value)
     {
-        return string.Format("<color=green>{0}</color>", value);
+        return $"<color=green>{value}</color>";
     }
 
     private static string FormatColorMax(int value, int max)
     {
-        if (max > value)
-            return string.Format("<color=green>{0}</color>", value);
-        else
-            return string.Format("<color=red>{0}</color>", value);
+        return value < max
+            ? $"<color=green>{value}</color>"
+            : $"<color=red>{value}</color>";
     }
 }
 #endif
