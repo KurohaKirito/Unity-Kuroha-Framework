@@ -102,8 +102,7 @@ public static class GetParticleEffectData
 
     public static int GetOnlyParticleEffectDrawCall()
     {
-        // 因为 Camera 实际上渲染了两次，一次用作取样，一次用作显示。
-        // 狂飙这里给出了详细的说明：https://networm.me/2019/07/28/unity-particle-effect-profiler/#drawcall-%E6%95%B0%E5%80%BC%E4%B8%BA%E4%BB%80%E4%B9%88%E6%AF%94%E5%AE%9E%E9%99%85%E5%A4%A7-2-%E5%80%8D
+        // 因为 Camera 实际上渲染了两次, 一次用作取样, 一次用作显示
         var drawCall = UnityEditor.UnityStats.batches / 2;
         if (maxDrawCall < drawCall)
         {
@@ -118,30 +117,30 @@ public static class GetParticleEffectData
         return $"DrawCall: {FormatColorMax(GetOnlyParticleEffectDrawCall(), MAX_DRAW_CALL)} 最高: {FormatColorMax(maxDrawCall, MAX_DRAW_CALL)} 建议: <{MAX_DRAW_CALL}";
     }
 
-    public static string GetPixDrawAverageStr(ParticleEffectScript particleEffectGo)
+    public static string GetPixDrawAverageStr(ParticleEffectManager particleEffectGo)
     {
         //index = 0：默认按高品质的算，这里你可以根本你们项目的品质进行修改。
-        EffectEvlaData[] effectEvlaData = particleEffectGo.GetEffectEvlaData();
+        EffectOverdrawData[] effectEvlaData = particleEffectGo.GetEffectEvlaData();
         int pixDrawAverage = effectEvlaData[0].GetPixDrawAverage();
         return string.Format("特效原填充像素点：{0}", FormatColorValue(pixDrawAverage));
     }
 
-    public static string GetPixActualDrawAverageStr(ParticleEffectScript particleEffectGo)
+    public static string GetPixActualDrawAverageStr(ParticleEffectManager particleEffectGo)
     {
-        EffectEvlaData[] effectEvlaData = particleEffectGo.GetEffectEvlaData();
+        EffectOverdrawData[] effectEvlaData = particleEffectGo.GetEffectEvlaData();
         int pixActualDrawAverage = effectEvlaData[0].GetPixActualDrawAverage();
         return string.Format("特效实际填充像素点：{0}", FormatColorValue(pixActualDrawAverage));
     }
 
-    public static string GetPixRateStr(ParticleEffectScript particleEffectGo)
+    public static string GetPixRateStr(ParticleEffectManager particleEffectGo)
     {
         int max = 4;
-        EffectEvlaData[] effectEvlaData = particleEffectGo.GetEffectEvlaData();
+        EffectOverdrawData[] effectEvlaData = particleEffectGo.GetEffectEvlaData();
         int pixRate = effectEvlaData[0].GetPixRate();
         return string.Format("平均每像素overdraw率：{0}   建议：<{1}", FormatColorMax(pixRate, max), max);
     }
 
-    public static string GetParticleCountStr(ParticleEffectScript particleEffectGo)
+    public static string GetParticleCountStr(ParticleEffectManager particleEffectGo)
     {
         int max = 50;
         return string.Format("粒子数量：{0}   最高：{1}   建议：<{2}", FormatColorMax(particleEffectGo.GetParticleCount(), max), FormatColorMax(particleEffectGo.GetMaxParticleCount(), max), max);

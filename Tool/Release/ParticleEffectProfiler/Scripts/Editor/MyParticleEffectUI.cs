@@ -4,11 +4,11 @@ using UnityEngine;
 /// <summary>
 /// 将特效的性能数据显示到 Scene 窗口
 /// </summary>
-[CustomEditor(typeof(ParticleEffectScript))] 
+[CustomEditor(typeof(ParticleEffectManager))] 
 public class MyParticleEffectUI : Editor
 {
     private readonly string[] labelArray = new string[20];
-    private ParticleEffectScript Target => target as ParticleEffectScript;
+    private ParticleEffectManager Target => target as ParticleEffectManager;
 
     private void OnSceneGUI()
     {

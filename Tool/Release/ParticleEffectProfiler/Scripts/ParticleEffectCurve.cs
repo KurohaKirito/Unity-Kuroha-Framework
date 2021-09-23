@@ -1,59 +1,59 @@
 ﻿#if UNITY_EDITOR
-using System.Collections;
 using System.Collections.Generic;
+using Kuroha.Util.Release;
 using UnityEngine;
 
 /// <summary>
-/// 折线图
+/// 特效曲线
 /// </summary>
-public class ParticleEffectCurve {
+public class ParticleEffectCurve
+{
+    private readonly AnimationCurve animationCurve = new AnimationCurve();
+    
+    public const int FPS = 30;
 
-    public AnimationCurve animationCurve = new AnimationCurve();
+    // 打点的数量: 默认 90 个
+    private int valueCount = 3 * FPS;
 
-    public static int FPS = 30;
+    private readonly List<int> values = new List<int>();
 
-    //打点的数量：默认90个
-    int m_ValueCount = 3 * FPS;
-
-    List<int> m_Values = new List<int>();
-
-    public AnimationCurve UpdateAnimationCurve(int value, bool loop, int second)
+    public AnimationCurve Update(int value, bool loop, int second)
     {
-        m_ValueCount = second * FPS;
+        valueCount = second * FPS;
 
-        if (animationCurve.length > m_ValueCount)
+        if (animationCurve.length > valueCount)
         {
-            for (int i = animationCurve.length-1; i >= m_ValueCount; i--)
+            for (var index = animationCurve.length - 1; index >= valueCount; index--)
             {
-                Debug.Log(i);
-                animationCurve.RemoveKey(i);
-                if (i <= m_Values.Count)
+                DebugUtil.Log(index.ToString());
+                animationCurve.RemoveKey(index);
+                if (index <= values.Count)
                 {
-                    m_Values.RemoveAt(i);
+                    values.RemoveAt(index);
                 }
             }
         }
 
         if (loop)
         {
-            if (m_Values.Count >= m_ValueCount)
+            if (values.Count >= valueCount)
             {
-                m_Values.RemoveAt(0);
+                values.RemoveAt(0);
             }
 
-            m_Values.Add(value);
-            for (int i = 0; i < m_Values.Count; i++)
+            values.Add(value);
+            for (var index = 0; index < values.Count; index++)
             {
-                if (animationCurve.length > i)
+                if (animationCurve.length > index)
                 {
-                    animationCurve.RemoveKey(i);
+                    animationCurve.RemoveKey(index);
                 }
-                animationCurve.AddKey(i, m_Values[i]);
+                animationCurve.AddKey(index, values[index]);
             }
         }
         else
         {
-            if (animationCurve.length < m_ValueCount)
+            if (animationCurve.length < valueCount)
             {
                 animationCurve.AddKey(animationCurve.length, value);
             }

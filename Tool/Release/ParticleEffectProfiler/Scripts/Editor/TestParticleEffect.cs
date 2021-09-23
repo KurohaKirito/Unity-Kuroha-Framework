@@ -1,3 +1,4 @@
+using Kuroha.Util.Release;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,64 +8,65 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class TestParticleEffect
 {
-    private const string RequestTestKey = "TestParticleEffectRquestTest";
-    private static bool _hasPlayed;
-    static bool isRestart = false;
+    private const string REQUEST_TEST_KEY = "TestParticleEffectRquestTest";
+    private static bool hasPlayed;
+    private static bool isRestart;
 
-    [MenuItem("GameObject/特效/测试", false, 11)]
+    [MenuItem("GameObject/Effects/ParticleTest", false, 11)]
     private static void Test()
     {
-        var go = Selection.activeGameObject;
-        var particleSystemRenderer = go.GetComponentsInChildren<ParticleSystemRenderer>(true);
+        var hierarchyGameObject = Selection.activeGameObject;
+        var renderers = hierarchyGameObject.GetComponentsInChildren<ParticleSystemRenderer>(true);
 
-        if (particleSystemRenderer.Length == 0)
+        if (renderers.Length <= 0)
         {
-            Debug.LogError("不是特效无法测试！");
-            return;
-        }
-
-        EditorPrefs.SetBool(RequestTestKey, true);
-
-        //已经在播放状态，使其重新开始
-        if (EditorApplication.isPlaying)
-        {
-            EditorApplication.isPlaying = false;
-            isRestart = true;
+            DebugUtil.LogError("不是特效无法测试!", hierarchyGameObject, "red");
         }
         else
         {
-            EditorApplication.isPlaying = true;
-        }
+            EditorPrefs.SetBool(REQUEST_TEST_KEY, true);
 
-        var particleEffectScript = go.GetComponentsInChildren<ParticleEffectScript>(true);
-        if (particleEffectScript.Length == 0)
-        {
-            go.AddComponent<ParticleEffectScript>();
+            // 已经在播放状态, 使其重新开始
+            if (EditorApplication.isPlaying)
+            {
+                EditorApplication.isPlaying = false;
+                isRestart = true;
+            }
+            else
+            {
+                EditorApplication.isPlaying = true;
+            }
+
+            var particleEffectScript = hierarchyGameObject.GetComponentsInChildren<ParticleEffectManager>(true);
+            if (particleEffectScript.Length <= 0)
+            {
+                hierarchyGameObject.AddComponent<ParticleEffectManager>();
+            }
         }
     }
 
     static TestParticleEffect()
     {
         EditorApplication.update += Update;
-        EditorApplication.playmodeStateChanged += PlaymodeStateChanged;
+        EditorApplication.playModeStateChanged += PlayModeStateChanged;
     }
 
     private static void Update()
     {
-        if (EditorPrefs.HasKey(RequestTestKey) && !_hasPlayed &&
-            EditorApplication.isPlaying &&
-            EditorApplication.isPlayingOrWillChangePlaymode)
+        if (EditorPrefs.HasKey(REQUEST_TEST_KEY) &&
+            EditorApplication.isPlayingOrWillChangePlaymode &&
+            EditorApplication.isPlaying && hasPlayed == false)
         {
-            EditorPrefs.DeleteKey(RequestTestKey);
-            _hasPlayed = true;
+            EditorPrefs.DeleteKey(REQUEST_TEST_KEY);
+            hasPlayed = true;
         }
     }
 
-    private static void PlaymodeStateChanged()
+    private static void PlayModeStateChanged(PlayModeStateChange change)
     {
-        if (!EditorApplication.isPlaying)
+        if (EditorApplication.isPlaying == false)
         {
-            _hasPlayed = false;
+            hasPlayed = false;
         }
 
         if (isRestart)
