@@ -154,11 +154,11 @@ namespace Kuroha.GUI.Editor
         {
             if (pageCount > 0)
             {
-                GUILayout.Label($"第 {currentPage} 页 / 共 {pageCount} 页", GUILayout.Width(110),GUILayout.Height(24));
+                EditorGUILayout.LabelField($"第 {currentPage} 页 / 共 {pageCount} 页", GUILayout.Width(110),GUILayout.Height(24));
             }
             else
             {
-                GUILayout.Label("无数据", GUILayout.Width(50),GUILayout.Height(24));
+                EditorGUILayout.LabelField("无数据", GUILayout.Width(50),GUILayout.Height(24));
             }
         }
 

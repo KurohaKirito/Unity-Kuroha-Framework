@@ -56,11 +56,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         /// [GUI] 分页管理器: 总页数
         /// </summary>
         private int pageCount;
-        
-        /// <summary>
-        /// 标题风格
-        /// </summary>
-        private GUIStyle titleStyle;
 
         /// <summary>
         /// 开启页面
@@ -70,18 +65,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         {
             EffectCheckReport.reportInfos = results;
             GetWindow<EffectCheckReportWindow>("检测结果").minSize = new Vector2(1000, 650);
-        }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        private void OnEnable()
-        {
-            titleStyle = new GUIStyle
-            {
-                fontSize = 20,
-                alignment = TextAnchor.MiddleCenter
-            };
         }
 
         /// <summary>
@@ -95,7 +78,16 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
             }
 
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
-            GUILayout.Label($"待修复问题: {EffectCheckReport.reportInfos.Count} 个", titleStyle);
+            
+            var size = UnityEngine.GUI.skin.label.fontSize;
+            var alignment = UnityEngine.GUI.skin.label.alignment;
+            UnityEngine.GUI.skin.label.fontSize = 20;
+            UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+            UnityEngine.GUI.skin.label.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
+            GUILayout.Label($"待修复问题: {EffectCheckReport.reportInfos.Count} 个");
+            UnityEngine.GUI.skin.label.fontSize = size;
+            UnityEngine.GUI.skin.label.alignment = alignment;
+            
             GUILayout.BeginHorizontal();
 
             #region 全选 与 全不选
@@ -182,7 +174,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
 
             UnityEngine.GUI.skin.label.normal.textColor = effectCheckReportInfo.dangerLevel == 0 ? Color.yellow : Color.red;
             GUILayout.Label(EffectCheckItemSetView.dangerLevelOptions[effectCheckReportInfo.dangerLevel], GUILayout.Width(40));
-            UnityEngine.GUI.skin.label.normal.textColor = Color.black;
+            UnityEngine.GUI.skin.label.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
 
             GUILayout.Label(effectCheckReportInfo.content);
 

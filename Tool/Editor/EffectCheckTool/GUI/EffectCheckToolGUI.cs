@@ -64,7 +64,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.GUI
                     GUILayout.EndVertical();
 
                     GUILayout.Space(UI_DEFAULT_MARGIN);
-                    GUILayout.Label("2. 浏览全部的特效检查项目, 可以为每一个特效检查项设置其是否启用.");
+                    EditorGUILayout.LabelField("2. 浏览全部的特效检查项目, 可以为每一个特效检查项设置其是否启用.");
                     EditorGUI.indentLevel++;
                     EditorGUILayout.LabelField("是否在 CICD 中启用, 同时可以对每一个检查项进行编辑和删除.");
                     EditorGUI.indentLevel--;
@@ -77,7 +77,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.GUI
                     GUILayout.EndVertical();
 
                     GUILayout.Space(UI_DEFAULT_MARGIN);
-                    GUILayout.Label($"3. 点击按钮, 开始检查.");
+                    EditorGUILayout.LabelField($"3. 点击按钮, 开始检查.");
                     EditorGUI.indentLevel++;
                     EditorGUILayout.LabelField("只有启用状态下的检查项才会被执行.");
                     EditorGUI.indentLevel--;
