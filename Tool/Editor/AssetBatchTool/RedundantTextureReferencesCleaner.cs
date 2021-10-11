@@ -100,15 +100,17 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             // 获取相对目录下所有的材质球文件
             var guids = AssetDatabase.FindAssets("t:Material", new []{path});
             var materials = new List<Material>();
-            foreach (var guid in guids)
+            for (var index = 0; index < guids.Length; index++)
             {
-                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                ProgressBar.DisplayProgressBar("批处理工具", $"加载材质: {index + 1}/{guids.Length}", index + 1, guids.Length);
+                var assetPath = AssetDatabase.GUIDToAssetPath(guids[index]);
                 materials.Add(AssetDatabase.LoadAssetAtPath<Material>(assetPath));
             }
             Kuroha.Util.Release.DebugUtil.Log($"Find {materials.Count} Materials!");
             
             // 遍历材质
             var errorCounter = 0;
+            var repairCount = 0;
             for (var index = 0; index < materials.Count; index++)
             {
                 ProgressBar.DisplayProgressBar("批处理工具", $"材质冗余纹理检测中: {index + 1}/{materials.Count}", index + 1, materials.Count);
@@ -116,9 +118,24 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 {
                     errorCounter++;
                 }
-            }
 
-            Kuroha.Util.Release.DebugUtil.Log($"RepairCounter: 共检测出 {errorCounter} 个问题.");
+                if (isAutoRepair)
+                {
+                    repairCount++;
+                }
+            }
+            if (errorCounter > 0 && repairCount < errorCounter)
+            {
+                Kuroha.Util.Release.DebugUtil.Log($"材质球冗余纹理引用检测完毕: 共检测出 {errorCounter} 个问题, 修复了其中的 {repairCount} 个问题.", null, "red");
+            }
+            else if (errorCounter > 0 && repairCount >= errorCounter)
+            {
+                Kuroha.Util.Release.DebugUtil.Log($"材质球冗余纹理引用检测完毕: 共检测出 {errorCounter} 个问题, 修复了其中的 {repairCount} 个问题.", null, "green");
+            }
+            else
+            {
+                Kuroha.Util.Release.DebugUtil.Log("材质球冗余纹理引用检测完毕, 未发现任何问题!", null, "green");
+            }
         }
 
         /// <summary>
