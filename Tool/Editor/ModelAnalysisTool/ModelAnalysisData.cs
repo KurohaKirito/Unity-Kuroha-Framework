@@ -5,6 +5,7 @@
         public int id;
         public int tris;
         public int verts;
+        public string readwrite;
         public int uv;
         public int uv2;
         public int uv3;

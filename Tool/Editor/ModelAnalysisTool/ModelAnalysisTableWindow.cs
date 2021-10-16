@@ -132,12 +132,13 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         {
             if (forceUpdate || table == null)
             {
-                if (prefab != null || isDetectCurrentScene)
+                if (ReferenceEquals(prefab, null) == false || isDetectCurrentScene)
                 {
                     var dataList = InitRows(isCollider);
+                    
                     if (dataList != null)
                     {
-                        var columns = InitColumns();
+                        var columns = InitColumns(isCollider);
                         if (columns != null)
                         {
                             table = new ModelAnalysisTable(new Vector2(20, 20), new Vector2(300, 300),
@@ -226,7 +227,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// <summary>
         /// 增加一条检测结果
         /// </summary>
-        private void AddResult(in List<ModelAnalysisData> dataList, Mesh mesh)
+        private void AddResult(in List<ModelAnalysisData> dataList, Mesh mesh, string readWriteEnable)
         {
             resultVerts += mesh.vertices.Length;
             resultTris += mesh.triangles.Length / 3;
@@ -237,12 +238,13 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
             resultColors += mesh.colors.Length;
             resultTangents += mesh.tangents.Length;
             resultNormals += mesh.normals.Length;
-            
+
             dataList.Add(new ModelAnalysisData
             {
                 id = dataList.Count + 1,
                 tris = mesh.triangles.Length / 3,
                 verts = mesh.vertices.Length,
+                readwrite = readWriteEnable,
                 uv = mesh.uv.Length,
                 uv2 = mesh.uv2.Length,
                 uv3 = mesh.uv3.Length,
@@ -251,7 +253,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                 normals = mesh.normals.Length,
                 tangents = mesh.tangents.Length,
                 assetName = AssetDatabase.GetAssetPath(mesh),
-                assetPath = AssetDatabase.GetAssetPath(mesh),
+                assetPath = AssetDatabase.GetAssetPath(mesh)
             });
         }
         
@@ -262,21 +264,51 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
         /// <param name="meshColliders">待检测组件</param>
         private void DetectMeshCollider(in List<ModelAnalysisData> dataList, in MeshCollider[] meshColliders)
         {
+            const MeshColliderCookingOptions DEFAULT_OPTIONS = MeshColliderCookingOptions.EnableMeshCleaning &
+                                                               MeshColliderCookingOptions.WeldColocatedVertices &
+                                                               MeshColliderCookingOptions.CookForFasterSimulation;
+            
             foreach (var meshCollider in meshColliders)
             {
-                if (ReferenceEquals(meshCollider, null))
+                if (ReferenceEquals(meshCollider, null) == false)
                 {
-                    continue;
-                }
+                    var sharedMesh = meshCollider.sharedMesh;
+                    if (ReferenceEquals(sharedMesh, null))
+                    {
+                        DebugUtil.LogError("使用了 MeshCollider 却没有指定 Mesh!", meshCollider.gameObject, "red");
+                    }
+                    else
+                    {
+                        var readWriteEnable = false;
+                        
+                        // 负缩放 + 凸体
+                        if (meshCollider.transform.localScale.x < 0 || meshCollider.transform.localScale.y < 0 || meshCollider.transform.localScale.z < 0)
+                        {
+                            if (meshCollider.convex)
+                            {
+                                DebugUtil.Log("原因 1");
+                                readWriteEnable = true;
+                            }
+                        }
+                        
+                        // 旋转
+                        // else if (meshCollider.transform.localRotation != Quaternion.identity)
+                        // {
+                        //     DebugUtil.Log("原因 2");
+                        //     readWriteEnable = true;
+                        // }
+                        
+                        // Cooking Options
+                        else if (meshCollider.cookingOptions != DEFAULT_OPTIONS)
+                        {
+                            DebugUtil.Log("原因 3");
+                            readWriteEnable = true;
+                        }
 
-                var sharedMesh = meshCollider.sharedMesh;
-                if (ReferenceEquals(sharedMesh, null))
-                {
-                    DebugUtil.LogError("使用了 MeshCollider 却没有指定 Mesh!", meshCollider.gameObject, "red");
-                    continue;
+                        var readWriteEnableStr = $"{sharedMesh.isReadable} => {readWriteEnable}";
+                        AddResult(dataList, sharedMesh, readWriteEnableStr);
+                    }
                 }
-
-                AddResult(dataList, sharedMesh);
             }
         }
 
@@ -301,7 +333,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     continue;
                 }
 
-                AddResult(dataList, sharedMesh);
+                AddResult(dataList, sharedMesh, "非碰撞");
             }
         }
         
@@ -328,7 +360,7 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     }
                     else
                     {
-                        AddResult(dataList, mesh);
+                        AddResult(dataList, mesh, "非碰撞");
                     }
                 }
             }
@@ -355,250 +387,339 @@ namespace Kuroha.Tool.Editor.ModelAnalysisTool
                     continue;
                 }
 
-                AddResult(dataList, mesh);
+                AddResult(dataList, mesh, "非碰撞");
             }
         }
 
+        #region 创建数据列
+
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_ID()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("ID"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 50,
+                minWidth = 50,
+                maxWidth = 120,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.id.CompareTo(dataB.id), // 排序
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.id.ToString());
+                },
+            };
+        }
+
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_Name()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("Name"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 300,
+                minWidth = 300,
+                maxWidth = 500,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) =>
+                    string.Compare(dataA.assetName, dataB.assetName, StringComparison.Ordinal),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    var iconRect = cellRect;
+                    iconRect.width = 20f;
+                    EditorGUI.LabelField(iconRect,
+                        data.assetName.Equals("总和")
+                            ? EditorGUIUtility.IconContent("console.infoicon.sml")
+                            : EditorGUIUtility.IconContent("PrefabModel Icon"));
+                    cellRect.xMin += 20f;
+                    EditorGUI.LabelField(cellRect,
+                        data.assetName.Contains("/")
+                            ? data.assetName.Split('/').Last()
+                            : data.assetName.Split('\\').Last());
+                },
+            };
+        }
+        
+        private CommonTableColumn<ModelAnalysisData> CreateColumn_Verts()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("Verts"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 80,
+                minWidth = 80,
+                maxWidth = 120,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.verts.CompareTo(dataB.verts),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    var iconRect = cellRect;
+                    iconRect.width = 20f;
+                    cellRect.xMin += 20f;
+                    if (data.verts > vertsError)
+                    {
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
+                        EditorGUI.LabelField(cellRect, data.verts.ToString(), fontStyleRed);
+                    }
+                    else if (data.verts > vertsWarn)
+                    {
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
+                        EditorGUI.LabelField(cellRect, data.verts.ToString(), fontStyleYellow);
+                    }
+                    else
+                    {
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                        EditorGUI.LabelField(cellRect, data.verts.ToString());
+                    }
+                },
+            };
+        }
+        
+        private CommonTableColumn<ModelAnalysisData> CreateColumn_Tris()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("Tris"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 80,
+                minWidth = 80,
+                maxWidth = 120,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.tris.CompareTo(dataB.tris),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    var iconRect = cellRect;
+                    iconRect.width = 20f;
+                    cellRect.xMin += 20f;
+                    if (data.tris > trisError)
+                    {
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
+                        EditorGUI.LabelField(cellRect, data.tris.ToString(), fontStyleRed);
+                    }
+                    else if (data.tris > trisWarn)
+                    {
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
+                        EditorGUI.LabelField(cellRect, data.tris.ToString(), fontStyleYellow);
+                    }
+                    else
+                    {
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                        EditorGUI.LabelField(cellRect, data.tris.ToString());
+                    }
+                },
+            };
+        }
+        
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_ReadWrite()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("R/W"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 120,
+                minWidth = 120,
+                maxWidth = 160,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) =>
+                    string.Compare(dataA.readwrite, dataB.readwrite, StringComparison.Ordinal),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.readwrite.ToString());
+                },
+            };
+        }
+        
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_UV()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("UV"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 50,
+                minWidth = 50,
+                maxWidth = 80,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.uv.CompareTo(dataB.uv),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.uv.ToString());
+                },
+            };
+        }
+        
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_UV2()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("UV2"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 50,
+                minWidth = 50,
+                maxWidth = 80,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.uv2.CompareTo(dataB.uv2),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.uv2.ToString());
+                },
+            };
+        }
+        
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_UV3()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("UV3"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 40,
+                minWidth = 40,
+                maxWidth = 80,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.uv3.CompareTo(dataB.uv3),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.uv3.ToString());
+                },
+            };
+        }
+        
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_UV4()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("UV4"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 40,
+                minWidth = 40,
+                maxWidth = 80,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.uv4.CompareTo(dataB.uv4),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.uv4.ToString());
+                },
+            };
+        }
+        
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_Colors()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("Colors"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 60,
+                minWidth = 60,
+                maxWidth = 80,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.colors.CompareTo(dataB.colors),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.colors.ToString());
+                },
+            };
+        }
+        
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_Tangents()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("Tangents"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 70,
+                minWidth = 70,
+                maxWidth = 80,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.tangents.CompareTo(dataB.tangents),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.tangents.ToString());
+                },
+            };
+        }
+        
+        private static CommonTableColumn<ModelAnalysisData> CreateColumn_Normals()
+        {
+            return new CommonTableColumn<ModelAnalysisData>
+            {
+                headerContent = new GUIContent("Normals"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 70,
+                minWidth = 70,
+                maxWidth = 80,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => dataA.normals.CompareTo(dataB.normals),
+                DrawCell = (cellRect, data) =>
+                {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.normals.ToString());
+                },
+            };
+        }
+
+        #endregion
+        
         /// <summary>
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private CommonTableColumn<ModelAnalysisData>[] InitColumns()
+        private CommonTableColumn<ModelAnalysisData>[] InitColumns(bool collider)
         {
-            return new[]
+            var columns = new List<CommonTableColumn<ModelAnalysisData>>
             {
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("ID"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 50,
-                    minWidth = 50,
-                    maxWidth = 120,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.id.CompareTo(dataB.id), // 排序
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        EditorGUI.LabelField(cellRect, data.id.ToString());
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("Name"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 300,
-                    minWidth = 300,
-                    maxWidth = 500,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.assetName, dataB.assetName, StringComparison.Ordinal),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        var iconRect = cellRect;
-                        iconRect.width = 20f;
-                        EditorGUI.LabelField(iconRect,
-                            data.assetName.Equals("总和")
-                                ? EditorGUIUtility.IconContent("console.infoicon.sml")
-                                : EditorGUIUtility.IconContent("PrefabModel Icon"));
-                        cellRect.xMin += 20f;
-                        EditorGUI.LabelField(cellRect,
-                            data.assetName.Contains("/")
-                                ? data.assetName.Split('/').Last()
-                                : data.assetName.Split('\\').Last());
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("Verts"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 80,
-                    minWidth = 80,
-                    maxWidth = 120,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.verts.CompareTo(dataB.verts),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        var iconRect = cellRect;
-                        iconRect.width = 20f;
-                        cellRect.xMin += 20f;
-                        if (data.verts > vertsError)
-                        {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
-                            EditorGUI.LabelField(cellRect, data.verts.ToString(), fontStyleRed);
-                        }
-                        else if (data.verts > vertsWarn)
-                        {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
-                            EditorGUI.LabelField(cellRect, data.verts.ToString(), fontStyleYellow);
-                        }
-                        else
-                        {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
-                            EditorGUI.LabelField(cellRect, data.verts.ToString());
-                        }
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("Tris"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 80,
-                    minWidth = 80,
-                    maxWidth = 120,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.tris.CompareTo(dataB.tris),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        var iconRect = cellRect;
-                        iconRect.width = 20f;
-                        cellRect.xMin += 20f;
-                        if (data.tris > trisError)
-                        {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
-                            EditorGUI.LabelField(cellRect, data.tris.ToString(), fontStyleRed);
-                        }
-                        else if (data.tris > trisWarn)
-                        {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
-                            EditorGUI.LabelField(cellRect, data.tris.ToString(), fontStyleYellow);
-                        }
-                        else
-                        {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
-                            EditorGUI.LabelField(cellRect, data.tris.ToString());
-                        }
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("UV"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 50,
-                    minWidth = 50,
-                    maxWidth = 80,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.uv.CompareTo(dataB.uv),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        EditorGUI.LabelField(cellRect, data.uv.ToString());
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("UV2"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 50,
-                    minWidth = 50,
-                    maxWidth = 80,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.uv2.CompareTo(dataB.uv2),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        EditorGUI.LabelField(cellRect, data.uv2.ToString());
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("UV3"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 40,
-                    minWidth = 40,
-                    maxWidth = 80,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.uv3.CompareTo(dataB.uv3),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        EditorGUI.LabelField(cellRect, data.uv3.ToString());
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("UV4"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 40,
-                    minWidth = 40,
-                    maxWidth = 80,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.uv4.CompareTo(dataB.uv4),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        EditorGUI.LabelField(cellRect, data.uv4.ToString());
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("Colors"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 60,
-                    minWidth = 60,
-                    maxWidth = 80,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.colors.CompareTo(dataB.colors),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        EditorGUI.LabelField(cellRect, data.colors.ToString());
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("Tangents"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 70,
-                    minWidth = 70,
-                    maxWidth = 80,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.tangents.CompareTo(dataB.tangents),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        EditorGUI.LabelField(cellRect, data.tangents.ToString());
-                    },
-                },
-                new CommonTableColumn<ModelAnalysisData>
-                {
-                    headerContent = new GUIContent("Normals"),
-                    headerTextAlignment = TextAlignment.Center,
-                    width = 70,
-                    minWidth = 70,
-                    maxWidth = 80,
-                    allowToggleVisibility = true,
-                    canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.normals.CompareTo(dataB.normals),
-                    DrawCell = (cellRect, data) =>
-                    {
-                        cellRect.height += 5f;
-                        cellRect.xMin += 3f;
-                        EditorGUI.LabelField(cellRect, data.normals.ToString());
-                    },
-                },
+                CreateColumn_ID(),
+                CreateColumn_Name(),
+                CreateColumn_Verts(),
+                CreateColumn_Tris(),
+                CreateColumn_UV(),
+                CreateColumn_UV2(),
+                CreateColumn_UV3(),
+                CreateColumn_UV4(),
+                CreateColumn_Colors(),
+                CreateColumn_Tangents(),
+                CreateColumn_Normals()
             };
+            
+            if (collider)
+            {
+                columns.Add(CreateColumn_ReadWrite());
+            }
+            
+            return columns.ToArray();
         }
 
         /// <summary>

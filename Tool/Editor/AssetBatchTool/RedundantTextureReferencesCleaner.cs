@@ -117,11 +117,10 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 if (Detect(materials[index], isAutoRepair))
                 {
                     errorCounter++;
-                }
-
-                if (isAutoRepair)
-                {
-                    repairCount++;
+                    if (isAutoRepair)
+                    {
+                        repairCount++;
+                    }
                 }
             }
             if (errorCounter > 0 && repairCount < errorCounter)
