@@ -47,21 +47,21 @@ GUID	标题	资源类型	检查类型	路径	白名单规则	参数	危险等级
 46	特效纹理命名-Textures/GamePlay/Expression	6	0	Assets/Art/Effects/Textures/GamePlay/Expression		^Sfx_Expression_	1	True	True	True	
 47	特效纹理尺寸-Textures/GamePlay/Item	1	0	Assets/Art/Effects/Textures/GamePlay/Item		3;3	1	True	True	True	; <=256，需要合并贴图
 48	特效纹理命名-Textures/GamePlay/Item	6	0	Assets/Art/Effects/Textures/GamePlay/Item		^Sfx_Item_	1	True	True	True	; <=256，需要合并贴图
-49	特效纹理尺寸-Textures/GamePlay/Object	1	0	Assets/Art/Effects/Textures/GamePlay/Object		3;3	1	True	True	True	; <=256，会涉及到一些特殊图案序列帧贴图
+49	特效纹理尺寸-Textures/GamePlay/Object	1	0	Assets/Art/Effects/Textures/GamePlay/Object	object_264	3;3	1	True	True	True	; <=256，会涉及到一些特殊图案序列帧贴图
 50	特效纹理命名-Textures/GamePlay/Object	6	0	Assets/Art/Effects/Textures/GamePlay/Object		^object_	1	True	True	True	; <=256，会涉及到一些特殊图案序列帧贴图
 51	特效纹理尺寸-Textures/GamePlay/Show	1	0	Assets/Art/Effects/Textures/GamePlay/Show		3;3	1	True	True	True	; <=256，需要合并贴图
 52	特效纹理命名-Textures/GamePlay/Show	6	0	Assets/Art/Effects/Textures/GamePlay/Show		^Sfx_Show_	1	True	True	True	; <=256，需要合并贴图
 53	特效纹理尺寸-Textures/GamePlay/Scene	1	0	Assets/Art/Effects/Textures/GamePlay/Scene		3;3	1	True	True	True	
 54	特效纹理命名-Textures/GamePlay/Scene	6	0	Assets/Art/Effects/Textures/GamePlay/Scene		^Sfx_Scene_	1	True	True	True	
 55	特效纹理尺寸-Textures/GamePlay/Other	1	0	Assets/Art/Effects/Textures/GamePlay/Other		3;3	1	True	True	True	; 序列帧或者合并贴图 256，单个图片 128
-56	特效纹理尺寸-Textures/UI	1	0	Assets/Art/Effects/Textures/UI		3;3	1	True	True	True	; 序列帧或者合并贴图 256，单个图片 128
+56	特效纹理尺寸-Textures/UI	1	0	Assets/Art/Effects/Textures/UI		5;5	1	True	True	True	; 序列帧或者合并贴图 256，单个图片 128
 57	特效纹理命名-Textures/UI	6	0	Assets/Art/Effects/Textures/UI		^Sfx_UI_	1	True	True	True	; 序列帧或者合并贴图 256，单个图片 128
 58	特效纹理尺寸-Textures/Weapon	1	0	Assets/Art/Effects/Textures/Weapon		3;3	1	True	True	True	; 序列帧或者合并贴图 256，单个图片 128
 59	特效纹理命名-Textures/Weapon	6	0	Assets/Art/Effects/Textures/Weapon		^Sfx_Weapon_	1	True	True	True	; 序列帧或者合并贴图 256，单个图片 128
 60	特效纹理尺寸-Textures/Fashion	1	0	Assets/Art/Effects/Textures/Fashion		3;3	1	True	True	True	; 序列帧或者合并贴图 256，单个图片 128
 61	特效纹理命名-Textures/Fashion	6	0	Assets/Art/Effects/Textures/Fashion		^Sfx_Fashion_	1	True	True	True	; 序列帧或者合并贴图 256，单个图片 128
 62	特效材质球命名-Materials/Common/Fresnel	6	0	Assets/Art/Effects/Materials/Common/Fresnel		^fresnel_	1	True	True	True	
-63	特效材质球命名-Materials/Common/Galaxy	6	0	Assets/Art/Effects/Materials/Common/Galaxy		^galaxy_	1	True	True	True	
+63	特效材质球命名-Materials/Common/Galaxy	6	0	Assets/Art/Effects/Materials/Common/Galaxy		^Galaxy_	1	True	True	True	
 64	特效材质球命名-Materials/Common/Glass	6	0	Assets/Art/Effects/Materials/Common/Glass		^glass_	1	True	True	True	
 65	特效材质球命名-Materials/Common/Mask	6	0	Assets/Art/Effects/Materials/Common/Mask		^Alpha_	1	True	True	True	
 66	特效材质球命名-Materials/Common/Noise	6	0	Assets/Art/Effects/Materials/Common/Noise		^Noise_	1	True	True	True	
@@ -93,6 +93,28 @@ GUID	标题	资源类型	检查类型	路径	白名单规则	参数	危险等级
 92	特效材质球命名-Materials/UI	6	0	Assets/Art/Effects/Materials/UI		^Sfx_UI_	1	True	True	True	
 93	特效材质球命名-Materials/Scene	6	0	Assets/Art/Effects/Materials/Scene		^Sfx_Scene_	1	True	True	True	
 94	特效材质球命名-Materials/Weapon	6	0	Assets/Art/Effects/Materials/Weapon		^Sfx_Weapon_	1	True	True	True	
-95	特效纹理的读写权限设置	1	2	Assets/Art/Effects/Textures		False	1	True	True	True	全部关闭
-96	特效纹理的 Mip Maps 设置 (非 UI)	1	1	Assets/Art/Effects/Textures	Assets(\\|/)Art(\\|/)Effects(\\|/)Textures(\\|/)UI	True	1	True	True	True	
-97	特效纹理的 Mip Maps 设置 (UI)	1	1	Assets/Art/Effects/Textures/UI		False	1	True	True	True	Assets/Art/Effects/Textures/UI 需要关闭 Mip Maps
+95	特效纹理的读写权限设置-Textures	1	2	Assets/Art/Effects/Textures		False	1	True	True	True	全部关闭
+96	必须开启 Mip Maps 设置-Textures	1	1	Assets/Art/Effects/Textures	(Assets(\\|/)Art(\\|/)Effects(\\|/)Textures(\\|/)UI)|(Alpha_55)	True	1	True	True	True	
+97	必须关闭 Mip Maps 设置-Textures	1	1	Assets/Art/Effects/Textures/UI	(Sfx_UI_LobbyScreen_SS2_1)	False	1	True	True	True	Assets/Art/Effects/Textures/UI 需要关闭 Mip Maps
+98	开启网格优化-Models	5	3	Assets/Art/Effects/Models		True	1	True	True	True	
+99	网格压缩设置为 Low-Models	5	4	Assets/Art/Effects/Models		1	1	True	True	True	
+100	开启顶点焊接-Models	5	5	Assets/Art/Effects/Models		True	1	True	True	True	
+101	特效模型命名-Models/Aerocraft	6	0	Assets/Art/Effects/Models/Aerocraft		^Sfx_Aerocraft_	0	True	True	True	
+102	特效模型命名-Models/Backpack	6	0	Assets/Art/Effects/Models/Backpack		^Sfx_Backpack_	0	True	True	True	
+103	特效模型命名-Models/Buff	6	0	Assets/Art/Effects/Models/Buff		^Sfx_Buff_	0	True	True	True	
+104	特效模型命名-Models/Carrier	6	0	Assets/Art/Effects/Models/Carrier		^Sfx_Carrier_	0	True	True	True	
+105	特效模型命名-Models/EffBG	6	0	Assets/Art/Effects/Models/EffBG		^Sfx_EffBG_	0	True	True	True	
+106	特效模型命名-Models/Expression	6	0	Assets/Art/Effects/Models/Expression		^Sfx_Expression_	0	True	True	True	
+107	特效模型命名-Models/Fashion	6	0	Assets/Art/Effects/Models/Fashion		^Sfx_Fashion_	0	True	True	True	
+108	特效模型命名-Models/Item	6	0	Assets/Art/Effects/Models/Item		^Sfx_Item_	0	True	True	True	
+109	特效模型命名-Models/MapEventFight	6	0	Assets/Art/Effects/Models/MapEventFight		^Sfx_MapEvent_	0	True	True	True	
+110	特效模型命名-Models/Show	6	0	Assets/Art/Effects/Models/Show		^Sfx_Show_	0	True	True	True	
+111	特效模型命名-Models/Tricks	6	0	Assets/Art/Effects/Models/Tricks		^Sfx_Tricks_	0	True	True	True	
+112	特效模型命名-Models/UI	6	0	Assets/Art/Effects/Models/UI		^Sfx_UI_	0	True	True	True	
+113	特效模型命名-Models/Weapon	6	0	Assets/Art/Effects/Models/Weapon		^Sfx_Weapon_	0	True	True	True	
+114	特效模型命名-Models/Character	6	0	Assets/Art/Effects/Models/Character		^Sfx_Character_	0	True	True	True	
+115	特效模型命名-Models/Scene	6	0	Assets/Art/Effects/Models/Scene		^Sfx_Scene_	0	True	True	True	
+116	必须关闭读写-Models/Aerocraft	5	0	Assets/Art/Effects/Models/Aerocraft		False;False;False;False	1	True	True	True	
+117	必须关闭读写-Models/Backpack	5	0	Assets/Art/Effects/Models/Backpack		False;False;False;False	1	True	True	True	
+118	必须关闭读写-Models/Buff	5	0	Assets/Art/Effects/Models/Buff		False;False;False;False	1	True	True	True	
+119	必须关闭读写-Models/Carrier	5	0	Assets/Art/Effects/Models/Carrier		False;False;False;False	1	True	True	True	
