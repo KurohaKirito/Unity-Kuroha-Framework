@@ -32,6 +32,18 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
                     RepairNormals(effectCheckReportInfo);
                     break;
 
+                case CheckModel.CheckOptions.OptimizeMesh:
+                    RepairOptimizeMesh(effectCheckReportInfo);
+                    break;
+                
+                case CheckModel.CheckOptions.MeshCompression:
+                    RepairMeshCompression(effectCheckReportInfo);
+                    break;
+                
+                case CheckModel.CheckOptions.WeldVertices:
+                    RepairWeldVertices(effectCheckReportInfo);
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -91,6 +103,51 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
             if (ReferenceEquals(modelImporter, null) == false)
             {
                 modelImporter.importNormals = ModelImporterNormals.None;
+                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
+            }
+        }
+        
+        /// <summary>
+        /// 修复模型的 "网格优化" 导入设置
+        /// </summary>
+        /// <param name="effectCheckReportInfo"></param>
+        private static void RepairOptimizeMesh(EffectCheckReportInfo effectCheckReportInfo)
+        {
+            var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
+            if (ReferenceEquals(modelImporter, null) == false)
+            {
+                modelImporter.optimizeMesh = true;
+                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
+            }
+        }
+        
+        /// <summary>
+        /// 修复模型的 "网格压缩" 导入设置
+        /// </summary>
+        /// <param name="effectCheckReportInfo"></param>
+        private static void RepairMeshCompression(EffectCheckReportInfo effectCheckReportInfo)
+        {
+            var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
+            if (ReferenceEquals(modelImporter, null) == false)
+            {
+                modelImporter.meshCompression = ModelImporterMeshCompression.Low;
+                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
+            }
+        }
+        
+        /// <summary>
+        /// 修复模型的 "顶点焊接" 导入设置
+        /// </summary>
+        /// <param name="effectCheckReportInfo"></param>
+        private static void RepairWeldVertices(EffectCheckReportInfo effectCheckReportInfo)
+        {
+            var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
+            if (ReferenceEquals(modelImporter, null) == false)
+            {
+                modelImporter.weldVertices = true;
                 AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }

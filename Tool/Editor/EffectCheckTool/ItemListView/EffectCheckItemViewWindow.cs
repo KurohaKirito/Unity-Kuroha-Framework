@@ -155,8 +155,8 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
             GUILayout.BeginHorizontal("Box");
 
             // GUID
-            GUILayout.Label(info.guid, itemIdGUIStyle, GUILayout.Width(24), GUILayout.Height(UI_BUTTON_HEIGHT));
-            GUILayout.Space(30);
+            GUILayout.Label(info.guid, itemIdGUIStyle, GUILayout.Width(36), GUILayout.Height(UI_BUTTON_HEIGHT));
+            GUILayout.Space(15);
 
             #region Auto Check Icon
 

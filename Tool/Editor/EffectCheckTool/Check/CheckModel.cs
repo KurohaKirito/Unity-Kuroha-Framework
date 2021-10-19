@@ -20,7 +20,10 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         {
             "读写权限设置",
             "投射阴影设置",
-            "法线导入设置"
+            "法线导入设置",
+            "网格优化",
+            "网格压缩",
+            "顶点焊接"
         };
 
         /// <summary>
@@ -30,7 +33,10 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         {
             ReadWriteEnable,
             RendererCastShadow,
-            Normals
+            Normals,
+            OptimizeMesh,
+            MeshCompression,
+            WeldVertices,
         }
 
         /// <summary>
@@ -43,7 +49,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
             if (itemData.path.StartsWith("Assets"))
             {
                 var assetGuids = AssetDatabase.FindAssets("t:Model", new[] { itemData.path });
-                DebugUtil.Log($"CheckParticleSystem: 查询到了 {assetGuids.Length} 个模型, 检测路径为: {itemData.path}");
+                // DebugUtil.Log($"CheckParticleSystem: 查询到了 {assetGuids.Length} 个模型, 检测路径为: {itemData.path}");
                 
                 for (var index = 0; index < assetGuids.Length; index++)
                 {
@@ -74,6 +80,18 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                             CheckNormals(assetPath, itemData, ref reportInfos);
                             break;
 
+                        case CheckOptions.OptimizeMesh:
+                            CheckOptimizeMesh(assetPath, itemData, ref reportInfos);
+                            break;
+                            
+                        case CheckOptions.MeshCompression:
+                            CheckMeshCompression(assetPath, itemData, ref reportInfos);
+                            break;
+                            
+                        case CheckOptions.WeldVertices:
+                            CheckWeldVertices(assetPath, itemData, ref reportInfos);
+                            break;
+                        
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -100,8 +118,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 {
                     var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
                     var content = $"模型读写权限设置错误, 应关闭读写权限! 资源路径为: {assetPath}";
-                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath,
-                        EffectCheckReportInfo.EffectCheckReportType.FBXReadWriteEnable, content, item));
+                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXReadWriteEnable, content, item));
                 }
             }
             else
@@ -164,6 +181,66 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
             else
             {
                 DebugUtil.LogError($"资源命名中不含有 collider 以及 virtual, 请检查资源命名! {assetPath}");
+            }
+        }
+        
+        /// <summary>
+        /// 检测: OptimizeMesh
+        /// </summary>
+        /// <param name="assetPath">资源路径</param>
+        /// <param name="item">检查项</param>
+        /// <param name="report">检查结果</param>
+        private static void CheckOptimizeMesh(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        {
+            var model = AssetImporter.GetAtPath(assetPath) as ModelImporter;
+            if (ReferenceEquals(model, null) == false)
+            {
+                var set = bool.Parse(item.parameter);
+                if (model.optimizeMesh != set)
+                {
+                    var content = $"OptimizeMesh 未开启: {assetPath} ({model.optimizeMesh}) >>> ({set})";
+                    report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXOptimizeMesh, content, item));
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 检测: MeshCompression
+        /// </summary>
+        /// <param name="assetPath">资源路径</param>
+        /// <param name="item">检查项</param>
+        /// <param name="report">检查结果</param>
+        private static void CheckMeshCompression(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        {
+            var model = AssetImporter.GetAtPath(assetPath) as ModelImporter;
+            if (ReferenceEquals(model, null) == false)
+            {
+                var set = (ModelImporterMeshCompression)int.Parse(item.parameter);
+                if (model.meshCompression != set)
+                {
+                    var content = $"MeshCompression 设置错误: {assetPath} ({model.meshCompression}) >>> ({set})";
+                    report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXMeshCompression, content, item));
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 检测: OptimizeMesh
+        /// </summary>
+        /// <param name="assetPath">资源路径</param>
+        /// <param name="item">检查项</param>
+        /// <param name="report">检查结果</param>
+        private static void CheckWeldVertices(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        {
+            var model = AssetImporter.GetAtPath(assetPath) as ModelImporter;
+            if (ReferenceEquals(model, null) == false)
+            {
+                var set = bool.Parse(item.parameter);
+                if (model.weldVertices != set)
+                {
+                    var content = $"WeldVertices 未开启: {assetPath} ({model.weldVertices}) >>> ({set})";
+                    report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXWeldVertices, content, item));
+                }
             }
         }
     }

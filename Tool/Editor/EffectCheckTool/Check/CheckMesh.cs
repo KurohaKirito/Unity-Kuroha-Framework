@@ -19,7 +19,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// </summary>
         public static readonly string[] checkOptions =
         {
-            "网格 UV 信息"
+            "网格 UV 信息",
         };
 
         /// <summary>
@@ -27,8 +27,19 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// </summary>
         public enum CheckOptions
         {
-            MeshUV
+            MeshUV,
         }
+        
+        /// <summary>
+        /// 检查 MeshCompression 时的子检查项
+        /// </summary>
+        public static readonly string[] meshCompressionOptions =
+        {
+            "Off",
+            "Low",
+            "Medium",
+            "High"
+        };
 
         /// <summary>
         /// 对网格资源进行检测
@@ -70,6 +81,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                                 CheckSkinnedMeshRenderer(assetPath, files[index], itemData, ref reportInfos);
                                 CheckMeshFilter(assetPath, files[index], itemData, ref reportInfos);
                                 break;
+
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }

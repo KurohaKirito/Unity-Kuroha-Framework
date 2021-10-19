@@ -16,12 +16,14 @@ public static class AutoCheckToolGUI
         "检测 Assets/Art/Effects/Materials 下是否存在无引用材质球",
         "检测 Assets/Art/Effects/Materials 下哪些材质球使用了 LWRP 着色器",
         "检测 Assets/Art/Effects/Materials 下的资源与文件夹同级问题",
-        "检测 Assets/Art/Effects/Materials 下材质球的冗余纹理引用问题"
+        "检测 Assets/Art/Effects/Materials 下材质球的冗余纹理引用问题",
+        "检测 Assets/Art/Effects/Models 下是否存在无引用模型",
+        "检测 Assets/Art/Effects/Models 下的资源与文件夹同级问题"
     };
 
     private static readonly bool[] checkToggle =
     {
-        true,true,true,true,true,true,true,true,true
+        true,true,true,true,true,true,true,true,true,true,true
     };
     
     /// <summary>
@@ -76,48 +78,69 @@ public static class AutoCheckToolGUI
         var results = new List<Dictionary<string, string>>();
 
         //执行特效检测工具
-        if (checkToggle[0]) {
+        if (checkToggle[0])
+        {
             results.AddRange(EffectDetect.Check(false));
         }
         
         // 检测 Assets/Art/Effects/Textures 下纹理是否存在重复纹理
-        if (checkToggle[1]) {
+        if (checkToggle[1])
+        {
             results.AddRange(RepeatTextureDetect.Check(false));
         }
         
         // 检测 Assets/Art/Effects/Textures 下纹理是否存在纯色纹理
-        if (checkToggle[2]) {
+        if (checkToggle[2])
+        {
             results.AddRange(SolidTextureDetect.Check(false));
         }
         
         // 检测 Assets/Art/Effects/Textures 下是否存在无引用纹理
-        if (checkToggle[3]) {
+        if (checkToggle[3])
+        {
             results.AddRange(UnusedTextureDetect.Check(false));
         }
         
         // 检测 Assets/Art/Effects/Textures 下的资源与文件夹同级问题
-        if (checkToggle[4]) {
+        if (checkToggle[4])
+        {
             results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Textures", 50, false));
         }
         
         // 检测 Assets/Art/Effects/Materials 下是否存在无引用材质球
-        if (checkToggle[5]) {
+        if (checkToggle[5])
+        {
             results.AddRange(UnusedMaterialDetect.Check(false));
         }
         
         // 检测 Assets/Art/Effects/Materials 下哪些材质球使用了 LWRP 着色器
-        if (checkToggle[6]) {
+        if (checkToggle[6])
+        {
             results.AddRange(MaterialShaderDetect.Check(false));
         }
         
         // 检测 Assets/Art/Effects/Materials 下的资源与文件夹同级问题
-        if (checkToggle[7]) {
+        if (checkToggle[7])
+        {
             results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Materials", 50, false));
         }
         
         // 检测 Assets/Art/Effects/Materials 下材质球的冗余纹理引用问题
-        if (checkToggle[8]) {
+        if (checkToggle[8])
+        {
             results.AddRange(RedundantTextureReferencesDetect.Check(false));
+        }
+        
+        // 检测 Assets/Art/Effects/Models 下是否存在无引用模型
+        if (checkToggle[9])
+        {
+            results.AddRange(UnusedModelDetect.Check(false));
+        }
+        
+        // 检测 Assets/Art/Effects/Models 下的资源与文件夹同级问题
+        if (checkToggle[10])
+        {
+            results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Models", 50, false));
         }
         
         ExportResult(results);

@@ -77,7 +77,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.GUI
                     GUILayout.EndVertical();
 
                     GUILayout.Space(UI_DEFAULT_MARGIN);
-                    EditorGUILayout.LabelField($"3. 点击按钮, 开始检查.");
+                    EditorGUILayout.LabelField("3. 点击按钮, 开始检查.");
                     EditorGUI.indentLevel++;
                     EditorGUILayout.LabelField("只有启用状态下的检查项才会被执行.");
                     EditorGUI.indentLevel--;
@@ -120,7 +120,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.GUI
                 
                 if (reportEnumCount != sum)
                 {
-                    Dialog.Display("代码错误! 报告枚举值的数量和各个检查项的枚举值数量不一致, 请检查代码!", Dialog.DialogType.Error, "OK");
+                    Dialog.Display($"代码错误! 报告枚举值的数量 {reportEnumCount} 和各个检查项的枚举值数量 {sum} 不一致, 请检查代码!", Dialog.DialogType.Error, "OK");
                     isError = true;
                 }
             }

@@ -242,6 +242,18 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                 case CheckModel.CheckOptions.Normals:
                     break;
 
+                case CheckModel.CheckOptions.OptimizeMesh:
+                    EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
+                    break;
+
+                case CheckModel.CheckOptions.MeshCompression:
+                    EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
+                    break;
+                
+                case CheckModel.CheckOptions.WeldVertices:
+                    EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

@@ -18,11 +18,14 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
             
             // 1
             MeshUV,
-            
-            // 3
+
+            // 6
             FBXReadWriteEnable,
             FBXMeshRendererCastShadows,
             FBXNormals,
+            FBXOptimizeMesh,
+            FBXMeshCompression,
+            FBXWeldVertices,
             
             // 9
             ParticlePrewarm,

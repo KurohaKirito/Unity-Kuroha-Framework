@@ -5,8 +5,6 @@ using Kuroha.Tool.Editor.EffectCheckTool.GUI;
 using Kuroha.Tool.Editor.EffectCheckTool.ItemListView;
 using Kuroha.Tool.Editor.EffectCheckTool.Repair;
 using UnityEditor;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Kuroha.Tool.Editor.EffectCheckTool.Report
 {
@@ -26,7 +24,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
         /// <param name="content">问题的描述</param>
         /// <param name="itemData">检查项的具体信息</param>
         /// <returns>"待修复问题" 页面信息</returns>
-        public static EffectCheckReportInfo AddReportInfo(Object asset, string assetPath, EffectCheckReportInfo.EffectCheckReportType effectCheckReportType, string content, CheckItemInfo itemData)
+        public static EffectCheckReportInfo AddReportInfo(UnityEngine.Object asset, string assetPath, EffectCheckReportInfo.EffectCheckReportType effectCheckReportType, string content, CheckItemInfo itemData)
         {
             var reportInfo = new EffectCheckReportInfo
             {
@@ -134,6 +132,9 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
              * FBX          -   Read Write Enable
              * FBX          -   CastShadow
              * FBX          -   NormalsImport
+             * FBX         -   OptimizeMesh
+             * FBX         -   MeshCompression
+             * FBX         -   WeldVertices
              * Texture      -   MipMaps
              * Texture      -   Read Write Enable
              */
@@ -151,7 +152,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                 case EffectCheckReportInfo.EffectCheckReportType.MeshUV:
                     break;
 
-                // 3
+                // 6
                 case EffectCheckReportInfo.EffectCheckReportType.FBXReadWriteEnable:
                     isCanRepair = true;
                     break;
@@ -159,6 +160,15 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                     isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.FBXNormals:
+                    isCanRepair = true;
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.FBXOptimizeMesh:
+                    isCanRepair = true;
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.FBXMeshCompression:
+                    isCanRepair = true;
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.FBXWeldVertices:
                     isCanRepair = true;
                     break;
                 

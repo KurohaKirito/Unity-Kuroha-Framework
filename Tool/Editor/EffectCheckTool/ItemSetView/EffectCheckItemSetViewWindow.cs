@@ -342,12 +342,12 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                     break;
 
                 case CheckTexture.CheckOptions.ReadWriteEnable:
-                    ParameterBool1 = EditorGUILayout.Toggle("是否需要开启 Read Write", ParameterBool1);
+                    ParameterBool1 = EditorGUILayout.Toggle("开启 Read Write", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
 
                 case CheckTexture.CheckOptions.MipMaps:
-                    ParameterBool1 = EditorGUILayout.Toggle("是否需要开启 Mip Maps", ParameterBool1);
+                    ParameterBool1 = EditorGUILayout.Toggle("开启 Mip Maps", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
 
@@ -370,8 +370,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                     ParameterBool2 = EditorGUILayout.Toggle("禁用 uv3", ParameterBool2);
                     ParameterBool3 = EditorGUILayout.Toggle("禁用 uv4", ParameterBool3);
                     ParameterBool4 = EditorGUILayout.Toggle("禁用 colors", ParameterBool4);
-                    itemInfo.parameter =
-                        $"{ParameterBool1}{DELIMITER}{ParameterBool2}{DELIMITER}{ParameterBool3}{DELIMITER}{ParameterBool4}";
+                    itemInfo.parameter = $"{ParameterBool1}{DELIMITER}{ParameterBool2}{DELIMITER}{ParameterBool3}{DELIMITER}{ParameterBool4}";
                     break;
 
                 default:
@@ -457,6 +456,21 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                     GUILayout.Label("描述: 仅作为碰撞用的模型不需要开启 Normals 平滑处理");
                     UnityEngine.GUI.skin.label.alignment = oldAlignment;
                     GUILayout.EndHorizontal();
+                    break;
+                
+                case CheckModel.CheckOptions.OptimizeMesh:
+                    ParameterBool1 = EditorGUILayout.Toggle("开启 Optimize Mesh", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+                
+                case CheckModel.CheckOptions.MeshCompression:
+                    ParameterInt1 = EditorGUILayout.Popup("网格压缩等级", ParameterInt1, CheckMesh.meshCompressionOptions);
+                    itemInfo.parameter = ParameterInt1.ToString();
+                    break;
+                
+                case CheckModel.CheckOptions.WeldVertices:
+                    ParameterBool1 = EditorGUILayout.Toggle("开启 Weld Vertices", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
                     break;
 
                 default:
