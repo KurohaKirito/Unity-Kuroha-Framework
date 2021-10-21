@@ -107,16 +107,19 @@ namespace Kuroha.GUI.Editor
             {
                 case DialogType.Message:
                     window.titleContent = new GUIContent("消息",
-                        EditorGUIUtility.IconContent("console.infoicon.sml").image as Texture2D, "消息");
+                        EditorGUIUtility.IconContent("console.infoIcon.sml").image as Texture2D, "消息");
                     break;
+                
                 case DialogType.Warn:
                     window.titleContent = new GUIContent("警告",
-                        EditorGUIUtility.IconContent("console.warnicon.sml").image as Texture2D, "警告");
+                        EditorGUIUtility.IconContent("console.warnIcon.sml").image as Texture2D, "警告");
                     break;
+                
                 case DialogType.Error:
                     window.titleContent = new GUIContent("错误",
-                        EditorGUIUtility.IconContent("console.erroricon.sml").image as Texture2D, "错误");
+                        EditorGUIUtility.IconContent("console.errorIcon.sml").image as Texture2D, "错误");
                     break;
+                
                 default:
                     throw new Exception();
             }

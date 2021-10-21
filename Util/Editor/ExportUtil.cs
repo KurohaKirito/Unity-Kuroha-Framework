@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Kuroha.Util.Release;
+using Kuroha.Util.RunTime;
 
 namespace Kuroha.Util.Editor
 {
@@ -49,7 +49,7 @@ namespace Kuroha.Util.Editor
             }
             else
             {
-                Kuroha.Util.Release.DebugUtil.Log("没有需要导出的内容");
+                Kuroha.Util.RunTime.DebugUtil.Log("没有需要导出的内容");
             }
         }
     }

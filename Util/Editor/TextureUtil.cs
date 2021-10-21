@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Kuroha.GUI.Editor;
-using Kuroha.Util.Release;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 

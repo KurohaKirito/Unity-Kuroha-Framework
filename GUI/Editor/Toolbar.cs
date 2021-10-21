@@ -1,5 +1,5 @@
 ﻿using System;
-using Kuroha.Util.Release;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
