@@ -12,7 +12,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 支持检测的类型
         /// </summary>
-        public enum UnusedAssetType {
+        public enum UnusedAssetType
+        {
             Model,
             Material,
             Texture
@@ -21,11 +22,13 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 错误类型
         /// </summary>
-        public enum ErrorType {
+        public enum ErrorType
+        {
             /// <summary>
             /// 本应具有引用的资源却无引用
             /// </summary>
             NoneReference,
+            
             /// <summary>
             /// 本应无引用的资源却有引用
             /// </summary>
@@ -35,7 +38,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 错误信息
         /// </summary>
-        public struct ErrorInfo {
+        public struct ErrorInfo
+        {
             public ErrorType type;
             public string assetPath;
         }
@@ -181,7 +185,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 // 获取资源的路径
                 var assetPath = AssetDatabase.GUIDToAssetPath(key);
                 // 特定文件夹
-                var regexRule = new Regex("(Material|Texture)Editor");
+                var regexRule = new Regex("(Material|Texture|Model)Editor");
                 var success = regexRule.Match(assetPath).Success;
                 
                 // 问题资源 1: 不在 "特定文件夹" 内, 但却无引用
