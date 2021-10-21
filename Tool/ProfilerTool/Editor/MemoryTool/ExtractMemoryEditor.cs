@@ -20,7 +20,7 @@ public class ExtractMemoryEditor: EditorWindow
     /// <summary>
     /// 筛选条件: 资源名称
     /// </summary>
-    private string assetName = "jetcar";
+    private string memoryName = "jeep";
     
     /// <summary>
     /// 树形结构根节点
@@ -48,7 +48,7 @@ public class ExtractMemoryEditor: EditorWindow
                 ProfilerWindow.RefreshMemoryData();
             }
 
-            assetName = EditorGUILayout.TextField("Name: ", assetName);
+            memoryName = EditorGUILayout.TextField("Name: ", memoryName);
             memorySize = EditorGUILayout.FloatField("Memory Size(B) >= ", memorySize);
             memoryDepth = EditorGUILayout.IntField("Memory Depth(>=1) ", memoryDepth);
 
@@ -59,13 +59,13 @@ public class ExtractMemoryEditor: EditorWindow
                     memoryDepth = 1;
                 }
                 
-                ExtractMemory(assetName, memorySize, memoryDepth - 1);
+                ExtractMemory(memoryName, memorySize, memoryDepth - 1);
             }
         }
         EditorGUILayout.EndVertical();
     }
     
-    private void ExtractMemory(string assetName, float memSize, int memDepth)
+    private void ExtractMemory(string memName, float memSize, int memDepth)
     {
         var parent = Directory.GetParent(Application.dataPath);
         if (parent != null)
@@ -81,7 +81,7 @@ public class ExtractMemoryEditor: EditorWindow
                 writer.WriteLine("Memory Depth: {0}", memoryDepth);
                 writer.WriteLine("Current Target: {0}", ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
                 writer.WriteLine("**********************");
-                ProfilerWindow.WriteMemoryDetail(assetName, writer, memoryElementRoot);
+                ProfilerWindow.WriteMemoryDetail(memName, writer, memoryElementRoot);
                 writer.Flush();
                 writer.Close();
             }
