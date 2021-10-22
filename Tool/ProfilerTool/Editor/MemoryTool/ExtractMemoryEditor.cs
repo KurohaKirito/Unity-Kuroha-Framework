@@ -81,26 +81,29 @@ public class ExtractMemoryEditor: EditorWindow
     /// <param name="memDepth"></param>
     private void ExtractMemory(string memName, float memSize, int memDepth)
     {
-        var parent = Directory.GetParent(Application.dataPath);
-        if (parent != null)
-        {
-            var outputPath = $"{parent.FullName}/MemoryDetailed{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.txt";
-            File.Create(outputPath).Dispose();
-            memoryElementRoot = ProfilerWindow.GetMemoryDetailRoot(memDepth, memSize);
-
-            if (null != memoryElementRoot)
-            {
-                var writer = new StreamWriter(outputPath);
-                writer.WriteLine("Memory Size: >= {0}MB", memorySize);
-                writer.WriteLine("Memory Depth: {0}", memoryDepth);
-                writer.WriteLine("Current Target: {0}", ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
-                writer.WriteLine("**********************");
-                ProfilerWindow.WriteMemoryDetail(memName, writer, memoryElementRoot);
-                writer.Flush();
-                writer.Close();
-            }
+        // 输出文件路径
+        var outputPath = $"C:/MemoryDetail_{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.txt";
         
-            Process.Start(outputPath);
+        // 创建文件
+        File.Create(outputPath).Dispose();
+        
+        // 获取到根节点
+        memoryElementRoot = ProfilerWindow.GetMemoryDetailRoot(memDepth, memSize);
+
+        if (null != memoryElementRoot)
+        {
+            var writer = new StreamWriter(outputPath);
+            writer.WriteLine("Memory Size: >= {0}MB", memorySize);
+            writer.WriteLine("Memory Depth: {0}", memoryDepth);
+            writer.WriteLine("Current Target: {0}", ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
+            writer.WriteLine("**********************");
+            
+            ProfilerWindow.WriteMemoryDetail(memName, writer, memoryElementRoot);
+            
+            writer.Flush();
+            writer.Close();
         }
+        
+        Process.Start(outputPath);
     }
 }

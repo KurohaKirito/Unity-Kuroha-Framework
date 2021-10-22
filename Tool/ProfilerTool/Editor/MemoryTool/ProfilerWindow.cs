@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Kuroha.Util.RunTime;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.Profiling;
+using Kuroha.Util.RunTime;
 
 public static class ProfilerWindow
 {
@@ -18,9 +17,9 @@ public static class ProfilerWindow
     /// <summary>
     /// 获取到 ProfilerWindow 类
     /// </summary>
-    /// <param name="area"></param>
+    /// <param name="targetArea"></param>
     /// <returns></returns>
-    private static DynamicClass GetClass_ProfilerWindow(ProfilerArea area)
+    private static DynamicClass GetClass_ProfilerWindow(ProfilerArea targetArea)
     {
         if (profilerWindows == null)
         {
@@ -32,34 +31,74 @@ public static class ProfilerWindow
             
             // 获取到 m_ProfilerWindows 变量, 其类型为: List<ProfilerWindow>
             var list = dynamicClass.GetFieldValue_PrivateStatic<IList>("m_ProfilerWindows");
-            
+
             profilerWindows = new List<DynamicClass>();
             foreach (var window in list)
             {
                 profilerWindows.Add(new DynamicClass(window));
             }
+            DebugUtil.Log($"获取到了 {profilerWindows.Count} 个 ProfilerWindow 类", null, "green");
         }
-        
-        foreach (var dynamicClass in profilerWindows)
+
+        if (profilerWindows != null)
         {
-            var val = (ProfilerArea)dynamicClass.GetFieldValue_Private("m_CurrentArea");
-            if (val == area)
+            foreach (var dynamicClass in profilerWindows)
             {
-                return dynamicClass;
+                var currentArea = (ProfilerArea)dynamicClass.GetFieldValue_Private("m_CurrentArea");
+                if (currentArea == targetArea)
+                {
+                    return dynamicClass;
+                }
             }
         }
+        
         return null;
     }
 
+    /// <summary>
+    /// 刷新内存页面数据
+    /// </summary>
+    public static void RefreshMemoryData()
+    {
+        var memoryDetailWindow = GetClass_ProfilerWindow(ProfilerArea.Memory);
+        
+        if (memoryDetailWindow != null)
+        {
+            // 调用 RefreshMemoryData() 函数
+            memoryDetailWindow.CallMethod_Private("RefreshMemoryData");
+        }
+        else
+        {
+            DebugUtil.Log("请打开 Profiler 窗口的 Memory 视图, 并切换到 Detail 页面", null, "red");
+        }
+    }
+    
+    /// <summary>
+    /// 获取到 Memory Detail 页面的根节点
+    /// </summary>
+    /// <param name="filterDepth"></param>
+    /// <param name="filterSize"></param>
+    /// <returns></returns>
     public static MemoryElement GetMemoryDetailRoot(int filterDepth, float filterSize)
     {
-        var windowDynamic = GetClass_ProfilerWindow(ProfilerArea.Memory);
-        if (windowDynamic == null) return null;
-        var listViewDynamic = new DynamicClass(windowDynamic.GetFieldValue_Private("m_MemoryListView"));
-        var rootDynamic = listViewDynamic.GetFieldValue_Private("m_Root");
-        return rootDynamic != null ? MemoryElement.Create(new DynamicClass(rootDynamic), 0, filterDepth, filterSize) : null;
+        var memoryDetailWindow = GetClass_ProfilerWindow(ProfilerArea.Memory);
+        if (memoryDetailWindow != null)
+        {
+            // 得到 m_MemoryListView 变量, 其类型为: MemoryTreeListClickable
+            var listViewDynamic = new DynamicClass(memoryDetailWindow.GetFieldValue_Private("m_MemoryListView"));
+            
+            // 得到 m_Root 变量, 其类型为: MemoryElement
+            var rootDynamic = listViewDynamic.GetFieldValue_Private("m_Root");
+            
+            return rootDynamic != null ? MemoryElement.Create(new DynamicClass(rootDynamic), 0, filterDepth, filterSize) : null;
+        }
+        else
+        {
+            DebugUtil.Log("请打开 Profiler 窗口的 Memory 视图, 并切换到 Detail 页面", null, "red");
+            return null;
+        }
     }
-
+    
     public static void WriteMemoryDetail(string filterName, StreamWriter writer, MemoryElement root)
     {
         if (null == root)
@@ -104,23 +143,6 @@ public static class ProfilerWindow
             {
                 WriteMemoryDetail(filterName, writer, memoryElement);
             }
-        }
-    }
-
-    /// <summary>
-    /// 刷新内存页面数据
-    /// </summary>
-    public static void RefreshMemoryData()
-    {
-        var dynamic = GetClass_ProfilerWindow(ProfilerArea.Memory);
-        
-        if (null != dynamic)
-        {
-            dynamic.CallMethod_Private("RefreshMemoryData");
-        }
-        else
-        {
-            Debug.Log("请打开Profiler 窗口的 Memory 视图");
         }
     }
 }
