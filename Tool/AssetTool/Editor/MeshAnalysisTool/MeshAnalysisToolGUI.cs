@@ -1,5 +1,5 @@
 ﻿using System;
-using Kuroha.Tool.Editor.ModelAnalysisTool;
+using Kuroha.Tool.Editor.SceneAnalysisTool;
 using UnityEditor;
 using UnityEngine;
 
@@ -89,11 +89,11 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
             switch (type)
             {
                 case MeshAnalysisData.DetectType.RendererMesh:
-                    ModelAnalysisTableWindow.Open(false, asset, false);
+                    SceneAnalysisTableWindow.Open(false, asset, false);
                     break;
 
                 case MeshAnalysisData.DetectType.ColliderMesh:
-                    ModelAnalysisTableWindow.Open(true, asset, false);
+                    SceneAnalysisTableWindow.Open(true, asset, false);
                     break;
 
                 default:

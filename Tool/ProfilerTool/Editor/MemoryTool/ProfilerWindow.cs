@@ -96,8 +96,8 @@ public static class ProfilerWindow
 
     public static void RefreshMemoryData()
     {
-        
         var dynamic = GetWindow(ProfilerArea.Memory);
+        
         if (null != dynamic)
         {
             dynamic.CallPrivateInstanceMethod("RefreshMemoryData");

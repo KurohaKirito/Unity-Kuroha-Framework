@@ -23,7 +23,7 @@ public class MemoryElement : IComparable<MemoryElement>
     {
         if (srcMemoryElement == null) return null;
         var dstMemoryElement = new MemoryElement { _depth = depth };
-        DynamicClass.CopyFrom(dstMemoryElement, srcMemoryElement.InnerObject,
+        DynamicClass.CopyFrom(dstMemoryElement, srcMemoryElement.CurrentInstance,
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField);
 
         var srcChildren = srcMemoryElement.PublicInstanceField<IList>("children");

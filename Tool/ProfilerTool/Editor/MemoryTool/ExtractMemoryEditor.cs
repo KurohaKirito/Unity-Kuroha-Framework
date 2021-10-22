@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class ExtractMemoryEditor: EditorWindow
 {
+    private const string PROFILER_PATH = "Window/Analysis/Profiler";
+    
     /// <summary>
     /// 筛选条件: 内存占用大小, 单位: byte
     /// </summary>
@@ -30,7 +32,10 @@ public class ExtractMemoryEditor: EditorWindow
     [MenuItem("Window/Extract Profiler Memory")]
     public static void Open()
     {
-        EditorApplication.ExecuteMenuItem("Window/Analysis/Profiler");
+        // 打开 Profiler 窗口
+        EditorApplication.ExecuteMenuItem(PROFILER_PATH);
+        
+        // 打开此窗口
         GetWindow<ExtractMemoryEditor>();
     }
 
@@ -41,30 +46,39 @@ public class ExtractMemoryEditor: EditorWindow
     {
         EditorGUILayout.BeginVertical();
         {
-            EditorGUILayout.LabelField("Current Target: " + ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
+            EditorGUILayout.LabelField("当前连接设备: " + ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
 
-            if (GUILayout.Button("Take Sample"))
+            if (GUILayout.Button("截取内存细节快照"))
             {
+                // 刷新数据
                 ProfilerWindow.RefreshMemoryData();
             }
 
+            // 刷选条件
             memoryName = EditorGUILayout.TextField("Name: ", memoryName);
             memorySize = EditorGUILayout.FloatField("Memory Size(B) >= ", memorySize);
             memoryDepth = EditorGUILayout.IntField("Memory Depth(>=1) ", memoryDepth);
 
-            if (GUILayout.Button("Extract Memory"))
+            if (GUILayout.Button("导出内存细节详情"))
             {
                 if (memoryDepth <= 0)
                 {
                     memoryDepth = 1;
                 }
                 
+                // 导出内存数据
                 ExtractMemory(memoryName, memorySize, memoryDepth - 1);
             }
         }
         EditorGUILayout.EndVertical();
     }
     
+    /// <summary>
+    /// 导出内存细节详情
+    /// </summary>
+    /// <param name="memName"></param>
+    /// <param name="memSize"></param>
+    /// <param name="memDepth"></param>
     private void ExtractMemory(string memName, float memSize, int memDepth)
     {
         var parent = Directory.GetParent(Application.dataPath);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.Editor.AssetCheckTool;
-using Kuroha.Tool.Editor.ModelAnalysisTool;
+using Kuroha.Tool.Editor.SceneAnalysisTool;
 using Kuroha.Tool.Editor.TextureAnalysisTool;
 using Kuroha.Util.Editor;
 using Kuroha.Util.RunTime;
@@ -144,7 +144,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
         /// </summary>
         private static void CollectMesh()
         {
-            ModelAnalysisTableWindow.Open(false, role.gameObject, false);
+            SceneAnalysisTableWindow.Open(false, role.gameObject, false);
         }
 
         /// <summary>
