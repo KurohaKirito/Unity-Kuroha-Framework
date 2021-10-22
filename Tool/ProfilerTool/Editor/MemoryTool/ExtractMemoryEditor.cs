@@ -89,14 +89,13 @@ public class ExtractMemoryEditor: EditorWindow
         
         // 获取到根节点
         memoryElementRoot = ProfilerWindow.GetMemoryDetailRoot(memDepth, memSize);
-
-        if (null != memoryElementRoot)
+        if (memoryElementRoot != null)
         {
             var writer = new StreamWriter(outputPath);
-            writer.WriteLine("Memory Size: >= {0}MB", memorySize);
+            writer.WriteLine("Memory Size: >= {0}B", memorySize);
             writer.WriteLine("Memory Depth: {0}", memoryDepth);
             writer.WriteLine("Current Target: {0}", ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
-            writer.WriteLine("**********************");
+            writer.WriteLine("****************************************************************************************");
             
             ProfilerWindow.WriteMemoryDetail(memName, writer, memoryElementRoot);
             

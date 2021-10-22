@@ -106,7 +106,7 @@ public static class ProfilerWindow
     
     public static void WriteMemoryDetail(string filterName, StreamWriter writer, MemoryElement root)
     {
-        if (null == root)
+        if (root == null)
         {
             return;
         }
@@ -142,7 +142,7 @@ public static class ProfilerWindow
             }
         }
         
-        foreach (var memoryElement in root.childrenList)
+        foreach (var memoryElement in root.children)
         {
             if (memoryElement != null)
             {

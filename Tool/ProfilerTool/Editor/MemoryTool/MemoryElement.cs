@@ -7,7 +7,7 @@ using Kuroha.Util.RunTime;
 public class MemoryElement : IComparable<MemoryElement>
 {
     private int depth;
-    public List<MemoryElement> childrenList;
+    public List<MemoryElement> children;
     
     // 下列字段使用了反射, name, totalMemory 需要保持命名与 DLL 中 MemoryElement 类里面的一致
     private string name;
@@ -33,9 +33,7 @@ public class MemoryElement : IComparable<MemoryElement>
         var dstMemoryElement = new MemoryElement
         {
             depth = depth,
-            name = default,
-            totalMemory = default,
-            childrenList = new List<MemoryElement>()
+            children = new List<MemoryElement>(),
         };
 
         // 赋值
@@ -67,7 +65,7 @@ public class MemoryElement : IComparable<MemoryElement>
                 continue;
             }
             
-            dstMemoryElement.childrenList.Add(memoryElement);
+            dstMemoryElement.children.Add(memoryElement);
         }
 
         //dstMemoryElement.children.Sort();
@@ -96,8 +94,16 @@ public class MemoryElement : IComparable<MemoryElement>
             return (int) (other.totalMemory - totalMemory);
         }
 
-        if (string.IsNullOrEmpty(name)) return -1;
-        return !string.IsNullOrEmpty(other.name) ? string.Compare(name, other.name, StringComparison.Ordinal) : 1;
+        if (string.IsNullOrEmpty(name))
+        {
+            return -1;
+        }
 
+        if (string.IsNullOrEmpty(other.name))
+        {
+            return 1;
+        }
+
+        return string.Compare(name, other.name, StringComparison.Ordinal);
     }
 }
