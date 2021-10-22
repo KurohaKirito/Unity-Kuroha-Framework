@@ -255,23 +255,39 @@ namespace Kuroha.Util.RunTime
         
         #endregion
         
-        public static void CopyFrom(object dst, object src, BindingFlags flags)
+        /// <summary>
+        /// 从 "源实例" 中取出 "目标实例" 中 "同名" 字段的值
+        /// </summary>
+        /// <param name="dstInstance">目标实例</param>
+        /// <param name="srcInstance">源实例</param>
+        /// <param name="flags">字段值的类型</param>
+        public static void Copy(object dstInstance, object srcInstance, BindingFlags flags)
         {
-            if (dst == null || src == null)
+            if (dstInstance == null || srcInstance == null)
             {
                 return;
             }
             
-            var srcType = src.GetType();
-            var dstType = dst.GetType();
+            // 取出两个实例的类型
+            var srcType = srcInstance.GetType();
+            var dstType = dstInstance.GetType();
             
+            // 取出目标实例中的字段
             var dstFields = dstType.GetFields(flags);
             foreach (var dstFieldInfo in dstFields)
             {
+                // 得到源实例中的 "同名字段"
                 var srcFieldInfo = srcType.GetField(dstFieldInfo.Name, flags);
-                if (srcFieldInfo != null && dstFieldInfo.FieldType == srcFieldInfo.FieldType)
+                if (srcFieldInfo != null)
                 {
-                    dstFieldInfo.SetValue(dst, srcFieldInfo.GetValue(src));
+                    if (dstFieldInfo.FieldType == srcFieldInfo.FieldType)
+                    {
+                        // 取出源字段的值
+                        var value = srcFieldInfo.GetValue(srcInstance);
+                        
+                        // 赋值给目标字段
+                        dstFieldInfo.SetValue(dstInstance, value);
+                    }
                 }
             }
         }

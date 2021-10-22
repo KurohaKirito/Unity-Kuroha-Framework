@@ -81,6 +81,8 @@ public static class ProfilerWindow
     /// <returns></returns>
     public static MemoryElement GetMemoryDetailRoot(int filterDepth, float filterSize)
     {
+        MemoryElement element = null;
+        
         var memoryDetailWindow = GetClass_ProfilerWindow(ProfilerArea.Memory);
         if (memoryDetailWindow != null)
         {
@@ -89,14 +91,17 @@ public static class ProfilerWindow
             
             // 得到 m_Root 变量, 其类型为: MemoryElement
             var rootDynamic = listViewDynamic.GetFieldValue_Private("m_Root");
-            
-            return rootDynamic != null ? MemoryElement.Create(new DynamicClass(rootDynamic), 0, filterDepth, filterSize) : null;
+            if (rootDynamic != null)
+            {
+                element = MemoryElement.Create(new DynamicClass(rootDynamic), 0, filterDepth, filterSize);
+            }
         }
         else
         {
             DebugUtil.Log("请打开 Profiler 窗口的 Memory 视图, 并切换到 Detail 页面", null, "red");
-            return null;
         }
+
+        return element;
     }
     
     public static void WriteMemoryDetail(string filterName, StreamWriter writer, MemoryElement root)
@@ -137,7 +142,7 @@ public static class ProfilerWindow
             }
         }
         
-        foreach (var memoryElement in root.children)
+        foreach (var memoryElement in root.childrenList)
         {
             if (memoryElement != null)
             {

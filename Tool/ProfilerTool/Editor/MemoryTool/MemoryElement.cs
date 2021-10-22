@@ -1,48 +1,79 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Kuroha.Util.RunTime;
 
-
 public class MemoryElement : IComparable<MemoryElement>
 {
-    //反射 name, totalMemory, children 需要保持命名与dll里面一致
-    public string name;
-    public long totalMemory;
-    public List<MemoryElement> children = new List<MemoryElement>();
+    private int depth;
+    public List<MemoryElement> childrenList;
+    
+    // 下列字段使用了反射, name, totalMemory 需要保持命名与 DLL 中 MemoryElement 类里面的一致
+    private string name;
+    private long totalMemory;
 
-
-    private int _depth;
-
-    private MemoryElement()
-    {
-    }
-
+    /// <summary>
+    /// 创建一个 Memory Element
+    /// </summary>
+    /// <param name="srcMemoryElement"></param>
+    /// <param name="depth"></param>
+    /// <param name="filterDepth"></param>
+    /// <param name="filterSize"></param>
+    /// <returns></returns>
     public static MemoryElement Create(DynamicClass srcMemoryElement, int depth, int filterDepth, float filterSize)
     {
-        if (srcMemoryElement == null) return null;
-        var dstMemoryElement = new MemoryElement { _depth = depth };
-        DynamicClass.CopyFrom(dstMemoryElement, srcMemoryElement.GetInstance(),
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField);
+        // src = source 源
+        if (srcMemoryElement == null)
+        {
+            return null;
+        }
+        
+        // dst = destination 目的
+        var dstMemoryElement = new MemoryElement
+        {
+            depth = depth,
+            name = default,
+            totalMemory = default,
+            childrenList = new List<MemoryElement>()
+        };
 
+        // 赋值
+        const BindingFlags FLAGS = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField;
+        DynamicClass.Copy(dstMemoryElement, srcMemoryElement.GetInstance(), FLAGS);
+
+        // 得到源实例中的 children 字段值
         var srcChildren = srcMemoryElement.GetFieldValue_Public<IList>("children");
-        if (srcChildren == null) return dstMemoryElement;
+        if (srcChildren == null)
+        {
+            return dstMemoryElement;
+        }
+        
         foreach (var srcChild in srcChildren)
         {
             var memoryElement = Create(new DynamicClass(srcChild), depth + 1, filterDepth, filterSize);
-            if (memoryElement == null) continue;
-            if (depth > filterDepth) continue;
-            if (!(memoryElement.totalMemory >= filterSize)) continue;
-            dstMemoryElement.children.Add(memoryElement);
+            if (memoryElement == null)
+            {
+                continue;
+            }
+
+            if (depth > filterDepth)
+            {
+                continue;
+            }
+
+            if (memoryElement.totalMemory < filterSize)
+            {
+                continue;
+            }
+            
+            dstMemoryElement.childrenList.Add(memoryElement);
         }
 
         //dstMemoryElement.children.Sort();
         return dstMemoryElement;
     }
-
-
+    
     public override string ToString()
     {
         var text = string.IsNullOrEmpty(name) ? "-" : name;
@@ -54,7 +85,7 @@ public class MemoryElement : IComparable<MemoryElement>
             text2 = "MB";
         }
 
-        var resultString = string.Format(new string('\t', _depth) + " {0}, {1}{2}", text, num, text2);
+        var resultString = string.Format(new string('\t', depth) + " {0}, {1}{2}", text, num, text2);
         return resultString;
     }
 
