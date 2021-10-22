@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -12,27 +13,39 @@ public static class ProfilerWindow
     private static bool stage2;
     private static bool stage3;
     
-    private static List<DynamicClass> windows;
+    private static List<DynamicClass> profilerWindows;
 
-    private static DynamicClass GetWindow(ProfilerArea area)
+    /// <summary>
+    /// 获取到 ProfilerWindow 类
+    /// </summary>
+    /// <param name="area"></param>
+    /// <returns></returns>
+    private static DynamicClass GetClass_ProfilerWindow(ProfilerArea area)
     {
-        if (null == windows)
+        if (profilerWindows == null)
         {
-            var dynamicType = new DynamicAssembly(typeof(EditorWindow));
-            var type = dynamicType.GetClass("UnityEditor.ProfilerWindow");
-            var list = type.PrivateStaticField<IList>("m_ProfilerWindows");
-            windows = new List<DynamicClass>();
+            // 获取到 UnityEditor 程序集
+            var dynamicAssembly = new DynamicAssembly(typeof(EditorWindow));
+            
+            // 获取到 ProfilerWindow 类
+            var dynamicClass = dynamicAssembly.GetClass("UnityEditor.ProfilerWindow");
+            
+            // 获取到 m_ProfilerWindows 变量, 其类型为: List<ProfilerWindow>
+            var list = dynamicClass.GetFieldValue_PrivateStatic<IList>("m_ProfilerWindows");
+            
+            profilerWindows = new List<DynamicClass>();
             foreach (var window in list)
             {
-                windows.Add(new DynamicClass(window));
+                profilerWindows.Add(new DynamicClass(window));
             }
         }
-        foreach (var dynamic in windows)
+        
+        foreach (var dynamicClass in profilerWindows)
         {
-            var val = (ProfilerArea)dynamic.PrivateInstanceField("m_CurrentArea");
+            var val = (ProfilerArea)dynamicClass.GetFieldValue_Private("m_CurrentArea");
             if (val == area)
             {
-                return dynamic;
+                return dynamicClass;
             }
         }
         return null;
@@ -40,10 +53,10 @@ public static class ProfilerWindow
 
     public static MemoryElement GetMemoryDetailRoot(int filterDepth, float filterSize)
     {
-        var windowDynamic = GetWindow(ProfilerArea.Memory);
+        var windowDynamic = GetClass_ProfilerWindow(ProfilerArea.Memory);
         if (windowDynamic == null) return null;
-        var listViewDynamic = new DynamicClass(windowDynamic.PrivateInstanceField("m_MemoryListView"));
-        var rootDynamic = listViewDynamic.PrivateInstanceField("m_Root");
+        var listViewDynamic = new DynamicClass(windowDynamic.GetFieldValue_Private("m_MemoryListView"));
+        var rootDynamic = listViewDynamic.GetFieldValue_Private("m_Root");
         return rootDynamic != null ? MemoryElement.Create(new DynamicClass(rootDynamic), 0, filterDepth, filterSize) : null;
     }
 
@@ -94,13 +107,16 @@ public static class ProfilerWindow
         }
     }
 
+    /// <summary>
+    /// 刷新内存页面数据
+    /// </summary>
     public static void RefreshMemoryData()
     {
-        var dynamic = GetWindow(ProfilerArea.Memory);
+        var dynamic = GetClass_ProfilerWindow(ProfilerArea.Memory);
         
         if (null != dynamic)
         {
-            dynamic.CallPrivateInstanceMethod("RefreshMemoryData");
+            dynamic.CallMethod_Private("RefreshMemoryData");
         }
         else
         {

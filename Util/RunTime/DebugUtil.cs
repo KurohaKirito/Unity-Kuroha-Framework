@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEditor;
 
 namespace Kuroha.Util.RunTime
 {
@@ -9,6 +7,8 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 日志开关
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once MemberCanBePrivate.Global
         public static bool LogEnable { get; set; } = true;
 
         /// <summary>

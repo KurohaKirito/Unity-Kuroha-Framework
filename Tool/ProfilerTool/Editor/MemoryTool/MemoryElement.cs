@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Kuroha.Util.RunTime;
 
 
 public class MemoryElement : IComparable<MemoryElement>
@@ -23,10 +24,10 @@ public class MemoryElement : IComparable<MemoryElement>
     {
         if (srcMemoryElement == null) return null;
         var dstMemoryElement = new MemoryElement { _depth = depth };
-        DynamicClass.CopyFrom(dstMemoryElement, srcMemoryElement.CurrentInstance,
+        DynamicClass.CopyFrom(dstMemoryElement, srcMemoryElement.GetInstance(),
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField);
 
-        var srcChildren = srcMemoryElement.PublicInstanceField<IList>("children");
+        var srcChildren = srcMemoryElement.GetFieldValue_Public<IList>("children");
         if (srcChildren == null) return dstMemoryElement;
         foreach (var srcChild in srcChildren)
         {
