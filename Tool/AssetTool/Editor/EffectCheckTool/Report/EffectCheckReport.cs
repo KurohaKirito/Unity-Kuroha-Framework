@@ -80,6 +80,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                     break;
 
                 case EffectToolData.AssetsType.ParticleSystem:
+                    RepairParticle.Repair(effectCheckReportInfo);
                     break;
 
                 case EffectToolData.AssetsType.Mesh:
@@ -132,11 +133,12 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
              * FBX          -   Read Write Enable
              * FBX          -   CastShadow
              * FBX          -   NormalsImport
-             * FBX         -   OptimizeMesh
-             * FBX         -   MeshCompression
-             * FBX         -   WeldVertices
+             * FBX          -   OptimizeMesh
+             * FBX          -   MeshCompression
+             * FBX          -   WeldVertices
              * Texture      -   MipMaps
              * Texture      -   Read Write Enable
+             * Particle     -   ParticleZeroSurface
              */
 
             var isCanRepair = false;
@@ -190,6 +192,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                 case EffectCheckReportInfo.EffectCheckReportType.ParticleCollisionAndTrigger:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface:
+                    isCanRepair = true;
                     break;
                 
                 // 4

@@ -1,6 +1,7 @@
 ﻿using System;
 using Kuroha.Tool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.Editor.EffectCheckTool.Report;
+using UnityEditor;
 
 namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
 {
@@ -41,10 +42,26 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
                     break;
                 
                 case CheckParticleSystem.CheckOptions.ZeroSurface:
+                    RepairZeroSurface(effectCheckReportInfo);
                     break;
                 
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        /// <summary>
+        /// 修复粒子系统零表面警告
+        /// </summary>
+        /// <param name="effectCheckReportInfo"></param>
+        private static void RepairZeroSurface(EffectCheckReportInfo effectCheckReportInfo)
+        {
+            var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
+            if (ReferenceEquals(modelImporter, null) == false)
+            {
+                modelImporter.isReadable = false;
+                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }
     }

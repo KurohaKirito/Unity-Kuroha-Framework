@@ -455,16 +455,19 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 {
                     if (particle.shape.shapeType == ParticleSystemShapeType.Mesh)
                     {
-                        if (ReferenceEquals(particle.shape.mesh, null))
+                        var mesh = particle.shape.mesh;
+                        if (ReferenceEquals(mesh, null))
                         {
                             var content = $"特效的发射器类型为 Mesh, 但是没有指定 Mesh! {assetPath} 子物件 {particle.name}";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath,
                                 EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface, content, item));
                         }
-                        else if (particle.shape.mesh.isReadable == false)
+                        else if (mesh.isReadable == false)
                         {
+                            // 根据 Mesh 获取到的路径不是 Mesh 的路径, 而是 Mesh 所在的模型文件的路径
+                            var modelPath = AssetDatabase.GetAssetPath(mesh);
                             var content = $"特效的发射器类型为 Mesh, 但是 Mesh 没有开启读写! {assetPath} 子物件 {particle.name}";
-                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath,
+                            report.Add(EffectCheckReport.AddReportInfo(mesh, modelPath,
                                 EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface, content, item));
                         }
                     }
