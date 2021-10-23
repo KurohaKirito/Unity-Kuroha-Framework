@@ -1,6 +1,7 @@
 ﻿using System;
 using Kuroha.Tool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.Editor.EffectCheckTool.Report;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 
 namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
@@ -59,8 +60,12 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
             if (ReferenceEquals(modelImporter, null) == false)
             {
-                modelImporter.isReadable = false;
-                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                if (modelImporter.isReadable == false)
+                {
+                    DebugUtil.Log("修复了一个模型的读写设置错误!", null, "green");
+                    modelImporter.isReadable = true;
+                    AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                }
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }

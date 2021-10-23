@@ -466,7 +466,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                         {
                             // 根据 Mesh 获取到的路径不是 Mesh 的路径, 而是 Mesh 所在的模型文件的路径
                             var modelPath = AssetDatabase.GetAssetPath(mesh);
-                            var content = $"特效的发射器类型为 Mesh, 但是 Mesh 没有开启读写! {assetPath} 子物件 {particle.name}";
+                            var content = $"特效的发射器类型为 Mesh, 但是 Mesh 没有开启读写! {assetPath} 子物件 {particle.name}, 模型路径 {modelPath}";
                             report.Add(EffectCheckReport.AddReportInfo(mesh, modelPath,
                                 EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface, content, item));
                         }

@@ -58,8 +58,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
             if (ReferenceEquals(modelImporter, null) == false)
             {
-                modelImporter.isReadable = false;
-                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                if (modelImporter.isReadable)
+                {
+                    modelImporter.isReadable = false;
+                    AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                }
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }
