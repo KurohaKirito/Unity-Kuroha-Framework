@@ -455,9 +455,15 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 {
                     if (particle.shape.shapeType == ParticleSystemShapeType.Mesh)
                     {
-                        if (particle.shape.mesh == null)
+                        if (ReferenceEquals(particle.shape.mesh, null))
                         {
                             var content = $"特效的发射器类型为 Mesh, 但是没有指定 Mesh! {assetPath} 子物件 {particle.name}";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath,
+                                EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface, content, item));
+                        }
+                        else if (particle.shape.mesh.isReadable == false)
+                        {
+                            var content = $"特效的发射器类型为 Mesh, 但是 Mesh 没有开启读写! {assetPath} 子物件 {particle.name}";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath,
                                 EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface, content, item));
                         }
