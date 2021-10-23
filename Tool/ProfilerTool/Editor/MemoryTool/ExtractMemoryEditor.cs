@@ -92,9 +92,11 @@ public class ExtractMemoryEditor: EditorWindow
         if (memoryElementRoot != null)
         {
             var writer = new StreamWriter(outputPath);
+            var memoryConnect = ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler);
+            
             writer.WriteLine("Memory Size: >= {0}B", memorySize);
             writer.WriteLine("Memory Depth: {0}", memoryDepth);
-            writer.WriteLine("Current Target: {0}", ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
+            writer.WriteLine("Current Target: {0}", memoryConnect);
             writer.WriteLine("****************************************************************************************");
             
             ProfilerWindow.WriteMemoryDetail(memName, writer, memoryElementRoot);

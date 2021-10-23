@@ -7,11 +7,24 @@ using Kuroha.Util.RunTime;
 public class MemoryElement : IComparable<MemoryElement>
 {
     private int depth;
-    public List<MemoryElement> children;
+
+    #region 下列字段使用了反射, 需要保持 "修饰符, 类型, 命名" 全部与 DLL 中 MemoryElement 类里面的一致
+
+    // name, totalMemory, children
     
-    // 下列字段使用了反射, name, totalMemory 需要保持命名与 DLL 中 MemoryElement 类里面的一致
-    private string name;
-    private long totalMemory;
+    // ReSharper disable once UnassignedField.Global
+    // ReSharper disable once MemberCanBePrivate.Global
+    public string name;
+    
+    // ReSharper disable once UnassignedField.Global
+    // ReSharper disable once MemberCanBePrivate.Global
+    public long totalMemory;
+    
+    // ReSharper disable once UnassignedField.Global
+    // ReSharper disable once MemberCanBePrivate.Global
+    public List<MemoryElement> children = new List<MemoryElement>();
+
+    #endregion
 
     /// <summary>
     /// 创建一个 Memory Element
