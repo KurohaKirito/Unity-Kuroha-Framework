@@ -256,12 +256,13 @@ namespace Kuroha.Util.RunTime
         #endregion
         
         /// <summary>
-        /// 从 "源实例" 中取出 "目标实例" 中 "同名" 字段的值
+        /// 从源实例中取出与目标实例 "同名字段" 的值
         /// </summary>
         /// <param name="dstInstance">目标实例</param>
+        /// <param name="dstFlags">目标实例中字段值的类型</param>
         /// <param name="srcInstance">源实例</param>
-        /// <param name="flags">字段值的类型</param>
-        public static void Copy(object dstInstance, object srcInstance, BindingFlags flags)
+        /// <param name="srcFlags">源实例中字段值的类型</param>
+        public static void Copy(object dstInstance, BindingFlags dstFlags, object srcInstance, BindingFlags srcFlags)
         {
             if (dstInstance == null || srcInstance == null)
             {
@@ -273,11 +274,11 @@ namespace Kuroha.Util.RunTime
             var dstType = dstInstance.GetType();
             
             // 取出目标实例中的字段
-            var dstFields = dstType.GetFields(flags);
+            var dstFields = dstType.GetFields(dstFlags);
             foreach (var dstFieldInfo in dstFields)
             {
-                // 得到源实例中的 "同名字段"
-                var srcFieldInfo = srcType.GetField(dstFieldInfo.Name, flags);
+                // 得到源实例中的 "相同字段"
+                var srcFieldInfo = srcType.GetField(dstFieldInfo.Name, srcFlags);
                 if (srcFieldInfo != null)
                 {
                     if (dstFieldInfo.FieldType == srcFieldInfo.FieldType)

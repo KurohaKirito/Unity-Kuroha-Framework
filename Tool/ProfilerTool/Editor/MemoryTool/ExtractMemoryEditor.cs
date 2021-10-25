@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
-using UnityEngine;
 
 public class ExtractMemoryEditor: EditorWindow
 {
@@ -81,30 +80,24 @@ public class ExtractMemoryEditor: EditorWindow
     /// <param name="memDepth"></param>
     private void ExtractMemory(string memName, float memSize, int memDepth)
     {
+        // 文本内容
+        var texts = new List<string>(100);
+        
         // 输出文件路径
         var outputPath = $"C:/MemoryDetail_{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.txt";
-        
-        // 创建文件
-        File.Create(outputPath).Dispose();
-        
+
         // 获取到根节点
         memoryElementRoot = ProfilerWindow.GetMemoryDetailRoot(memDepth, memSize);
         if (memoryElementRoot != null)
         {
-            var writer = new StreamWriter(outputPath);
             var memoryConnect = ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler);
-            
-            writer.WriteLine("Memory Size: >= {0}B", memorySize);
-            writer.WriteLine("Memory Depth: {0}", memoryDepth);
-            writer.WriteLine("Current Target: {0}", memoryConnect);
-            writer.WriteLine("****************************************************************************************");
-            
-            ProfilerWindow.WriteMemoryDetail(memName, writer, memoryElementRoot);
-            
-            writer.Flush();
-            writer.Close();
+            texts.Add($"Memory Size: >= {memorySize}B)");
+            texts.Add($"Memory Depth: {memoryDepth}");
+            texts.Add($"Current Target: {memoryConnect}");
+            texts.Add("****************************************************************************************");
+            texts.AddRange(ProfilerWindow.GetMemoryDetail(memoryElementRoot, memName));
         }
         
-        Process.Start(outputPath);
+        System.IO.File.WriteAllLines(outputPath, texts);
     }
 }

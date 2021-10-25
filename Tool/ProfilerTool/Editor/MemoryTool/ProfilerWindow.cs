@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEditor;
 using UnityEngine.Profiling;
 using Kuroha.Util.RunTime;
@@ -104,50 +103,59 @@ public static class ProfilerWindow
         return element;
     }
     
-    public static void WriteMemoryDetail(string filterName, StreamWriter writer, MemoryElement root)
+    public static IEnumerable<string> GetMemoryDetail(MemoryElement root, string filterName)
     {
-        if (root == null)
+        const StringComparison COMPARISON_TYPE = StringComparison.OrdinalIgnoreCase;
+        
+        var texts = new List<string>(100);
+        var nodes = new Stack<MemoryElement>(1000);
+        
+        nodes.Push(root);
+        while (nodes.Count > 0)
         {
-            return;
+            var currentNode = nodes.Pop();
+            var currentText = currentNode.ToString();
+
+            #region 筛选
+            
+            // 筛选 3 级
+            if (currentText.IndexOf("\t\t\t", COMPARISON_TYPE) >= 0)
+            {
+                stage3 = currentText.IndexOf(filterName, COMPARISON_TYPE) >= 0;
+                if (stage3 && stage2 && stage1)
+                {
+                    texts.Add(currentText);
+                }
+            }
+            // 筛选 2 级
+            else if (currentText.IndexOf("\t\t", COMPARISON_TYPE) >= 0)
+            {
+                stage2 = currentText.IndexOf("Texture2D", COMPARISON_TYPE) >= 0 ||
+                         currentText.IndexOf("Mesh", COMPARISON_TYPE) >= 0;
+                if (stage2 && stage1)
+                {
+                    texts.Add(currentText);
+                }
+            }
+            // 筛选 1 级
+            else
+            {
+                stage1 = currentText.IndexOf("Assets", COMPARISON_TYPE) >= 0;
+                if (stage1)
+                {
+                    texts.Add(currentText);
+                }
+            }
+
+            #endregion
+
+            var currentChildren = currentNode.children;
+            for (var index = currentChildren.Count - 1; index > 0; --index)
+            {
+                nodes.Push(currentChildren[index]);
+            }
         }
         
-        var text = root.ToString();
-        
-        // 筛选 3 级
-        if (text.IndexOf("\t\t\t", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            stage3 = text.IndexOf(filterName, StringComparison.OrdinalIgnoreCase) >= 0;
-            if (stage3 && stage2 && stage1)
-            {
-                writer.WriteLine(text);
-            }
-        }
-        // 筛选 2 级
-        else if (text.IndexOf("\t\t", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            stage2 = text.IndexOf("Texture2D", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                     text.IndexOf("Mesh", StringComparison.OrdinalIgnoreCase) >= 0;
-            if (stage2 && stage1)
-            {
-                writer.WriteLine(text);
-            }
-        }
-        // 筛选 1 级
-        else
-        {
-            stage1 = text.IndexOf("Assets", StringComparison.OrdinalIgnoreCase) >= 0;
-            if (stage1)
-            {
-                writer.WriteLine(text);
-            }
-        }
-        
-        foreach (var memoryElement in root.children)
-        {
-            if (memoryElement != null)
-            {
-                WriteMemoryDetail(filterName, writer, memoryElement);
-            }
-        }
+        return texts;
     }
 }

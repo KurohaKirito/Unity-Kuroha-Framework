@@ -1,29 +1,18 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Kuroha.Util.RunTime;
 
-public class MemoryElement : IComparable<MemoryElement>
+public class MemoryElement
 {
     private int depth;
+    public readonly List<MemoryElement> children = new List<MemoryElement>();
 
-    #region 下列字段使用了反射, 需要保持 "修饰符, 类型, 命名" 全部与 DLL 中 MemoryElement 类里面的一致
-
-    // name, totalMemory, children
-    
-    // ReSharper disable once UnassignedField.Global
-    // ReSharper disable once MemberCanBePrivate.Global
-    public string name;
-    
-    // ReSharper disable once UnassignedField.Global
-    // ReSharper disable once MemberCanBePrivate.Global
-    public long totalMemory;
-    
-    // ReSharper disable once UnassignedField.Global
-    // ReSharper disable once MemberCanBePrivate.Global
-    public List<MemoryElement> children = new List<MemoryElement>();
-
+    #region 下列字段使用了反射, 需要保持 "字段名称" 与 DLL 中一致
+    #pragma warning disable 649
+    private string name;
+    private long totalMemory;
+    #pragma warning restore 649
     #endregion
 
     /// <summary>
@@ -45,43 +34,39 @@ public class MemoryElement : IComparable<MemoryElement>
         // dst = destination 目的
         var dstMemoryElement = new MemoryElement
         {
-            depth = depth,
-            children = new List<MemoryElement>(),
+            depth = depth
         };
 
         // 赋值
-        const BindingFlags FLAGS = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField;
-        DynamicClass.Copy(dstMemoryElement, srcMemoryElement.GetInstance(), FLAGS);
+        const BindingFlags DST_FLAGS = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField;
+        const BindingFlags SRC_FLAGS = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField;
+        DynamicClass.Copy(dstMemoryElement, DST_FLAGS,
+            srcMemoryElement.GetInstance(), SRC_FLAGS);
 
         // 得到源实例中的 children 字段值
         var srcChildren = srcMemoryElement.GetFieldValue_Public<IList>("children");
-        if (srcChildren == null)
+        if (srcChildren != null)
         {
-            return dstMemoryElement;
+            foreach (var srcChild in srcChildren)
+            {
+                var memoryElement = Create(new DynamicClass(srcChild), depth + 1, filterDepth, filterSize);
+                if (memoryElement != null)
+                {
+                    if (depth > filterDepth)
+                    {
+                        continue;
+                    }
+                    
+                    if (memoryElement.totalMemory < filterSize)
+                    {
+                        continue;
+                    }
+            
+                    dstMemoryElement.children.Add(memoryElement);
+                }
+            }
         }
         
-        foreach (var srcChild in srcChildren)
-        {
-            var memoryElement = Create(new DynamicClass(srcChild), depth + 1, filterDepth, filterSize);
-            if (memoryElement == null)
-            {
-                continue;
-            }
-
-            if (depth > filterDepth)
-            {
-                continue;
-            }
-
-            if (memoryElement.totalMemory < filterSize)
-            {
-                continue;
-            }
-            
-            dstMemoryElement.children.Add(memoryElement);
-        }
-
-        //dstMemoryElement.children.Sort();
         return dstMemoryElement;
     }
     
@@ -96,27 +81,8 @@ public class MemoryElement : IComparable<MemoryElement>
             text2 = "MB";
         }
 
-        var resultString = string.Format(new string('\t', depth) + " {0}, {1}{2}", text, num, text2);
+        var tab = new string('\t', depth);
+        var resultString = $"{tab} {text}, {num}{text2}";
         return resultString;
-    }
-
-    public int CompareTo(MemoryElement other)
-    {
-        if (other.totalMemory != totalMemory)
-        {
-            return (int) (other.totalMemory - totalMemory);
-        }
-
-        if (string.IsNullOrEmpty(name))
-        {
-            return -1;
-        }
-
-        if (string.IsNullOrEmpty(other.name))
-        {
-            return 1;
-        }
-
-        return string.Compare(name, other.name, StringComparison.Ordinal);
     }
 }
