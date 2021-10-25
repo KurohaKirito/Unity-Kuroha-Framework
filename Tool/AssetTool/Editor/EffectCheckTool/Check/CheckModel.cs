@@ -196,9 +196,13 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
             if (ReferenceEquals(model, null) == false)
             {
                 var set = bool.Parse(item.parameter);
+#pragma warning disable 618
                 if (model.optimizeMesh != set)
+#pragma warning restore 618
                 {
+#pragma warning disable 618
                     var content = $"OptimizeMesh 未开启: {assetPath} ({model.optimizeMesh}) >>> ({set})";
+#pragma warning restore 618
                     report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXOptimizeMesh, content, item));
                 }
             }

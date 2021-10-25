@@ -117,13 +117,17 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
         /// <param name="effectCheckReportInfo"></param>
         private static void RepairOptimizeMesh(EffectCheckReportInfo effectCheckReportInfo)
         {
+            
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
             if (ReferenceEquals(modelImporter, null) == false)
             {
+#pragma warning disable 618
                 modelImporter.optimizeMesh = true;
+#pragma warning restore 618
                 AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
+            
         }
         
         /// <summary>
