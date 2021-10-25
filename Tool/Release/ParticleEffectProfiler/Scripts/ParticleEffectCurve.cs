@@ -1,6 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
-using Kuroha.Util.Release;
+using Kuroha.Util.RunTime;
 using UnityEngine;
 
 /// <summary>

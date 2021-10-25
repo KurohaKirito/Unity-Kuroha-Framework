@@ -13,7 +13,7 @@ namespace Kuroha.Editor
         [MenuItem("Kuroha/开启日志输出", false, 0)]
         public static void OpenDebugLog()
         {
-            Kuroha.Util.Release.DebugUtil.LogEnable = true;
+            Kuroha.Util.RunTime.DebugUtil.LogEnable = true;
         }
 
         [MenuItem("Kuroha/UnityIcon/显示所有图标", false, 20)]
@@ -32,9 +32,9 @@ namespace Kuroha.Editor
         public static void DialogError()
         {
             Dialog.SetListener(
-                () => { Kuroha.Util.Release.DebugUtil.Log("错误: 您点击了确定按钮"); },
-                () => { Kuroha.Util.Release.DebugUtil.Log("错误: 您点击了取消按钮"); },
-                () => { Kuroha.Util.Release.DebugUtil.Log("错误: 您点击了功能按钮"); });
+                () => { Kuroha.Util.RunTime.DebugUtil.Log("错误: 您点击了确定按钮"); },
+                () => { Kuroha.Util.RunTime.DebugUtil.Log("错误: 您点击了取消按钮"); },
+                () => { Kuroha.Util.RunTime.DebugUtil.Log("错误: 您点击了功能按钮"); });
             Dialog.Display("这是弹窗的内容", Dialog.DialogType.Error, "确定按钮");
         }
 
@@ -42,9 +42,9 @@ namespace Kuroha.Editor
         public static void DialogWarning()
         {
             Dialog.SetListener(
-                () => { Kuroha.Util.Release.DebugUtil.Log("警告: 您点击了确定按钮"); },
-                () => { Kuroha.Util.Release.DebugUtil.Log("警告: 您点击了取消按钮"); },
-                () => { Kuroha.Util.Release.DebugUtil.Log("警告: 您点击了功能按钮"); });
+                () => { Kuroha.Util.RunTime.DebugUtil.Log("警告: 您点击了确定按钮"); },
+                () => { Kuroha.Util.RunTime.DebugUtil.Log("警告: 您点击了取消按钮"); },
+                () => { Kuroha.Util.RunTime.DebugUtil.Log("警告: 您点击了功能按钮"); });
             Dialog.Display(
                 "消息内容: 当前一共检测出了 1035 个文件!  " +
                 "消息内容: 当前一共检测出了 1035 个文件!  " +
