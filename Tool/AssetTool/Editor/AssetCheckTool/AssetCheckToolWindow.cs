@@ -111,7 +111,10 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
                 {
                     AssetBatchToolGUI.OnGUI(this);
                 },
-                ProfilerMemoryToolGUI.OnGUI
+                () =>
+                {
+                    ProfilerToolGUI.OnGUI(this);
+                }
             };
         }
 

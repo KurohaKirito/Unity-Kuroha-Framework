@@ -9,11 +9,6 @@ namespace Kuroha.Tool.Editor.ProfilerTool
     public static class ProfilerMemoryToolGUI
     {
         /// <summary>
-        /// 初始化标志
-        /// </summary>
-        private static bool initFlag;
-
-        /// <summary>
         /// Unity Analysis Profiler
         /// </summary>
         private const string PROFILER_PATH = "Window/Analysis/Profiler";
@@ -32,6 +27,31 @@ namespace Kuroha.Tool.Editor.ProfilerTool
         /// 筛选条件: 资源名称
         /// </summary>
         private static string memoryName = "jeep";
+        
+        /// <summary>
+        /// 全局默认 margin
+        /// </summary>
+        private const float UI_DEFAULT_MARGIN = 5;
+
+        /// <summary>
+        /// 全局按钮的宽度
+        /// </summary>
+        private const float UI_BUTTON_WIDTH = 120;
+        
+        /// <summary>
+        /// 全局按钮的高度
+        /// </summary>
+        private const float UI_BUTTON_HEIGHT = 25;
+        
+        /// <summary>
+        /// 全局输入框的宽度
+        /// </summary>
+        private const float UI_INPUT_AREA_WIDTH = 400;
+        
+        /// <summary>
+        /// 折叠框
+        /// </summary>
+        private static bool foldout = true;
 
         /// <summary>
         /// 树形结构根节点
@@ -43,40 +63,83 @@ namespace Kuroha.Tool.Editor.ProfilerTool
         /// </summary>
         public static void OnGUI()
         {
-            if (initFlag == false)
+            GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+            
+            foldout = EditorGUILayout.Foldout(foldout, ProfilerToolGUI.tools[(int) ProfilerToolGUI.ToolType.MemoryTool], true);
+
+            if (foldout)
             {
-                EditorApplication.ExecuteMenuItem(PROFILER_PATH);
-                initFlag = true;
-            }
-
-            EditorGUILayout.BeginVertical();
-            {
-                EditorGUILayout.LabelField("当前连接设备: " +
-                                           ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
-
-                if (GUILayout.Button("截取内存细节快照"))
+                GUILayout.Space(UI_DEFAULT_MARGIN);
+                EditorGUILayout.BeginVertical("Box");
                 {
-                    // 刷新数据
-                    ProfilerWindow.RefreshMemoryData();
-                }
+                    EditorGUILayout.LabelField("当前连接设备: " + ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler));
 
-                // 刷选条件
-                memoryName = EditorGUILayout.TextField("Name: ", memoryName);
-                memorySize = EditorGUILayout.FloatField("Memory Size(B) >= ", memorySize);
-                memoryDepth = EditorGUILayout.IntField("Memory Depth(>=1) ", memoryDepth);
-
-                if (GUILayout.Button("导出内存细节详情"))
-                {
-                    if (memoryDepth <= 0)
+                    GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+                    
+                    EditorGUILayout.LabelField("1. 请先打开 Profiler 窗口, 并聚焦 Memory 部分的 Detail 窗口.");
+                    GUILayout.BeginHorizontal("Box");
                     {
-                        memoryDepth = 1;
+                        if (GUILayout.Button("打开 Profiler 窗口", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                        {
+                            EditorApplication.ExecuteMenuItem(PROFILER_PATH);
+                        }
                     }
+                    GUILayout.EndHorizontal();
+                    
+                    GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+                    
+                    EditorGUILayout.LabelField("2. 点击按钮, 获取设备当前的内存细节信息快照.");
+                    GUILayout.BeginHorizontal("Box");
+                    {
+                        if (GUILayout.Button("Take Sample", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                        {
+                            // 刷新数据
+                            ProfilerWindow.RefreshMemoryData();
+                        }
+                    }
+                    GUILayout.EndHorizontal();
 
-                    // 导出内存数据
-                    ExtractMemory(memoryName, memorySize, memoryDepth - 1);
+                    GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+                    
+                    // 绘制筛选条件
+                    EditorGUILayout.LabelField("3. 填写筛选条件");
+                    
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.LabelField("1. 按照资源名称筛选");
+                    memoryName = EditorGUILayout.TextField("Name: ", memoryName, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    EditorGUI.indentLevel--;
+                    
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.LabelField("2. 按照内存占用大小筛选");
+                    memorySize = EditorGUILayout.FloatField("Memory Size(B) >= ", memorySize, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    EditorGUI.indentLevel--;
+                    
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.LabelField("3. 按照资源树深度筛选");
+                    memoryDepth = EditorGUILayout.IntField("Memory Depth(>=1) ", memoryDepth, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    EditorGUI.indentLevel--;
+
+                    GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+                    
+                    EditorGUILayout.LabelField("4. 点击按钮, 导出内存占用细节到文件: C:/MemoryDetail.txt");
+                    GUILayout.BeginHorizontal("Box");
+                    {
+                        if (GUILayout.Button("Export", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                        {
+                            if (memoryDepth <= 0)
+                            {
+                                memoryDepth = 1;
+                            }
+
+                            // 导出内存数据
+                            ExtractMemory(memoryName, memorySize, memoryDepth - 1);
+                        }
+                    }
+                    GUILayout.EndHorizontal();
+                    
                 }
+                EditorGUILayout.EndVertical();
             }
-            EditorGUILayout.EndVertical();
         }
 
         /// <summary>

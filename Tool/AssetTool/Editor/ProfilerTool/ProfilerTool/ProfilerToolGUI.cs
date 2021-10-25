@@ -4,48 +4,30 @@ using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.AssetBatchTool
+namespace Kuroha.Tool.Editor.ProfilerTool
 {
-    public static class AssetBatchToolGUI
+    public static class ProfilerToolGUI
     {
         /// <summary>
-        /// 批处理工具类型
+        /// 工具类型
         /// </summary>
-        public enum BatchType
+        public enum ToolType
         {
-            RedundantTextureReferencesCleaner,
-            GunAttachmentsCloseCastShadows,
-            BundleAssetCounter,
-            AssetDeleteTool,
-            AssetMoveTool,
-            MaterialShaderChecker,
-            UnusedAssetChecker,
-            CheckSubEmitterInAllScene,
-            FbxUVColorsChecker,
-            AutoCheckTool = 9
+            MemoryTool = 0
         }
 
         /// <summary>
-        /// 批处理工具类型
+        /// 工具名称
         /// </summary>
-        public static readonly string[] batches =
+        public static readonly string[] tools =
         {
-            "材质球冗余纹理引用清除器",
-            "关闭枪械配件阴影投射",
-            "捆绑包资源数量分析",
-            "资源批量删除工具",
-            "资源批量移动工具",
-            "材质球的着色器引用检测器",
-            "废弃资源检测工具",
-            "场景粒子 Sub-Emitter 检测",
-            "模型 UV 信息检查器",
-            "自动检测工具"
+            "Memory 工具"
         };
 
         /// <summary>
         /// 当前的 Batch
         /// </summary>
-        private static BatchType currentBatch;
+        private static ToolType currentTool;
 
         /// <summary>
         /// 滑动条
@@ -96,22 +78,22 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 {
                     GUILayout.Space(5);
                     
-                    for (var index = 0; index < batches.Length; index++)
+                    for (var index = 0; index < tools.Length; index++)
                     {
                         var oldColor = UnityEngine.GUI.backgroundColor;
-                        if (currentBatch == (BatchType)index)
+                        if (currentTool == (ToolType)index)
                         {
                             UnityEngine.GUI.backgroundColor = new Color(92 / 255f, 223 / 255f, 240 / 255f);
                         }
                         
-                        if (GUILayout.Button(batches[index], buttonStyle, GUILayout.Width(196), GUILayout.Height(30)))
+                        if (GUILayout.Button(tools[index], buttonStyle, GUILayout.Width(196), GUILayout.Height(30)))
                         {
-                            currentBatch = (BatchType)index;
+                            currentTool = (ToolType)index;
                         }
                         
                         UnityEngine.GUI.backgroundColor = oldColor;
 
-                        if (index + 1 < batches.Length)
+                        if (index + 1 < tools.Length)
                         {
                             GUILayout.Space(10);
                         }
@@ -130,48 +112,12 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
         {
             GUILayout.BeginArea(rect);
             {
-                switch (currentBatch)
+                switch (currentTool)
                 {
-                    case BatchType.RedundantTextureReferencesCleaner:
-                        RedundantTextureReferencesCleaner.OnGUI();
+                    case ToolType.MemoryTool:
+                        ProfilerMemoryToolGUI.OnGUI();
                         break;
 
-                    case BatchType.GunAttachmentsCloseCastShadows:
-                        GunAttachmentsCloseCastShadows.OnGUI();
-                        break;
-
-                    case BatchType.BundleAssetCounter:
-                        BundleAssetCounter.OnGUI();
-                        break;
-
-                    case BatchType.AssetDeleteTool:
-                        AssetDeleteTool.OnGUI();
-                        break;
-                    
-                    case BatchType.AssetMoveTool:
-                        AssetMoveTool.OnGUI();
-                        break;
-
-                    case BatchType.MaterialShaderChecker:
-                        ShaderChecker.OnGUI();
-                        break;
-                    
-                    case BatchType.UnusedAssetChecker:
-                        UnusedAssetCleaner.OnGUI();
-                        break;
-
-                    case BatchType.CheckSubEmitterInAllScene:
-                        CheckSubEmitterInAllScene.OnGUI();
-                        break;
-
-                    case BatchType.FbxUVColorsChecker:
-                        FbxUVColorsChecker.OnGUI();
-                        break;
-
-                    case BatchType.AutoCheckTool:
-                        AutoCheckToolGUI.OnGUI();
-                        break;
-                    
                     default:
                         DebugUtil.LogError("忘记注册 OnGUI 事件了!");
                         throw new ArgumentOutOfRangeException();
