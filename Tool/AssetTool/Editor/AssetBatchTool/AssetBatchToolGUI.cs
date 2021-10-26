@@ -22,7 +22,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             UnusedAssetChecker,
             CheckSubEmitterInAllScene,
             FbxUVColorsChecker,
-            AutoCheckTool = 9
+            AnimationClipCompress,
+            AutoCheckTool = 10
         }
 
         /// <summary>
@@ -39,6 +40,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             "废弃资源检测工具",
             "场景粒子 Sub-Emitter 检测",
             "模型 UV 信息检查器",
+            "动画片段压缩工具",
             "自动检测工具"
         };
 
@@ -167,11 +169,15 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     case BatchType.FbxUVColorsChecker:
                         FbxUVColorsChecker.OnGUI();
                         break;
+                    
+                    case BatchType.AnimationClipCompress:
+                        AnimationClipCompress.OnGUI();
+                        break;
 
                     case BatchType.AutoCheckTool:
                         AutoCheckToolGUI.OnGUI();
                         break;
-                    
+
                     default:
                         DebugUtil.LogError("忘记注册 OnGUI 事件了!");
                         throw new ArgumentOutOfRangeException();
