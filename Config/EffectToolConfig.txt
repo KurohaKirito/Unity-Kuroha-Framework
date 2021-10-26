@@ -118,3 +118,4 @@ GUID	标题	资源类型	检查类型	路径	白名单规则	参数	危险等级
 117	必须关闭读写-Models/Backpack	5	0	Assets/Art/Effects/Models/Backpack		False;False;False;False	1	True	True	True	
 118	必须关闭读写-Models/Buff	5	0	Assets/Art/Effects/Models/Buff		False;False;False;False	1	True	True	True	
 119	必须关闭读写-Models/Carrier	5	0	Assets/Art/Effects/Models/Carrier		False;False;False;False	1	True	True	True	
+120	粒子系统零表面错误	3	8	Assets/ToBundle/Effect		0	1	True	False	True	
