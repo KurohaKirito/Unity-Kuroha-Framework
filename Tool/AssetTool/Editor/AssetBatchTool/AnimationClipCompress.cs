@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using Kuroha.Util.RunTime;
 using UnityEditor;
 
 namespace Kuroha.Tool.Editor.AssetBatchTool
