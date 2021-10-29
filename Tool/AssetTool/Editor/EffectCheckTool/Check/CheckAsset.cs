@@ -19,8 +19,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// </summary>
         public static readonly string[] checkOptions =
         {
-            "资源命名",
-            "文件夹命名"
+            "资源命名"
         };
 
         /// <summary>
@@ -28,8 +27,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         /// </summary>
         public enum CheckOptions
         {
-            AssetName,
-            FolderName
+            AssetName
         }
         
         public static void Check(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos)
@@ -40,61 +38,35 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 if (Directory.Exists(fullPath))
                 {
                     var direction = new DirectoryInfo(fullPath);
-                    var searchType = itemData.isCheckSubFile
-                        ? SearchOption.AllDirectories
-                        : SearchOption.TopDirectoryOnly;
-                    
-                    switch ((CheckOptions)itemData.checkType)
+                    var files = direction.GetFiles("*", SearchOption.AllDirectories);
+                    for (var index = 0; index < files.Length; index++)
                     {
-                        case CheckOptions.AssetName:
+                        ProgressBar.DisplayProgressBar("特效检测工具", $"命名规则排查中: {index + 1}/{files.Length}", index + 1, files.Length);
+                        if (files[index].Name.EndsWith(".meta"))
                         {
-                            var files = direction.GetFiles("*", searchType);
-                            for (var index = 0; index < files.Length; index++)
-                            {
-                                ProgressBar.DisplayProgressBar("特效检测工具", $"资源命名规则排查中: {index + 1}/{files.Length}", index + 1, files.Length);
-                                if (files[index].Name.EndsWith(".meta") == false)
-                                {
-                                    var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                                    var pattern = itemData.writePathRegex;
-                                    if (string.IsNullOrEmpty(pattern) == false)
-                                    {
-                                        var regex = new Regex(pattern);
-                                        if (regex.IsMatch(assetPath))
-                                        {
-                                            continue;
-                                        }
-                                    }
+                            continue;
+                        }
 
-                                    CheckAssetName(assetPath, itemData, ref reportInfos);
-                                }
+                        var assetPath = PathUtil.GetAssetPath(files[index].FullName);
+                        var pattern = itemData.writePathRegex;
+                        if (string.IsNullOrEmpty(pattern) == false)
+                        {
+                            var regex = new Regex(pattern);
+                            if (regex.IsMatch(assetPath))
+                            {
+                                continue;
                             }
                         }
-                            break;
 
-                        case CheckOptions.FolderName:
+                        switch ((CheckOptions)itemData.checkType)
                         {
-                            var folders = direction.GetDirectories("*", searchType);
-                            for (var index = 0; index < folders.Length; index++)
-                            {
-                                ProgressBar.DisplayProgressBar("特效检测工具", $"目录命名规则排查中: {index + 1}/{folders.Length}", index + 1, folders.Length);
-                                var assetPath = PathUtil.GetAssetPath(folders[index].FullName);
-                                var pattern = itemData.writePathRegex;
-                                if (string.IsNullOrEmpty(pattern) == false)
-                                {
-                                    var regex = new Regex(pattern);
-                                    if (regex.IsMatch(assetPath))
-                                    {
-                                        continue;
-                                    }
-                                }
+                            case CheckOptions.AssetName:
+                                CheckAssetName(assetPath, itemData, ref reportInfos);
+                                break;
 
-                                CheckFolderName(assetPath, itemData, ref reportInfos);
-                            }
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
-                            break;
-                            
-                        default:
-                            throw new ArgumentOutOfRangeException();
                     }
                 }
             }
@@ -105,7 +77,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
         }
 
         /// <summary>
-        /// 检测: 资源命名
+        /// 检测: 剔除模式资源命名
         /// </summary>
         /// <param name="assetPath">资源路径</param>
         /// <param name="item">检查项</param>
@@ -115,7 +87,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
             // 文件名
             assetPath = assetPath.Replace('\\', '/');
             var assetName = assetPath.Split('/').Last();
-            assetName = assetName.Substring(0, assetName.Length - 4);
             
             // 正则
             var pattern = item.parameter;
@@ -128,32 +99,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 
                 var content = $"资源命名错误! 资源路径: {fullName}";
                 report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.AssetName, content, item));
-            }
-        }
-        
-        /// <summary>
-        /// 检测: 文件夹命名
-        /// </summary>
-        /// <param name="assetPath">资源路径</param>
-        /// <param name="item">检查项</param>
-        /// <param name="report">检查结果</param>
-        private static void CheckFolderName(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
-        {
-            // 文件名
-            assetPath = assetPath.Replace('\\', '/');
-            var assetName = assetPath.Split('/').Last();
-            
-            // 正则
-            var pattern = item.parameter;
-            var regex = new Regex(pattern);
-            
-            if (regex.IsMatch(assetName) == false)
-            {
-                var fullName = System.IO.Path.GetFullPath(assetPath);
-                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
-                
-                var content = $"文件夹命名错误! 文件夹路径: {fullName}";
-                report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FolderName, content, item));
             }
         }
     }

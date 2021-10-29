@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kuroha.Tool.Editor.SceneAnalysisTool;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,7 +9,10 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
 {
     public class MeshAnalysisToolGUI : UnityEditor.Editor
     {
-        private static GameObject trisVertsObject;
+        /// <summary>
+        /// 待检测的预制
+        /// </summary>
+        private static GameObject prefab;
 
         /// <summary>
         /// [GUI] 折叠狂
@@ -63,16 +68,29 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
                     GUILayout.EndVertical();
 
                     GUILayout.BeginVertical("Box");
-                    trisVertsObject = EditorGUILayout.ObjectField("选择待检查的预制体", trisVertsObject, typeof(GameObject), true, GUILayout.Width(UI_SELECTION_WIDTH)) as GameObject;
+                    prefab = EditorGUILayout.ObjectField("选择待检查的预制体", prefab, typeof(GameObject), true, GUILayout.Width(UI_SELECTION_WIDTH)) as GameObject;
                     GUILayout.EndVertical();
 
                     GUILayout.BeginVertical("Box");
-                    UnityEngine.GUI.enabled = ReferenceEquals(trisVertsObject, null) == false;
-                    if (GUILayout.Button("Count Tris Verts", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
-                        CountTrisVert(detectType, trisVertsObject);
+                        UnityEngine.GUI.enabled = ReferenceEquals(prefab, null) == false;
+                        if (GUILayout.Button("Count Tris Verts", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                        {
+                            CountTrisVert(detectType, prefab);
+                        }
+                        UnityEngine.GUI.enabled = true;
                     }
-                    UnityEngine.GUI.enabled = true;
+                    GUILayout.EndVertical();
+                    
+                    GUILayout.BeginVertical("Box");
+                    {
+                        UnityEngine.GUI.enabled = ReferenceEquals(prefab, null) == false;
+                        if (GUILayout.Button("计算内存占用", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                        {
+                            CountMemory(prefab);
+                        }
+                        UnityEngine.GUI.enabled = true;
+                    }
                     GUILayout.EndVertical();
                 }
                 GUILayout.EndVertical();
@@ -99,6 +117,52 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+        }
+
+        /// <summary>
+        /// 统计实际内存占用
+        /// </summary>
+        /// <param name="asset"></param>
+        private static void CountMemory(GameObject asset)
+        {
+            var textureGuids = new List<string>();
+
+            // 获取预制中全部的 Renderer
+            var renderers = asset.GetComponentsInChildren<Renderer>();
+
+            // 获取预制中全部的 Mesh
+            foreach (var renderer in renderers)
+            {
+                var sharedMaterials = renderer.sharedMaterials;
+                foreach (var sharedMaterial in sharedMaterials)
+                {
+                    Kuroha.Util.Editor.TextureUtil.GetTexturesInMaterial(sharedMaterial, out var textures);
+                    for (var k = 0; k < textures.Count; k++)
+                    {
+                        if (textureGuids.Contains(textures[k].guid) == false)
+                        {
+                            textureGuids.Add(textures[k].guid);
+                            var unit = "KB";
+                            var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[k].asset);
+                            runTimeSize /= 8192;
+                            if (runTimeSize > 1024)
+                            {
+                                runTimeSize /= 1024;
+                                unit = "MB";
+                            }
+                            Debug.Log(textures[k].asset.name + ":  " + runTimeSize + unit);
+                        }
+                    }
+                }
+            }
+            
+            //var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.TextureUtil");
+            //var methodInfo = type.GetMethod("GetStorageMemorySize", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            //var import = AssetImporter.GetAtPath(textures[k].path);
+            // Debug.Log("内存占用：" + EditorUtility.FormatBytes(UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[k].asset)));
+            // Debug.Log("硬盘占用：" +
+            //           EditorUtility.FormatBytes((int)methodInfo?.Invoke(null,
+            //               new object[] { textures[k].asset })));
         }
     }
 }

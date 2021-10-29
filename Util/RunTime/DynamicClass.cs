@@ -42,6 +42,14 @@ namespace Kuroha.Util.RunTime
             BindingFlags.Instance;
         
         /// <summary>
+        /// Public Static 方法
+        /// </summary>
+        private const BindingFlags PUBLIC_STATIC_INSTANCE_METHOD =
+            BindingFlags.Public |
+            BindingFlags.Static |
+            BindingFlags.Instance;
+        
+        /// <summary>
         /// Private 方法
         /// </summary>
         private const BindingFlags PRIVATE_INSTANCE_METHOD =
@@ -225,6 +233,18 @@ namespace Kuroha.Util.RunTime
         public void CallMethod_Public(string methodName, params object[] args)
         {
             InvokeMethod(methodName, PUBLIC_INSTANCE_METHOD, args);
+        }
+        
+        /// <summary>
+        /// 调用 public static 函数
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once MemberCanBePrivate.Global
+        public void CallMethod_PublicStatic(string methodName, params object[] args)
+        {
+            InvokeMethod(methodName, PUBLIC_STATIC_INSTANCE_METHOD, args);
         }
 
         /// <summary>

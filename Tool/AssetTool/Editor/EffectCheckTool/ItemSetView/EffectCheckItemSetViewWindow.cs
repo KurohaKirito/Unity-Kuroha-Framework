@@ -113,18 +113,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                     textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black
                 }
             };
-            
-            if (isEditMode == false)
-            {
-                ParameterString1 = default;
-                ParameterInt1 = default;
-                ParameterInt2 = default;
-                ParameterBool1 = default;
-                ParameterBool2 = default;
-                ParameterBool3 = default;
-                ParameterBool4 = default;
-            }
-            
             EffectCheckItemSetViewInit.Init(itemInfo, isEditMode);
         }
 
@@ -501,15 +489,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
             switch (modeType)
             {
                 case CheckAsset.CheckOptions.AssetName:
-                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
-                    ParameterString1 = EditorGUILayout.TextField("命名规则(正则)", ParameterString1);
-                    itemInfo.parameter = ParameterString1;
-                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
-                    GUILayout.Label("描述: 命名规则检测");
-                    UnityEngine.GUI.skin.label.alignment = oldAlignment;
-                    break;
-
-                case CheckAsset.CheckOptions.FolderName:
                     UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
                     ParameterString1 = EditorGUILayout.TextField("命名规则(正则)", ParameterString1);
                     itemInfo.parameter = ParameterString1;
