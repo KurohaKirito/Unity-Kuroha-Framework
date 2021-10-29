@@ -22,6 +22,7 @@ namespace Kuroha.Util.RunTime
         {
             var date = DateTime.Now.ToString("yyyy-MM-dd");
             logFilePath = $"{Application.dataPath}/Config/Log/{date}.txt";
+            DontDestroyOnLoad(this);
         }
 
         /// <summary>

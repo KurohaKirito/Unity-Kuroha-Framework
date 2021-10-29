@@ -13,19 +13,21 @@ public static class MaterialShaderDetect
     /// </summary>
     public static void Detect()
     {
-        Check();
+        Check("Assets/Art/Effects/Materials", "傅佳亿");
     }
 
     /// <summary>
     /// 执行检测
     /// </summary>
+    /// <param name="checkPath">检测路径</param>
+    /// <param name="principal">负责人</param>
     /// <param name="isExportFile">是否导出文件, 默认导出文件</param>
-    public static List<Dictionary<string, string>> Check(bool isExportFile = true)
+    public static List<Dictionary<string, string>> Check(string checkPath, string principal, bool isExportFile = true)
     {
         var results = new List<Dictionary<string, string>>();
 
         // 获取相对目录下所有的材质球
-        var guids = AssetDatabase.FindAssets("t:Material", new[] {"Assets/Art/Effects/Materials"});
+        var guids = AssetDatabase.FindAssets("t:Material", new[] {checkPath});
         var assetPaths = new List<string>(guids.Select(AssetDatabase.GUIDToAssetPath));
         
         // 加载全部的材质球
@@ -58,7 +60,7 @@ public static class MaterialShaderDetect
                 {"错误名称", "材质球引用了 Lightweight Render Pipeline 着色器"},
                 {"资源路径", path},
                 {"错误等级", "Error"},
-                {"负责人", "傅佳亿"},
+                {"负责人", principal},
                 {"备注", "请仔细检查并修复" }
             };
 

@@ -54,16 +54,16 @@ namespace Kuroha.Framework.UI.Panel
         /// <summary>
         /// 打开
         /// </summary>
-        public void Open<T>(string uiName) where T : UIPanelController, new()
+        public UIPanelController Open<T>(string uiName) where T : UIPanelController, new()
         {
             // 先检查 UI 是否已经打开了
             if (Current != null && Current.Name == uiName)
             {
-                DebugUtil.Log("UI 当前处于打开状态, 请勿重复打开!", null, "red");
+                DebugUtil.Log($"UI {uiName} 当前处于打开状态, 请勿重复打开!", null, "red");
             }
             else
             {
-                DebugUtil.Log("UI 没有打开", null, "green");
+                DebugUtil.Log($"UI {uiName} 没有打开", null, "green");
                 
                 // 如果当前正在显示 UI, 则关闭当前 UI
                 Current?.UI.SetActive(false);
@@ -72,13 +72,19 @@ namespace Kuroha.Framework.UI.Panel
                 if (uiPool.ContainsKey(uiName))
                 {
                     uiPool[uiName].UI.SetActive(true);
+                    uiPool[uiName].Reset();
                     uiStack.Push(uiPool[uiName]);
-                    DebugUtil.Log("UI 已经在缓存池中了", null, "green");
+                    DebugUtil.Log($"UI {uiName} 已经在缓存池中了", null, "green");
                 }
                 else
                 {
                     var prefabPath = $"{UI_PREFAB_PATH}{uiName}/{uiName}";
                     var uiPrefab = Resources.Load<GameObject>(prefabPath);
+                    if (ReferenceEquals(uiPrefab, null))
+                    {
+                        DebugUtil.LogError($"未获取到 {prefabPath} 预制体", null, "red");
+                    }
+                    
                     var newUI = Object.Instantiate(uiPrefab, uiParent, false);
                     var newView = newUI.GetComponent<UIPanelView>();
                     var newController = new T();
@@ -89,6 +95,8 @@ namespace Kuroha.Framework.UI.Panel
                     DebugUtil.Log("新建了 UI, 并加入缓存池", null, "green");
                 }
             }
+
+            return Current;
         }
 
         /// <summary>

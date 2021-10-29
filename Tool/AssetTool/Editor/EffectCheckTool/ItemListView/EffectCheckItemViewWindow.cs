@@ -1,4 +1,6 @@
-﻿using Kuroha.Tool.Editor.EffectCheckTool.ItemSetView;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Kuroha.Tool.Editor.EffectCheckTool.ItemSetView;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +26,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
         /// <summary>
         /// 全局按钮的高度
         /// </summary>
-        private const float UI_BUTTON_HEIGHT = 32;
+        private const float UI_BUTTON_HEIGHT = 25;
         
         /// <summary>
         /// GUID 检查项序号风格
@@ -126,7 +128,7 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
 
             #endregion
 
-            OnGUI_Save();
+            OnGUI_Buttons(EffectCheckItemView.CheckItemInfoList);
         }
 
         /// <summary>
@@ -210,23 +212,94 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
         }
 
         /// <summary>
-        /// GUI 保存
+        /// GUI 底部按钮
         /// </summary>
-        private void OnGUI_Save()
+        private void OnGUI_Buttons(in List<CheckItemInfo> infos)
         {
             GUILayout.Space(UI_DEFAULT_MARGIN);
 
             GUILayout.BeginHorizontal();
+            
             GUILayout.FlexibleSpace();
+
+            #region 全选 (CI)
+
+            GUILayout.BeginVertical("Box");
+            if (GUILayout.Button("全选 (CI)", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+            {
+                foreach (var info in infos)
+                {
+                    info.cicdEnable = true;
+                }
+            }
+            GUILayout.EndVertical();
+
+            #endregion
+            
+            GUILayout.FlexibleSpace();
+
+            #region 全不选 (CI)
+
+            GUILayout.BeginVertical("Box");
+            if (GUILayout.Button("全不选 (CI)", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+            {
+                foreach (var info in infos)
+                {
+                    info.cicdEnable = false;
+                }
+            }
+            GUILayout.EndVertical();
+
+            #endregion
+            
+            GUILayout.FlexibleSpace();
+
+            #region 保存
+
             GUILayout.BeginVertical("Box");
             if (GUILayout.Button("保存", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
             {
                 EffectCheckItemSetView.SaveConfig(EffectCheckItemView.CheckItemInfoList, "保存成功!");
                 Close();
             }
-
             GUILayout.EndVertical();
+
+            #endregion
+            
             GUILayout.FlexibleSpace();
+
+            #region 全选 (特效)
+
+            GUILayout.BeginVertical("Box");
+            if (GUILayout.Button("全选 (特效)", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+            {
+                foreach (var info in infos)
+                {
+                    info.effectEnable = true;
+                }
+            }
+            GUILayout.EndVertical();
+
+            #endregion
+            
+            GUILayout.FlexibleSpace();
+
+            #region 全不选 (特效)
+
+            GUILayout.BeginVertical("Box");
+            if (GUILayout.Button("全不选 (特效)", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+            {
+                foreach (var info in infos)
+                {
+                    info.effectEnable = false;
+                }
+            }
+            GUILayout.EndVertical();
+
+            #endregion
+            
+            GUILayout.FlexibleSpace();
+            
             GUILayout.EndHorizontal();
 
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);

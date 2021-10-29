@@ -74,7 +74,7 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 添加监听
         /// </summary>
-        public void AddListener(Action action, string methodName)
+        public void AddUpdateListener(Action action, string methodName)
         {
             eventNameList.Add(methodName);
             UpdateEvent += action;
@@ -83,7 +83,7 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 移除监听
         /// </summary>
-        public void RemoveListener(Action action, string methodName)
+        public void RemoveUpdateListener(Action action, string methodName)
         {
             eventNameList.Remove(methodName);
             UpdateEvent -= action;

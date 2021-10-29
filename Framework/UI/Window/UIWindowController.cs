@@ -33,6 +33,11 @@ namespace Kuroha.Framework.UI.Window
         }
         
         /// <summary>
+        /// 重置
+        /// </summary>
+        public virtual void Reset() { }
+        
+        /// <summary>
         /// 关闭窗口
         /// </summary>
         protected static void OnButtonClick_Close()

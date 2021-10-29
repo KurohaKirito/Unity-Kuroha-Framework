@@ -31,7 +31,12 @@ namespace Kuroha.Framework.UI.Panel
             baseView = view;
             Name = prefabName;
         }
-        
+
+        /// <summary>
+        /// 重置
+        /// </summary>
+        public virtual void Reset() { }
+
         /// <summary>
         /// 关闭
         /// </summary>

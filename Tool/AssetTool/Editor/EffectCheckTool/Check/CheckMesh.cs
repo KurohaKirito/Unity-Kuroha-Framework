@@ -54,7 +54,10 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
                 if (Directory.Exists(fullPath))
                 {
                     var direction = new DirectoryInfo(fullPath);
-                    var files = direction.GetFiles("*", SearchOption.AllDirectories);
+                    var searchType = itemData.isCheckSubFile
+                        ? SearchOption.AllDirectories
+                        : SearchOption.TopDirectoryOnly;
+                    var files = direction.GetFiles("*", searchType);
                     for (var index = 0; index < files.Length; index++)
                     { 
                         ProgressBar.DisplayProgressBar("特效检测工具", $"Mesh 排查中: {index + 1}/{files.Length}", index + 1, files.Length);

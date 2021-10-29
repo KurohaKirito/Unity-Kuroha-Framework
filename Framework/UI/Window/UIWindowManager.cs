@@ -38,7 +38,7 @@ namespace Kuroha.Framework.UI.Window
         /// <summary>
         /// 打开
         /// </summary>
-        public void Open<T>(string uiName, string message) where T : UIWindowController, new()
+        public UIWindowController Open<T>(string uiName, string message) where T : UIWindowController, new()
         {
             // 先检查 UI 是否已经打开了
             if (current != null && current.Name == uiName)
@@ -47,8 +47,6 @@ namespace Kuroha.Framework.UI.Window
             }
             else
             {
-                DebugUtil.Log("UI 没有打开", null, "green");
-                
                 // 如果当前正在显示 UI, 则关闭当前 UI
                 current?.UI.SetActive(false);
 
@@ -56,6 +54,7 @@ namespace Kuroha.Framework.UI.Window
                 if (uiPool.ContainsKey(uiName))
                 {
                     uiPool[uiName].Display(message);
+                    uiPool[uiName].Reset();
                     current = uiPool[uiName];
                     DebugUtil.Log("UI 已经在缓存池中了", null, "green");
                 }
@@ -65,6 +64,7 @@ namespace Kuroha.Framework.UI.Window
                     var uiPrefab = Resources.Load<GameObject>(prefabPath);
                     var newUI = Object.Instantiate(uiPrefab, uiParent, false);
                     var newView = newUI.GetComponent<UIWindowView>();
+                    
                     var newController = new T();
                     newController.Init(newView, uiName);
                     newController.Display(message);
@@ -74,6 +74,8 @@ namespace Kuroha.Framework.UI.Window
                     DebugUtil.Log("新建了 UI, 并加入缓存池", null, "green");
                 }
             }
+
+            return current;
         }
 
         /// <summary>
