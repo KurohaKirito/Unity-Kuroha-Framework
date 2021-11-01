@@ -99,7 +99,7 @@ namespace Kuroha.Tool.Editor.FashionAnalysisTool
                                 player = players.Find("Player1");
                             }
                             else if (role == null) {
-                                role = player.transform.Find("RoleBox/Model/Role");
+                                role = player.transform.Find("UIRolePoint1/Role");
                             }
                             EditorGUILayout.ObjectField("玩家游戏物体: Player1", player, typeof(Transform), true);
                             

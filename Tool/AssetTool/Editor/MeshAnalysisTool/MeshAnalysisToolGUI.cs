@@ -74,7 +74,7 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
                     GUILayout.BeginVertical("Box");
                     {
                         UnityEngine.GUI.enabled = ReferenceEquals(prefab, null) == false;
-                        if (GUILayout.Button("Count Tris Verts", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                        if (GUILayout.Button("统计顶点面数", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                         {
                             CountTrisVert(detectType, prefab);
                         }
