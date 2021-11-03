@@ -46,7 +46,10 @@ namespace Kuroha.GUI.Editor.Table
             bool isDrawExport,
             float exportWidth,
             float filterHeight,
-            CommonTableColumn<T>[] columns, CommonTableDelegate.FilterMethod<T> onFilterFunction, CommonTableDelegate.ExportMethod<T> onExportFunction, CommonTableDelegate.SelectMethod<T> onSelectFunction)
+            CommonTableColumn<T>[] columns,
+            CommonTableDelegate.FilterMethod<T> onFilterFunction,
+            CommonTableDelegate.ExportMethod<T> onExportFunction,
+            CommonTableDelegate.SelectMethod<T> onSelectFunction)
         {
             Data = dataList;
             minRect = minSize;

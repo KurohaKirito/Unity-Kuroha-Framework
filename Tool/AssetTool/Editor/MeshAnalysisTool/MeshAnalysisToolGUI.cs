@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kuroha.Tool.Editor.ProfilerTool;
 using Kuroha.Tool.Editor.SceneAnalysisTool;
 using Kuroha.Util.RunTime;
 using UnityEditor;
@@ -71,6 +72,8 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
                     prefab = EditorGUILayout.ObjectField("选择待检查的预制体", prefab, typeof(GameObject), true, GUILayout.Width(UI_SELECTION_WIDTH)) as GameObject;
                     GUILayout.EndVertical();
 
+                    #region 统计顶点面数
+
                     GUILayout.BeginVertical("Box");
                     {
                         UnityEngine.GUI.enabled = ReferenceEquals(prefab, null) == false;
@@ -81,7 +84,11 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
                         UnityEngine.GUI.enabled = true;
                     }
                     GUILayout.EndVertical();
-                    
+
+                    #endregion
+
+                    #region 计算内存占用
+
                     GUILayout.BeginVertical("Box");
                     {
                         UnityEngine.GUI.enabled = ReferenceEquals(prefab, null) == false;
@@ -92,6 +99,8 @@ namespace Kuroha.Tool.Editor.MeshAnalysisTool
                         UnityEngine.GUI.enabled = true;
                     }
                     GUILayout.EndVertical();
+
+                    #endregion
                 }
                 GUILayout.EndVertical();
             }

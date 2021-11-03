@@ -13,7 +13,8 @@ namespace Kuroha.Tool.Editor.ProfilerTool
         /// </summary>
         public enum ToolType
         {
-            MemoryTool = 0
+            MemoryTool = 0,
+            AsyncLoadTool = 1,
         }
 
         /// <summary>
@@ -21,7 +22,8 @@ namespace Kuroha.Tool.Editor.ProfilerTool
         /// </summary>
         public static readonly string[] tools =
         {
-            "Memory 工具"
+            "Memory 工具",
+            "异步加载时长统计"
         };
 
         /// <summary>
@@ -118,6 +120,15 @@ namespace Kuroha.Tool.Editor.ProfilerTool
                         ProfilerMemoryToolGUI.OnGUI();
                         break;
 
+                    case ToolType.AsyncLoadTool:
+                        GUILayout.BeginHorizontal("Box");
+                        if (GUILayout.Button("打开统计结果", GUILayout.Height(25), GUILayout.Width(120)))
+                        {
+                            AsyncLoadTableWindow.Open();
+                        }
+                        GUILayout.EndHorizontal();
+                        break;
+                    
                     default:
                         DebugUtil.LogError("忘记注册 OnGUI 事件了!");
                         throw new ArgumentOutOfRangeException();

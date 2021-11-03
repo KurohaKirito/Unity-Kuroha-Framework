@@ -69,7 +69,7 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
         /// </summary>
         private void OnEnable()
         {
-            toolBarNames = new[] {"特效资源检测", "时装检测工具", "场景统计分析", "贴图统计分析", "网格统计分析", "批处理", "Profiler 辅助"};
+            toolBarNames = new[] {"特效资源检测", "时装检测工具", "场景统计分析", "贴图统计分析", "网格统计分析", "批处理", "性能分析辅助"};
             
             #if UNITY_2019_3_OR_NEWER
             toolbarData = new Toolbar.ToolbarData(800, 320, toolBarNames);
