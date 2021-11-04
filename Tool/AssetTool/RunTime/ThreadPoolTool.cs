@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Kuroha.Util.RunTime;
 
 namespace Kuroha.Tool.Release
 {
@@ -66,8 +65,6 @@ namespace Kuroha.Tool.Release
             {
                 ThreadPool.QueueUserWorkItem(state => { task.Execute(); });
             }
-
-            DebugUtil.Log($"多线程任务创建完成, 共创建了 {tasks.Count()} 个");
         }
     }
 }

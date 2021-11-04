@@ -215,8 +215,10 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Report
                     isCanRepair = true;
                     break;
 
-                // 1
+                // 2
                 case EffectCheckReportInfo.EffectCheckReportType.AssetName:
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.FolderName:
                     break;
                 
                 default:

@@ -271,6 +271,11 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
                     var parameterAssetName = info.parameter;
                     EffectCheckItemSetViewWindow.ParameterString1 = parameterAssetName;
                     break;
+
+                case CheckAsset.CheckOptions.FolderName:
+                    var parameterFolderName = info.parameter;
+                    EffectCheckItemSetViewWindow.ParameterString1 = parameterFolderName;
+                    break;
                 
                 default:
                     throw new ArgumentOutOfRangeException();

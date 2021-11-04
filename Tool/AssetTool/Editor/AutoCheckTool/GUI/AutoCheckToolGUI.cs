@@ -9,21 +9,33 @@ public static class AutoCheckToolGUI
     private static readonly string[] checkItem =
     {
         "执行特效检测工具",
-        "检测 Assets/Art/Effects/Textures 下纹理是否存在重复纹理",
-        "检测 Assets/Art/Effects/Textures 下纹理是否存在纯色纹理",
-        "检测 Assets/Art/Effects/Textures 下是否存在无引用纹理",
+        
+        "检测 Assets/Art/Effects/Textures 下纹理的重复纹理",
+        "检测 Assets/Art/Effects/Textures 下存在的大于 32x32 的纯色纹理",
+        "检测 Assets/Art/Effects/Textures 下的无引用纹理",
         "检测 Assets/Art/Effects/Textures 下的资源与文件夹同级问题",
-        "检测 Assets/Art/Effects/Materials 下是否存在无引用材质球",
+        
+        "检测 Assets/Art/Effects/Materials 下的无引用材质球",
         "检测 Assets/Art/Effects/Materials 下哪些材质球使用了 LWRP 着色器",
         "检测 Assets/Art/Effects/Materials 下的资源与文件夹同级问题",
         "检测 Assets/Art/Effects/Materials 下材质球的冗余纹理引用问题",
-        "检测 Assets/Art/Effects/Models 下是否存在无引用模型",
-        "检测 Assets/Art/Effects/Models 下的资源与文件夹同级问题"
+        
+        "检测 Assets/Art/Effects/Models 下的无引用模型",
+        "检测 Assets/Art/Effects/Models 下的资源与文件夹同级问题",
+        
+        "检测 Assets/Art/Characters/Textures/Fashion 下存在的重复纹理",
+        "检测 Assets/Art/Characters/Textures/Fashion 下存在的大于 32x32 的纯色纹理",
+        "检测 Assets/Art/Characters/Textures/Fashion 下的无引用纹理",
+        "检测 Assets/Art/Characters/Textures/Fashion 下的资源与文件夹同级问题",
     };
 
     private static readonly bool[] checkToggle =
     {
-        true,true,true,true,true,true,true,true,true,true,true
+        true,
+        true,true,false,true,
+        false,true,true,true,
+        false,true,
+        true,true,false,true,
     };
     
     /// <summary>
@@ -76,71 +88,80 @@ public static class AutoCheckToolGUI
     public static void Check()
     {
         var results = new List<Dictionary<string, string>>();
-
-        //执行特效检测工具
+        // 执行特效检测工具
         if (checkToggle[0])
         {
             results.AddRange(EffectDetect.Check(false));
         }
-        
-        // 检测 Assets/Art/Effects/Textures 下纹理是否存在重复纹理
+        // 检测 Assets/Art/Effects/Textures 下纹理的重复纹理
         if (checkToggle[1])
         {
-            results.AddRange(RepeatTextureDetect.Check(false));
+            results.AddRange(RepeatTextureDetect.Check("Assets/Art/Effects/Textures", "傅佳亿", false));
         }
-        
-        // 检测 Assets/Art/Effects/Textures 下纹理是否存在纯色纹理
+        // 检测 Assets/Art/Effects/Textures 下存在的大于 32x32 的纯色纹理
         if (checkToggle[2])
         {
-            results.AddRange(SolidTextureDetect.Check(false));
+            results.AddRange(SolidTextureDetect.Check("Assets/Art/Effects/Textures", "傅佳亿", false));
         }
-        
-        // 检测 Assets/Art/Effects/Textures 下是否存在无引用纹理
+        // 检测 Assets/Art/Effects/Textures 下的无引用纹理
         if (checkToggle[3])
         {
-            results.AddRange(UnusedTextureDetect.Check(false));
+            results.AddRange(UnusedTextureDetect.Check("Assets/Art/Effects/Textures", "傅佳亿", false));
         }
-        
         // 检测 Assets/Art/Effects/Textures 下的资源与文件夹同级问题
         if (checkToggle[4])
         {
-            results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Textures", 50, false));
+            results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Textures", 50, "傅佳亿", false));
         }
-        
-        // 检测 Assets/Art/Effects/Materials 下是否存在无引用材质球
+        // 检测 Assets/Art/Effects/Materials 下的无引用材质球
         if (checkToggle[5])
         {
-            results.AddRange(UnusedMaterialDetect.Check(false));
+            results.AddRange(UnusedMaterialDetect.Check("Assets/Art/Effects/Materials", "傅佳亿", false));
         }
-        
         // 检测 Assets/Art/Effects/Materials 下哪些材质球使用了 LWRP 着色器
         if (checkToggle[6])
         {
-            results.AddRange(MaterialShaderDetect.Check(false));
+            results.AddRange(MaterialShaderDetect.Check("Assets/Art/Effects/Materials", "傅佳亿", false));
         }
-        
         // 检测 Assets/Art/Effects/Materials 下的资源与文件夹同级问题
         if (checkToggle[7])
         {
-            results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Materials", 50, false));
+            results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Materials", 50, "傅佳亿", false));
         }
-        
         // 检测 Assets/Art/Effects/Materials 下材质球的冗余纹理引用问题
         if (checkToggle[8])
         {
-            results.AddRange(RedundantTextureReferencesDetect.Check(false));
+            results.AddRange(RedundantTextureReferencesDetect.Check("Assets/Art/Effects/Materials", "傅佳亿", false));
         }
-        
-        // 检测 Assets/Art/Effects/Models 下是否存在无引用模型
+        // 检测 Assets/Art/Effects/Models 下的无引用模型
         if (checkToggle[9])
         {
-            results.AddRange(UnusedModelDetect.Check(false));
+            results.AddRange(UnusedModelDetect.Check("Assets/Art/Effects/Materials", "傅佳亿", false));
         }
-        
         // 检测 Assets/Art/Effects/Models 下的资源与文件夹同级问题
         if (checkToggle[10])
         {
-            results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Models", 50, false));
+            results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Effects/Models", 50, "傅佳亿", false));
+        }
+        // 检测 Assets/Art/Characters/Textures/Fashion 下存在的重复纹理
+        if (checkToggle[11])
+        {
+            results.AddRange(RepeatTextureDetect.Check("Assets/Art/Characters/Textures/Fashion", "邱泽浩", false));
+        }
+        // 检测 Assets/Art/Characters/Textures/Fashion 下存在的大于 32x32 的纯色纹理
+        if (checkToggle[12])
+        {
+            results.AddRange(SolidTextureDetect.Check("Assets/Art/Characters/Textures/Fashion", "邱泽浩", false));
+        }
+        // 检测 Assets/Art/Characters/Textures/Fashion 下的无引用纹理
+        if (checkToggle[13])
+        {
+            results.AddRange(UnusedTextureDetect.Check("Assets/Art/Characters/Textures/Fashion", "邱泽浩", false));
+        }
+        // 检测 Assets/Art/Characters/Textures/Fashion 下的资源与文件夹同级问题
+        if (checkToggle[14])
+        {
+            results.AddRange(FolderAndAssetsDetect.Check("Assets/Art/Characters/Textures/Fashion", 50, "邱泽浩", false));
         }
         
         ExportResult(results);
@@ -169,7 +190,7 @@ public static class AutoCheckToolGUI
         }
     
         // 将 json 文本写入文本文件
-        var resultFilePath = StringUtil.Concat(Application.dataPath, "/AutoCheckResult.txt");
+        var resultFilePath = $"{Application.dataPath}/AutoCheckResult.txt";
         File.WriteAllLines(resultFilePath, jsonList);
             
         #endif

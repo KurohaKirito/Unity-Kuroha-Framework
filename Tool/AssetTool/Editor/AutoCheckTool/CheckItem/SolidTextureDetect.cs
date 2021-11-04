@@ -11,19 +11,21 @@ public static class SolidTextureDetect
     /// </summary>
     public static void Detect()
     {
-        Check();
+        Check("Assets/Art/Effects/Textures", "傅佳亿");
     }
     
     /// <summary>
     /// 执行检测
     /// </summary>
+    /// <param name="path">检测路径</param>
+    /// <param name="principal">负责人</param>
     /// <param name="isExportFile">是否导出文件, 默认导出文件</param>
-    public static List<Dictionary<string, string>> Check(bool isExportFile = true)
+    public static List<Dictionary<string, string>> Check(string path, string principal, bool isExportFile = true)
     {
         var results = new List<Dictionary<string, string>>();
         
         // 获取全部纹理
-        TextureUtil.GetTexturesInPath(new[] { "Assets/Art/Effects/Textures" }, out var textures, out var texturePaths);
+        TextureUtil.GetTexturesInPath(new[] { path }, out var textures, out var texturePaths);
         
         // 检测每一张纹理
         for (var index = 0; index < textures.Count; index++)
@@ -49,7 +51,7 @@ public static class SolidTextureDetect
                                     { "错误名称", "尺寸大于 32 X 32 的纯色纹理" },
                                     { "资源路径", texturePaths[index] },
                                     { "错误等级", "Error" },
-                                    { "负责人", "傅佳亿" },
+                                    { "负责人", principal },
                                     { "备注", $"人工确认并修复, 当前尺寸: {textures[index].width} X {textures[index].height}" }
                                 };
                                 

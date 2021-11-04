@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
@@ -196,9 +196,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                         type = ErrorType.NoneReference,
                         assetPath = assetPath
                     });
-                    resultExport.Add ($"错误: 资源 {assetPath} 被引用 {references[key].Count} 次!");
+                    resultExport.Add ($"{assetPath}\t\t被引用 {references[key].Count} 次");
                 }
-                
                 // 问题资源 2: 明明放在 "特定文件夹" 内, 但却有引用
                 else if (success && referenceCount > 0)
                 {
@@ -207,20 +206,21 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                         type = ErrorType.HadReference,
                         assetPath = assetPath
                     });
-                    resultExport.Add ($"错误: 资源 {assetPath} 被引用 {references[key].Count} 次!");
+                    resultExport.Add ($"{assetPath}\t\t被引用 {references[key].Count} 次");
                 }
-
                 // 正确资源
-                else
-                {
-                    resultExport.Add ($"正确: 资源 {assetPath} 被引用 {references[key].Count} 次!");
-                }
             }
             
             // 不是自动检测时将结果导出到文件
             if (isAutoCheck == false)
             {
-                File.WriteAllLines($@"C:\Result_Unused_{enumStr}_Asset.md", resultExport);
+                if (resultExport.Count > 0)
+                {
+                    DebugUtil.Log($"共查出了 {resultExport.Count} 条错误资源", null, "red");
+                    var outputPath = $"{Application.dataPath}/Result_Unused_{enumStr}_Asset.txt";
+                    System.IO.File.WriteAllLines(outputPath, resultExport);
+                    System.Diagnostics.Process.Start(outputPath);
+                }
             }
             
             return resultAuto;

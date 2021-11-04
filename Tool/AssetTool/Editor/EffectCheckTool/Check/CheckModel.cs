@@ -49,7 +49,6 @@ namespace Kuroha.Tool.Editor.EffectCheckTool.Check
             if (itemData.path.StartsWith("Assets"))
             {
                 var assetGuids = AssetDatabase.FindAssets("t:Model", new[] { itemData.path });
-                // DebugUtil.Log($"CheckParticleSystem: 查询到了 {assetGuids.Length} 个模型, 检测路径为: {itemData.path}");
                 
                 for (var index = 0; index < assetGuids.Length; index++)
                 {

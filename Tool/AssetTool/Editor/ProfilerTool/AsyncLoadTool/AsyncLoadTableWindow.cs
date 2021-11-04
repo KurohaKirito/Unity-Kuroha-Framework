@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Kuroha.GUI.Editor.Table;
-using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,7 +11,7 @@ namespace Kuroha.Tool.Editor.ProfilerTool
     public class AsyncLoadTableWindow : EditorWindow
     {
         private AsyncLoadTable table;
-        private const string ASYNC_LOAD_RECORD_PATH = "C:/recordList.txt";
+        private const string ASYNC_LOAD_RECORD_PATH = "C:/AsyncLoadRecord.txt";
 
         /// <summary>
         /// 宽度警告线
@@ -96,7 +94,8 @@ namespace Kuroha.Tool.Editor.ProfilerTool
             foreach (var data in dataList)
             {
                 var allData = data.Split(';');
-                var bundlePath = allData[0].Replace('\\', '/');
+                
+                var bundlePath = allData[0].Replace('\\', '/').Substring(87);
                 var startTime = allData[1].Substring(11, 8);
                 var endTime = allData[2].Substring(11, 8);
                 var useTime = float.Parse(allData[3].Substring(8)) * 1000;
@@ -285,7 +284,8 @@ namespace Kuroha.Tool.Editor.ProfilerTool
         /// <param name="dataList"></param>
         private static void OnRowSelect(in List<AsyncLoadData> dataList)
         {
-            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dataList[0].bundlePath);
+            var path = $"Assets/{dataList[0].bundlePath.Substring(19)}".Replace(".unity3d", "");
+            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
             EditorGUIUtility.PingObject(obj);
             Selection.activeObject = obj;
         }
