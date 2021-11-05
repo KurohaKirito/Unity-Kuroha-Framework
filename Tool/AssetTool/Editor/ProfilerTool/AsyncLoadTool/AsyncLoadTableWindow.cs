@@ -74,8 +74,7 @@ namespace Kuroha.Tool.Editor.ProfilerTool
                     {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        table = new AsyncLoadTable(space, min, dataList, true, true, 50, 50, columns,
-                            OnFilterEnter, null, OnRowSelect);
+                        table = new AsyncLoadTable(space, min, dataList, true, true, 50, 50, columns, OnFilterEnter, null, null);
                     }
                 }
             }
@@ -276,18 +275,6 @@ namespace Kuroha.Tool.Editor.ProfilerTool
             GUILayout.EndHorizontal();
 
             table?.OnGUI();
-        }
-
-        /// <summary>
-        /// 行选中事件
-        /// </summary>
-        /// <param name="dataList"></param>
-        private static void OnRowSelect(in List<AsyncLoadData> dataList)
-        {
-            var path = $"Assets/{dataList[0].bundlePath.Substring(19)}".Replace(".unity3d", "");
-            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-            EditorGUIUtility.PingObject(obj);
-            Selection.activeObject = obj;
         }
 
         /// <summary>
