@@ -27,14 +27,6 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
         /// </summary>
         public static Rect windowCurrentRect;
 
-        #if Kuroha
-        [MenuItem("Kuroha/AssetSearchTool")]
-        #endif
-        private static void Menu()
-        {
-            Open(0);
-        }
-        
         /// <summary>
         /// 打开窗口
         /// </summary>

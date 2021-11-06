@@ -52,9 +52,7 @@ namespace Kuroha.Tool.Editor.AssetCheckTool
         /// <summary>
         /// 资源检测工具
         /// </summary>
-        #if Kuroha
-        [MenuItem("Kuroha/AssetTool")]
-        #else
+        #if Kuroha == false
         [MenuItem("Funny/资源检测工具/Asset Check Tool")]
         #endif
         public static void Open()

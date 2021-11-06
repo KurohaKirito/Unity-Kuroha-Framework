@@ -4,17 +4,30 @@ using Kuroha.Tool.Editor.AssetCheckTool;
 using Kuroha.Tool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.Editor.AssetSearchTool.Searcher;
 using Kuroha.Tool.Editor.AssetViewer;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 
 namespace Kuroha.Editor
 {
     public class KurohaToolMenu : UnityEditor.Editor
     {
-        [MenuItem("Kuroha/开启日志输出", false, 0)]
+        #region 日志开关
+
+        [MenuItem("Kuroha/日志/开启", false, 0)]
         public static void OpenDebugLog()
         {
             Kuroha.Util.RunTime.DebugUtil.LogEnable = true;
         }
+        
+        [MenuItem("Kuroha/日志/开启", true, 0)]
+        public static bool OpenDebugLogValidate()
+        {
+            return Kuroha.Util.RunTime.DebugUtil.LogEnable == false;
+        }
+
+        #endregion
+        
+        #region 图标工具
 
         [MenuItem("Kuroha/UnityIcon/显示所有图标", false, 20)]
         public static void DisplayAllIcon()
@@ -27,6 +40,10 @@ namespace Kuroha.Editor
         {
             SizeEdit.Open();
         }
+
+        #endregion
+
+        #region 弹窗示例
 
         [MenuItem("Kuroha/消息弹窗/错误", false, 40)]
         public static void DialogError()
@@ -65,23 +82,33 @@ namespace Kuroha.Editor
             Dialog.Display("这是一条消息, 阅读完, 点击确定即可!", Dialog.DialogType.Message, "确定");
         }
 
-        [MenuItem("Kuroha/资源分析工具", false, 60)]
+        #endregion
+
+        #region 工具
+
+        [MenuItem("Kuroha/Asset Check Tool", false, 60)]
         public static void AssetAnalysis()
         {
             AssetCheckToolWindow.Open();
         }
 
-        [MenuItem("Kuroha/资源查找工具", false, 60)]
+        [MenuItem("Kuroha/Asset Search Tool", false, 60)]
         public static void AssetSearchTool()
         {
             AssetSearchWindow.Open(0);
         }
+        
+        #endregion
 
-        [MenuItem("Assets/查找资源引用")]
+        #region 右键菜单
+
+        [MenuItem("Assets/Find All Reference")]
         public static void FindAssetReference()
         {
             ReferenceSearcher.OpenWindow();
         }
+
+        #endregion
     }
 }
 #endif
