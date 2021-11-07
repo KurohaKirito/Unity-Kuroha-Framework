@@ -1,9 +1,9 @@
 ﻿using System;
-using Kuroha.Tool.Editor.AssetSearchTool.Data;
+using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data;
 using UnityEngine;
 using UnityEditor;
 
-namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
+namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
 {
     public class AssetSearchWindow : EditorWindow
     {
@@ -55,9 +55,9 @@ namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
             
             // 标签页
             findTypeIndex = Kuroha.GUI.Editor.Toolbar.ToolbarAnime(ref toolbarData, this, ref findTypeIndex,
-                Kuroha.Tool.Editor.AssetSearchTool.GUI.GUIStringSearcher.OnGUI,
-                Kuroha.Tool.Editor.AssetSearchTool.GUI.GUIReferenceSearcher.OnGUI,
-                Kuroha.Tool.Editor.AssetSearchTool.GUI.GUIDependenceSearcher.OnGUI);
+                GUIStringSearcher.OnGUI,
+                GUIReferenceSearcher.OnGUI,
+                GUIDependenceSearcher.OnGUI);
             
             // 实现动画
             if (toolbarData.playAnime) {

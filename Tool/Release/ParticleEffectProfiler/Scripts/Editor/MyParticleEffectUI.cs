@@ -1,68 +1,71 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// 将特效的性能数据显示到 Scene 窗口
-/// </summary>
-[CustomEditor(typeof(ParticleEffectManager))] 
-public class MyParticleEffectUI : Editor
+namespace Kuroha.Tool.Release.ParticleEffectProfiler.Scripts.Editor
 {
-    private readonly string[] labelArray = new string[20];
-    private ParticleEffectManager Target => target as ParticleEffectManager;
-
-    private void OnSceneGUI()
+    /// <summary>
+    /// 将特效的性能数据显示到 Scene 窗口
+    /// </summary>
+    [CustomEditor(typeof(ParticleEffectManager))] 
+    public class MyParticleEffectUI : UnityEditor.Editor
     {
-        var index = 0;
-        labelArray[index] = GetParticleEffectData.GetTextRuntimeMemorySize(Target.gameObject);
-        labelArray[++index] = GetParticleEffectData.GetParticleSystemCount(Target.gameObject);
+        private readonly string[] labelArray = new string[20];
+        private ParticleEffectManager Target => target as ParticleEffectManager;
 
-        if (EditorApplication.isPlaying)
+        private void OnSceneGUI()
         {
-            labelArray[++index] = GetParticleEffectData.GetOnlyParticleEffectDrawCallStr();
-            labelArray[++index] = GetParticleEffectData.GetParticleCountStr(Target);
-            labelArray[++index] = GetParticleEffectData.GetPixDrawAverageStr(Target);
-            labelArray[++index] = GetParticleEffectData.GetPixActualDrawAverageStr(Target);
-            labelArray[++index] = GetParticleEffectData.GetPixRateStr(Target);
+            var index = 0;
+            labelArray[index] = GetParticleEffectData.GetTextRuntimeMemorySize(Target.gameObject);
+            labelArray[++index] = GetParticleEffectData.GetParticleSystemCount(Target.gameObject);
+
+            if (EditorApplication.isPlaying)
+            {
+                labelArray[++index] = GetParticleEffectData.GetOnlyParticleEffectDrawCallStr();
+                labelArray[++index] = GetParticleEffectData.GetParticleCountStr(Target);
+                labelArray[++index] = GetParticleEffectData.GetPixDrawAverageStr(Target);
+                labelArray[++index] = GetParticleEffectData.GetPixActualDrawAverageStr(Target);
+                labelArray[++index] = GetParticleEffectData.GetPixRateStr(Target);
+            }
+
+            DrawSceneGUI(); 
         }
 
-        DrawSceneGUI(); 
-    }
-
-    private void DrawSceneGUI()
-    {
-        Handles.BeginGUI();
+        private void DrawSceneGUI()
         {
-            GUILayout.BeginArea(new Rect(10, 10, 300, 300));
+            Handles.BeginGUI();
             {
-                var style = new GUIStyle
+                GUILayout.BeginArea(new Rect(10, 10, 300, 300));
                 {
-                    richText = true,
-                    fontStyle = FontStyle.Bold
-                };
-
-                foreach (var label in labelArray)
-                {
-                    if (string.IsNullOrEmpty(label) == false)
+                    var style = new GUIStyle
                     {
-                        GUILayout.Label(label, style);
+                        richText = true,
+                        fontStyle = FontStyle.Bold
+                    };
+
+                    foreach (var label in labelArray)
+                    {
+                        if (string.IsNullOrEmpty(label) == false)
+                        {
+                            GUILayout.Label(label, style);
+                        }
                     }
                 }
+                GUILayout.EndArea();
             }
-            GUILayout.EndArea();
+            Handles.EndGUI();
         }
-        Handles.EndGUI();
-    }
 
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        
-        var autoCullingTips = GetParticleEffectData.GetCullingSupportedString(Target.gameObject);
-        
-        if (string.IsNullOrEmpty(autoCullingTips) == false)
+        public override void OnInspectorGUI()
         {
-            GUILayout.Label("ParticleSystem 以下选项会导致无法自动剔除: ", EditorStyles.whiteLargeLabel);
-            GUILayout.Label(autoCullingTips);
+            base.OnInspectorGUI();
+        
+            var autoCullingTips = GetParticleEffectData.GetCullingSupportedString(Target.gameObject);
+        
+            if (string.IsNullOrEmpty(autoCullingTips) == false)
+            {
+                GUILayout.Label("ParticleSystem 以下选项会导致无法自动剔除: ", EditorStyles.whiteLargeLabel);
+                GUILayout.Label(autoCullingTips);
+            }
         }
     }
 }

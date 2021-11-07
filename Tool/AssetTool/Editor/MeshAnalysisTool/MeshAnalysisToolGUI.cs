@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kuroha.Tool.Editor.SceneAnalysisTool;
+using Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.MeshAnalysisTool
+namespace Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool
 {
     public class MeshAnalysisToolGUI : UnityEditor.Editor
     {

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kuroha.GUI.Editor;
-using Kuroha.Tool.Editor.EffectCheckTool.Check;
-using Kuroha.Tool.Editor.EffectCheckTool.ItemListView;
-using Kuroha.Tool.Editor.EffectCheckTool.ItemSetView;
-using Kuroha.Tool.Editor.EffectCheckTool.Report;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.EffectCheckTool.GUI
+namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
 {
     public static class EffectCheckToolGUI
     {

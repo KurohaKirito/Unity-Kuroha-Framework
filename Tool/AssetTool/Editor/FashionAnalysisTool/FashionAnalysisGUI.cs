@@ -3,14 +3,14 @@ using UnityEditor;
 using UnityEngine;
 
 using Kuroha.GUI.Editor;
-using Kuroha.Tool.Editor.AssetCheckTool;
-using Kuroha.Tool.Editor.SceneAnalysisTool;
-using Kuroha.Tool.Editor.TextureAnalysisTool;
+using Kuroha.Tool.AssetTool.Editor.AssetCheckTool;
+using Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool;
+using Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool;
 using Kuroha.Util.Editor;
 using Kuroha.Util.RunTime;
 using UnityEngine.Rendering;
 
-namespace Kuroha.Tool.Editor.FashionAnalysisTool
+namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
 {
     /// <summary>
     /// GUI 绘制类

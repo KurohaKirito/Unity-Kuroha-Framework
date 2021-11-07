@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Kuroha.GUI.Editor;
-using Kuroha.Tool.Editor.AssetBatchTool;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;

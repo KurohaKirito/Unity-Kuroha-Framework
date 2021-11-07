@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Kuroha.Tool.Editor.AssetBatchTool;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool;
 using Kuroha.Util.RunTime;
 
 public static class UnusedTextureDetect

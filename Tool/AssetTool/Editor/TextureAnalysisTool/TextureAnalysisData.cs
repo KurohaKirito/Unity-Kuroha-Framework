@@ -1,4 +1,4 @@
-﻿namespace Kuroha.Tool.Editor.TextureAnalysisTool
+﻿namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
 {
     public class TextureAnalysisData
     {

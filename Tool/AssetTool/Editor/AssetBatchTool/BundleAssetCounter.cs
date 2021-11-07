@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Kuroha.GUI.Editor;
 using Kuroha.Util.Editor;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
 {
     public static class BundleAssetCounter
     {
@@ -13,17 +16,17 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             /// <summary>
             /// 当前文件夹路径
             /// </summary>
-            public System.IO.DirectoryInfo currentFolder;
+            public DirectoryInfo currentFolder;
 
             /// <summary>
             /// 资源数量
             /// </summary>
-            public List<System.IO.FileInfo> assets;
+            public List<FileInfo> assets;
 
             /// <summary>
             /// 文件夹数量
             /// </summary>
-            public List<System.IO.DirectoryInfo> folders;
+            public List<DirectoryInfo> folders;
 
             /// <summary>
             /// 是否超出最大数量
@@ -131,9 +134,9 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             var detectResult = new List<BundleAssetCounterData>();
             
             // 检测路径队伍
-            var allDirectory = new List<System.IO.DirectoryInfo>();
+            var allDirectory = new List<DirectoryInfo>();
             var fullPath = PathUtil.GetAssetPath(path);
-            allDirectory.Add(new System.IO.DirectoryInfo(fullPath));
+            allDirectory.Add(new DirectoryInfo(fullPath));
             
             // 进度计数器
             var progressBar = 0;
@@ -141,7 +144,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             // 执行检测
             while (progressBar < allDirectory.Count)
             {
-                Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("批处理工具", $"同级问题检测中: {progressBar + 1}/{allDirectory.Count}", progressBar + 1, allDirectory.Count);
+                ProgressBar.DisplayProgressBar("批处理工具", $"同级问题检测中: {progressBar + 1}/{allDirectory.Count}", progressBar + 1, allDirectory.Count);
 
                 // 定义当前检测路径
                 var currentPath = allDirectory[progressBar];
@@ -150,7 +153,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 var dirs = currentPath.GetDirectories();
                 
                 // 获取 当前检测路径 中所有文件
-                var files = currentPath.GetFiles("*.*", System.IO.SearchOption.TopDirectoryOnly);
+                var files = currentPath.GetFiles("*.*", SearchOption.TopDirectoryOnly);
                 files = files.Where(f => f.Name.EndsWith(".meta") == false).ToArray();
 
                 #region 分析
@@ -224,7 +227,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             foreach (var result in results)
             {
                 var dir = PathUtil.GetAssetPath(result.currentFolder.FullName);
-                var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dir);
+                var obj = AssetDatabase.LoadAssetAtPath<Object>(dir);
                 
                 if (result.isFoldersAndAssets)
                 {
@@ -237,7 +240,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     
                     if (isConsole)
                     {
-                        Kuroha.Util.RunTime.DebugUtil.LogError(log, obj);
+                        DebugUtil.LogError(log, obj);
                     }
                 }
                 else if (result.isOverMaxLimit)
@@ -251,7 +254,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     
                     if (isConsole)
                     {
-                        Kuroha.Util.RunTime.DebugUtil.Log($"<color=#DB4D6D>{log}</color>", obj);
+                        DebugUtil.Log($"<color=#DB4D6D>{log}</color>", obj);
                     }
                 }
                 else if (result.assets != null)
@@ -265,7 +268,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                     
                     if (isConsole)
                     {
-                        Kuroha.Util.RunTime.DebugUtil.Log(log, obj);
+                        DebugUtil.Log(log, obj);
                     }
                 }
             }
@@ -273,7 +276,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             // 导出结果到文件
             if (isExportFile)
             {
-                System.IO.File.WriteAllLines("C:\\AssetCounter.txt", logList);
+                File.WriteAllLines("C:\\AssetCounter.txt", logList);
             }
         }
     }

@@ -6,7 +6,7 @@ using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.SceneAnalysisTool
+namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
 {
     public class SceneAnalysisGUI : UnityEditor.Editor
     {

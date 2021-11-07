@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 
 // 检测特定路径下 fbx 模型文件的 mesh 网格中的 uv2 uv3 uv4 colors 信息
-namespace Kuroha.Tool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
 {
     public static class FbxUVColorsChecker
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Kuroha.Tool.Editor.AssetBatchTool;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool;
 using Kuroha.Util.Editor;
 using Kuroha.Util.RunTime;
 

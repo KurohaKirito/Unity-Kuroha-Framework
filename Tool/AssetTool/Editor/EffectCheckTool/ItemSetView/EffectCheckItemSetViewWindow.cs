@@ -1,11 +1,11 @@
 ﻿using System;
-using Kuroha.Tool.Editor.EffectCheckTool.Check;
-using Kuroha.Tool.Editor.EffectCheckTool.GUI;
-using Kuroha.Tool.Editor.EffectCheckTool.ItemListView;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
+namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
 {
     /// <summary>
     /// 单个检查项设置页面

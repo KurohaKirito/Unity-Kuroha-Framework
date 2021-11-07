@@ -1,4 +1,4 @@
-﻿namespace Kuroha.Tool.Editor.MeshAnalysisTool
+﻿namespace Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool
 {
     public static class MeshAnalysisData
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Kuroha.Tool.Editor.EffectCheckTool.ItemSetView;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView;
 
-namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
+namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
 {
     public static class EffectCheckItemView
     {

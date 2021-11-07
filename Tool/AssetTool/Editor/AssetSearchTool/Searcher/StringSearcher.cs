@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Kuroha.Tool.Editor.AssetSearchTool.Data;
+using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data;
 using Kuroha.Tool.Release;
 using Kuroha.Util.RunTime;
 
-namespace Kuroha.Tool.Editor.AssetSearchTool.Searcher
+namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
 {
     /// <summary>
     /// 字符串匹配器

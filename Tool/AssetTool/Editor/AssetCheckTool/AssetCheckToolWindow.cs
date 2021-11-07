@@ -1,16 +1,16 @@
 ﻿using System;
 using Kuroha.GUI.Editor;
-using Kuroha.Tool.Editor.AssetBatchTool;
-using Kuroha.Tool.Editor.EffectCheckTool.GUI;
-using Kuroha.Tool.Editor.FashionAnalysisTool;
-using Kuroha.Tool.Editor.MeshAnalysisTool;
-using Kuroha.Tool.Editor.ProfilerTool;
-using Kuroha.Tool.Editor.SceneAnalysisTool;
-using Kuroha.Tool.Editor.TextureAnalysisTool;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
+using Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool;
+using Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool;
+using Kuroha.Tool.AssetTool.Editor.ProfilerTool.ProfilerTool;
+using Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool;
+using Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.AssetCheckTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetCheckTool
 {
     public class AssetCheckToolWindow : EditorWindow
     {

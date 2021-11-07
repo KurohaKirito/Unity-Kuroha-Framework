@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
+using Kuroha.GUI.Editor;
+using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
 {
     public static class UnusedAssetCleaner
     {
@@ -162,10 +166,10 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             var guids = AssetDatabase.FindAssets(typeStr, new[] {detectPath});
             
             // 调用资源查找工具
-            Kuroha.Tool.Editor.AssetSearchTool.Searcher.ReferenceSearcher.Find(guids);
+            ReferenceSearcher.Find(guids);
             
             // 取出结果
-            var references = Kuroha.Tool.Editor.AssetSearchTool.Searcher.ReferenceSearcher.references;
+            var references = ReferenceSearcher.references;
             var keyCount = references.Keys.Count;
             
             // 整理结果
@@ -175,7 +179,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             
             foreach (var key in references.Keys)
             {
-                if (Kuroha.GUI.Editor.ProgressBar.DisplayProgressBarCancel("无引用资源分析工具", $"正在整理结果: {++counter}/{keyCount}", counter, keyCount))
+                if (ProgressBar.DisplayProgressBarCancel("无引用资源分析工具", $"正在整理结果: {++counter}/{keyCount}", counter, keyCount))
                 {
                     break;
                 }
@@ -218,8 +222,8 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 {
                     DebugUtil.Log($"共查出了 {resultExport.Count} 条错误资源", null, "red");
                     var outputPath = $"{Application.dataPath}/Result_Unused_{enumStr}_Asset.txt";
-                    System.IO.File.WriteAllLines(outputPath, resultExport);
-                    System.Diagnostics.Process.Start(outputPath);
+                    File.WriteAllLines(outputPath, resultExport);
+                    Process.Start(outputPath);
                 }
             }
             

@@ -2,7 +2,7 @@
 using Kuroha.Util.RunTime;
 using UnityEditor;
 
-namespace Kuroha.Tool.Editor.AssetSearchTool.Searcher
+namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
 {
     /// <summary>
     /// 资源依赖浏览器

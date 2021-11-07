@@ -1,4 +1,4 @@
-﻿#if Kuroha == false
+﻿#if !Kuroha
 
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Text;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 
-namespace Kuroha.Tool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
 {
     // 收集指定路径中的 BuffSOBase 类型的数据
     public class CollectAllBuffSoBase

@@ -1,4 +1,4 @@
-﻿namespace Kuroha.Tool.Editor.SceneAnalysisTool
+﻿namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
 {
     public class SceneAnalysisData
     {

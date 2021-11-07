@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Kuroha.GUI.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
 {
     public static class ShaderChecker
     {
@@ -83,35 +84,35 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 GUILayout.BeginVertical("Box");
                 {
                     EditorGUILayout.LabelField("1. 是否检测 LevelEditor 文件夹下的粒子系统.");
-                    UnityEditor.EditorGUI.indentLevel++;
+                    EditorGUI.indentLevel++;
                     GUILayout.BeginVertical("Box");
                     detectLevelEditor = EditorGUILayout.ToggleLeft("Detect LevelEditor Folder", detectLevelEditor, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     GUILayout.EndVertical();
-                    UnityEditor.EditorGUI.indentLevel--;
+                    EditorGUI.indentLevel--;
 
                     EditorGUILayout.LabelField("2. 输入检测的路径, 默认为: Assets/ToBundle.");
-                    UnityEditor.EditorGUI.indentLevel++;
+                    EditorGUI.indentLevel++;
                     GUILayout.BeginVertical("Box");
                     shaderPath = EditorGUILayout.TextField("Input Path To Detect", shaderPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     GUILayout.EndVertical();
-                    UnityEditor.EditorGUI.indentLevel--;
+                    EditorGUI.indentLevel--;
 
                     EditorGUILayout.LabelField("3. 请输入想要检测的 Shader 的名称关键字. 如: Lightweight");
-                    UnityEditor.EditorGUI.indentLevel++;
+                    EditorGUI.indentLevel++;
                     GUILayout.BeginVertical("Box");
                     shaderKeyWord = EditorGUILayout.TextField("Input Key Word", shaderKeyWord, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     GUILayout.EndVertical();
-                    UnityEditor.EditorGUI.indentLevel--;
+                    EditorGUI.indentLevel--;
 
                     EditorGUILayout.LabelField("4. 点击按钮, 开始检测.");
-                    UnityEditor.EditorGUI.indentLevel++;
+                    EditorGUI.indentLevel++;
                     GUILayout.BeginHorizontal("Box");
                     if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
                         Detect(GetMaterials(shaderPath), shaderKeyWord, false);
                     }
                     GUILayout.EndHorizontal();
-                    UnityEditor.EditorGUI.indentLevel--;
+                    EditorGUI.indentLevel--;
                 }
                 GUILayout.EndVertical();
             }
@@ -201,7 +202,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
 
             if (isAutoCheck == false)
             {
-                System.IO.File.WriteAllLines("C:\\MaterialShaderChecker.txt", result);
+                File.WriteAllLines("C:\\MaterialShaderChecker.txt", result);
             }
 
             return result;

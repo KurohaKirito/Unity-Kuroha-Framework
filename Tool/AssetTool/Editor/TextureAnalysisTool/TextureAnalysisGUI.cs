@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.TextureAnalysisTool
+namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
 {
     /// <summary>
     /// GUI 绘制类

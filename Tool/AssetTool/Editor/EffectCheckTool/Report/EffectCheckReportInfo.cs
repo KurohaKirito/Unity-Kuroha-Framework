@@ -1,7 +1,7 @@
-﻿using Kuroha.Tool.Editor.EffectCheckTool.GUI;
+﻿using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.EffectCheckTool.Report
+namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
 {
     /// <summary>
     /// 问题报告类

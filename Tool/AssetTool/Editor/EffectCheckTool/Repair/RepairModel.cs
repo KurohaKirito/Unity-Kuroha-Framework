@@ -1,12 +1,12 @@
 ﻿using System;
-using Kuroha.Tool.Editor.EffectCheckTool.Check;
-using Kuroha.Tool.Editor.EffectCheckTool.Report;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Kuroha.Tool.Editor.EffectCheckTool.Repair
+namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
 {
     public static class RepairModel
     {

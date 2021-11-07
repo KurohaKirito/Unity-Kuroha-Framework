@@ -2,7 +2,7 @@
 using Kuroha.GUI.Editor.Table;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.ProfilerTool
+namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
 {
     public class AsyncLoadTable : CommonTable<AsyncLoadData>
     {

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Kuroha.GUI.Editor;
-using Kuroha.Tool.Editor.EffectCheckTool.ItemListView;
-using Kuroha.Tool.Editor.EffectCheckTool.ItemSetView;
-using Kuroha.Tool.Editor.EffectCheckTool.Report;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.EffectCheckTool.Check
+namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 {
     public static class CheckPrefab
     {

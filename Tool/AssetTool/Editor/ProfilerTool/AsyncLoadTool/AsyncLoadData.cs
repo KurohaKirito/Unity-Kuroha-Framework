@@ -1,4 +1,4 @@
-﻿namespace Kuroha.Tool.Editor.ProfilerTool
+﻿namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
 {
     public class AsyncLoadData
     {

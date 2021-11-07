@@ -1,11 +1,11 @@
 ﻿using System;
-using Kuroha.Tool.Editor.AssetSearchTool.Data;
-using Kuroha.Tool.Editor.AssetSearchTool.Searcher;
+using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data;
+using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
 using UnityEditor;
 using UnityEngine;
 using Kuroha.Util.RunTime;
 
-namespace Kuroha.Tool.Editor.AssetSearchTool.GUI
+namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
 {
     public static class GUIDependenceSearcher
     {

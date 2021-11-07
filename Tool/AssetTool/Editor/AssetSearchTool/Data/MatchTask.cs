@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Kuroha.Tool.Release;
 
-namespace Kuroha.Tool.Editor.AssetSearchTool.Data
+namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
 {
     public class MatchTask : ThreadPoolTool.ITask
     {

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using Kuroha.GUI.Editor;
-using Kuroha.Tool.Editor.EffectCheckTool.ItemListView;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.EffectCheckTool.ItemSetView
+namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
 {
     public static class EffectCheckItemSetView
     {

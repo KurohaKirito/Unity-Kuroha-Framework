@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine.Profiling;
-using Kuroha.Util.RunTime;
 
-namespace Kuroha.Tool.Editor.ProfilerTool
+namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
 {
     public static class ProfilerWindow
     {

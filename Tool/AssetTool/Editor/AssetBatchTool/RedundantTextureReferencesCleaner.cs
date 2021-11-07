@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Kuroha.GUI.Editor;
+using Kuroha.Util.Editor;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
 {
     public static class RedundantTextureReferencesCleaner
     {
@@ -106,7 +108,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
                 var assetPath = AssetDatabase.GUIDToAssetPath(guids[index]);
                 materials.Add(AssetDatabase.LoadAssetAtPath<Material>(assetPath));
             }
-            Kuroha.Util.RunTime.DebugUtil.Log($"Find {materials.Count} Materials!");
+            DebugUtil.Log($"Find {materials.Count} Materials!");
             
             // 遍历材质
             var errorCounter = 0;
@@ -125,15 +127,15 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             }
             if (errorCounter > 0 && repairCount < errorCounter)
             {
-                Kuroha.Util.RunTime.DebugUtil.Log($"材质球冗余纹理引用检测完毕: 共检测出 {errorCounter} 个问题, 修复了其中的 {repairCount} 个问题.", null, "red");
+                DebugUtil.Log($"材质球冗余纹理引用检测完毕: 共检测出 {errorCounter} 个问题, 修复了其中的 {repairCount} 个问题.", null, "red");
             }
             else if (errorCounter > 0 && repairCount >= errorCounter)
             {
-                Kuroha.Util.RunTime.DebugUtil.Log($"材质球冗余纹理引用检测完毕: 共检测出 {errorCounter} 个问题, 修复了其中的 {repairCount} 个问题.", null, "green");
+                DebugUtil.Log($"材质球冗余纹理引用检测完毕: 共检测出 {errorCounter} 个问题, 修复了其中的 {repairCount} 个问题.", null, "green");
             }
             else
             {
-                Kuroha.Util.RunTime.DebugUtil.Log("材质球冗余纹理引用检测完毕, 未发现任何问题!", null, "green");
+                DebugUtil.Log("材质球冗余纹理引用检测完毕, 未发现任何问题!", null, "green");
             }
         }
 
@@ -148,7 +150,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             var isError = false;
 
             // 获取材质球中引用的全部纹理的 GUID (不包含冗余的引用)
-            Kuroha.Util.Editor.TextureUtil.GetTexturesInMaterial(material, out var textures);
+            TextureUtil.GetTexturesInMaterial(material, out var textures);
             var textureGUIDs = textures.Select(textureData => textureData.guid).ToList();
             
             // 直接以文本形式逐行读取 Material 文件 (包含全部的纹理引用)

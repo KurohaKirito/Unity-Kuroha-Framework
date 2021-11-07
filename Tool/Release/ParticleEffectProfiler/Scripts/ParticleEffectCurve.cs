@@ -3,64 +3,67 @@ using System.Collections.Generic;
 using Kuroha.Util.RunTime;
 using UnityEngine;
 
-/// <summary>
-/// 特效曲线
-/// </summary>
-public class ParticleEffectCurve
+namespace Kuroha.Tool.Release.ParticleEffectProfiler.Scripts
 {
-    private readonly AnimationCurve animationCurve = new AnimationCurve();
-    
-    public const int FPS = 30;
-
-    // 打点的数量: 默认 90 个
-    private int valueCount = 3 * FPS;
-
-    private readonly List<int> values = new List<int>();
-
-    public AnimationCurve Update(int value, bool loop, int second)
+    /// <summary>
+    /// 特效曲线
+    /// </summary>
+    public class ParticleEffectCurve
     {
-        valueCount = second * FPS;
+        private readonly AnimationCurve animationCurve = new AnimationCurve();
+    
+        public const int FPS = 30;
 
-        if (animationCurve.length > valueCount)
+        // 打点的数量: 默认 90 个
+        private int valueCount = 3 * FPS;
+
+        private readonly List<int> values = new List<int>();
+
+        public AnimationCurve Update(int value, bool loop, int second)
         {
-            for (var index = animationCurve.length - 1; index >= valueCount; index--)
-            {
-                DebugUtil.Log(index.ToString());
-                animationCurve.RemoveKey(index);
-                if (index <= values.Count)
-                {
-                    values.RemoveAt(index);
-                }
-            }
-        }
+            valueCount = second * FPS;
 
-        if (loop)
-        {
-            if (values.Count >= valueCount)
+            if (animationCurve.length > valueCount)
             {
-                values.RemoveAt(0);
-            }
-
-            values.Add(value);
-            for (var index = 0; index < values.Count; index++)
-            {
-                if (animationCurve.length > index)
+                for (var index = animationCurve.length - 1; index >= valueCount; index--)
                 {
+                    DebugUtil.Log(index.ToString());
                     animationCurve.RemoveKey(index);
+                    if (index <= values.Count)
+                    {
+                        values.RemoveAt(index);
+                    }
                 }
-                animationCurve.AddKey(index, values[index]);
             }
-        }
-        else
-        {
-            if (animationCurve.length < valueCount)
+
+            if (loop)
             {
-                animationCurve.AddKey(animationCurve.length, value);
+                if (values.Count >= valueCount)
+                {
+                    values.RemoveAt(0);
+                }
+
+                values.Add(value);
+                for (var index = 0; index < values.Count; index++)
+                {
+                    if (animationCurve.length > index)
+                    {
+                        animationCurve.RemoveKey(index);
+                    }
+                    animationCurve.AddKey(index, values[index]);
+                }
             }
+            else
+            {
+                if (animationCurve.length < valueCount)
+                {
+                    animationCurve.AddKey(animationCurve.length, value);
+                }
+            }
+
+            return animationCurve;
         }
 
-        return animationCurve;
     }
-
 }
 #endif

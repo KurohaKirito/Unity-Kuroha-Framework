@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Kuroha.GUI.Editor;
-using Kuroha.Tool.Editor.TextureAnalysisTool;
+using Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool;
 using Kuroha.Util.Editor;
 using Kuroha.Util.RunTime;
 

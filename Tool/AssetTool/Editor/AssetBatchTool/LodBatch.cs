@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.LodTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
 {
     public static class LodBatch
     {
@@ -176,7 +176,7 @@ namespace Script.Effect.Editor.LodTool
                 else if (originLods.Length > lodValues.Length)
                 {
                     var obj = lodGroup.gameObject;
-                    Debug.LogError($"错误: 游戏物体 {obj.name} 的 LOD 级别数 ({originLods.Length}) 比当前需要设置的级别数 ({lodValues.Length}) 多, 已跳过此物体.", obj);
+                    DebugUtil.LogError($"错误: 游戏物体 {obj.name} 的 LOD 级别数 ({originLods.Length}) 比当前需要设置的级别数 ({lodValues.Length}) 多, 已跳过此物体.", obj);
                 }
 
                 #endregion

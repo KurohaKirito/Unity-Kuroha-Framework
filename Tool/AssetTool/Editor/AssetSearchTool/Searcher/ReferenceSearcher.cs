@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Kuroha.Tool.Editor.AssetSearchTool.Data;
-using Kuroha.Tool.Editor.AssetSearchTool.GUI;
+using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data;
+using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.Release;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 
-namespace Kuroha.Tool.Editor.AssetSearchTool.Searcher
+namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
 {
     /// <summary>
     /// 引用匹配器

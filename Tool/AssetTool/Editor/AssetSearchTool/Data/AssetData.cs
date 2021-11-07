@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
-namespace Kuroha.Tool.Editor.AssetSearchTool.Data
+namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
 {
     public enum AssetType
     {

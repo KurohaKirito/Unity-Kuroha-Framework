@@ -4,7 +4,7 @@ using Kuroha.Tool.Release;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 
-namespace Kuroha.Tool.Editor.AssetSearchTool.Data
+namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
 {
     /// <summary>
     /// 继承自: 资源处理器

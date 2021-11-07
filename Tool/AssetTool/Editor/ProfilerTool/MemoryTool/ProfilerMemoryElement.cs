@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Kuroha.Util.RunTime;
 
-namespace Kuroha.Tool.Editor.ProfilerTool
+namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
 {
     public class ProfilerMemoryElement
     {

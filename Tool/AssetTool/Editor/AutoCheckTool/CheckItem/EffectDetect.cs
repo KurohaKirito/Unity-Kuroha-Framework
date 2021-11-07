@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Kuroha.Tool.Editor.EffectCheckTool.GUI;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
 using Kuroha.Util.RunTime;
 
 public static class EffectDetect

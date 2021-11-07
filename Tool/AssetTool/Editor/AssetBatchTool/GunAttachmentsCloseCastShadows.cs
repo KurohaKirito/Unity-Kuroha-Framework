@@ -1,10 +1,11 @@
 ﻿using System.IO;
 using Kuroha.GUI.Editor;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Kuroha.Tool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
 {
     public static class GunAttachmentsCloseCastShadows
     {
@@ -81,7 +82,7 @@ namespace Kuroha.Tool.Editor.AssetBatchTool
             var fullPath = Path.Combine(Application.dataPath, gunPiecesPath);
             if (!Directory.Exists(fullPath))
             {
-                Kuroha.Util.RunTime.DebugUtil.LogError("Please Enter The Correct Path! ex. 'ToBundle/Skin/Items'");
+                DebugUtil.LogError("Please Enter The Correct Path! ex. 'ToBundle/Skin/Items'");
                 return;
             }
 

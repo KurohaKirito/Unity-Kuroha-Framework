@@ -7,7 +7,7 @@ using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.AssetViewer
+namespace Kuroha.Tool.AssetTool.Editor.AssetViewer
 {
     public class UnityIcon : EditorWindow
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using Kuroha.Tool.Editor.EffectCheckTool.GUI;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
 
-namespace Kuroha.Tool.Editor.EffectCheckTool.ItemListView
+namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
 {
     public class CheckItemInfo
     {

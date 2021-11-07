@@ -1,4 +1,4 @@
-﻿namespace Kuroha.Tool.Editor.EffectCheckTool.GUI
+﻿namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
 {
     public static class EffectToolData
     {

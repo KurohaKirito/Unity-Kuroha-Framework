@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;

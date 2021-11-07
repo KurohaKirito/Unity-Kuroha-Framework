@@ -2,7 +2,7 @@
 using Kuroha.GUI.Editor.Table;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.SceneAnalysisTool
+namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
 {
     public class SceneAnalysisTable : CommonTable<SceneAnalysisData>
     {

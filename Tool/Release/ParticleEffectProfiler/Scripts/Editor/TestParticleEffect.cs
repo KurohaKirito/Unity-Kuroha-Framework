@@ -2,77 +2,80 @@ using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// 给选中的特效添加脚本的
-/// </summary>
-[InitializeOnLoad]
-public static class TestParticleEffect
+namespace Kuroha.Tool.Release.ParticleEffectProfiler.Scripts.Editor
 {
-    private const string REQUEST_TEST_KEY = "TestParticleEffectRquestTest";
-    private static bool hasPlayed;
-    private static bool isRestart;
-
-    [MenuItem("GameObject/Effects/ParticleTest", false, 11)]
-    private static void Test()
+    /// <summary>
+    /// 给选中的特效添加脚本的
+    /// </summary>
+    [InitializeOnLoad]
+    public static class TestParticleEffect
     {
-        var hierarchyGameObject = Selection.activeGameObject;
-        var renderers = hierarchyGameObject.GetComponentsInChildren<ParticleSystemRenderer>(true);
+        private const string REQUEST_TEST_KEY = "TestParticleEffectRquestTest";
+        private static bool hasPlayed;
+        private static bool isRestart;
 
-        if (renderers.Length <= 0)
+        [MenuItem("GameObject/Effects/ParticleTest", false, 11)]
+        private static void Test()
         {
-            DebugUtil.LogError("不是特效无法测试!", hierarchyGameObject, "red");
-        }
-        else
-        {
-            EditorPrefs.SetBool(REQUEST_TEST_KEY, true);
+            var hierarchyGameObject = Selection.activeGameObject;
+            var renderers = hierarchyGameObject.GetComponentsInChildren<ParticleSystemRenderer>(true);
 
-            // 已经在播放状态, 使其重新开始
-            if (EditorApplication.isPlaying)
+            if (renderers.Length <= 0)
             {
-                EditorApplication.isPlaying = false;
-                isRestart = true;
+                DebugUtil.LogError("不是特效无法测试!", hierarchyGameObject, "red");
             }
             else
             {
-                EditorApplication.isPlaying = true;
-            }
+                EditorPrefs.SetBool(REQUEST_TEST_KEY, true);
 
-            var particleEffectScript = hierarchyGameObject.GetComponentsInChildren<ParticleEffectManager>(true);
-            if (particleEffectScript.Length <= 0)
+                // 已经在播放状态, 使其重新开始
+                if (EditorApplication.isPlaying)
+                {
+                    EditorApplication.isPlaying = false;
+                    isRestart = true;
+                }
+                else
+                {
+                    EditorApplication.isPlaying = true;
+                }
+
+                var particleEffectScript = hierarchyGameObject.GetComponentsInChildren<ParticleEffectManager>(true);
+                if (particleEffectScript.Length <= 0)
+                {
+                    hierarchyGameObject.AddComponent<ParticleEffectManager>();
+                }
+            }
+        }
+
+        static TestParticleEffect()
+        {
+            EditorApplication.update += Update;
+            EditorApplication.playModeStateChanged += PlayModeStateChanged;
+        }
+
+        private static void Update()
+        {
+            if (EditorPrefs.HasKey(REQUEST_TEST_KEY) &&
+                EditorApplication.isPlayingOrWillChangePlaymode &&
+                EditorApplication.isPlaying && hasPlayed == false)
             {
-                hierarchyGameObject.AddComponent<ParticleEffectManager>();
+                EditorPrefs.DeleteKey(REQUEST_TEST_KEY);
+                hasPlayed = true;
             }
         }
-    }
 
-    static TestParticleEffect()
-    {
-        EditorApplication.update += Update;
-        EditorApplication.playModeStateChanged += PlayModeStateChanged;
-    }
-
-    private static void Update()
-    {
-        if (EditorPrefs.HasKey(REQUEST_TEST_KEY) &&
-            EditorApplication.isPlayingOrWillChangePlaymode &&
-            EditorApplication.isPlaying && hasPlayed == false)
+        private static void PlayModeStateChanged(PlayModeStateChange change)
         {
-            EditorPrefs.DeleteKey(REQUEST_TEST_KEY);
-            hasPlayed = true;
-        }
-    }
+            if (EditorApplication.isPlaying == false)
+            {
+                hasPlayed = false;
+            }
 
-    private static void PlayModeStateChanged(PlayModeStateChange change)
-    {
-        if (EditorApplication.isPlaying == false)
-        {
-            hasPlayed = false;
-        }
-
-        if (isRestart)
-        {
-            EditorApplication.isPlaying = true;
-            isRestart = false;
+            if (isRestart)
+            {
+                EditorApplication.isPlaying = true;
+                isRestart = false;
+            }
         }
     }
 }

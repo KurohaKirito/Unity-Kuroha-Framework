@@ -9,7 +9,7 @@ using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.TextureAnalysisTool
+namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
 {
     public class TextureAnalysisTableWindow : EditorWindow
     {
