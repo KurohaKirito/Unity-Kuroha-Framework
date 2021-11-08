@@ -220,10 +220,14 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
             {
                 if (resultExport.Count > 0)
                 {
-                    DebugUtil.Log($"共查出了 {resultExport.Count} 条错误资源", null, "red");
                     var outputPath = $"{Application.dataPath}/Result_Unused_{enumStr}_Asset.txt";
-                    File.WriteAllLines(outputPath, resultExport);
-                    Process.Start(outputPath);
+                    System.IO.File.WriteAllLines(outputPath, resultExport);
+                    System.Diagnostics.Process.Start(outputPath);
+                    Kuroha.GUI.Editor.Dialog.Display($"检测结果位于: {outputPath} 文件中", Dialog.DialogType.Message, "OK");
+                }
+                else
+                {
+                    Kuroha.GUI.Editor.Dialog.Display("检测结束, 未检测到问题!", Dialog.DialogType.Message, "OK");
                 }
             }
             

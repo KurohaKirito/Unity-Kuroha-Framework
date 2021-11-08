@@ -11,7 +11,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
     public class AsyncLoadTableWindow : EditorWindow
     {
         private AsyncLoadTable table;
-        private const string ASYNC_LOAD_RECORD_PATH = "C:/AsyncLoadRecord.txt";
+        private static string asyncLoadRecordPath;
 
         /// <summary>
         /// 宽度警告线
@@ -36,8 +36,9 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
         /// <summary>
         /// 打开窗口
         /// </summary>
-        public static void Open()
+        public static void Open(ref string path)
         {
+            asyncLoadRecordPath = path;
             var window = GetWindow<AsyncLoadTableWindow>(true);
             window.minSize = new Vector2(1200, 1000);
             window.maxSize = new Vector2(1200, 1000);
@@ -88,7 +89,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
         {
             var counter = 0;
             var results = new List<AsyncLoadData>();
-            var dataList = File.ReadAllLines(ASYNC_LOAD_RECORD_PATH);
+            var dataList = File.ReadAllLines(asyncLoadRecordPath);
             
             foreach (var data in dataList)
             {

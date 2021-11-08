@@ -123,12 +123,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.ProfilerTool
                         break;
 
                     case ToolType.AsyncLoadTool:
-                        GUILayout.BeginHorizontal("Box");
-                        if (GUILayout.Button("打开统计结果", GUILayout.Height(25), GUILayout.Width(120)))
-                        {
-                            AsyncLoadTableWindow.Open();
-                        }
-                        GUILayout.EndHorizontal();
+                        AsyncLoadGUI.OnGUI();
                         break;
                     
                     default:
