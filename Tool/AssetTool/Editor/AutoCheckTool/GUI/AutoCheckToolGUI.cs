@@ -190,7 +190,7 @@ public static class AutoCheckToolGUI
     
         // 将 json 文本写入文本文件
         var resultFilePath = $"{Application.dataPath}/AutoCheckResult.txt";
-        File.WriteAllLines(resultFilePath, jsonList);
+        System.IO.File.WriteAllLines(resultFilePath, jsonList);
             
         #endif
     }

@@ -1,8 +1,8 @@
-﻿using Kuroha.Util.Editor;
+﻿using Kuroha.Tool.AssetTool.Editor.ProfilerTool.ProfilerTool;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.Editor.ProfilerTool
+namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
 {
     public static class AsyncLoadGUI
     {
