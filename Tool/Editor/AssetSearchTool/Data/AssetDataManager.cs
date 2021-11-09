@@ -90,6 +90,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Data {
                 var all = threadPool.taskCount;
                 ProgressBar.DisplayProgressBar("引用分析工具", $"初始化资源中: {com}/{all}", com, all);
             }
+
+            EditorUtility.ClearProgressBar();
         }
 
         /// <summary>

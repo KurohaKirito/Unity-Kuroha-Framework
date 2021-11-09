@@ -3,6 +3,7 @@ using System.Linq;
 using Script.Effect.Editor.AssetTool.GUI.Editor;
 using Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Data;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
+using UnityEditor;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Searcher {
     /// <summary>
@@ -40,6 +41,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Searcher {
                     var all = threadPool.taskCount;
                     ProgressBar.DisplayProgressBar("字符串引用分析工具", $"引用分析中: {com}/{all}", com, all);
                 }
+                
+                EditorUtility.ClearProgressBar();
 
                 #region 遍历每一个任务中的查询结果, 并汇总到字典中
 
