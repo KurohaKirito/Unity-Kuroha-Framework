@@ -149,7 +149,6 @@ namespace Kuroha.GUI.Editor
 
             switch (windowType)
             {
-                #if UNITY_2019_3_OR_NEWER
                 case DialogType.Message:
                     GUILayout.Label(EditorGUIUtility.IconContent("console.infoicon@2x"));
                     break;
@@ -161,19 +160,7 @@ namespace Kuroha.GUI.Editor
                 case DialogType.Error:
                     GUILayout.Label(EditorGUIUtility.IconContent("console.erroricon@2x"));
                     break;
-                #else
-                case DialogType.Message:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.infoicon"));
-                    break;
-
-                case DialogType.Warn:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.warnicon"));
-                    break;
-
-                case DialogType.Error:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.erroricon"));
-                    break;
-                #endif
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

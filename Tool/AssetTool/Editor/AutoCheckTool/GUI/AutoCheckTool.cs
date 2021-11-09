@@ -1,10 +1,13 @@
-﻿public static class AutoCheckTool
+﻿namespace Kuroha.Tool.AssetTool.Editor.AutoCheckTool.GUI
 {
-    /// <summary>
-    /// 自动检测使用
-    /// </summary>
-    public static void AutoCheck()
+    public static class AutoCheckTool
     {
-        AutoCheckToolGUI.Check();
+        /// <summary>
+        /// 自动检测使用
+        /// </summary>
+        public static void AutoCheck()
+        {
+            AutoCheckToolGUI.Check();
+        }
     }
 }

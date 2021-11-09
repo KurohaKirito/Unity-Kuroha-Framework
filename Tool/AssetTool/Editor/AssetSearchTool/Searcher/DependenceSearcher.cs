@@ -13,7 +13,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
         /// 保存物体的 guid 和其依赖的物体的路径
         /// </summary>
         public static readonly Dictionary<string, List<string>> dependencies = new Dictionary<string, List<string>>();
-        
+
         /// <summary>
         /// 寻找当前选中物体的依赖
         /// </summary>
@@ -23,11 +23,11 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
             if (assetGUIDs.IsNotNullAndEmpty())
             {
                 dependencies.Clear();
-                
+
                 foreach (var guid in assetGUIDs)
                 {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
-                    
+
                     // 直接给 指定 Key 赋值, 达到添加键值对的目的
                     dependencies[guid] = new List<string>(AssetDatabase.GetDependencies(path));
                 }

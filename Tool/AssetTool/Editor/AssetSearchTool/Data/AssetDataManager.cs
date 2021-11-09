@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Kuroha.Tool.Release;
 using Kuroha.Util.RunTime;
+using Kuroha.GUI.Editor;
+using Kuroha.Tool.AssetTool.RunTime;
 using UnityEditor;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
@@ -21,20 +22,23 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
         /// <param name="movedFromAssetPaths">本次导入过程中: 仅移动了位置的 Assets 目录下的资源</param>
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            foreach (var importedAsset in importedAssets) {
+            foreach (var importedAsset in importedAssets)
+            {
                 AssetDataManager.SetDirty(importedAsset);
             }
 
-            foreach (var importedAsset in deletedAssets) {
+            foreach (var importedAsset in deletedAssets)
+            {
                 AssetDataManager.SetDirty(importedAsset);
             }
 
-            foreach (var movedAsset in movedAssets) {
+            foreach (var movedAsset in movedAssets)
+            {
                 AssetDataManager.SetDirty(movedAsset);
             }
         }
     }
-    
+
     public static class AssetDataManager
     {
         /// <summary>
@@ -46,13 +50,13 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
         /// 搜索条件
         /// </summary>
         private const string FILTER_STR = "t:Prefab t:Material t:ScriptableObject t:Scene t:AnimatorController t:TextAsset";
-        
+
         /// <summary>
         /// 保存了近期全部的资源改动 (增加, 删除, 改动)
         /// 适用于新增或删除的那部分资源进行快速的引用查找
         /// </summary>
         private static readonly List<string> assetsDirty = new List<string>();
-        
+
         /// <summary>
         /// 保存所有的 AssetData
         /// </summary>
@@ -62,8 +66,10 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
         /// 设置脏标识
         /// </summary>
         /// <param name="assetPath">资源路径</param>
-        public static void SetDirty(string assetPath) {
-            if (assetPath.StartsWith("Assets")) {
+        public static void SetDirty(string assetPath)
+        {
+            if (assetPath.StartsWith("Assets"))
+            {
                 assetsDirty.Add(assetPath);
             }
         }
@@ -77,13 +83,17 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
 
             if (isNotFirst)
             {
-                if (assetDataDictionary.IsNotNullAndEmpty()) {
+                if (assetDataDictionary.IsNotNullAndEmpty())
+                {
                     AfterSearch();
-                } else {
+                }
+                else
+                {
                     FirstSearch();
                 }
             }
-            else {
+            else
+            {
                 FirstSearch();
             }
 
@@ -92,11 +102,17 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
             // 使用多线程启动任务, 并等待多线程执行完毕
             var tasks = assetDataDictionary.Values;
             var threadPool = new ThreadPoolTool(tasks);
-            while (threadPool.IsDone == false)
+            while (true)
             {
-                var com = threadPool.completedTaskCount;
-                var all = threadPool.taskCount;
-                Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("引用分析工具", $"初始化资源中: {com}/{all}", com, all);
+                var cur = threadPool.CompletedTaskCount;
+                var all = threadPool.TaskCount;
+                if (threadPool.IsDone)
+                {
+                    ProgressBar.DisplayProgressBar("引用分析工具", $"初始化资源中: {cur}/{all}", cur, all);
+                    break;
+                }
+
+                System.Threading.Thread.Sleep(10);
             }
         }
 
@@ -104,7 +120,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
         /// 类的启动入口
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<AssetData> GetRawDataDictionary() {
+        public static IEnumerable<AssetData> GetRawDataDictionary()
+        {
             CreateTask();
             return assetDataDictionary.Values;
         }
@@ -116,10 +133,10 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
         {
             // 确保清空数据, 防止存在垃圾数据
             assetDataDictionary.Clear();
-            
+
             // 查询项目中全部的资源
-            var guids = AssetDatabase.FindAssets(FILTER_STR, new [] {"Assets"});
-            
+            var guids = AssetDatabase.FindAssets(FILTER_STR, new[] { "Assets" });
+
             // 为每一个资源创建 AssetData, 并添加到字典中
             foreach (var guid in guids)
             {
@@ -143,7 +160,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
             foreach (var assetPath in assetsDirty)
             {
                 var filePath = System.IO.Path.GetFullPath(assetPath);
-                
+
                 if (File.Exists(filePath))
                 {
                     var assetData = new AssetData(assetPath, filePath);

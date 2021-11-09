@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Kuroha.Tool.Release;
+using Kuroha.Tool.AssetTool.RunTime;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
 {
@@ -31,7 +31,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
         /// </summary>
         /// <param name="keyWordArray"></param>
         /// <param name="data"></param>
-        public MatchTask(string[] keyWordArray, AssetData data) {
+        public MatchTask(string[] keyWordArray, AssetData data)
+        {
             keyWords = keyWordArray;
             assetData = data;
         }
@@ -40,7 +41,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
         /// 任务是否结束
         /// </summary>
         /// <returns></returns>
-        public bool IsDone() {
+        public bool IsDone()
+        {
             return done;
         }
 

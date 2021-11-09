@@ -125,6 +125,24 @@ namespace Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
+        
+        /// <summary>
+        /// 单位转换
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        private static string GetMemoryUnit(ref long num)
+        {
+            var unit = "KB";
+            num /= 8192;
+            if (num > 1024)
+            {
+                num /= 1024;
+                unit = "MB";
+            }
+
+            return unit;
+        }
 
         /// <summary>
         /// 统计实际内存占用
@@ -132,44 +150,92 @@ namespace Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool
         /// <param name="asset"></param>
         private static void CountMemory(GameObject asset)
         {
-            var textureGuids = new List<string>();
+            // 初始化
+            var meshFilterList = asset.GetComponentsInChildren<MeshFilter>();
+            var skinnedMeshRendererList = asset.GetComponentsInChildren<SkinnedMeshRenderer>();
+            var meshColliderList = asset.GetComponentsInChildren<MeshCollider>();
+            var rendererList = asset.GetComponentsInChildren<Renderer>();
 
-            // 获取预制中全部的 Renderer
-            var renderers = asset.GetComponentsInChildren<Renderer>();
+            #region 模型
 
-            // 获取预制中全部的 Mesh
-            foreach (var renderer in renderers)
+            var modelGuids = new List<string>();
+            foreach (var item in meshFilterList)
             {
-                var sharedMaterials = renderer.sharedMaterials;
+                var mesh = item.sharedMesh;
+                var modelPath = AssetDatabase.GetAssetPath(mesh);
+                var modelGuid = AssetDatabase.AssetPathToGUID(modelPath);
+                var model = AssetImporter.GetAtPath(modelPath) as ModelImporter;
+                if (ReferenceEquals(model, null) == false)
+                {
+                    if (modelGuids.Contains(modelGuid) == false)
+                    {
+                        modelGuids.Add(modelGuid);
+                        var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(model);
+                        var unit = GetMemoryUnit(ref runTimeSize);
+                        Debug.Log($"{model.name}: {runTimeSize}{unit}");
+                    }
+                }
+            }
+            foreach (var item in skinnedMeshRendererList)
+            {
+                var mesh = item.sharedMesh;
+                var modelPath = AssetDatabase.GetAssetPath(mesh);
+                var modelGuid = AssetDatabase.AssetPathToGUID(modelPath);
+                var model = AssetImporter.GetAtPath(modelPath) as ModelImporter;
+                if (ReferenceEquals(model, null) == false)
+                {
+                    if (modelGuids.Contains(modelGuid) == false)
+                    {
+                        modelGuids.Add(modelGuid);
+                        var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(model);
+                        var unit = GetMemoryUnit(ref runTimeSize);
+                        Debug.Log($"{model.name}: {runTimeSize}{unit}");
+                    }
+                }
+            }
+            foreach (var item in meshColliderList)
+            {
+                var mesh = item.sharedMesh;
+                var modelPath = AssetDatabase.GetAssetPath(mesh);
+                var modelGuid = AssetDatabase.AssetPathToGUID(modelPath);
+                var model = AssetImporter.GetAtPath(modelPath) as ModelImporter;
+                if (ReferenceEquals(model, null) == false)
+                {
+                    if (modelGuids.Contains(modelGuid) == false)
+                    {
+                        modelGuids.Add(modelGuid);
+                        var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(model);
+                        var unit = GetMemoryUnit(ref runTimeSize);
+                        Debug.Log($"{model.name}: {runTimeSize}{unit}");
+                    }
+                }
+            }
+
+            #endregion
+            
+            #region 贴图
+
+            var textureGuids = new List<string>();
+            foreach (var item in rendererList)
+            {
+                var sharedMaterials = item.sharedMaterials;
                 foreach (var sharedMaterial in sharedMaterials)
                 {
                     Kuroha.Util.Editor.TextureUtil.GetTexturesInMaterial(sharedMaterial, out var textures);
-                    for (var k = 0; k < textures.Count; k++)
+                    for (var i = 0; i < textures.Count; i++)
                     {
-                        if (textureGuids.Contains(textures[k].guid) == false)
+                        if (textureGuids.Contains(textures[i].guid) == false)
                         {
-                            textureGuids.Add(textures[k].guid);
-                            var unit = "KB";
-                            var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[k].asset);
-                            runTimeSize /= 8192;
-                            if (runTimeSize > 1024)
-                            {
-                                runTimeSize /= 1024;
-                                unit = "MB";
-                            }
-                            Debug.Log(textures[k].asset.name + ":  " + runTimeSize + unit);
+                            textureGuids.Add(textures[i].guid);
+                            var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[i].asset);
+                            var unit = GetMemoryUnit(ref runTimeSize);
+                            Debug.Log($"{textures[i].asset.name}: {runTimeSize}{unit}");
                         }
                     }
                 }
             }
-            
-            //var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.TextureUtil");
-            //var methodInfo = type.GetMethod("GetStorageMemorySize", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            //var import = AssetImporter.GetAtPath(textures[k].path);
-            // Debug.Log("内存占用：" + EditorUtility.FormatBytes(UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[k].asset)));
-            // Debug.Log("硬盘占用：" +
-            //           EditorUtility.FormatBytes((int)methodInfo?.Invoke(null,
-            //               new object[] { textures[k].asset })));
+
+            #endregion
         }
     }
 }

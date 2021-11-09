@@ -30,21 +30,23 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
         /// <summary>
         /// 打开窗口
         /// </summary>
-        public static void Open(int type) {
+        public static void Open(int type)
+        {
             findTypeIndex = type;
             var window = GetWindow<AssetSearchWindow>("资源查找");
             window.minSize = new Vector2(450, 820);
             window.maxSize = new Vector2(450, 820);
         }
-        
+
         /// <summary>
         /// 初始化
         /// </summary>
-        private void OnEnable() {
-            toolBarNames = new[] {"String", "Reference", "Dependence"};
+        private void OnEnable()
+        {
+            toolBarNames = new[] { "String", "Reference", "Dependence" };
             toolbarData = new Kuroha.GUI.Editor.Toolbar.ToolbarData(800, 300, toolBarNames);
         }
-        
+
         /// <summary>
         /// 绘制界面
         /// </summary>
@@ -52,19 +54,20 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
         {
             // 同步窗口矩形
             windowCurrentRect = position;
-            
+
             // 标签页
             findTypeIndex = Kuroha.GUI.Editor.Toolbar.ToolbarAnime(ref toolbarData, this, ref findTypeIndex,
                 GUIStringSearcher.OnGUI,
                 GUIReferenceSearcher.OnGUI,
                 GUIDependenceSearcher.OnGUI);
-            
+
             // 实现动画
-            if (toolbarData.playAnime) {
+            if (toolbarData.playAnime)
+            {
                 Repaint();
             }
         }
-        
+
         /// <summary>
         /// 判断在当前的筛选规则下, 某个资源是否要显示出来
         /// </summary>
@@ -72,8 +75,10 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
         /// <param name="path">路径</param>
         /// <param name="filter">当前的筛选规则</param>
         /// <returns></returns>
-        public static bool IsDisplay(UnityEngine.Object asset, string path, int filter) {
-            if (filter == -1) {
+        public static bool IsDisplay(UnityEngine.Object asset, string path, int filter)
+        {
+            if (filter == -1)
+            {
                 return true;
             }
 
@@ -90,7 +95,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         private static bool GetBitValue(int input, ushort index)
         {
-            if (index > 31) {
+            if (index > 31)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 

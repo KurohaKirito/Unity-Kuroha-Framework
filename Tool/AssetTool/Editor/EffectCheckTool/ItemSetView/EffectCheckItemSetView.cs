@@ -14,11 +14,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <summary>
         /// 配置文件的路径
         /// </summary>
-        #if Kuroha
-        private static string ConfigFilePath => $"{Application.dataPath}/Kuroha/Config/EffectToolConfig.txt";
-        #else
-        private static string ConfigFilePath => $"{Application.dataPath}/Art/Effects/EffectToolConfig.txt";
-        #endif
+        private static string ConfigFilePath => $"{Application.dataPath}/Kuroha/Tool/Config/EffectToolConfig.txt";
         
         /// <summary>
         /// 危险等级

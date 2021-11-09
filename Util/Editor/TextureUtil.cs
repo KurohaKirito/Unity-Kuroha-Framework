@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Kuroha.GUI.Editor;
@@ -237,12 +238,7 @@ namespace Kuroha.Util.Editor
             assetPaths = new List<string>();
 
             // 获取全部的 Renderer
-            #if UNITY_2021_1_OR_NEWER
             var renderers = UnityEngine.Object.FindObjectsOfType<Renderer>(true);
-            #else
-            var renderers = UnityEngine.Object.FindObjectsOfType<Renderer>();
-            #endif
-            
             if (renderers.IsNotNullAndEmpty())
             {
                 // 遍历 Renderer
@@ -264,13 +260,10 @@ namespace Kuroha.Util.Editor
                                     if (textures.Count > 0)
                                     {
                                         // 遍历纹理
-                                        foreach (var data in textures)
+                                        foreach (var data in textures.Where(data => ReferenceEquals(data.asset, null) == false))
                                         {
-                                            if (ReferenceEquals(data.asset, null) == false)
-                                            {
-                                                assets.Add(data.asset);
-                                                assetPaths.Add(data.path);
-                                            }
+                                            assets.Add(data.asset);
+                                            assetPaths.Add(data.path);
                                         }
                                     }
                                 }
@@ -313,13 +306,10 @@ namespace Kuroha.Util.Editor
                                     GetAllTexturesInMaterial(material, out var textures);
                                     if (textures.Count > 0)
                                     {
-                                        foreach (var data in textures)
+                                        foreach (var data in textures.Where(data => ReferenceEquals(data.asset, null) == false))
                                         {
-                                            if (ReferenceEquals(data.asset, null) == false)
-                                            {
-                                                assets.Add(data.asset);
-                                                assetPaths.Add(data.path);
-                                            }
+                                            assets.Add(data.asset);
+                                            assetPaths.Add(data.path);
                                         }
                                     }
                                 }

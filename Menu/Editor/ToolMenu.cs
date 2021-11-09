@@ -1,14 +1,13 @@
-﻿#if Kuroha
-using Kuroha.GUI.Editor;
+﻿using Kuroha.GUI.Editor;
 using Kuroha.Tool.AssetTool.Editor.AssetCheckTool;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
 using Kuroha.Tool.AssetTool.Editor.AssetViewer;
 using UnityEditor;
 
-namespace Kuroha.Editor
+namespace Kuroha.Menu.Editor
 {
-    public class KurohaToolMenu : UnityEditor.Editor
+    public class ToolMenu : UnityEditor.Editor
     {
         #region 日志开关
 
@@ -110,4 +109,3 @@ namespace Kuroha.Editor
         #endregion
     }
 }
-#endif

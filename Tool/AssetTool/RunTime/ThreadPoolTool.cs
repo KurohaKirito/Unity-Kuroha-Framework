@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 
-namespace Kuroha.Tool.Release
+namespace Kuroha.Tool.AssetTool.RunTime
 {
     /// <summary>
     /// 线程池工具
@@ -34,25 +34,17 @@ namespace Kuroha.Tool.Release
         /// <summary>
         /// 总任务数
         /// </summary>
-        public int taskCount;
+        public int TaskCount => tasks.Count;
 
         /// <summary>
         /// 已完成任务数
         /// </summary>
-        public int completedTaskCount;
+        public int CompletedTaskCount => tasks.Count(task => task.IsDone());
 
         /// <summary>
         /// 是否已完成多线程任务
         /// </summary>
-        public bool IsDone
-        {
-            get
-            {
-                taskCount = tasks.Count;
-                completedTaskCount = tasks.Count(task => task.IsDone());
-                return completedTaskCount >= taskCount;
-            }
-        }
+        public bool IsDone => CompletedTaskCount >= TaskCount;
 
         /// <summary>
         /// 创建多线程

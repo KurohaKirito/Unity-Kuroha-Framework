@@ -45,6 +45,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
                 {
                     countPerRow = countAll;
                 }
+
                 var windowWidth = AssetSearchWindow.windowCurrentRect.width;
                 var objectWidth = (windowWidth - (countPerRow - 1) * ITEM_OFFSET) / countPerRow - ITEM_OFFSET;
                 while (index < countAll)
@@ -54,7 +55,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
                     {
                         var path = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[index]);
                         var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-                        EditorGUILayout.ObjectField(asset, typeof(UnityEngine.Object), true, GUILayout.Width(objectWidth));
+                        EditorGUILayout.ObjectField(asset, typeof(UnityEngine.Object), true,
+                            GUILayout.Width(objectWidth));
                         if (i != countPerRow - 1)
                         {
                             GUILayout.Space(ITEM_OFFSET);

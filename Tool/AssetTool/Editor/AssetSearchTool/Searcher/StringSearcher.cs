@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data;
-using Kuroha.Tool.Release;
+using Kuroha.Tool.AssetTool.RunTime;
 using Kuroha.Util.RunTime;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
@@ -40,11 +40,17 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
 
                 // 使用多线程启动任务, 并等待多线程执行完毕
                 var threadPool = new ThreadPoolTool(tasks);
-                while (threadPool.IsDone == false)
+                while (true)
                 {
-                    var com = threadPool.completedTaskCount;
-                    var all = threadPool.taskCount;
-                    Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("字符串引用分析工具", $"引用分析中: {com}/{all}", com, all);
+                    var cur = threadPool.CompletedTaskCount;
+                    var all = threadPool.TaskCount;
+                    if (threadPool.IsDone)
+                    {
+                        Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("字符串引用分析工具", $"引用分析中: {cur}/{all}", cur, all);
+                        break;
+                    }
+
+                    System.Threading.Thread.Sleep(10);
                 }
 
                 #region 遍历每一个任务中的查询结果, 并汇总到字典中
