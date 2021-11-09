@@ -1,6 +1,7 @@
 ﻿using System;
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.AssetTool.Editor.AssetBatchTool;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool;
 using Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool;
@@ -64,7 +65,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetCheckTool
         /// </summary>
         private void OnEnable()
         {
-            toolBarNames = new[] {"特效资源检测", "时装检测工具", "场景统计分析", "贴图统计分析", "网格统计分析", "批处理", "性能分析辅助"};
+            toolBarNames = new[] {"特效资源检测", "时装检测工具", "场景统计分析", "贴图统计分析", "预制体分析工具", "批处理", "性能分析辅助"};
             
             toolbarData = new Toolbar.ToolbarData(800, 320, toolBarNames);
             
@@ -97,7 +98,6 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetCheckTool
                 SceneAnalysisGUI.OnGUI,
                 TextureAnalysisGUI.OnGUI,
                 MeshAnalysisToolGUI.OnGUI,
-                //ParticleSystemProfiler.OnGUI,
                 () =>
                 {
                     AssetBatchToolGUI.OnGUI(this);
@@ -122,7 +122,6 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetCheckTool
         /// </summary>
         private void OnGUI()
         {
-            CheckLabelAlignment();
             GUILayout.BeginVertical();
             
             // draw the title
@@ -138,18 +137,6 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetCheckTool
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
             toolbarData.boxRectHeight = position.height;
             toolBarIndex = Toolbar.ToolbarAnime(ref toolbarData, this, ref toolBarIndex, actions);
-        }
-
-        /// <summary>
-        /// 检查 Label 对齐方式
-        /// </summary>
-        [System.Diagnostics.Conditional("UNITY_2018_4_1")]
-        private static void CheckLabelAlignment()
-        {
-            if (UnityEngine.GUI.skin.label.alignment != TextAnchor.MiddleLeft)
-            {
-                UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
-            }
         }
     }
 }

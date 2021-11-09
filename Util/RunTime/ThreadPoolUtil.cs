@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading;
 
-namespace Kuroha.Tool.AssetTool.RunTime
+namespace Kuroha.Util.RunTime
 {
     /// <summary>
     /// 线程池工具
     /// </summary>
-    public class ThreadPoolTool
+    public class ThreadPoolUtil
     {
         /// <summary>
         /// 任务接口
@@ -50,7 +50,7 @@ namespace Kuroha.Tool.AssetTool.RunTime
         /// 创建多线程
         /// </summary>
         /// <param name="tasksEnumerable">任务</param>
-        public ThreadPoolTool(IEnumerable<ITask> tasksEnumerable)
+        public ThreadPoolUtil(IEnumerable<ITask> tasksEnumerable)
         {
             tasks = tasksEnumerable.ToList();
             foreach (var task in tasks)

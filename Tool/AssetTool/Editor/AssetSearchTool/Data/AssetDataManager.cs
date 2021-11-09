@@ -2,7 +2,6 @@
 using System.IO;
 using Kuroha.Util.RunTime;
 using Kuroha.GUI.Editor;
-using Kuroha.Tool.AssetTool.RunTime;
 using UnityEditor;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
@@ -101,7 +100,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
 
             // 使用多线程启动任务, 并等待多线程执行完毕
             var tasks = assetDataDictionary.Values;
-            var threadPool = new ThreadPoolTool(tasks);
+            var threadPool = new ThreadPoolUtil(tasks);
             while (true)
             {
                 var cur = threadPool.CompletedTaskCount;

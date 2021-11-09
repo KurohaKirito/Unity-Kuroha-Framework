@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Kuroha.Tool.AssetTool.Editor.AssetBatchTool;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem;
 using Kuroha.Tool.AssetTool.Editor.AutoCheckTool.GUI;
 using Kuroha.Util.RunTime;
 

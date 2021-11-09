@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetViewer
+namespace Kuroha.Tool.AssetViewer.Editor
 {
     public class SizeEdit : EditorWindow
     {

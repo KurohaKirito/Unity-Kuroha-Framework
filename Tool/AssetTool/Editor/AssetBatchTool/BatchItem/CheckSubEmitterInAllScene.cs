@@ -1,11 +1,12 @@
 ﻿using System;
 using Kuroha.GUI.Editor;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
 {
     /// <summary>
     /// 收集场景中的粒子特效, 判断是否有 sub-emitter 错误

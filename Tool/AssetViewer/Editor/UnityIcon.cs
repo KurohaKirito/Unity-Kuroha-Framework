@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Kuroha.GUI.Editor;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetViewer
+namespace Kuroha.Tool.AssetViewer.Editor
 {
     public class UnityIcon : EditorWindow
     {
@@ -51,7 +50,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetViewer
         /// </summary>
         private void OnGUI()
         {
-            PageManager.Pager(builtInTextures.Count, 100, ref curPageIndex, out searchBeginIndex, out searchEndIndex);
+            Kuroha.GUI.Editor.PageManager.Pager(builtInTextures.Count, 100, ref curPageIndex, out searchBeginIndex, out searchEndIndex);
 
             EditorGUILayout.BeginVertical();
             {
@@ -141,7 +140,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetViewer
                         var count = objects.Length;
                         for (var index = 0; index < count; index++)
                         {
-                            ProgressBar.DisplayProgressBar("Unity 图标显示工具", $"搜索图标中: {index + 1}/{count}", index + 1, count);
+                            Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("Unity 图标显示工具", $"搜索图标中: {index + 1}/{count}", index + 1, count);
 
                             if (objects[index] is Texture2D texture2D)
                             {

@@ -3,17 +3,8 @@ using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
 {
-    public static class LodBatch
-    {
-        [MenuItem("GameObject/LODTool", false, 12)]
-        public static void Batch()
-        {
-            LodWindow.Open();
-        }
-    }
-
     public class LodWindow: EditorWindow
     {
         /// <summary>

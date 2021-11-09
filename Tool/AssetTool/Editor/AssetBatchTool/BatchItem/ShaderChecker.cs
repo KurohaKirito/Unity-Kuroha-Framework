@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Kuroha.GUI.Editor;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
 {
     public static class ShaderChecker
     {

@@ -1,8 +1,10 @@
 ﻿using Kuroha.GUI.Editor;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem;
 using Kuroha.Tool.AssetTool.Editor.AssetCheckTool;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
-using Kuroha.Tool.AssetTool.Editor.AssetViewer;
+using Kuroha.Tool.AssetViewer;
+using Kuroha.Tool.AssetViewer.Editor;
 using UnityEditor;
 
 namespace Kuroha.Menu.Editor
@@ -104,6 +106,12 @@ namespace Kuroha.Menu.Editor
         public static void FindAssetReference()
         {
             ReferenceSearcher.OpenWindow();
+        }
+        
+        [MenuItem("GameObject/LODTool", false, 12)]
+        public static void Batch()
+        {
+            LodWindow.Open();
         }
 
         #endregion

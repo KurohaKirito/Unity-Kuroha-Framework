@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
 {
     /// <summary>
     /// 压缩动画片段

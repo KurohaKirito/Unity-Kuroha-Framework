@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Kuroha.Tool.AssetTool.RunTime;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -23,7 +23,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
         Scene
     }
 
-    public class AssetData : ThreadPoolTool.ITask
+    public class AssetData : ThreadPoolUtil.ITask
     {
         /// <summary>
         /// 资源的相对路径

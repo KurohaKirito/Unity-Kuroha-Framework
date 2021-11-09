@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Kuroha.Tool.AssetTool.RunTime;
+using Kuroha.Util.RunTime;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
 {
-    public class MatchTask : ThreadPoolTool.ITask
+    public class MatchTask : ThreadPoolUtil.ITask
     {
         /// <summary>
         /// 需要匹配的关键字

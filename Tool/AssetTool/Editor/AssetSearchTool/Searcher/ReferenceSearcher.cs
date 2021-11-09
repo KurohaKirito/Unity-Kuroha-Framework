@@ -2,7 +2,6 @@
 using System.Linq;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
-using Kuroha.Tool.AssetTool.RunTime;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 
@@ -40,7 +39,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
                 tasks.AddRange(AssetDataManager.GetRawDataDictionary().Select(task => new MatchTask(guids, task)));
 
                 // 使用多线程启动任务, 并等待多线程执行完毕
-                var threadPool = new ThreadPoolTool(tasks);
+                var threadPool = new ThreadPoolUtil(tasks);
                 while (true)
                 {
                     var cur = threadPool.CompletedTaskCount;

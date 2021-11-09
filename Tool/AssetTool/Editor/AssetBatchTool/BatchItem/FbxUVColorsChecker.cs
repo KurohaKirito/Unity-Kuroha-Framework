@@ -2,13 +2,14 @@
 using System.IO;
 using System.Linq;
 using Kuroha.GUI.Editor;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 using Kuroha.Util.Editor;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
 // 检测特定路径下 fbx 模型文件的 mesh 网格中的 uv2 uv3 uv4 colors 信息
-namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
 {
     public static class FbxUVColorsChecker
     {

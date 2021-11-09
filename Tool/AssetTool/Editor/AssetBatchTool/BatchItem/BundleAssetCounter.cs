@@ -2,12 +2,13 @@
 using System.IO;
 using System.Linq;
 using Kuroha.GUI.Editor;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 using Kuroha.Util.Editor;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
 {
     public static class BundleAssetCounter
     {

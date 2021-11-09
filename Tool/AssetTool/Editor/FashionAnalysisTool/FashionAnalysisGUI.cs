@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
-
 using Kuroha.GUI.Editor;
 using Kuroha.Tool.AssetTool.Editor.AssetCheckTool;
 using Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool;
@@ -41,12 +40,12 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
         /// 大厅
         /// </summary>
         private static Transform players;
-        
+
         /// <summary>
         /// 玩家游戏物体
         /// </summary>
         private static Transform player;
-        
+
         /// <summary>
         /// 角色游戏物体
         /// </summary>
@@ -64,7 +63,8 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
             }
             else
             {
-                if (players == null) {
+                if (players == null)
+                {
                     var transforms = AssetUtil.GetAllTransformInScene(AssetUtil.FindType.All);
                     foreach (var transform in transforms)
                     {
@@ -95,14 +95,17 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
                         GUILayout.BeginVertical("Box");
                         {
                             GUILayout.Space(UI_SPACE_PIXELS);
-                            if (player == null) {
+                            if (player == null)
+                            {
                                 player = players.Find("Player1");
                             }
-                            else if (role == null) {
+                            else if (role == null)
+                            {
                                 role = player.transform.Find("UIRolePoint1/Role");
                             }
+
                             EditorGUILayout.ObjectField("玩家游戏物体: Player1", player, typeof(Transform), true);
-                            
+
                             DrawButton("1. 模型检测: 统计整套时装所用到的模型的面数和顶点数", "Start", CollectMesh);
                             GUILayout.Space(UI_SPACE_PIXELS);
                             DrawButton("2. 贴图检测: 统计整套时装所用到的全部贴图的尺寸", "Start", CollectTextures);
@@ -171,7 +174,8 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
                     {
                         hadError = true;
                         var content1 = $"游戏物体 {animator.transform.name} 的动画剔除方式不正确!";
-                        var content2 = $"<color='red'>{animator.cullingMode}</color> => <color='green'>{AnimatorCullingMode.CullCompletely}</color>";
+                        var content2 =
+                            $"<color='red'>{animator.cullingMode}</color> => <color='green'>{AnimatorCullingMode.CullCompletely}</color>";
                         DebugUtil.LogError($"{content1}\n{content2}", animator.gameObject);
                     }
                 }
@@ -182,7 +186,7 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
                 DebugUtil.Log($"动画状态机检测完毕, 共检测了 {animators.Length} 个动画状态机, 未检测到问题", null, "green");
             }
         }
-        
+
         /// <summary>
         /// 检测是否有隐藏游戏物体
         /// </summary>
@@ -198,7 +202,7 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
                     DebugUtil.LogError($"游戏物体 {transform.name} 为隐藏状态!", transform.gameObject, "red");
                 }
             }
-            
+
             if (hadError == false)
             {
                 DebugUtil.Log($"隐藏游戏物体检测完毕, 共检测了 {transforms.Length} 个游戏物体, 未检测到问题.", null, "green");
@@ -216,21 +220,23 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
             foreach (var particleSystem in particleSystems)
             {
                 var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
-                
+
                 // 是否是 Mesh 粒子
                 if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
                 {
                     var mesh = renderer.mesh;
                     if (mesh == null)
                     {
-                        DebugUtil.LogError($"特效 {particleSystem.transform.name} 使用了 Mesh 粒子但是没有指定 Mesh!", particleSystem.gameObject, "red");
+                        DebugUtil.LogError($"特效 {particleSystem.transform.name} 使用了 Mesh 粒子但是没有指定 Mesh!",
+                            particleSystem.gameObject, "red");
                     }
                     else if (mesh.triangles.Length >= 900)
                     {
-                        DebugUtil.LogError($"特效 {particleSystem.transform.name} 使用的 Mesh 粒子面数大于 300!", particleSystem.gameObject, "red");
+                        DebugUtil.LogError($"特效 {particleSystem.transform.name} 使用的 Mesh 粒子面数大于 300!",
+                            particleSystem.gameObject, "red");
                     }
                 }
-                
+
                 // 预热是否关闭
                 if (particleSystem.main.prewarm)
                 {
@@ -242,16 +248,17 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
                 if (renderer.shadowCastingMode != ShadowCastingMode.Off)
                 {
                     hadError = true;
-                    DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭阴影投射!", particleSystem.gameObject, "red");
+                    DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭阴影投射!", particleSystem.gameObject,
+                        "red");
                 }
-                
+
                 // 是否开启了碰撞器
                 if (particleSystem.collision.enabled)
                 {
                     hadError = true;
                     DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭碰撞!", particleSystem.gameObject, "red");
                 }
-                
+
                 // 是否开启了触发器
                 if (particleSystem.trigger.enabled)
                 {

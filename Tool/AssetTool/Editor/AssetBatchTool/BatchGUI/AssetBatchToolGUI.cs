@@ -1,11 +1,12 @@
 ﻿using System;
 using Kuroha.GUI.Editor.Splitter;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem;
 using Kuroha.Tool.AssetTool.Editor.AutoCheckTool.GUI;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
+namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI
 {
     public static class AssetBatchToolGUI
     {
@@ -14,17 +15,16 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
         /// </summary>
         public enum BatchType
         {
-            RedundantTextureReferencesCleaner,
-            GunAttachmentsCloseCastShadows,
-            BundleAssetCounter,
-            AssetDeleteTool,
             AssetMoveTool,
-            MaterialShaderChecker,
+            AssetDeleteTool,
             UnusedAssetChecker,
-            CheckSubEmitterInAllScene,
-            FbxUVColorsChecker,
             AnimationClipCompress,
-            AutoCheckTool = 10
+            MaterialShaderChecker,
+            BundleAssetCounter,
+            FbxUVColorsChecker,
+            RedundantTextureReferencesCleaner,
+            CheckSubEmitterInAllScene,
+            AutoCheckTool = 9
         }
 
         /// <summary>
@@ -32,16 +32,15 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
         /// </summary>
         public static readonly string[] batches =
         {
-            "材质球冗余纹理引用清除器",
-            "关闭枪械配件阴影投射",
-            "捆绑包资源数量分析",
-            "资源批量删除工具",
             "资源批量移动工具",
-            "材质球的着色器引用检测器",
+            "资源批量删除工具",
             "废弃资源检测工具",
-            "场景粒子 Sub-Emitter 检测",
-            "模型 UV 信息检查器",
             "动画片段压缩工具",
+            "着色器引用检测工具",
+            "资源包内数量统计工具",
+            "模型 UV 信息检查工具",
+            "材质冗余纹理引用清除工具",
+            "粒子 Sub-Emitter 检测工具",
             "自动检测工具"
         };
 
@@ -71,17 +70,11 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
         /// <param name="window"></param>
         public static void OnGUI(in EditorWindow window)
         {
-            if (splitter == null)
-            {
-                splitter = new VerticalSplitter(window, 210, 210, false);
-            }
+            splitter ??= new VerticalSplitter(window, 210, 210, false);
             
             splitter.OnGUI(window.position, MainRect, SubRect);
             
-            if (buttonStyle == null)
-            {
-                buttonStyle = new GUIStyle("Button");
-            }
+            buttonStyle ??= new GUIStyle("Button");
             
             buttonStyle.alignment = TextAnchor.MiddleLeft;
             buttonStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
@@ -137,10 +130,6 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool
                 {
                     case BatchType.RedundantTextureReferencesCleaner:
                         RedundantTextureReferencesCleaner.OnGUI();
-                        break;
-
-                    case BatchType.GunAttachmentsCloseCastShadows:
-                        GunAttachmentsCloseCastShadows.OnGUI();
                         break;
 
                     case BatchType.BundleAssetCounter:
