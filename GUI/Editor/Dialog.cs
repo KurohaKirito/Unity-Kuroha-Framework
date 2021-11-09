@@ -2,15 +2,12 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.GUI.Editor
-{
-    public class Dialog : EditorWindow
-    {
+namespace Script.Effect.Editor.AssetTool.GUI.Editor {
+    public class Dialog : EditorWindow {
         /// <summary>
         /// 弹窗类型
         /// </summary>
-        public enum DialogType
-        {
+        public enum DialogType {
             Message,
             Warn,
             Error
@@ -19,8 +16,7 @@ namespace Kuroha.GUI.Editor
         /// <summary>
         /// 弹窗按钮事件类型
         /// </summary>
-        private enum DialogButtonType
-        {
+        private enum DialogButtonType {
             Null,
             Ok,
             Cancel,
@@ -90,12 +86,11 @@ namespace Kuroha.GUI.Editor
         /// <param name="buttonOkName">OK 按钮的显示文本</param>
         /// <param name="buttonCancelName">Cancel 按钮的显示文本</param>
         /// <param name="buttonAltName">Alt 按钮的显示文本</param>
-        public static void Display(string info, DialogType type, string buttonOkName, string buttonCancelName = null, string buttonAltName = null)
-        {
+        public static void Display(string info, DialogType type, string buttonOkName, string buttonCancelName = null, string buttonAltName = null) {
             defaultColor = UnityEngine.GUI.backgroundColor;
             message = info;
             windowType = type;
-            buttonOk = string.IsNullOrEmpty(buttonOkName) ? "OK" : buttonOkName;
+            buttonOk = string.IsNullOrEmpty(buttonOkName)? "OK" : buttonOkName;
             buttonCancel = buttonCancelName;
             buttonAlt = buttonAltName;
 
@@ -103,23 +98,19 @@ namespace Kuroha.GUI.Editor
             window.minSize = new Vector2(400, 150);
             window.maxSize = window.minSize;
 
-            switch (windowType)
-            {
+            switch (windowType) {
                 case DialogType.Message:
-                    window.titleContent = new GUIContent("消息",
-                        EditorGUIUtility.IconContent("console.infoIcon.sml").image as Texture2D, "消息");
+                    window.titleContent = new GUIContent("消息", EditorGUIUtility.IconContent("console.infoIcon.sml").image as Texture2D, "消息");
                     break;
-                
+
                 case DialogType.Warn:
-                    window.titleContent = new GUIContent("警告",
-                        EditorGUIUtility.IconContent("console.warnIcon.sml").image as Texture2D, "警告");
+                    window.titleContent = new GUIContent("警告", EditorGUIUtility.IconContent("console.warnIcon.sml").image as Texture2D, "警告");
                     break;
-                
+
                 case DialogType.Error:
-                    window.titleContent = new GUIContent("错误",
-                        EditorGUIUtility.IconContent("console.errorIcon.sml").image as Texture2D, "错误");
+                    window.titleContent = new GUIContent("错误", EditorGUIUtility.IconContent("console.errorIcon.sml").image as Texture2D, "错误");
                     break;
-                
+
                 default:
                     throw new Exception();
             }
@@ -128,8 +119,7 @@ namespace Kuroha.GUI.Editor
         /// <summary>
         /// 强制焦点和强制刷新
         /// </summary>
-        private void OnInspectorUpdate()
-        {
+        private void OnInspectorUpdate() {
             Focus();
             Repaint();
         }
@@ -137,8 +127,7 @@ namespace Kuroha.GUI.Editor
         /// <summary>
         /// 绘制界面
         /// </summary>
-        private void OnGUI()
-        {
+        private void OnGUI() {
             GUILayout.BeginVertical();
             GUILayout.Space(25);
 
@@ -147,21 +136,7 @@ namespace Kuroha.GUI.Editor
 
             #region 大图标
 
-            switch (windowType)
-            {
-                #if UNITY_2019_3_OR_NEWER
-                case DialogType.Message:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.infoicon@2x"));
-                    break;
-
-                case DialogType.Warn:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.warnicon@2x"));
-                    break;
-
-                case DialogType.Error:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.erroricon@2x"));
-                    break;
-                #else
+            switch (windowType) {
                 case DialogType.Message:
                     GUILayout.Label(EditorGUIUtility.IconContent("console.infoicon"));
                     break;
@@ -173,7 +148,7 @@ namespace Kuroha.GUI.Editor
                 case DialogType.Error:
                     GUILayout.Label(EditorGUIUtility.IconContent("console.erroricon"));
                     break;
-                #endif
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -200,10 +175,8 @@ namespace Kuroha.GUI.Editor
 
             #region 取消按钮
 
-            if (!string.IsNullOrEmpty(buttonCancel))
-            {
-                if (GUILayout.Button(buttonCancel, GUILayout.Height(20), GUILayout.Width(80)))
-                {
+            if (!string.IsNullOrEmpty(buttonCancel)) {
+                if (GUILayout.Button(buttonCancel, GUILayout.Height(20), GUILayout.Width(80))) {
                     pressedButton = DialogButtonType.Cancel;
                     OnDialogEvent();
                     window.Close();
@@ -217,10 +190,8 @@ namespace Kuroha.GUI.Editor
 
             #region Alt 按钮
 
-            if (!string.IsNullOrEmpty(buttonAlt))
-            {
-                if (GUILayout.Button(buttonAlt, GUILayout.Height(20), GUILayout.Width(80)))
-                {
+            if (!string.IsNullOrEmpty(buttonAlt)) {
+                if (GUILayout.Button(buttonAlt, GUILayout.Height(20), GUILayout.Width(80))) {
                     pressedButton = DialogButtonType.Alt;
                     OnDialogEvent();
                     window.Close();
@@ -234,11 +205,9 @@ namespace Kuroha.GUI.Editor
 
             #region 确定按钮
 
-            if (!string.IsNullOrEmpty(buttonOk))
-            {
+            if (!string.IsNullOrEmpty(buttonOk)) {
                 UnityEngine.GUI.backgroundColor = new Color(57f / 255, 150f / 255, 249f / 255);
-                if (GUILayout.Button(buttonOk, GUILayout.Height(20), GUILayout.Width(80)))
-                {
+                if (GUILayout.Button(buttonOk, GUILayout.Height(20), GUILayout.Width(80))) {
                     pressedButton = DialogButtonType.Ok;
                     OnDialogEvent();
                     window.Close();
@@ -261,8 +230,7 @@ namespace Kuroha.GUI.Editor
         /// <summary>
         /// 重置数据
         /// </summary>
-        private static void ResetWindow()
-        {
+        private static void ResetWindow() {
             pressedButton = DialogButtonType.Null;
             message = string.Empty;
             windowType = DialogType.Message;
@@ -281,20 +249,16 @@ namespace Kuroha.GUI.Editor
         /// <param name="cancel">Cancel 按钮回调</param>
         /// <param name="alt">Alt 按钮回调</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static void SetListener(Action ok = null, Action cancel = null, Action alt = null)
-        {
-            if (ok != null)
-            {
+        public static void SetListener(Action ok = null, Action cancel = null, Action alt = null) {
+            if (ok != null) {
                 okEvent = ok;
             }
 
-            if (cancel != null)
-            {
+            if (cancel != null) {
                 cancelEvent = cancel;
             }
 
-            if (alt != null)
-            {
+            if (alt != null) {
                 altEvent = alt;
             }
         }
@@ -302,10 +266,8 @@ namespace Kuroha.GUI.Editor
         /// <summary>
         /// 按钮事件
         /// </summary>
-        private static void OnDialogEvent()
-        {
-            switch (pressedButton)
-            {
+        private static void OnDialogEvent() {
+            switch (pressedButton) {
                 case DialogButtonType.Ok:
                     okEvent?.Invoke();
                     ResetWindow();

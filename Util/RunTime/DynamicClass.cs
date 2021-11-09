@@ -1,63 +1,45 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Kuroha.Util.RunTime
-{
+namespace Script.Effect.Editor.AssetTool.Util.RunTime {
     /// <summary>
     /// 动态类
     /// </summary>
-    public class DynamicClass
-    {
+    public class DynamicClass {
         #region 反射筛选标志
 
         /// <summary>
         /// Public 字段
         /// </summary>
-        private const BindingFlags PUBLIC_INSTANCE_FIELD =
-            BindingFlags.Public |
-            BindingFlags.Instance |
-            BindingFlags.GetField;
-        
+        private const BindingFlags PUBLIC_INSTANCE_FIELD = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField;
+
         /// <summary>
         /// Private 字段
         /// </summary>
-        private const BindingFlags PRIVATE_INSTANCE_FIELD =
-            BindingFlags.NonPublic |
-            BindingFlags.Instance |
-            BindingFlags.GetField;
-        
+        private const BindingFlags PRIVATE_INSTANCE_FIELD = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField;
+
         /// <summary>
         /// Private Static 字段
         /// </summary>
-        private const BindingFlags PRIVATE_STATIC_FIELD =
-            BindingFlags.NonPublic |
-            BindingFlags.Static |
-            BindingFlags.GetField;
-        
+        private const BindingFlags PRIVATE_STATIC_FIELD = BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetField;
+
         /// <summary>
         /// Public 方法
         /// </summary>
-        private const BindingFlags PUBLIC_INSTANCE_METHOD =
-            BindingFlags.Public |
-            BindingFlags.Instance;
-        
+        private const BindingFlags PUBLIC_INSTANCE_METHOD = BindingFlags.Public | BindingFlags.Instance;
+
         /// <summary>
         /// Public Static 方法
         /// </summary>
-        private const BindingFlags PUBLIC_STATIC_INSTANCE_METHOD =
-            BindingFlags.Public |
-            BindingFlags.Static |
-            BindingFlags.Instance;
-        
+        private const BindingFlags PUBLIC_STATIC_INSTANCE_METHOD = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
+
         /// <summary>
         /// Private 方法
         /// </summary>
-        private const BindingFlags PRIVATE_INSTANCE_METHOD =
-            BindingFlags.NonPublic |
-            BindingFlags.Instance;
+        private const BindingFlags PRIVATE_INSTANCE_METHOD = BindingFlags.NonPublic | BindingFlags.Instance;
 
         #endregion
-        
+
         /// <summary>
         /// 动态类当前所指代的类
         /// </summary>
@@ -67,25 +49,22 @@ namespace Kuroha.Util.RunTime
         /// 动态类当前所指代的类的实例
         /// </summary>
         private object currentInstance;
-        
+
         /// <summary>
         /// 设置实例
         /// </summary>
         /// <param name="obj"></param>
-        public void SetInstance(object obj)
-        {
-            if (obj.GetType() == currentClass)
-            {
+        public void SetInstance(object obj) {
+            if (obj.GetType() == currentClass) {
                 currentInstance = obj;
             }
         }
-        
+
         /// <summary>
         /// 获取实例
         /// </summary>
         /// <returns></returns>
-        public object GetInstance()
-        {
+        public object GetInstance() {
             return currentInstance;
         }
 
@@ -93,8 +72,7 @@ namespace Kuroha.Util.RunTime
         /// 构造函数 (参数: 类型)
         /// </summary>
         /// <param name="currentClass"></param>
-        public DynamicClass(Type currentClass)
-        {
+        public DynamicClass(Type currentClass) {
             this.currentClass = currentClass;
         }
 
@@ -102,13 +80,11 @@ namespace Kuroha.Util.RunTime
         /// 构造函数 (参数: 类型的实例)
         /// </summary>
         /// <param name="obj"></param>
-        public DynamicClass(object obj)
-        {
-            if (obj == null)
-            {
+        public DynamicClass(object obj) {
+            if (obj == null) {
                 return;
             }
-            
+
             currentClass = obj.GetType();
             currentInstance = obj;
         }
@@ -125,8 +101,7 @@ namespace Kuroha.Util.RunTime
         /// <returns></returns>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public T GetFieldValue_PrivateStatic<T>(string fieldName) where T : class
-        {
+        public T GetFieldValue_PrivateStatic<T>(string fieldName) where T : class {
             return GetFieldValue_PrivateStatic(fieldName) as T;
         }
 
@@ -137,15 +112,14 @@ namespace Kuroha.Util.RunTime
         /// <returns></returns>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public object GetFieldValue_PrivateStatic(string fieldName)
-        {
+        public object GetFieldValue_PrivateStatic(string fieldName) {
             return GetFiledValue(fieldName, PRIVATE_STATIC_FIELD);
         }
 
         #endregion
 
         #region Private
-        
+
         /// <summary>
         /// 获取类中的 private 字段的值
         /// </summary>
@@ -154,8 +128,7 @@ namespace Kuroha.Util.RunTime
         /// <returns></returns>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public T GetFieldValue_Private<T>(string fieldName) where T : class
-        {
+        public T GetFieldValue_Private<T>(string fieldName) where T : class {
             return GetFieldValue_Private(fieldName) as T;
         }
 
@@ -166,8 +139,7 @@ namespace Kuroha.Util.RunTime
         /// <returns></returns>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public object GetFieldValue_Private(string fieldName)
-        {
+        public object GetFieldValue_Private(string fieldName) {
             return GetFiledValue(fieldName, PRIVATE_INSTANCE_FIELD);
         }
 
@@ -183,11 +155,10 @@ namespace Kuroha.Util.RunTime
         /// <returns></returns>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public T GetFieldValue_Public<T>(string fieldName) where T : class
-        {
+        public T GetFieldValue_Public<T>(string fieldName) where T : class {
             return GetFieldValue_Public(fieldName) as T;
         }
-        
+
         /// <summary>
         /// 获取类中的 public 字段的值
         /// </summary>
@@ -195,28 +166,25 @@ namespace Kuroha.Util.RunTime
         /// <returns></returns>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public object GetFieldValue_Public(string fieldName)
-        {
+        public object GetFieldValue_Public(string fieldName) {
             return GetFiledValue(fieldName, PUBLIC_INSTANCE_FIELD);
         }
-        
+
         #endregion
-        
+
         /// <summary>
         /// 获取类中的字段的值
         /// </summary>
         /// <param name="fieldName"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
-        private object GetFiledValue(string fieldName, BindingFlags flags)
-        {
-            if (currentClass == null)
-            {
+        private object GetFiledValue(string fieldName, BindingFlags flags) {
+            if (currentClass == null) {
                 return null;
             }
-            
+
             var dynamicField = currentClass.GetField(fieldName, flags);
-            return dynamicField == null ? null : dynamicField.GetValue(currentInstance);
+            return dynamicField == null? null : dynamicField.GetValue(currentInstance);
         }
 
         #endregion
@@ -230,11 +198,10 @@ namespace Kuroha.Util.RunTime
         /// <param name="args"></param>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public void CallMethod_Public(string methodName, params object[] args)
-        {
+        public void CallMethod_Public(string methodName, params object[] args) {
             InvokeMethod(methodName, PUBLIC_INSTANCE_METHOD, args);
         }
-        
+
         /// <summary>
         /// 调用 public static 函数
         /// </summary>
@@ -242,8 +209,7 @@ namespace Kuroha.Util.RunTime
         /// <param name="args"></param>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public void CallMethod_PublicStatic(string methodName, params object[] args)
-        {
+        public void CallMethod_PublicStatic(string methodName, params object[] args) {
             InvokeMethod(methodName, PUBLIC_STATIC_INSTANCE_METHOD, args);
         }
 
@@ -254,27 +220,27 @@ namespace Kuroha.Util.RunTime
         /// <param name="args"></param>
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public void CallMethod_Private(string methodName, params object[] args)
-        {
+        public void CallMethod_Private(string methodName, params object[] args) {
             InvokeMethod(methodName, PRIVATE_INSTANCE_METHOD, args);
         }
-        
+
         /// <summary>
         /// 调用类中的函数
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="flags"></param>
         /// <param name="args"></param>
-        private void InvokeMethod(string methodName, BindingFlags flags, params object[] args)
-        {
-            if (currentClass == null) return;
+        private void InvokeMethod(string methodName, BindingFlags flags, params object[] args) {
+            if (currentClass == null)
+                return;
             var method = currentClass.GetMethod(methodName, flags);
-            if (method == null) return;
+            if (method == null)
+                return;
             method.Invoke(currentInstance, args);
         }
-        
+
         #endregion
-        
+
         /// <summary>
         /// 从源实例中取出与目标实例 "同名字段" 的值
         /// </summary>
@@ -282,30 +248,25 @@ namespace Kuroha.Util.RunTime
         /// <param name="dstFlags">目标实例中字段值的类型</param>
         /// <param name="srcInstance">源实例</param>
         /// <param name="srcFlags">源实例中字段值的类型</param>
-        public static void Copy(object dstInstance, BindingFlags dstFlags, object srcInstance, BindingFlags srcFlags)
-        {
-            if (dstInstance == null || srcInstance == null)
-            {
+        public static void Copy(object dstInstance, BindingFlags dstFlags, object srcInstance, BindingFlags srcFlags) {
+            if (dstInstance == null || srcInstance == null) {
                 return;
             }
-            
+
             // 取出两个实例的类型
             var srcType = srcInstance.GetType();
             var dstType = dstInstance.GetType();
-            
+
             // 取出目标实例中的字段
             var dstFields = dstType.GetFields(dstFlags);
-            foreach (var dstFieldInfo in dstFields)
-            {
+            foreach (var dstFieldInfo in dstFields) {
                 // 得到源实例中的 "相同字段"
                 var srcFieldInfo = srcType.GetField(dstFieldInfo.Name, srcFlags);
-                if (srcFieldInfo != null)
-                {
-                    if (dstFieldInfo.FieldType == srcFieldInfo.FieldType)
-                    {
+                if (srcFieldInfo != null) {
+                    if (dstFieldInfo.FieldType == srcFieldInfo.FieldType) {
                         // 取出源字段的值
                         var value = srcFieldInfo.GetValue(srcInstance);
-                        
+
                         // 赋值给目标字段
                         dstFieldInfo.SetValue(dstInstance, value);
                     }

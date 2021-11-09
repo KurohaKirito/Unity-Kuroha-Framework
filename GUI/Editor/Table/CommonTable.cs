@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Kuroha.GUI.Editor.Table
-{
-    public class CommonTable<T> where T : class
-    {
+namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
+    public class CommonTable<T> where T : class {
         #region private field
 
         private const int MAX_FILTER_HEIGHT = 20;
@@ -38,19 +36,7 @@ namespace Kuroha.GUI.Editor.Table
 
         #region Constructor
 
-        protected CommonTable(
-            Vector2 space,
-            Vector2 minSize,
-            List<T> dataList,
-            bool isDrawFilter,
-            bool isDrawExport,
-            float exportWidth,
-            float filterHeight,
-            CommonTableColumn<T>[] columns,
-            CommonTableDelegate.FilterMethod<T> onFilterFunction,
-            CommonTableDelegate.ExportMethod<T> onExportFunction,
-            CommonTableDelegate.SelectMethod<T> onSelectFunction)
-        {
+        protected CommonTable(Vector2 space, Vector2 minSize, List<T> dataList, bool isDrawFilter, bool isDrawExport, float exportWidth, float filterHeight, CommonTableColumn<T>[] columns, CommonTableDelegate.FilterMethod<T> onFilterFunction, CommonTableDelegate.ExportMethod<T> onExportFunction, CommonTableDelegate.SelectMethod<T> onSelectFunction) {
             Data = dataList;
             minRect = minSize;
             WidthSpace = space.x;
@@ -58,8 +44,7 @@ namespace Kuroha.GUI.Editor.Table
             this.exportWidth = exportWidth;
             this.filterHeight = Math.Min(filterHeight, MAX_FILTER_HEIGHT);
             displayedOptions = new string[columns.Length];
-            for (var i = 0; i < columns.Length; i++)
-            {
+            for (var i = 0; i < columns.Length; i++) {
                 displayedOptions[i] = columns[i].headerContent.text;
             }
 
@@ -74,37 +59,26 @@ namespace Kuroha.GUI.Editor.Table
 
         #endregion
 
-        private void Init()
-        {
-            if (isInitialized == false)
-            {
-                if (treeViewState == null)
-                {
+        private void Init() {
+            if (isInitialized == false) {
+                if (treeViewState == null) {
                     treeViewState = new TreeViewState();
                 }
 
-                treeView = new CommonTreeView<T>(
-                    treeViewState,
-                    new MultiColumnHeader(MultiColumnHeaderState),
-                    Data,
-                    FilterFunction,
-                    ExportFunction,
-                    SelectFunction);
+                treeView = new CommonTreeView<T>(treeViewState, new MultiColumnHeader(MultiColumnHeaderState), Data, FilterFunction, ExportFunction, SelectFunction);
 
                 treeView.Reload();
                 isInitialized = true;
             }
         }
 
-        public void OnGUI()
-        {
+        public void OnGUI() {
             Init();
 
             // 定义表格 Rect
             var tableRect = GUILayoutUtility.GetRect(minRect.x, Screen.width, minRect.y, Screen.height);
 
-            if (Event.current.type != EventType.Layout)
-            {
+            if (Event.current.type != EventType.Layout) {
                 // Left Space
                 tableRect.x += WidthSpace;
                 // Up Space
@@ -124,8 +98,7 @@ namespace Kuroha.GUI.Editor.Table
 
                 treeView.OnGUI(tableRect);
                 treeView.OnFilterGUI(filterRect, IsDrawFilter, WidthSpace, displayedOptions);
-                treeView.OnExportGUI(exportPosition, IsDrawExport, exportWidth,
-                    filterHeight - FILTER_EXPORT_HEIGHT_LESS, Data);
+                treeView.OnExportGUI(exportPosition, IsDrawExport, exportWidth, filterHeight - FILTER_EXPORT_HEIGHT_LESS, Data);
             }
         }
     }

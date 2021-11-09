@@ -1,17 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Kuroha.Util.RunTime
-{
-    public static class NullUtil
-    {
+namespace Script.Effect.Editor.AssetTool.Util.RunTime {
+    public static class NullUtil {
         /// <summary>
         /// 数组
         /// </summary>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static bool IsNotNullAndEmpty<T>(this IEnumerable<T> self)
-        {
+        public static bool IsNotNullAndEmpty<T>(this IEnumerable<T> self) {
             return self != null && self.Any();
         }
 
@@ -20,8 +17,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> self)
-        {
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> self) {
             return self == null || self.Any() == false;
         }
 
@@ -30,8 +26,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static bool IsNotNullAndEmpty<T1, T2>(this IDictionary<T1, T2> self)
-        {
+        public static bool IsNotNullAndEmpty<T1, T2>(this IDictionary<T1, T2> self) {
             return self != null && self.Count > 0;
         }
 
@@ -40,8 +35,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static bool IsNullOrEmpty<T1, T2>(this IDictionary<T1, T2> self)
-        {
+        public static bool IsNullOrEmpty<T1, T2>(this IDictionary<T1, T2> self) {
             return self == null || self.Count <= 0;
         }
     }

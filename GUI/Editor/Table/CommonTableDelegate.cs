@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Kuroha.GUI.Editor.Table
-{
-    public static class CommonTableDelegate
-    {
+namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
+    public static class CommonTableDelegate {
         public delegate bool FilterMethod<in T>(int mask, T data, string std);
 
         public delegate void SelectMethod<T>(in List<T> dataList);
