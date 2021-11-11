@@ -49,7 +49,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
         public static void Open() {
             RefreshSelection();
-            GetWindow<LodWindow>("LodBatch");
+            GetWindow<LodWindow>("LodGroup 百分比设置");
         }
 
         private void OnSelectionChange() {

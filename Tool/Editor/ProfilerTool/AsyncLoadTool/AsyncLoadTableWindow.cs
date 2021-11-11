@@ -12,57 +12,18 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
         private static string asyncLoadRecordPath;
 
         /// <summary>
-        /// 宽度警告线
-        /// </summary>
-        private static int widthWarn;
-
-        /// <summary>
-        /// 宽度错误线
-        /// </summary>
-        private static int widthError;
-
-        /// <summary>
-        /// 高度警告线
-        /// </summary>
-        private static int heightWarn;
-
-        /// <summary>
-        /// 高度错误线
-        /// </summary>
-        private static int heightError;
-
-        /// <summary>
         /// 打开窗口
         /// </summary>
         public static void Open(ref string path) {
             asyncLoadRecordPath = path;
-            var window = GetWindow<AsyncLoadTableWindow>(true);
+            var window = GetWindow<AsyncLoadTableWindow>("统计资源包加载时长", true);
             window.minSize = new Vector2(1200, 1000);
-            window.maxSize = new Vector2(1200, 1000);
         }
 
         /// <summary>
         /// 初始化
         /// </summary>
         private void OnEnable() {
-            // 初始化界限值
-            if (widthWarn == 0) {
-                widthWarn = 500;
-            }
-
-            if (widthError == 0) {
-                widthError = 1000;
-            }
-
-            if (heightWarn == 0) {
-                heightWarn = 500;
-            }
-
-            if (heightError == 0) {
-                heightError = 1000;
-            }
-
-            // 初始化表格
             InitTable();
         }
 
@@ -95,12 +56,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
 
             foreach (var data in dataList) {
                 var allData = data.Split(';');
-
-                var bundlePath = allData[0].Replace('\\', '/').Substring(87);
+                var bundlePathIndex = allData[0].IndexOf("assets/AssetBundle/", StringComparison.Ordinal);
+                var bundlePath = allData[0].Replace('\\', '/').Substring(bundlePathIndex);
                 var startTime = allData[1].Substring(11, 8);
                 var endTime = allData[2].Substring(11, 8);
                 var useTime = float.Parse(allData[3].Substring(8)) * 1000;
-
                 results.Add(new AsyncLoadData {
                     id = counter++,
                     bundlePath = bundlePath,
@@ -227,39 +187,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
         /// 绘制界面
         /// </summary>
         protected void OnGUI() {
-            GUILayout.Space(20);
-            GUILayout.BeginHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            widthWarn = EditorGUILayout.IntField("Enter Width Warning Line", widthWarn, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            widthError = EditorGUILayout.IntField("Enter Width Error Line", widthError, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            heightWarn = EditorGUILayout.IntField("Enter Height Warning Line", heightWarn, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            heightError = EditorGUILayout.IntField("Enter Tris Error Line", heightError, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndHorizontal();
-
             table?.OnGUI();
         }
 

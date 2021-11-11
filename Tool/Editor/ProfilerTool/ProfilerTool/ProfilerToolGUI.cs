@@ -20,7 +20,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.ProfilerTool {
         /// 工具名称
         /// </summary>
         public static readonly string[] tools = {
-            "Memory 工具", "异步加载时长统计"
+            "Memory 工具", "资源包同步加载时长统计"
         };
 
         /// <summary>

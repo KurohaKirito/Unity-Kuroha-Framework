@@ -62,7 +62,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
         /// <param name="results">检测结果</param>
         public static void Open(List<EffectCheckReportInfo> results) {
             EffectCheckReport.reportInfos = results;
-            GetWindow<EffectCheckReportWindow>("检测结果").minSize = new Vector2(1000, 650);
+            var window = GetWindow<EffectCheckReportWindow>("特效检测结果");
+            window.minSize = new Vector2(1000, 650);
         }
 
         /// <summary>
