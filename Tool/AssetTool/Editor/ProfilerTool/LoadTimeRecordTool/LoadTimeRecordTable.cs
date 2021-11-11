@@ -4,20 +4,20 @@ using UnityEngine;
 
 namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
 {
-    public class AsyncLoadTable : CommonTable<AsyncLoadData>
+    public class LoadTimeRecordTable : CommonTable<LoadTimeRecordData>
     {
-        public AsyncLoadTable(
+        public LoadTimeRecordTable(
             Vector2 space,
             Vector2 minSize,
-            List<AsyncLoadData> dataList,
+            List<LoadTimeRecordData> dataList,
             bool isDrawFilter,
             bool isDrawExport,
             float exportWidth,
             float filterHeight,
-            CommonTableColumn<AsyncLoadData>[] columns,
-            CommonTableDelegate.FilterMethod<AsyncLoadData> onFilterFunction,
-            CommonTableDelegate.ExportMethod<AsyncLoadData> onExportFunction,
-            CommonTableDelegate.SelectMethod<AsyncLoadData> onSelectFunction)
+            CommonTableColumn<LoadTimeRecordData>[] columns,
+            CommonTableDelegate.FilterMethod<LoadTimeRecordData> onFilterFunction,
+            CommonTableDelegate.ExportMethod<LoadTimeRecordData> onExportFunction,
+            CommonTableDelegate.SelectMethod<LoadTimeRecordData> onSelectFunction)
             : base(space,
                 minSize,
                 dataList,

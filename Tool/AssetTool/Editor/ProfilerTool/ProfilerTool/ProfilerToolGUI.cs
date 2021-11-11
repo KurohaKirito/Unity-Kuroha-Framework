@@ -25,7 +25,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.ProfilerTool
         public static readonly string[] tools =
         {
             "Memory 工具",
-            "异步加载时长统计"
+            "资源包同步加载时长统计"
         };
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.ProfilerTool
                         break;
 
                     case ToolType.AsyncLoadTool:
-                        AsyncLoadGUI.OnGUI();
+                        LoadTimeRecordGUI.OnGUI();
                         break;
                     
                     default:

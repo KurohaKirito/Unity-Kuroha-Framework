@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
 {
-    public static class AsyncLoadGUI
+    public static class LoadTimeRecordGUI
     {
         /// <summary>
         /// 整合了需要批量删除的资源所在路径的文件
@@ -69,7 +69,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
                             {
                                 if (GUILayout.Button("Show", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                                 {
-                                    AsyncLoadTableWindow.Open(ref filePath);
+                                    LoadTimeRecordTableWindow.Open(ref filePath);
                                 }
                             }
                             GUILayout.EndHorizontal();
