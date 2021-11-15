@@ -26,16 +26,13 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
         /// </summary>
         /// <param name="asset"></param>
         public static void CountMemoryOfPrefab(GameObject asset) {
-            // 初始化
-            var meshFilterList = asset.GetComponentsInChildren<MeshFilter>();
-            DebugUtil.Log($"{meshFilterList.Length} 个 MeshFilter");
-            var skinnedMeshRendererList = asset.GetComponentsInChildren<SkinnedMeshRenderer>();
-            DebugUtil.Log($"{skinnedMeshRendererList.Length} 个 SkinnedMeshRenderer");
-            var meshColliderList = asset.GetComponentsInChildren<MeshCollider>();
-            DebugUtil.Log($"{meshColliderList.Length} 个 MeshCollider");
-            var rendererList = asset.GetComponentsInChildren<Renderer>();
-
+            
+            
             #region 统计模型占用的内存, 内存占用的计算必须去重, 和渲染的计算不同
+            
+            var meshFilterList = asset.GetComponentsInChildren<MeshFilter>();
+            var skinnedMeshRendererList = asset.GetComponentsInChildren<SkinnedMeshRenderer>();
+            var meshColliderList = asset.GetComponentsInChildren<MeshCollider>();
 
             var meshList = new List<int>();
             foreach (var item in meshFilterList) {
@@ -45,7 +42,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                     meshList.Add(meshHashCode);
                     var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh);
                     var size = EditorUtility.FormatBytes(runTimeSize);
-                    DebugUtil.Log($"{mesh.name}: {size}", mesh, "green");
+                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, "yellow");
                 }
             }
 
@@ -56,7 +53,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                     meshList.Add(meshHashCode);
                     var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh);
                     var size = EditorUtility.FormatBytes(runTimeSize);
-                    DebugUtil.Log($"{mesh.name}: {size}", mesh, "green");
+                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, "yellow");
                 }
             }
 
@@ -67,7 +64,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                     meshList.Add(meshHashCode);
                     var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh);
                     var size = EditorUtility.FormatBytes(runTimeSize);
-                    DebugUtil.Log($"{mesh.name}: {size}", mesh, "green");
+                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, "yellow");
                 }
             }
 
@@ -75,6 +72,8 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
 
             #region 贴图, 内存占用的计算必须去重, 和渲染的计算不同
 
+            var rendererList = asset.GetComponentsInChildren<Renderer>();
+            
             var textureGuids = new List<string>();
             
             foreach (var item in rendererList) {
