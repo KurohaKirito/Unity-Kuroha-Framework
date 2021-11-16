@@ -18,36 +18,29 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 单例
         /// </summary>
-        private static T instance;
+        private static T instanceBase;
 
         /// <summary>
         /// 单例
         /// </summary>
         // ReSharper disable once MemberCanBePrivate.Global
-        protected static Singleton<T> Instance
+        protected static Singleton<T> InstanceBase
         {
             get
             {
-                if (ReferenceEquals(instance, null))
+                if (ReferenceEquals(instanceBase, null))
                 {
-                    if (Instance.active)
-                    {
-                        FirstGet();
+                    FirstGet();
                     
-                        var gameObject = new GameObject($"Singleton_{typeof(T).Name}", typeof(T));
-                        instance = gameObject.GetComponent<T>();
-                        DontDestroyOnLoad(instance);
-                    }
-                    else
-                    {
-                        DebugUtil.LogError("错误! OnDestroy() 中访问单例时, 必须先判断其活动标志!", null, "red");
-                    }
+                    var gameObject = new GameObject($"Singleton_{typeof(T).Name}", typeof(T));
+                    instanceBase = gameObject.GetComponent<T>();
+                    DontDestroyOnLoad(gameObject);
                 }
                 
-                return instance;
+                return instanceBase;
             }
             
-            set => instance = value as T;
+            set => instanceBase = value as T;
         }
 
         /// <summary>
@@ -70,7 +63,7 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 单例活动标志
         /// </summary>
-        public static bool IsActive => ReferenceEquals(Instance, null) == false && Instance.active;
+        public static bool IsActive => ReferenceEquals(InstanceBase, null) == false && InstanceBase.active;
 
         /// <summary>
         /// 销毁
