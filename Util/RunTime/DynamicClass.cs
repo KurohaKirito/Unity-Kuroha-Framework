@@ -46,8 +46,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         private const BindingFlags PUBLIC_STATIC_INSTANCE_METHOD =
             BindingFlags.Public |
-            BindingFlags.Static |
-            BindingFlags.Instance;
+            BindingFlags.Static;
         
         /// <summary>
         /// Private 方法
@@ -123,8 +122,6 @@ namespace Kuroha.Util.RunTime
         /// <param name="fieldName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
         public T GetFieldValue_PrivateStatic<T>(string fieldName) where T : class
         {
             return GetFieldValue_PrivateStatic(fieldName) as T;
@@ -135,8 +132,6 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
         public object GetFieldValue_PrivateStatic(string fieldName)
         {
             return GetFiledValue(fieldName, PRIVATE_STATIC_FIELD);
@@ -152,8 +147,6 @@ namespace Kuroha.Util.RunTime
         /// <param name="fieldName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
         public T GetFieldValue_Private<T>(string fieldName) where T : class
         {
             return GetFieldValue_Private(fieldName) as T;
@@ -164,8 +157,6 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
         public object GetFieldValue_Private(string fieldName)
         {
             return GetFiledValue(fieldName, PRIVATE_INSTANCE_FIELD);
@@ -181,8 +172,6 @@ namespace Kuroha.Util.RunTime
         /// <param name="fieldName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
         public T GetFieldValue_Public<T>(string fieldName) where T : class
         {
             return GetFieldValue_Public(fieldName) as T;
@@ -193,8 +182,6 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
         public object GetFieldValue_Public(string fieldName)
         {
             return GetFiledValue(fieldName, PUBLIC_INSTANCE_FIELD);
@@ -228,11 +215,9 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="args"></param>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
-        public void CallMethod_Public(string methodName, params object[] args)
+        public object CallMethod_Public(string methodName, params object[] args)
         {
-            InvokeMethod(methodName, PUBLIC_INSTANCE_METHOD, args);
+            return InvokeMethod(methodName, PUBLIC_INSTANCE_METHOD, args);
         }
         
         /// <summary>
@@ -240,11 +225,9 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="args"></param>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
-        public void CallMethod_PublicStatic(string methodName, params object[] args)
+        public object CallMethod_PublicStatic(string methodName, params object[] args)
         {
-            InvokeMethod(methodName, PUBLIC_STATIC_INSTANCE_METHOD, args);
+            return InvokeMethod(methodName, PUBLIC_STATIC_INSTANCE_METHOD, args);
         }
 
         /// <summary>
@@ -252,11 +235,9 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="args"></param>
-        // ReSharper disable once UnusedMember.Global
-        // ReSharper disable once MemberCanBePrivate.Global
-        public void CallMethod_Private(string methodName, params object[] args)
+        public object CallMethod_Private(string methodName, params object[] args)
         {
-            InvokeMethod(methodName, PRIVATE_INSTANCE_METHOD, args);
+            return InvokeMethod(methodName, PRIVATE_INSTANCE_METHOD, args);
         }
         
         /// <summary>
@@ -265,12 +246,19 @@ namespace Kuroha.Util.RunTime
         /// <param name="methodName"></param>
         /// <param name="flags"></param>
         /// <param name="args"></param>
-        private void InvokeMethod(string methodName, BindingFlags flags, params object[] args)
+        private object InvokeMethod(string methodName, BindingFlags flags, params object[] args)
         {
-            if (currentClass == null) return;
-            var method = currentClass.GetMethod(methodName, flags);
-            if (method == null) return;
-            method.Invoke(currentInstance, args);
+            if (ReferenceEquals(currentClass, null) == false)
+            {
+                var method = currentClass.GetMethod(methodName, flags);
+
+                if (ReferenceEquals(method, null) == false)
+                {
+                    return method.Invoke(currentInstance, args);
+                }
+            }
+
+            return null;
         }
         
         #endregion
@@ -299,7 +287,7 @@ namespace Kuroha.Util.RunTime
             {
                 // 得到源实例中的 "相同字段"
                 var srcFieldInfo = srcType.GetField(dstFieldInfo.Name, srcFlags);
-                if (srcFieldInfo != null)
+                if (ReferenceEquals(srcFieldInfo, null) == false)
                 {
                     if (dstFieldInfo.FieldType == srcFieldInfo.FieldType)
                     {

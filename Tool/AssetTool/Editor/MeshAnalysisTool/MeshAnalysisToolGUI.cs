@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool;
+using Kuroha.Util.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -92,7 +92,7 @@ namespace Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool
                         UnityEngine.GUI.enabled = ReferenceEquals(prefab, null) == false;
                         if (GUILayout.Button("计算内存占用", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                         {
-                            CountMemory(prefab);
+                            PrefabUtil.CountMemoryOfPrefab(prefab);
                         }
                         UnityEngine.GUI.enabled = true;
                     }
@@ -124,118 +124,6 @@ namespace Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-        }
-        
-        /// <summary>
-        /// 单位转换
-        /// </summary>
-        /// <param name="num"></param>
-        /// <returns></returns>
-        private static string GetMemoryUnit(ref long num)
-        {
-            var unit = "KB";
-            num /= 8192;
-            if (num > 1024)
-            {
-                num /= 1024;
-                unit = "MB";
-            }
-
-            return unit;
-        }
-
-        /// <summary>
-        /// 统计实际内存占用
-        /// </summary>
-        /// <param name="asset"></param>
-        private static void CountMemory(GameObject asset)
-        {
-            // 初始化
-            var meshFilterList = asset.GetComponentsInChildren<MeshFilter>();
-            var skinnedMeshRendererList = asset.GetComponentsInChildren<SkinnedMeshRenderer>();
-            var meshColliderList = asset.GetComponentsInChildren<MeshCollider>();
-            var rendererList = asset.GetComponentsInChildren<Renderer>();
-
-            #region 模型
-
-            var modelGuids = new List<string>();
-            foreach (var item in meshFilterList)
-            {
-                var mesh = item.sharedMesh;
-                var modelPath = AssetDatabase.GetAssetPath(mesh);
-                var modelGuid = AssetDatabase.AssetPathToGUID(modelPath);
-                var model = AssetImporter.GetAtPath(modelPath) as ModelImporter;
-                if (ReferenceEquals(model, null) == false)
-                {
-                    if (modelGuids.Contains(modelGuid) == false)
-                    {
-                        modelGuids.Add(modelGuid);
-                        var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(model);
-                        var unit = GetMemoryUnit(ref runTimeSize);
-                        Debug.Log($"{model.name}: {runTimeSize}{unit}");
-                    }
-                }
-            }
-            foreach (var item in skinnedMeshRendererList)
-            {
-                var mesh = item.sharedMesh;
-                var modelPath = AssetDatabase.GetAssetPath(mesh);
-                var modelGuid = AssetDatabase.AssetPathToGUID(modelPath);
-                var model = AssetImporter.GetAtPath(modelPath) as ModelImporter;
-                if (ReferenceEquals(model, null) == false)
-                {
-                    if (modelGuids.Contains(modelGuid) == false)
-                    {
-                        modelGuids.Add(modelGuid);
-                        var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(model);
-                        var unit = GetMemoryUnit(ref runTimeSize);
-                        Debug.Log($"{model.name}: {runTimeSize}{unit}");
-                    }
-                }
-            }
-            foreach (var item in meshColliderList)
-            {
-                var mesh = item.sharedMesh;
-                var modelPath = AssetDatabase.GetAssetPath(mesh);
-                var modelGuid = AssetDatabase.AssetPathToGUID(modelPath);
-                var model = AssetImporter.GetAtPath(modelPath) as ModelImporter;
-                if (ReferenceEquals(model, null) == false)
-                {
-                    if (modelGuids.Contains(modelGuid) == false)
-                    {
-                        modelGuids.Add(modelGuid);
-                        var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(model);
-                        var unit = GetMemoryUnit(ref runTimeSize);
-                        Debug.Log($"{model.name}: {runTimeSize}{unit}");
-                    }
-                }
-            }
-
-            #endregion
-            
-            #region 贴图
-
-            var textureGuids = new List<string>();
-            foreach (var item in rendererList)
-            {
-                var sharedMaterials = item.sharedMaterials;
-                foreach (var sharedMaterial in sharedMaterials)
-                {
-                    Kuroha.Util.Editor.TextureUtil.GetTexturesInMaterial(sharedMaterial, out var textures);
-                    for (var i = 0; i < textures.Count; i++)
-                    {
-                        if (textureGuids.Contains(textures[i].guid) == false)
-                        {
-                            textureGuids.Add(textures[i].guid);
-                            var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[i].asset);
-                            var unit = GetMemoryUnit(ref runTimeSize);
-                            Debug.Log($"{textures[i].asset.name}: {runTimeSize}{unit}");
-                        }
-                    }
-                }
-            }
-
-            #endregion
         }
     }
 }

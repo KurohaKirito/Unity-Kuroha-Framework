@@ -3,7 +3,6 @@ using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem;
 using Kuroha.Tool.AssetTool.Editor.AssetCheckTool;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
-using Kuroha.Tool.AssetViewer;
 using Kuroha.Tool.AssetViewer.Editor;
 using UnityEditor;
 
@@ -45,7 +44,7 @@ namespace Kuroha.Menu.Editor
 
         #region 弹窗示例
 
-        [MenuItem("Kuroha/消息弹窗/错误", false, 40)]
+        [MenuItem("Kuroha/消息弹窗示例/错误", false, 40)]
         public static void DialogError()
         {
             Dialog.SetListener(
@@ -55,7 +54,7 @@ namespace Kuroha.Menu.Editor
             Dialog.Display("这是弹窗的内容", Dialog.DialogType.Error, "确定按钮");
         }
 
-        [MenuItem("Kuroha/消息弹窗/警告", false, 40)]
+        [MenuItem("Kuroha/消息弹窗示例/警告", false, 40)]
         public static void DialogWarning()
         {
             Dialog.SetListener(
@@ -73,7 +72,7 @@ namespace Kuroha.Menu.Editor
                 "Alt");
         }
 
-        [MenuItem("Kuroha/消息弹窗/消息", false, 40)]
+        [MenuItem("Kuroha/消息弹窗示例/消息", false, 40)]
         public static void DialogInfo()
         {
             // 弹窗使用方法:
