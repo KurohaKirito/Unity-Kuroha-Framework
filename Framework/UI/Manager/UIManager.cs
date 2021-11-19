@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Kuroha.Framework.Singleton;
 using Kuroha.Framework.UI.Panel;
 using Kuroha.Framework.UI.Window;
 using Kuroha.Util.RunTime;
@@ -7,12 +8,16 @@ using UnityEngine;
 
 namespace Kuroha.Framework.UI.Manager
 {
-    public class UIManager : MonoBehaviour
+    public class UIManager : Singleton<UIManager>
     {
         /// <summary>
         /// 单例
         /// </summary>
-        public static UIManager UI { get; private set; }
+        public static UIManager Instance
+        {
+            get => (UIManager)InstanceBase;
+            set => InstanceBase = value;
+        }
         
         /// <summary>
         /// Panel Manager
@@ -53,7 +58,6 @@ namespace Kuroha.Framework.UI.Manager
         {
             if (ReferenceEquals(panelParent, null) == false && ReferenceEquals(windowParent, null) == false)
             {
-                UI = this;
                 Panel = new UIPanelManager(panelParent);
                 Window = new UIWindowManager(windowParent);
             }

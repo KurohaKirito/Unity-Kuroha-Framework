@@ -5,12 +5,12 @@ namespace Kuroha.Framework.UI.Panel
     /// <summary>
     /// 抽象类, 所有 Controller 层的父类
     /// </summary>
-    public class UIPanelController
+    public abstract class UIPanelController
     {
         /// <summary>
         /// View 层
         /// </summary>
-        protected UIPanelView baseView;
+        private UIPanelView baseView;
         
         /// <summary>
         /// UI 名 (同时作为 UI 的唯一标识)
@@ -42,7 +42,7 @@ namespace Kuroha.Framework.UI.Panel
         /// </summary>
         protected static void OnButtonClick_Close()
         {
-            Kuroha.Framework.UI.Manager.UIManager.UI.Panel.Close();
+            Kuroha.Framework.UI.Manager.UIManager.Instance.Panel.Close();
         }
     }
 }

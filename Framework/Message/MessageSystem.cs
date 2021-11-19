@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
+using UnityEngine;
 
 namespace Kuroha.Framework.Message
 {
@@ -110,27 +111,31 @@ namespace Kuroha.Framework.Message
                 var message = messageQueue.Dequeue();
                 if (TriggerMessage(message))
                 {
+                    timer += Time.deltaTime;
                 }
             }
         }
 
         /// <summary>
         /// 触发消息
+        /// 正常情况下是在 Update 中触发事件 (下一帧)
+        /// 设置为 Public 外部也可以通过调用该方法立即触发事件
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
         public bool TriggerMessage(BaseMessage msg)
         {
-            var msgName = msg.name;
+            var msgName = msg.messageName;
             if (listenerDic.ContainsKey(msgName) == false)
             {
-                DebugUtil.LogError($"消息 {msgName} 没有监听者, 因此忽略该消息!", null, "red");
+                DebugUtil.LogError($"没有监听器在监听该消息 {msgName}, 因此忽略该消息!", null, "red");
                 return false;
             }
             
             var listenerList = listenerDic[msgName];
             foreach (var listener in listenerList)
             {
+                // 如果有消息禁止了后续的消息处理, 则中止消息处理
                 if (listener(msg))
                 {
                     return true;
