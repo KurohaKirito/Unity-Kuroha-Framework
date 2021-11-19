@@ -10,7 +10,7 @@ namespace Kuroha.Framework.UI.Panel
         /// <summary>
         /// View 层
         /// </summary>
-        private UIPanelView baseView;
+        protected UIPanelView baseView;
         
         /// <summary>
         /// UI 名 (同时作为 UI 的唯一标识)

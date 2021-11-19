@@ -10,7 +10,7 @@ namespace Kuroha.Framework.UI.Window
         /// <summary>
         /// View 层
         /// </summary>
-        private UIWindowView baseView;
+        protected UIWindowView baseView;
         
         /// <summary>
         /// UI 名 (同时作为 UI 的唯一标识)
