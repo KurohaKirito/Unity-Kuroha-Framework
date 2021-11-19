@@ -10,7 +10,33 @@ namespace Kuroha.Framework.Message
     {
         private void Start()
         {
-            MessageSystem.Instance.AddListener(typeof(TestMessage), Handler);
+            if (MessageSystem.Instance.AddListener(typeof(TestMessage), Handler))
+            {
+                DebugUtil.Log($"消息 {nameof(TestMessage)} 注册成功!", null, "green");
+            }
+            else
+            {
+                DebugUtil.Log($"消息 {nameof(TestMessage)} 注册失败!", null, "red");
+            }
+        }
+        
+        private void OnDestroy()
+        {
+            if (MessageSystem.IsActive)
+            {
+                if (MessageSystem.Instance.RemoveListener(typeof(TestMessage), Handler))
+                {
+                    DebugUtil.Log($"消息 {nameof(TestMessage)} 移除成功!", null, "green");
+                }
+                else
+                {
+                    DebugUtil.Log($"消息 {nameof(TestMessage)} 移除失败!", null, "red");
+                }
+            }
+            else
+            {
+                DebugUtil.Log("单例 MessageSystem 已经被销毁了!", null, "red");
+            }
         }
 
         private static bool Handler(BaseMessage baseMessage)

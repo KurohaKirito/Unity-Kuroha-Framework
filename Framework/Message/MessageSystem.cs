@@ -36,14 +36,14 @@ namespace Kuroha.Framework.Message
         /// </summary>
         /// <param name="type"></param>
         /// <param name="handler"></param>
-        /// <returns></returns>
+        /// <returns>成功标志</returns>
         public bool AddListener(System.Type type, MessageHandlerDelegate handler)
         {
             var flag = false;
 
             if (ReferenceEquals(type, null))
             {
-                DebugUtil.LogError("全局消息系统: 注册监听失败, 没有指定类型!", null, "red");
+                DebugUtil.LogError("全局消息系统: 监听注册失败, 因为没有指定类型!", null, "red");
             }
             else
             {
@@ -57,6 +57,43 @@ namespace Kuroha.Framework.Message
                 if (listenerList.Contains(handler) == false)
                 {
                     listenerList.Add(handler);
+                    flag = true;
+                }
+            }
+
+            return flag;
+        }
+
+        /// <summary>
+        /// 移除监听
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="handler"></param>
+        /// <returns>成功标志</returns>
+        public bool RemoveListener(System.Type type, MessageHandlerDelegate handler)
+        {
+            var flag = false;
+
+            if (ReferenceEquals(type, null))
+            {
+                DebugUtil.LogError("全局消息系统: 监听移除失败, 因为没有指定类型!", null, "red");
+            }
+            else
+            {
+                var msgName = type.Name;
+                if (listenerDic.ContainsKey(msgName) == false)
+                {
+                    DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为此消息 {nameof(type)} 当前没有任何监听者, 请排查错误!", null, "red");
+                }
+
+                var listenerList = listenerDic[msgName];
+                if (listenerList.Contains(handler) == false)
+                {
+                    DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为待移除的监听器并没有监听该类型的消息 {nameof(type)}!", null, "red");
+                }
+                else
+                {
+                    listenerList.Remove(handler);
                     flag = true;
                 }
             }

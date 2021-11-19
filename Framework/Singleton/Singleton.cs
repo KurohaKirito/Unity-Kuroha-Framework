@@ -23,7 +23,6 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 单例
         /// </summary>
-        // ReSharper disable once MemberCanBePrivate.Global
         protected static Singleton<T> InstanceBase
         {
             get
@@ -76,7 +75,7 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 隐藏
         /// </summary>
-        private void OnEnable()
+        private void OnApplicationQuit()
         {
             active = false;
         }
