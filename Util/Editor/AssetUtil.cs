@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using Kuroha.GUI.Editor;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
@@ -25,35 +26,43 @@ namespace Kuroha.Util.Editor
         /// <param name="assetFilePath">包含待删除资源路径信息的文件</param>
         public static void DeleteAsset(ref string assetFilePath)
         {
-            var path = assetFilePath;
             var counter = 0;
+            var index = 0;
 
-            using (var file = new StreamReader(path))
+            // 待删除资源
+            var toDeleteAssets = System.IO.File.ReadAllLines(assetFilePath);
+            var totalCount = toDeleteAssets.Length;
+
+            while (true)
             {
-                var line = file.ReadLine();
-
-                while (line.IsNotNullAndEmpty())
+                if (ProgressBar.DisplayProgressBarCancel("正在批量删除资源", $"{index + 1}/{totalCount}", index + 1, totalCount))
                 {
-                    if (UnityEditor.FileUtil.DeleteFileOrDirectory(line))
+                    DebugUtil.Log($"共成功删除了 {counter}/{totalCount} 项资源!", null, "green");
+                    break;
+                }
+
+                if (index < totalCount)
+                {
+                    if (UnityEditor.FileUtil.DeleteFileOrDirectory(toDeleteAssets[index]))
                     {
-                        counter++;
+                        ++counter;
                     }
                     else
                     {
-                        DebugUtil.LogError($"删除失败: {line}");
+                        DebugUtil.LogError($"删除失败: {toDeleteAssets[index]}", null, "red");
                     }
 
-                    line = file.ReadLine();
+                    ++index;
+                }
+
+                if (index >= totalCount)
+                {
+                    break;
                 }
             }
 
-            DebugUtil.Log($"共成功删除了 {counter} 项资源!");
+            DebugUtil.Log($"共成功删除了 {counter}/{totalCount} 项资源!", null, "green");
 
-            if (counter > 0)
-            {
-                DebugUtil.Log("请保存并刷新, 让 Unity 自动删除资源对应的 meta 文件!");
-            }
-            
             assetFilePath = "已执行删除!";
         }
 
@@ -193,30 +202,43 @@ namespace Kuroha.Util.Editor
         /// <param name="newFolder">目标目录</param>
         public static void MoveFileToNewFolder(ref string assetFilePath, string newFolder)
         {
-            var configPath = assetFilePath;
             var counter = 0;
+            var index = 0;
 
-            using (var file = new StreamReader(configPath))
+            // 待移动资源
+            var toMoveAssets = System.IO.File.ReadAllLines(assetFilePath);
+            var totalCount = toMoveAssets.Length;
+
+            while (true)
             {
-                var line = file.ReadLine();
-
-                while (line.IsNotNullAndEmpty())
+                if (ProgressBar.DisplayProgressBarCancel("正在批量移动资源", $"{index + 1}/{totalCount}", index + 1, totalCount))
                 {
-                    if (MoveAsset(line, newFolder))
+                    DebugUtil.Log($"共成功移动了 {counter}/{totalCount} 项资源!", null, "green");
+                    break;
+                }
+
+                if (index < totalCount)
+                {
+                    if (MoveAsset(toMoveAssets[index], newFolder))
                     {
-                        counter++;
+                        ++counter;
                     }
                     else
                     {
-                        DebugUtil.LogError($"移动失败: {line}", null, "red");
+                        DebugUtil.LogError($"移动失败: {toMoveAssets[index]}", null, "red");
                     }
 
-                    line = file.ReadLine();
+                    index++;
+                }
+
+                if (index >= totalCount)
+                {
+                    break;
                 }
             }
 
-            DebugUtil.Log($"共成功移动了 {counter} 项资源!", null, "green");
-            
+            DebugUtil.Log($"共成功移动了 {counter}/{totalCount} 项资源!", null, "green");
+
             assetFilePath = "已执行移动!";
         }
         
@@ -230,7 +252,7 @@ namespace Kuroha.Util.Editor
             var success = false;
             var oldPath = assetPath.Replace('\\', '/');
             newFolder = newFolder.Replace('\\', '/');
-            
+
             // 待移动资源
             var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(oldPath);
             if (ReferenceEquals(asset, null) == false)
@@ -245,17 +267,17 @@ namespace Kuroha.Util.Editor
 
                     // 移动资源
                     AssetDatabase.MoveAsset(oldPath, newPath);
-                    
+
                     success = true;
                 }
                 else
                 {
-                    DebugUtil.Log("目标路径为空", null, "red");
+                    DebugUtil.Log($"目标路径为空: {newFolder}", null, "red");
                 }
             }
             else
             {
-                DebugUtil.Log("资源为空", null, "red");
+                DebugUtil.Log($"资源为空: {assetPath}", null, "red");
             }
 
             return success;
