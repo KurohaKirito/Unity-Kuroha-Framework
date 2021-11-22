@@ -10,7 +10,7 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 构造函数
         /// </summary>
-        public BaseMessage()
+        protected BaseMessage()
         {
             messageName = GetType().Name;
         }

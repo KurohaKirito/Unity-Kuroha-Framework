@@ -20,11 +20,7 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 单例
         /// </summary>
-        public static MessageSystem Instance
-        {
-            get => (MessageSystem)InstanceBase;
-            set => InstanceBase = value;
-        }
+        public static MessageSystem Instance => InstanceBase as MessageSystem;
 
         /// <summary>
         /// 监听字典
