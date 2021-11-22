@@ -54,7 +54,7 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 单例
         /// </summary>
-        private void Awake()
+        private void Start()
         {
             if (ReferenceEquals(panelParent, null) == false && ReferenceEquals(windowParent, null) == false)
             {

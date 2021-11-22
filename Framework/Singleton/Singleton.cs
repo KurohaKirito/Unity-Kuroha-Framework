@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Kuroha.Util.RunTime;
 using UnityEngine;
 
@@ -29,11 +28,10 @@ namespace Kuroha.Framework.Singleton
             {
                 if (ReferenceEquals(instanceBase, null))
                 {
-                    FirstGet();
-                    
-                    var gameObject = new GameObject($"Singleton_{typeof(T).Name}", typeof(T));
-                    instanceBase = gameObject.GetComponent<T>();
-                    DontDestroyOnLoad(gameObject);
+                    if (IsNeedCreateSingleton())
+                    {
+                        CreateSingleton();
+                    }
                 }
                 
                 return instanceBase;
@@ -43,26 +41,55 @@ namespace Kuroha.Framework.Singleton
         }
 
         /// <summary>
-        /// 首次访问
+        /// 检测场景中的单例
         /// </summary>
-        [Conditional("UNITY_EDITOR")]
-        private static void FirstGet()
+        private static bool IsNeedCreateSingleton()
         {
+            var toCreate = false;
+            
             var components = FindObjectsOfType<T>();
-            if (components != null && components.Length > 0)
+            
+            // 场景中没有预先创建此单例
+            if (components.Length == 0)
             {
-                DebugUtil.LogError("预先存在单例组件在场景中! 单例组件禁止预先创建! 请检查并修改!", null, "red");
+                toCreate = true;
+            }
+            
+            // 场景中预先创建了此单例
+            else if (components.Length == 1)
+            {
+                instanceBase = components[0];
+                DontDestroyOnLoad(instanceBase);
+            }
+            
+            // 错误, 场景中预先创建了多个此单例
+            else if (components.Length > 1)
+            {
+                DebugUtil.LogError("错误: 预先创建了多个单例组件在场景中! 请检查并修改!", null, "red");
                 foreach (var component in components)
                 {
                     Destroy(component);
                 }
+                toCreate = true;
             }
+            
+            return toCreate;
+        }
+
+        /// <summary>
+        /// 创建一个单例
+        /// </summary>
+        private static void CreateSingleton()
+        {
+            var gameObject = new GameObject($"Singleton_{typeof(T).Name}", typeof(T));
+            instanceBase = gameObject.GetComponent<T>();
+            DontDestroyOnLoad(instanceBase);
         }
 
         /// <summary>
         /// 单例活动标志
         /// </summary>
-        public static bool IsActive => ReferenceEquals(InstanceBase, null) == false && InstanceBase.active;
+        public static bool IsActive => ReferenceEquals(instanceBase, null) == false && InstanceBase.active;
 
         /// <summary>
         /// 销毁

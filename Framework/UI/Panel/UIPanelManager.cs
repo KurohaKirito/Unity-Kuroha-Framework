@@ -54,44 +54,47 @@ namespace Kuroha.Framework.UI.Panel
         /// <summary>
         /// 打开
         /// </summary>
-        public UIPanelController Open<T>(string uiName) where T : UIPanelController, new()
+        public UIPanelController Open<T>() where T : UIPanelController, new()
         {
+            // UI 的 Controller 类的命名规则就是: uiPrefabName_Controller
+            var uiPrefabName = typeof(T).Name.Replace("_Controller", "");
+            
             // 先检查 UI 是否已经打开了
-            if (Current != null && Current.Name == uiName)
+            if (Current != null && Current.Name == uiPrefabName)
             {
-                DebugUtil.Log($"UI {uiName} 当前处于打开状态, 请勿重复打开!", null, "red");
+                DebugUtil.Log($"UI {uiPrefabName} 当前处于打开状态, 请勿重复打开!", null, "red");
             }
             else
             {
-                DebugUtil.Log($"UI {uiName} 没有打开", null, "green");
+                DebugUtil.Log($"UI {uiPrefabName} 没有打开", null, "green");
                 
                 // 如果当前正在显示 UI, 则关闭当前 UI
                 Current?.UI.SetActive(false);
 
                 // 先检查 UI 是否已经在缓存池中了
-                if (uiPool.ContainsKey(uiName))
+                if (uiPool.ContainsKey(uiPrefabName))
                 {
-                    uiPool[uiName].UI.SetActive(true);
-                    uiPool[uiName].Reset();
-                    uiStack.Push(uiPool[uiName]);
-                    DebugUtil.Log($"UI {uiName} 已经在缓存池中了", null, "green");
+                    uiPool[uiPrefabName].UI.SetActive(true);
+                    uiPool[uiPrefabName].Reset();
+                    uiStack.Push(uiPool[uiPrefabName]);
+                    DebugUtil.Log($"UI {uiPrefabName} 已经在缓存池中了", null, "green");
                 }
                 else
                 {
-                    var prefabPath = $"{UI_PREFAB_PATH}{uiName}/{uiName}";
+                    var prefabPath = $"{UI_PREFAB_PATH}{uiPrefabName}/{uiPrefabName}";
                     var uiPrefab = Resources.Load<GameObject>(prefabPath);
                     if (ReferenceEquals(uiPrefab, null))
                     {
-                        DebugUtil.LogError($"未获取到 {prefabPath} 预制体", null, "red");
+                        DebugUtil.LogError($"未获取到 {prefabPath} 预制体, 请检查命名是否符合规则: uiPrefabName_Controller", null, "red");
                     }
                     
                     var newUI = Object.Instantiate(uiPrefab, uiParent, false);
                     var newView = newUI.GetComponent<UIPanelView>();
                     var newController = new T();
-                    newController.Init(newView, uiName);
+                    newController.Init(newView, uiPrefabName);
                     
                     uiStack.Push(newController);
-                    uiPool[uiName] = newController;
+                    uiPool[uiPrefabName] = newController;
                     DebugUtil.Log("新建了 UI, 并加入缓存池", null, "green");
                 }
             }
