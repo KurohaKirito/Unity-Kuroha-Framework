@@ -62,38 +62,47 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
         /// <param name="type">筛选规则</param>
         /// <returns></returns>
         public static List<Transform> GetAllTransformInScene(FindType type) {
-            var result = new List<Transform>();
-            var allTransforms = UnityEngine.Resources.FindObjectsOfTypeAll<UnityEngine.Transform>();
+            // 获取当前已加载的全部资源
+            var allLoadTransforms = Resources.FindObjectsOfTypeAll<UnityEngine.Transform>();
 
-            foreach (var transform in allTransforms) {
-                switch (type) {
-                    case FindType.All:
-                        if (transform != null) {
-                            result.Add(transform);
-                        }
+            // 后续需要使用 Selection.objects 进行筛选是否为场景物体, 因此先备份 Selection.objects
+            var previousSelection = Selection.objects;
 
-                        break;
+            // 遍历筛选条件
+            var objects = new List<UnityEngine.Object>();
+            foreach (var loadTransform in allLoadTransforms) {
+                if (ReferenceEquals(loadTransform, null) == false) {
+                    switch (type) {
+                        case FindType.All:
+                            objects.Add(loadTransform.gameObject);
+                            break;
+                        case FindType.EnableOnly:
+                            if (loadTransform.gameObject.activeInHierarchy) {
+                                objects.Add(loadTransform.gameObject);
+                            }
 
-                    case FindType.EnableOnly:
-                        if (transform != null && transform.gameObject.activeSelf) {
-                            result.Add(transform);
-                        }
+                            break;
+                        case FindType.DisableOnly:
+                            if (loadTransform.gameObject.activeInHierarchy == false) {
+                                objects.Add(loadTransform.gameObject);
+                            }
 
-                        break;
-
-                    case FindType.DisableOnly:
-                        if (transform != null && transform.gameObject.activeSelf == false) {
-                            result.Add(transform);
-                        }
-
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                    }
                 }
             }
 
-            return result;
+            // 筛选是否是场景物体
+            Selection.objects = objects.ToArray();
+            var resultTransforms = Selection.GetTransforms((int)SelectionMode.Editable + SelectionMode.ExcludePrefab);
+
+            // 还原 Selection.objects
+            Selection.objects = previousSelection;
+
+            // 返回结果
+            return resultTransforms.ToList();
         }
 
         /// <summary>
@@ -102,33 +111,13 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
         /// <param name="type">筛选规则</param>
         /// <returns></returns>
         public static List<T> GetAllComponentsInScene<T>(FindType type) where T : UnityEngine.Component {
+            var allTransform = GetAllTransformInScene(type);
+
+            // 返回结果
             var result = new List<T>();
-            var allTransforms = UnityEngine.Resources.FindObjectsOfTypeAll<UnityEngine.Transform>();
-
-            foreach (var transform in allTransforms) {
+            foreach (var transform in allTransform) {
                 if (transform.TryGetComponent<T>(out var component)) {
-                    switch (type) {
-                        case FindType.All:
-                            result.Add(component);
-                            break;
-
-                        case FindType.EnableOnly:
-                            if (component.gameObject.activeSelf) {
-                                result.Add(component);
-                            }
-
-                            break;
-
-                        case FindType.DisableOnly:
-                            if (component.gameObject.activeSelf == false) {
-                                result.Add(component);
-                            }
-
-                            break;
-
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(type), type, null);
-                    }
+                    result.Add(component);
                 }
             }
 
