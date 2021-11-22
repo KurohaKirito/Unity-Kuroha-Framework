@@ -26,10 +26,13 @@ namespace Kuroha.Framework.Singleton
         {
             get
             {
+                // 只有第 1 次调用的时候, instanceBase = null, 后续这个 if 全部为 false
                 if (ReferenceEquals(instanceBase, null))
                 {
+                    // 判断是否需要新建单例物体
                     if (IsNeedCreateSingleton())
                     {
+                        // 在场景中创建单例物体
                         CreateSingleton();
                     }
                 }
