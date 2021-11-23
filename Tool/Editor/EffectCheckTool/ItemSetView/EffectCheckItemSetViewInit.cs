@@ -196,6 +196,33 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                     EffectCheckItemSetViewWindow.ParameterInt2 = Convert.ToInt32(parameterTextureSize[1]);
                     break;
 
+                case CheckPrefab.CheckOptions.MotionVectors:
+                    EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
+                    break;
+
+                case CheckPrefab.CheckOptions.DynamicOcclusion:
+                    EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
+                    break;
+
+                case CheckPrefab.CheckOptions.ForbidParticleSystem:
+                    EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
+                    break;
+
+                case CheckPrefab.CheckOptions.CastShadows:
+                    var parameter1 = Convert.ToInt32(info.parameter);
+                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter1;
+                    break;
+
+                case CheckPrefab.CheckOptions.LightProbes:
+                    var parameter2 = Convert.ToInt32(info.parameter);
+                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter2;
+                    break;
+
+                case CheckPrefab.CheckOptions.ReflectionProbes:
+                    var parameter3 = Convert.ToInt32(info.parameter);
+                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter3;
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

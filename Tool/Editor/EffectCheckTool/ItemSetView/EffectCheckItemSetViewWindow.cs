@@ -409,6 +409,36 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                     UnityEngine.GUI.skin.label.alignment = oldAlignment;
                     break;
 
+                case CheckPrefab.CheckOptions.MotionVectors:
+                    ParameterBool1 = EditorGUILayout.Toggle("开启 Motion Vectors", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+                
+                case CheckPrefab.CheckOptions.DynamicOcclusion:
+                    ParameterBool1 = EditorGUILayout.Toggle("开启 Dynamic Occlusion", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+                
+                case CheckPrefab.CheckOptions.ForbidParticleSystem:
+                    ParameterBool1 = EditorGUILayout.Toggle("禁用 Particle System", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+                
+                case CheckPrefab.CheckOptions.CastShadows:
+                    ParameterInt1 = EditorGUILayout.Popup("阴影投射模式: ", ParameterInt1, CheckPrefab.castShadowsOptions);
+                    itemInfo.parameter = ParameterInt1.ToString();
+                    break;
+                
+                case CheckPrefab.CheckOptions.LightProbes:
+                    ParameterInt1 = EditorGUILayout.Popup("Light Probes: ", ParameterInt1, CheckPrefab.lightProbesOptions);
+                    itemInfo.parameter = ParameterInt1.ToString();
+                    break;
+                
+                case CheckPrefab.CheckOptions.ReflectionProbes:
+                    ParameterInt1 = EditorGUILayout.Popup("Reflection Probes: ", ParameterInt1, CheckPrefab.reflectionProbesOptions);
+                    itemInfo.parameter = ParameterInt1.ToString();
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -452,7 +482,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                     break;
 
                 case CheckModel.CheckOptions.MeshCompression:
-                    ParameterInt1 = EditorGUILayout.Popup("网格压缩等级", ParameterInt1, CheckMesh.meshCompressionOptions);
+                    ParameterInt1 = EditorGUILayout.Popup("网格压缩等级", ParameterInt1, CheckModel.meshCompressionOptions);
                     itemInfo.parameter = ParameterInt1.ToString();
                     break;
 

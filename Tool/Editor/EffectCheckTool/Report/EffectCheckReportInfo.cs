@@ -35,11 +35,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
             ParticleCollisionAndTrigger,
             ParticleZeroSurface,
 
-            // 4
+            // 10
             PrefabName,
-            PrefabForbidCollision,
+            PrefabForbidCollider,
             PrefabTextureSize,
             PrefabDisableObject,
+            PrefabMotionVectors,
+            PrefabDynamicOcclusion,
+            PrefabForbidParticleSystem,
+            PrefabCastShadows,
+            PrefabLightProbes,
+            PrefabReflectionProbes,
 
             // 3
             TextureSize,

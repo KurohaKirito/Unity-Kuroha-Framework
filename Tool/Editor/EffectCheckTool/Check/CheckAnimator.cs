@@ -29,9 +29,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
         /// <summary>
         /// 检查 CullMode 时的子检查项
         /// </summary>
-        public static readonly string[] cullModeOptions = {
-            "Always Animate", "Cull Update Transforms", "Cull Completely"
-        };
+        public static readonly string[] cullModeOptions = Enum.GetNames(typeof(AnimatorCullingMode));
 
         /// <summary>
         /// 对动画状态机文件进行检测
@@ -87,7 +85,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             if (ReferenceEquals(asset, null) == false) {
                 var animators = asset.GetComponentsInChildren<Animator>(true);
-                var cullingMode = (AnimatorCullingMode)Convert.ToInt32(item.parameter);
+
+                // 翻译参数
+                var cullingMode = AnimatorCullingMode.CullCompletely;
+                switch (Convert.ToInt32(item.parameter)) {
+                    case 0:
+                        cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                        break;
+                    case 1:
+                        cullingMode = AnimatorCullingMode.CullUpdateTransforms;
+                        break;
+                    case 2:
+                        cullingMode = AnimatorCullingMode.CullCompletely;
+                        break;
+                }
 
                 foreach (var animator in animators) {
                     if (animator.cullingMode != cullingMode) {

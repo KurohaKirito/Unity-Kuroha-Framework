@@ -27,13 +27,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
         }
 
         /// <summary>
-        /// 检查 MeshCompression 时的子检查项
-        /// </summary>
-        public static readonly string[] meshCompressionOptions = {
-            "Off", "Low", "Medium", "High"
-        };
-
-        /// <summary>
         /// 对网格资源进行检测
         /// </summary>
         /// <param name="itemData">待检测的资源信息</param>

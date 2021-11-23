@@ -180,14 +180,26 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                     isCanRepair = true;
                     break;
 
-                // 4
+                // 10
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabName:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject:
                     break;
-                case EffectCheckReportInfo.EffectCheckReportType.PrefabForbidCollision:
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabForbidCollider:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize:
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabMotionVectors:
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion:
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabForbidParticleSystem:
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabCastShadows:
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabLightProbes:
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabReflectionProbes:
                     break;
 
                 // 3
@@ -205,7 +217,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.FolderName:
                     break;
-
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
