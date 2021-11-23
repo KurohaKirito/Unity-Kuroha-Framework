@@ -48,7 +48,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                         throw new ArgumentOutOfRangeException();
                 }
             } else {
-                EffectCheckItemSetViewWindow.itemInfo = new CheckItemInfo(string.Empty, string.Empty, EffectToolData.AssetsType.Mesh, 0, string.Empty, string.Empty, string.Empty, 0, true, false, true, string.Empty);
+                EffectCheckItemSetViewWindow.itemInfo = new CheckItemInfo(string.Empty, string.Empty, EffectToolData.AssetsType.Mesh, 0, string.Empty, string.Empty, string.Empty, string.Empty, 0, true, false, true, string.Empty);
             }
         }
 
@@ -235,9 +235,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
         private static void InitModel(CheckItemInfo info) {
             switch ((CheckModel.CheckOptions)info.checkType) {
                 case CheckModel.CheckOptions.ReadWriteEnable:
-                    break;
-
-                case CheckModel.CheckOptions.RendererCastShadow:
                     break;
 
                 case CheckModel.CheckOptions.Normals:

@@ -55,7 +55,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                         }
 
                         var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                        var pattern = itemData.writePathRegex;
+                        var pattern = itemData.assetWhiteRegex;
                         if (string.IsNullOrEmpty(pattern) == false) {
                             var regex = new Regex(pattern);
                             if (regex.IsMatch(assetPath)) {

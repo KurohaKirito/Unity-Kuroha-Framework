@@ -53,7 +53,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     ProgressBar.DisplayProgressBar("特效检测工具", $"Particle 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
 
                     var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
-                    var pattern = itemData.writePathRegex;
+                    var pattern = itemData.assetWhiteRegex;
                     if (string.IsNullOrEmpty(pattern) == false) {
                         var regex = new Regex(pattern);
                         if (regex.IsMatch(assetPath)) {
@@ -117,7 +117,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (ReferenceEquals(asset, null) == false) {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
-                
+
                 // 翻译参数
                 var parameter = ParticleSystemRenderMode.Billboard;
                 switch (Convert.ToInt32(item.parameter)) {
@@ -140,8 +140,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                         parameter = ParticleSystemRenderMode.None;
                         break;
                 }
-                
+
                 foreach (var particle in particles) {
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name)) {
+                            continue;
+                        }
+                    }
+
                     var renderMode = particle.GetComponent<ParticleSystemRenderer>().renderMode;
                     if (renderMode != parameter) {
                         var content = $"粒子特效 Renderer Mode 错误: {assetPath} 子物体: {particle.name} 的渲染方式: {renderMode} >>> {parameter}";
@@ -169,6 +178,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
 
             foreach (var particle in particles) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(particle.gameObject.name)) {
+                        continue;
+                    }
+                }
+
                 var isOpen = particle.main.prewarm;
                 if (isOpen == false) {
                     continue;
@@ -189,9 +207,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (ReferenceEquals(asset, null) == false) {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
-
                 foreach (var particle in particles) {
-                    var castShadows = particle.GetComponent<Renderer>().shadowCastingMode;
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name)) {
+                            continue;
+                        }
+                    }
+
+                    var castShadows = particle.GetComponent<ParticleSystemRenderer>().shadowCastingMode;
                     if (castShadows != ShadowCastingMode.Off) {
                         var content = $"粒子应强制关闭阴影投射: {assetPath} 子物体: {particle.name} 的阴影投射应设置为: {ShadowCastingMode.Off}";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleCastShadows, content, item));
@@ -213,7 +239,16 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             if (ReferenceEquals(asset, null) == false) {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 foreach (var particle in particles) {
-                    var receiveShadows = particle.GetComponent<Renderer>().receiveShadows;
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name)) {
+                            continue;
+                        }
+                    }
+
+                    var receiveShadows = particle.GetComponent<ParticleSystemRenderer>().receiveShadows;
                     if (receiveShadows) {
                         var content = $"粒子强制关闭阴影接收: {assetPath} 子物体: {particle.name} 的阴影接收应设置为: false";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleReceiveShadows, content, item));
@@ -237,6 +272,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 var maxTris = Convert.ToInt32(item.parameter);
 
                 foreach (var particle in particles) {
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name)) {
+                            continue;
+                        }
+                    }
+
                     var renderer = particle.GetComponent<ParticleSystemRenderer>();
                     if (renderer != null && renderer.mesh != null) {
                         var triangle = renderer.mesh.triangles.Length / 3;
@@ -263,6 +307,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
 
                 foreach (var particle in particles) {
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name)) {
+                            continue;
+                        }
+                    }
+
                     var renderer = particle.GetComponent<ParticleSystemRenderer>();
                     if (renderer != null && renderer.mesh != null) {
                         var mesh = renderer.mesh;
@@ -312,6 +365,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             if (ReferenceEquals(asset, null) == false) {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 foreach (var particle in particles) {
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name)) {
+                            continue;
+                        }
+                    }
+
                     var collision = particle.collision.enabled;
                     var trigger = particle.trigger.enabled;
 
@@ -342,6 +404,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历每一个粒子系统
             foreach (var particle in particles) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(particle.gameObject.name)) {
+                        continue;
+                    }
+                }
+
                 // 获取当前粒子系统的所有子粒子系统
                 var allSubParticleSystems = particle.GetComponentsInChildren<ParticleSystem>(true);
 
@@ -392,6 +463,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
 
             foreach (var particle in particles) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(particle.gameObject.name)) {
+                        continue;
+                    }
+                }
+
                 if (particle.shape.enabled) {
                     if (particle.shape.shapeType == ParticleSystemShapeType.Mesh) {
                         var mesh = particle.shape.mesh;

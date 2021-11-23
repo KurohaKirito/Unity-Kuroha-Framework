@@ -139,11 +139,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                 case EffectCheckReportInfo.EffectCheckReportType.MeshUV:
                     break;
 
-                // 6
+                // 5
                 case EffectCheckReportInfo.EffectCheckReportType.FBXReadWriteEnable:
-                    isCanRepair = true;
-                    break;
-                case EffectCheckReportInfo.EffectCheckReportType.FBXMeshRendererCastShadows:
                     isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.FBXNormals:

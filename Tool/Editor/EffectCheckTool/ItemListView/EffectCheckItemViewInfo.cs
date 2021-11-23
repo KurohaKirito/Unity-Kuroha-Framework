@@ -34,9 +34,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
         public string path;
 
         /// <summary>
-        /// 检测路径白名单规则
+        /// 资源白名单规则
         /// </summary>
-        public string writePathRegex;
+        public string assetWhiteRegex;
+
+        /// <summary>
+        /// 物体白名单规则
+        /// </summary>
+        public string objectWhiteRegex;
 
         /// <summary>
         /// 危险等级
@@ -66,13 +71,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
         /// <summary>
         /// 构造函数
         /// </summary>
-        public CheckItemInfo(string guid, string title, EffectToolData.AssetsType assetsType, int checkType, string path, string writePathRegex, string parameter, int dangerLevel, bool effectEnable, bool cicdEnable, bool isCheckSubFile, string remark) {
+        public CheckItemInfo(string guid, string title, EffectToolData.AssetsType assetsType, int checkType, string path, string assetWhiteRegex, string objectWhiteRegex, string parameter, int dangerLevel, bool effectEnable, bool cicdEnable, bool isCheckSubFile, string remark) {
             this.guid = guid;
             this.title = title;
             this.assetsType = assetsType;
             this.checkType = checkType;
             this.path = path;
-            this.writePathRegex = writePathRegex;
+            this.assetWhiteRegex = assetWhiteRegex;
+            this.objectWhiteRegex = objectWhiteRegex;
             this.parameter = parameter;
             this.dangerLevel = dangerLevel;
             this.effectEnable = effectEnable;
@@ -95,7 +101,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
             assetsType = item.assetsType;
             checkType = item.checkType;
             path = item.path;
-            writePathRegex = item.writePathRegex;
+            assetWhiteRegex = item.assetWhiteRegex;
+            objectWhiteRegex = item.objectWhiteRegex;
             parameter = item.parameter;
             dangerLevel = item.dangerLevel;
             effectEnable = item.effectEnable;
@@ -118,13 +125,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
             assetsType = (EffectToolData.AssetsType)Convert.ToInt32(data[2]);
             checkType = Convert.ToInt32(data[3]);
             path = data[4];
-            writePathRegex = data[5];
-            parameter = data[6];
-            dangerLevel = Convert.ToInt32(data[7]);
-            effectEnable = bool.Parse(data[8]);
-            cicdEnable = bool.Parse(data[9]);
-            isCheckSubFile = Convert.ToBoolean(data[10]);
-            remark = data[11];
+            assetWhiteRegex = data[5];
+            objectWhiteRegex = data[6];
+            parameter = data[7];
+            dangerLevel = Convert.ToInt32(data[8]);
+            effectEnable = bool.Parse(data[9]);
+            cicdEnable = bool.Parse(data[10]);
+            isCheckSubFile = Convert.ToBoolean(data[11]);
+            remark = data[12];
         }
     }
 }

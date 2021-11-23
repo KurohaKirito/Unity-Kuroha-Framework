@@ -90,12 +90,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
         /// <summary>
         /// 检测 LightProbes 时的子检查项
         /// </summary>
-        public static readonly string[] lightProbesOptions = Enum.GetNames(typeof(ShadowCastingMode));
+        public static readonly string[] lightProbesOptions = Enum.GetNames(typeof(LightProbeUsage));
 
         /// <summary>
         /// 检测 ReflectionProbes 时的子检查项
         /// </summary>
-        public static readonly string[] reflectionProbesOptions = Enum.GetNames(typeof(ShadowCastingMode));
+        public static readonly string[] reflectionProbesOptions = Enum.GetNames(typeof(ReflectionProbeUsage));
 
         /// <summary>
         /// 对预制体进行检测
@@ -112,7 +112,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     ProgressBar.DisplayProgressBar("特效检测工具", $"Prefab 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
 
                     var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
-                    var pattern = itemData.writePathRegex;
+                    var pattern = itemData.assetWhiteRegex;
                     if (string.IsNullOrEmpty(pattern) == false) {
                         var regex = new Regex(pattern);
                         if (regex.IsMatch(assetPath)) {
@@ -221,6 +221,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             var transforms = asset.GetComponentsInChildren<Transform>(true);
 
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 if (transform.TryGetComponent<Collider>(out _)) {
                     var content = $"预制体中不能有碰撞体: {assetPath} 中的子物体 {transform.name}";
                     report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidCollider, content, item));
@@ -244,6 +252,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             var transforms = asset.GetComponentsInChildren<Transform>(true);
 
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 if (transform.gameObject.activeSelf == false) {
                     var content = $"预制体中有 Disable 的物体: {assetPath} 中的子物体 {transform.name}";
                     report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject, content, item));
@@ -272,6 +288,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             var height = Convert.ToInt32(textureSizeOptions[Convert.ToInt32(parameter[1])]);
 
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 var renderer = transform.GetComponent<Renderer>();
                 if (renderer != null && renderer.sharedMaterials != null) {
                     foreach (var material in renderer.sharedMaterials) {
@@ -316,6 +340,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 if (transform.TryGetComponent<SkinnedMeshRenderer>(out var renderer)) {
                     if (renderer.skinnedMotionVectors != isOpen) {
                         var content = $"预制体 {assetPath} 中的子物体 {transform.name} 的运动向量设置错误: ({!isOpen}) => ({isOpen})!";
@@ -346,6 +378,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 if (transform.TryGetComponent<Renderer>(out var renderer)) {
                     if (renderer.allowOcclusionWhenDynamic != isOpen) {
                         var content = $"预制体 {assetPath} 中的子物体 {transform.name} 的动态遮挡剔除设置错误: ({!isOpen}) => ({isOpen})!";
@@ -376,6 +416,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 if (transform.TryGetComponent<ParticleSystem>(out _)) {
                     var content = isForbid? $"预制体中不能有粒子系统: {assetPath} 中的子物体 {transform.name}" : $"预制体中缺少必要的粒子系统: {assetPath} 中的子物体 {transform.name}";
                     report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidParticleSystem, content, item));
@@ -418,6 +466,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 if (transform.TryGetComponent<SkinnedMeshRenderer>(out var renderer)) {
                     if (renderer.shadowCastingMode != parameter) {
                         var content = $"预制体中 SkinnedMeshRenderer 的阴影投射设置错误: {assetPath} 中的子物体 {transform.name}: ({renderer.shadowCastingMode}) => ({parameter})";
@@ -462,6 +518,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 if (transform.TryGetComponent<Renderer>(out var renderer)) {
                     if (renderer.lightProbeUsage != parameter) {
                         var content = $"预制体中渲染器的光照探针设置错误: {assetPath} 中的子物体 {transform.name}: ({renderer.lightProbeUsage}) => ({parameter})";
@@ -506,6 +570,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false) {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name)) {
+                        continue;
+                    }
+                }
                 if (transform.TryGetComponent<Renderer>(out var renderer)) {
                     if (renderer.reflectionProbeUsage != parameter) {
                         var content = $"预制体中渲染器的反射探针设置错误: {assetPath} 中的子物体 {transform.name}: ({renderer.reflectionProbeUsage}) => ({parameter})";

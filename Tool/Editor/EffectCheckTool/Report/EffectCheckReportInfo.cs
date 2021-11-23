@@ -16,9 +16,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
             // 1
             MeshUV,
 
-            // 6
+            // 5
             FBXReadWriteEnable,
-            FBXMeshRendererCastShadows,
             FBXNormals,
             FBXOptimizeMesh,
             FBXMeshCompression,

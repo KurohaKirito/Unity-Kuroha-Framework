@@ -45,7 +45,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                         }
 
                         var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                        var pattern = itemData.writePathRegex;
+                        var pattern = itemData.assetWhiteRegex;
                         if (string.IsNullOrEmpty(pattern) == false) {
                             var regex = new Regex(pattern);
                             if (regex.IsMatch(assetPath)) {
@@ -81,6 +81,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             if (ReferenceEquals(asset, null) == false) {
                 var skinnedMeshes = asset.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                 foreach (var skinnedMesh in skinnedMeshes) {
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(skinnedMesh.gameObject.name)) {
+                            continue;
+                        }
+                    }
+                    
                     var mesh = skinnedMesh.sharedMesh;
                     var message = string.Empty;
                     var isError = false;
@@ -125,6 +134,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             if (ReferenceEquals(asset, null) == false) {
                 var meshFilters = asset.GetComponentsInChildren<MeshFilter>(true);
                 foreach (var meshFilter in meshFilters) {
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(meshFilter.gameObject.name)) {
+                            continue;
+                        }
+                    }
+                    
                     var mesh = meshFilter.sharedMesh;
                     var message = string.Empty;
                     var isError = false;

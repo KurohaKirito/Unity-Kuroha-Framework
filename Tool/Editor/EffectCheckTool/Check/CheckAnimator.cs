@@ -50,7 +50,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                         }
 
                         var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                        var pattern = itemData.writePathRegex;
+                        var pattern = itemData.assetWhiteRegex;
                         if (string.IsNullOrEmpty(pattern) == false) {
                             var regex = new Regex(pattern);
                             if (regex.IsMatch(assetPath)) {
@@ -101,6 +101,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 }
 
                 foreach (var animator in animators) {
+                    // 正则
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false) {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(animator.gameObject.name)) {
+                            continue;
+                        }
+                    }
+                    
                     if (animator.cullingMode != cullingMode) {
                         var gameObject = animator.gameObject;
                         var content = $"状态机剔除模式错误: {fullName} 子物件: {gameObject.name}, 当前动画剔除模式: {animator.cullingMode} >>> {cullingMode}";
