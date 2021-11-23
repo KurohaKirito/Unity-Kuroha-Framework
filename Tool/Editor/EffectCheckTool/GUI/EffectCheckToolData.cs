@@ -15,29 +15,24 @@
             Texture = 1,
 
             /// <summary>
-            /// 动画状态机
-            /// </summary>
-            Animator = 2,
-
-            /// <summary>
             /// 粒子系统
             /// </summary>
-            ParticleSystem = 3,
+            ParticleSystem = 2,
 
             /// <summary>
             /// 预制体
             /// </summary>
-            Prefab = 4,
+            Prefab = 3,
 
             /// <summary>
             /// 模型
             /// </summary>
-            Model = 5,
+            Model = 4,
 
             /// <summary>
             /// 通用检查
             /// </summary>
-            Asset = 6
+            Asset = 5
         }
     }
 }

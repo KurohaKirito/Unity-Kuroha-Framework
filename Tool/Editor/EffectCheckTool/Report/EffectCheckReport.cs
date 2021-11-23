@@ -53,7 +53,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                     Repair(reportInfos[i]);
                 }
             }
-
+            
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
@@ -64,10 +64,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
         /// <param name="effectCheckReportInfo">问题项</param>
         public static void Repair(EffectCheckReportInfo effectCheckReportInfo) {
             switch (effectCheckReportInfo.assetType) {
-                case EffectToolData.AssetsType.Animator:
-                    RepairAnimator.Repair(effectCheckReportInfo);
-                    break;
-
                 case EffectToolData.AssetsType.ParticleSystem:
                     RepairParticle.Repair(effectCheckReportInfo);
                     break;
@@ -80,6 +76,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                     break;
 
                 case EffectToolData.AssetsType.Prefab:
+                    RepairPrefab.Repair(effectCheckReportInfo);
                     break;
 
                 case EffectToolData.AssetsType.Model:
@@ -114,27 +111,31 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
         public static bool RepairOrSelect(EffectCheckReportInfo.EffectCheckReportType type) {
             /*
              * 目前支持自动修复的内容仅有:
-             *
-             * Animator     -   Cull Mode
+             * 
              * FBX          -   Read Write Enable
              * FBX          -   CastShadow
              * FBX          -   NormalsImport
              * FBX          -   OptimizeMesh
              * FBX          -   MeshCompression
              * FBX          -   WeldVertices
+             * 
              * Texture      -   MipMaps
              * Texture      -   Read Write Enable
+             * 
              * Particle     -   ParticleZeroSurface
+             * 
+             * Prefab       -   PrefabMotionVectors
+             * Prefab       -   PrefabDynamicOcclusion
+             * Prefab       -   PrefabCastShadows
+             * Prefab       -   PrefabLightProbes
+             * Prefab       -   PrefabReflectionProbes
+             * Prefab       -   PrefabAnimatorCullingMode
+             * 
              */
 
             var isCanRepair = false;
 
             switch (type) {
-                // 1
-                case EffectCheckReportInfo.EffectCheckReportType.AnimatorCullMode:
-                    isCanRepair = true;
-                    break;
-
                 // 1
                 case EffectCheckReportInfo.EffectCheckReportType.MeshUV:
                     break;
@@ -177,7 +178,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                     isCanRepair = true;
                     break;
 
-                // 10
+                // 11
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabName:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject:
@@ -187,16 +188,24 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabMotionVectors:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabForbidParticleSystem:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabCastShadows:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabLightProbes:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabReflectionProbes:
+                    isCanRepair = true;
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabAnimatorCullingMode:
+                    isCanRepair = true;
                     break;
 
                 // 3

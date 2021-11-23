@@ -11,9 +11,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
         /// </summary>
         public enum EffectCheckReportType {
             // 1
-            AnimatorCullMode,
-
-            // 1
             MeshUV,
 
             // 5
@@ -34,7 +31,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
             ParticleCollisionAndTrigger,
             ParticleZeroSurface,
 
-            // 10
+            // 11
             PrefabName,
             PrefabForbidCollider,
             PrefabTextureSize,
@@ -45,6 +42,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
             PrefabCastShadows,
             PrefabLightProbes,
             PrefabReflectionProbes,
+            PrefabAnimatorCullingMode,
 
             // 3
             TextureSize,

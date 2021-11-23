@@ -9,7 +9,7 @@ public static class AutoCheckToolGUI {
     };
 
     private static readonly bool[] checkToggle = {
-        true, true, true, false, true, false, true, true, true, false, true, true, true, false, true,
+        true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
     };
 
     /// <summary>

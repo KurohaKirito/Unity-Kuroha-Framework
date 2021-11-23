@@ -24,10 +24,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                         InitParticleSystem(itemInfo);
                         break;
 
-                    case EffectToolData.AssetsType.Animator:
-                        InitAnimator(itemInfo);
-                        break;
-
                     case EffectToolData.AssetsType.Mesh:
                         InitMesh(itemInfo);
                         break;
@@ -102,22 +98,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
 
                 case CheckTexture.CheckOptions.MipMaps:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        /// <summary>
-        /// 初始化 Animator 检查项设置页面
-        /// </summary>
-        /// <param name="info">检查项信息</param>
-        private static void InitAnimator(CheckItemInfo info) {
-            switch ((CheckAnimator.CheckOptions)info.checkType) {
-                case CheckAnimator.CheckOptions.CullMode:
-                    var parameter = Convert.ToInt32(info.parameter);
-                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter;
                     break;
 
                 default:
@@ -223,6 +203,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                     EffectCheckItemSetViewWindow.ParameterInt1 = parameter3;
                     break;
 
+                case CheckPrefab.CheckOptions.AnimatorCullingMode:
+                    var parameter4 = Convert.ToInt32(info.parameter);
+                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter4;
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

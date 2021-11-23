@@ -98,7 +98,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.GUI {
 
                 var reportEnumCount = Enum.GetNames(typeof(EffectCheckReportInfo.EffectCheckReportType)).Length;
 
-                var checkAnimatorEnumCount = Enum.GetNames(typeof(CheckAnimator.CheckOptions)).Length;
                 var checkMeshEnumCount = Enum.GetNames(typeof(CheckMesh.CheckOptions)).Length;
                 var checkModelEnumCount = Enum.GetNames(typeof(CheckModel.CheckOptions)).Length;
                 var checkParticleEnumCount = Enum.GetNames(typeof(CheckParticleSystem.CheckOptions)).Length;
@@ -106,7 +105,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.GUI {
                 var checkTextureEnumCount = Enum.GetNames(typeof(CheckTexture.CheckOptions)).Length;
                 var checkAssetEnumCount = Enum.GetNames(typeof(CheckAsset.CheckOptions)).Length;
 
-                var sum = checkAnimatorEnumCount + checkMeshEnumCount + checkModelEnumCount + checkParticleEnumCount + checkPrefabEnumCount + checkTextureEnumCount + checkAssetEnumCount;
+                var sum = checkMeshEnumCount + checkModelEnumCount + checkParticleEnumCount + checkPrefabEnumCount + checkTextureEnumCount + checkAssetEnumCount;
 
                 if (reportEnumCount != sum) {
                     Dialog.Display($"代码错误! 报告枚举值的数量 {reportEnumCount} 和各个检查项的枚举值数量 {sum} 不一致, 请检查代码!", Dialog.DialogType.Error, "OK");
@@ -164,10 +163,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.GUI {
 
                             case EffectToolData.AssetsType.Mesh:
                                 CheckMesh.Check(checkItemInfo, ref reportInfos);
-                                break;
-
-                            case EffectToolData.AssetsType.Animator:
-                                CheckAnimator.Check(checkItemInfo, ref reportInfos);
                                 break;
 
                             case EffectToolData.AssetsType.ParticleSystem:
