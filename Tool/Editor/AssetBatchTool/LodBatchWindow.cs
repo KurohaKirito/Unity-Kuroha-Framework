@@ -5,14 +5,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
-    public static class LodBatch {
-        [MenuItem("GameObject/LODTool", false, 12)]
-        public static void Batch() {
-            LodWindow.Open();
-        }
-    }
-
-    public class LodWindow : EditorWindow {
+    public class LodBatchWindow : EditorWindow {
         /// <summary>
         /// 全局默认 margin
         /// </summary>
@@ -50,7 +43,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
         public static void Open() {
             RefreshSelection();
-            GetWindow<LodWindow>("LodGroup 百分比设置");
+            GetWindow<LodBatchWindow>("LodGroup 百分比设置");
         }
 
         private void OnSelectionChange() {

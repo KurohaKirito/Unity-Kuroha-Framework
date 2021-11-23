@@ -120,7 +120,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.GUI {
         /// <summary>
         /// 执行检测
         /// </summary>
-        public static List<EffectCheckReportInfo> Detect(bool isAutoCheck) {
+        public static List<EffectCheckReportInfo> Detect(bool isAutoCheck, string filter = null) {
             var reportInfos = new List<EffectCheckReportInfo>();
 
             // 代码检测
@@ -133,12 +133,18 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.GUI {
                     #region 检测
 
                     foreach (var checkItemInfo in EffectCheckItemView.CheckItemInfoList) {
-                        if (isAutoCheck) {
-                            if (checkItemInfo.cicdEnable == false) {
-                                continue;
+                        if (string.IsNullOrEmpty(filter)) {
+                            if (isAutoCheck) {
+                                if (checkItemInfo.cicdEnable == false) {
+                                    continue;
+                                }
+                            } else {
+                                if (checkItemInfo.effectEnable == false) {
+                                    continue;
+                                }
                             }
                         } else {
-                            if (checkItemInfo.effectEnable == false) {
+                            if (checkItemInfo.title.IndexOf(filter, StringComparison.Ordinal) < 0) {
                                 continue;
                             }
                         }

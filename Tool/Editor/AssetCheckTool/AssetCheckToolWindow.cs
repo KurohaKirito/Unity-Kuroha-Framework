@@ -50,7 +50,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool {
         /// <summary>
         /// 资源检测工具
         /// </summary>
-        [MenuItem("Funny/资源检测工具/Asset Check Tool")]
         public static void Open() {
             var window = GetWindow<AssetCheckToolWindow>("资源检测工具");
             window.minSize = new Vector2(800, 800);
