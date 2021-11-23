@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
+using Script.Effect.Editor.AssetTool.Util.Unity;
 using UnityEditor;
 using UnityEngine;
 
@@ -171,9 +172,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
             var selections = Selection.GetTransforms(SelectionMode.Unfiltered);
             foreach (var trans in selections) {
-                var lod = trans.GetComponent<LODGroup>();
-                if (ReferenceEquals(lod, null) == false) {
-                    lodGroups.Add(lod);
+                if (trans.TryGetComponent<LODGroup>(out var lod)) {
+                    if (ReferenceEquals(lod, null) == false) {
+                        lodGroups.Add(lod);
+                    }
                 }
             }
         }

@@ -222,8 +222,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             var transforms = asset.GetComponentsInChildren<Transform>(true);
 
             foreach (var transform in transforms) {
-                var collider = transform.GetComponent<Collider>();
-                if (ReferenceEquals(collider, null) == false) {
+                if (transform.TryGetComponent<Collider>(out _)) {
                     var content = $"预制体中不能有碰撞体: {assetPath} 中的子物体 {transform.name}";
                     report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidCollider, content, item));
                 }
@@ -319,11 +318,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             // 遍历检测
             foreach (var transform in transforms) {
                 if (transform.TryGetComponent<SkinnedMeshRenderer>(out var renderer)) {
-                    if (ReferenceEquals(renderer, null) == false) {
-                        if (renderer.skinnedMotionVectors != isOpen) {
-                            var content = $"预制体 {assetPath} 中的子物体 {transform.name} 的运动向量设置错误: ({!isOpen}) => ({isOpen})!";
-                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabMotionVectors, content, item));
-                        }
+                    if (renderer.skinnedMotionVectors != isOpen) {
+                        var content = $"预制体 {assetPath} 中的子物体 {transform.name} 的运动向量设置错误: ({!isOpen}) => ({isOpen})!";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabMotionVectors, content, item));
                     }
                 }
             }
@@ -350,8 +347,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
-                var renderer = transform.GetComponent<Renderer>();
-                if (ReferenceEquals(renderer, null) == false) {
+                if (transform.TryGetComponent<Renderer>(out var renderer)) {
                     if (renderer.allowOcclusionWhenDynamic != isOpen) {
                         var content = $"预制体 {assetPath} 中的子物体 {transform.name} 的动态遮挡剔除设置错误: ({!isOpen}) => ({isOpen})!";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion, content, item));
@@ -381,8 +377,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
-                var particleSystem = transform.GetComponent<ParticleSystem>();
-                if (ReferenceEquals(particleSystem, null) != isForbid) {
+                if (transform.TryGetComponent<ParticleSystem>(out _)) {
                     var content = isForbid? $"预制体中不能有粒子系统: {assetPath} 中的子物体 {transform.name}" : $"预制体中缺少必要的粒子系统: {assetPath} 中的子物体 {transform.name}";
                     report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidParticleSystem, content, item));
                 }
@@ -424,12 +419,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
             // 遍历检测
             foreach (var transform in transforms) {
-                if (transform.TryGetComponent<Renderer>(out var renderer)) {
-                    if (ReferenceEquals(renderer, null) == false) {
-                        if (renderer.shadowCastingMode != parameter) {
-                            var content = $"预制体中渲染器的阴影投射设置错误: {assetPath} 中的子物体 {transform.name}: ({renderer.shadowCastingMode}) => ({parameter})";
-                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabCastShadows, content, item));
-                        }
+                if (transform.TryGetComponent<SkinnedMeshRenderer>(out var renderer)) {
+                    if (renderer.shadowCastingMode != parameter) {
+                        var content = $"预制体中 SkinnedMeshRenderer 的阴影投射设置错误: {assetPath} 中的子物体 {transform.name}: ({renderer.shadowCastingMode}) => ({parameter})";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabCastShadows, content, item));
                     }
                 }
             }
