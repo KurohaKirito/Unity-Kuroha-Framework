@@ -33,12 +33,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// <summary>
         /// 检查 CullMode 时的子检查项
         /// </summary>
-        public static readonly string[] cullModeOptions =
-        {
-            "Always Animate",
-            "Cull Update Transforms",
-            "Cull Completely"
-        };
+        public static readonly string[] cullModeOptions = Enum.GetNames(typeof(AnimatorCullingMode));
 
         /// <summary>
         /// 对动画状态机文件进行检测
@@ -108,7 +103,15 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             if (ReferenceEquals(asset, null) == false)
             {
                 var animators = asset.GetComponentsInChildren<Animator>(true);
-                var cullingMode = (AnimatorCullingMode) Convert.ToInt32(item.parameter);
+
+                // 翻译参数
+                var cullingMode = Convert.ToInt32(item.parameter) switch
+                {
+                    0 => AnimatorCullingMode.AlwaysAnimate,
+                    1 => AnimatorCullingMode.CullUpdateTransforms,
+                    2 => AnimatorCullingMode.CullCompletely,
+                    _ => AnimatorCullingMode.CullCompletely
+                };
 
                 foreach (var animator in animators)
                 {

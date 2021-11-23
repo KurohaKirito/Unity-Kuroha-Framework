@@ -38,6 +38,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             MeshCompression,
             WeldVertices,
         }
+        
+        /// <summary>
+        /// 检查 MeshCompression 时的子检查项
+        /// </summary>
+        public static readonly string[] meshCompressionOptions = Enum.GetNames(typeof(ModelImporterMeshCompression));
 
         /// <summary>
         /// 对模型文件进行检测
@@ -195,13 +200,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             if (ReferenceEquals(model, null) == false)
             {
                 var set = bool.Parse(item.parameter);
-#pragma warning disable 618
-                if (model.optimizeMesh != set)
-#pragma warning restore 618
+                if (model.optimizeMeshVertices != set)
                 {
-#pragma warning disable 618
-                    var content = $"OptimizeMesh 未开启: {assetPath} ({model.optimizeMesh}) >>> ({set})";
-#pragma warning restore 618
+                    var content = $"OptimizeMesh 未开启: {assetPath} ({model.optimizeMeshVertices}) >>> ({set})";
                     report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXOptimizeMesh, content, item));
                 }
             }
@@ -216,12 +217,19 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckMeshCompression(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var model = AssetImporter.GetAtPath(assetPath) as ModelImporter;
-            if (ReferenceEquals(model, null) == false)
-            {
-                var set = (ModelImporterMeshCompression)int.Parse(item.parameter);
-                if (model.meshCompression != set)
+            if (ReferenceEquals(model, null) == false) {
+                // 翻译参数
+                var parameter = Convert.ToInt32(item.parameter) switch
                 {
-                    var content = $"MeshCompression 设置错误: {assetPath} ({model.meshCompression}) >>> ({set})";
+                    0 => ModelImporterMeshCompression.Off,
+                    1 => ModelImporterMeshCompression.Low,
+                    2 => ModelImporterMeshCompression.Medium,
+                    3 => ModelImporterMeshCompression.High,
+                    _ => ModelImporterMeshCompression.Off
+                };
+                if (model.meshCompression != parameter)
+                {
+                    var content = $"MeshCompression 设置错误: {assetPath} ({model.meshCompression}) >>> ({parameter})";
                     report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXMeshCompression, content, item));
                 }
             }

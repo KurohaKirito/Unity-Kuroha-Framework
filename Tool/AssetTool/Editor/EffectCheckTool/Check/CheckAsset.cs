@@ -163,15 +163,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             var assetName = assetPath.Split('/').Last();
             
             // 正则
-            var pattern = item.parameter;
-            var regex = new Regex(pattern);
-            if (regex.IsMatch(assetName) == false)
+            if (assetName.IndexOf(".meta", StringComparison.Ordinal) < 0)
             {
-                var fullName = System.IO.Path.GetFullPath(assetPath);
-                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
-                
-                var content = $"文件夹命名错误! 路径: {fullName}";
-                report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FolderName, content, item));
+                var pattern = item.parameter;
+                var regex = new Regex(pattern);
+                if (regex.IsMatch(assetName) == false)
+                {
+                    var fullName = System.IO.Path.GetFullPath(assetPath);
+                    var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+                    var content = $"文件夹命名错误! 路径: {fullName}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FolderName, content, item));
+                }
             }
         }
     }

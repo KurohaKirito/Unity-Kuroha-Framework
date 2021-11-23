@@ -190,8 +190,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
             var selections = Selection.GetTransforms(SelectionMode.Unfiltered);
             foreach(var trans in selections)
             {
-                var lod = trans.GetComponent<LODGroup>();
-                if (ReferenceEquals(lod, null) == false)
+                if (trans.TryGetComponent<LODGroup>(out var lod))
                 {
                     lodGroups.Add(lod);
                 }

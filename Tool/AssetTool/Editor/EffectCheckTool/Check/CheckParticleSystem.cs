@@ -48,15 +48,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// <summary>
         /// 检测 RenderMode 时的子检查项
         /// </summary>
-        public static readonly string[] renderModeOptions =
-        {
-            "Billboard",
-            "StretchedBillboard",
-            "HorizontalBillboard",
-            "VerticalBillboard",
-            "Mesh",
-            "None"
-        };
+        public static readonly string[] renderModeOptions = Enum.GetNames(typeof(ParticleSystemRenderMode));
 
         /// <summary>
         /// 对粒子组件进行检测
@@ -68,7 +60,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             if (itemData.path.StartsWith("Assets"))
             {
                 var assetGuids = AssetDatabase.FindAssets("t:Prefab", new[] { itemData.path });
-                DebugUtil.Log($"CheckParticleSystem: 查询到了 {assetGuids.Length} 个预制体, 检测路径为: {itemData.path}");
 
                 for (var index = 0; index < assetGuids.Length; index++)
                 {
@@ -146,14 +137,24 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             if (ReferenceEquals(asset, null) == false)
             {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
-                var rightRenderMode = (ParticleSystemRenderMode) Convert.ToInt32(item.parameter);
+                // 翻译参数
+                var parameter = Convert.ToInt32(item.parameter) switch
+                {
+                    0 => ParticleSystemRenderMode.Billboard,
+                    1 => ParticleSystemRenderMode.Stretch,
+                    2 => ParticleSystemRenderMode.HorizontalBillboard,
+                    3 => ParticleSystemRenderMode.VerticalBillboard,
+                    4 => ParticleSystemRenderMode.Mesh,
+                    5 => ParticleSystemRenderMode.None,
+                    _ => ParticleSystemRenderMode.Billboard
+                };
 
                 foreach (var particle in particles)
                 {
                     var renderMode = particle.GetComponent<ParticleSystemRenderer>().renderMode;
-                    if (renderMode != rightRenderMode)
+                    if (renderMode != parameter)
                     {
-                        var content = $"粒子特效 Renderer Mode 错误: {assetPath} 子物体: {particle.name} 的渲染方式: {renderMode} >>> {rightRenderMode}";
+                        var content = $"粒子特效 Renderer Mode 错误: {assetPath} 子物体: {particle.name} 的渲染方式: {renderMode} >>> {parameter}";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleRendererMode, content, item));
                     }
                 }

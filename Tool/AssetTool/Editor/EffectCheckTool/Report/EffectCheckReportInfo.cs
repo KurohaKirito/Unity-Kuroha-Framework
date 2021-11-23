@@ -40,9 +40,15 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             
             // 4
             PrefabName,
-            PrefabForbidCollision,
+            PrefabForbidCollider,
             PrefabTextureSize,
             PrefabDisableObject,
+            PrefabMotionVectors,
+            PrefabDynamicOcclusion,
+            PrefabForbidParticleSystem,
+            PrefabCastShadows,
+            PrefabLightProbes,
+            PrefabReflectionProbes,
             
             // 3
             TextureSize,
