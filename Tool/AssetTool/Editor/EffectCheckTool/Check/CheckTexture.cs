@@ -75,7 +75,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         }
 
                         var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                        var pattern = itemData.writePathRegex;
+                        var pattern = itemData.assetWhiteRegex;
                         if (string.IsNullOrEmpty(pattern) == false)
                         {
                             var regex = new Regex(pattern);
@@ -236,7 +236,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckReadWriteEnable(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
-            if (textureImporter != null)
+            if (ReferenceEquals(textureImporter, null) == false)
             {
                 var isOpenReadWriter = Convert.ToBoolean(item.parameter);
                 if (textureImporter.isReadable != isOpenReadWriter)
@@ -259,7 +259,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckMipMaps(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
-            if (textureImporter != null)
+            if (ReferenceEquals(textureImporter, null) == false)
             {
                 var isOpenMinMaps = Convert.ToBoolean(item.parameter);
 

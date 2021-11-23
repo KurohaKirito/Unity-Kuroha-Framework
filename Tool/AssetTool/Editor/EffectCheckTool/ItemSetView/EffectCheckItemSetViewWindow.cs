@@ -152,7 +152,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             itemInfo.title = EditorGUILayout.TextField("标题", itemInfo.title);
             itemInfo.assetsType = (EffectToolData.AssetsType)EditorGUILayout.EnumPopup("资源类型", itemInfo.assetsType);
             itemInfo.path = EditorGUILayout.TextField("相对路径", itemInfo.path);
-            itemInfo.writePathRegex = EditorGUILayout.TextField("路径白名单规则(正则)", itemInfo.writePathRegex);
+            itemInfo.assetWhiteRegex = EditorGUILayout.TextField("资源白名单【正则】", itemInfo.assetWhiteRegex);
+            itemInfo.objectWhiteRegex = EditorGUILayout.TextField("物体白名单【正则】", itemInfo.objectWhiteRegex);
             itemInfo.isCheckSubFile = EditorGUILayout.Toggle("是否检测子目录", itemInfo.isCheckSubFile);
             itemInfo.effectEnable = EditorGUILayout.Toggle("是否参与特效检测", itemInfo.effectEnable);
             itemInfo.cicdEnable = EditorGUILayout.Toggle("是否参与 CICD 检测", itemInfo.cicdEnable);
@@ -480,14 +481,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     GUILayout.BeginHorizontal();
                     UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
                     GUILayout.Label("描述: 关闭 Read Write Enable");
-                    UnityEngine.GUI.skin.label.alignment = oldAlignment;
-                    GUILayout.EndHorizontal();
-                    break;
-
-                case CheckModel.CheckOptions.RendererCastShadow:
-                    GUILayout.BeginHorizontal();
-                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
-                    GUILayout.Label("描述: 时装的头部无需产生阴影, 其 Mesh Renderer 组件必须关闭 Cast Shadows");
                     UnityEngine.GUI.skin.label.alignment = oldAlignment;
                     GUILayout.EndHorizontal();
                     break;

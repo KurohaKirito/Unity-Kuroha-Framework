@@ -57,7 +57,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             {
                 EffectCheckItemSetViewWindow.itemInfo = new CheckItemInfo(
                     string.Empty, string.Empty, EffectToolData.AssetsType.Mesh, 0, string.Empty, string.Empty,
-                    string.Empty, 0, true, false, true, string.Empty);
+                    string.Empty, string.Empty, 0, true, false, true, string.Empty);
             }
         }
         
@@ -261,9 +261,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             switch ((CheckModel.CheckOptions)info.checkType)
             {
                 case CheckModel.CheckOptions.ReadWriteEnable:
-                    break;
-
-                case CheckModel.CheckOptions.RendererCastShadow:
                     break;
 
                 case CheckModel.CheckOptions.Normals:

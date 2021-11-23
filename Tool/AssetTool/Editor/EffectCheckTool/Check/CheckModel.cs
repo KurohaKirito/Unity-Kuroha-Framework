@@ -7,7 +7,6 @@ using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 {
@@ -19,7 +18,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         public static readonly string[] checkOptions =
         {
             "读写权限设置",
-            "投射阴影设置",
             "法线导入设置",
             "网格优化",
             "网格压缩",
@@ -32,7 +30,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         public enum CheckOptions
         {
             ReadWriteEnable,
-            RendererCastShadow,
             Normals,
             OptimizeMesh,
             MeshCompression,
@@ -60,7 +57,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     ProgressBar.DisplayProgressBar("特效检测工具", $"FBX 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
                     
                     var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
-                    var pattern = itemData.writePathRegex;
+                    var pattern = itemData.assetWhiteRegex;
                     if (string.IsNullOrEmpty(pattern) == false)
                     {
                         var regex = new Regex(pattern);
@@ -74,10 +71,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     {
                         case CheckOptions.ReadWriteEnable:
                             CheckReadWriteEnable(assetPath, itemData, ref reportInfos);
-                            break;
-
-                        case CheckOptions.RendererCastShadow:
-                            CheckCastShadows(assetPath, itemData, ref reportInfos);
                             break;
 
                         case CheckOptions.Normals:
@@ -123,36 +116,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
                     var content = $"模型读写权限设置错误, 应关闭读写权限! 资源路径为: {assetPath}";
                     report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXReadWriteEnable, content, item));
-                }
-            }
-            else
-            {
-                DebugUtil.Log($"未读取到资源, 路径为: {assetPath}");
-            }
-        }
-
-        /// <summary>
-        /// 检测: MeshRenderer 组件的阴影投射
-        /// </summary>
-        /// <param name="assetPath">资源路径</param>
-        /// <param name="item">检查项</param>
-        /// <param name="report">检查结果</param>
-        private static void CheckCastShadows(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
-        {
-            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
-            {
-                var renderers = asset.GetComponentsInChildren<Renderer>(true);
-                if (renderers != null && renderers.Length > 0)
-                {
-                    foreach (var renderer in renderers)
-                    {
-                        if (renderer.shadowCastingMode != ShadowCastingMode.Off)
-                        {
-                            var content = $"模型的阴影投射 (Cast Shadows) 未关闭! 资源路径为: {assetPath}";
-                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXMeshRendererCastShadows, content, item));
-                        }
-                    }
                 }
             }
             else
@@ -217,7 +180,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckMeshCompression(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var model = AssetImporter.GetAtPath(assetPath) as ModelImporter;
-            if (ReferenceEquals(model, null) == false) {
+            if (ReferenceEquals(model, null) == false)
+            {
                 // 翻译参数
                 var parameter = Convert.ToInt32(item.parameter) switch
                 {

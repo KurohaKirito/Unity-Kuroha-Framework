@@ -66,7 +66,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     ProgressBar.DisplayProgressBar("特效检测工具", $"Particle 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
 
                     var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
-                    var pattern = itemData.writePathRegex;
+                    var pattern = itemData.assetWhiteRegex;
                     if (string.IsNullOrEmpty(pattern) == false)
                     {
                         var regex = new Regex(pattern);
@@ -151,6 +151,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 foreach (var particle in particles)
                 {
+                    // 物体正则白名单
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false)
+                    {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     var renderMode = particle.GetComponent<ParticleSystemRenderer>().renderMode;
                     if (renderMode != parameter)
                     {
@@ -184,6 +195,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
             foreach (var particle in particles)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(particle.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 var isOpen = particle.main.prewarm;
                 if (isOpen == false)
                 {
@@ -211,6 +233,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 foreach (var particle in particles)
                 {
+                    // 物体正则白名单
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false)
+                    {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     var castShadows = particle.GetComponent<Renderer>().shadowCastingMode;
                     if (castShadows != ShadowCastingMode.Off)
                     {
@@ -239,6 +272,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 foreach (var particle in particles)
                 {
+                    // 物体正则白名单
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false)
+                    {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     var receiveShadows = particle.GetComponent<Renderer>().receiveShadows;
                     if (receiveShadows)
                     {
@@ -269,8 +313,19 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 foreach (var particle in particles)
                 {
+                    // 物体正则白名单
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false)
+                    {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     var renderer = particle.GetComponent<ParticleSystemRenderer>();
-                    if (renderer != null && renderer.mesh != null)
+                    if (ReferenceEquals(renderer.mesh, null) == false)
                     {
                         var triangle = renderer.mesh.triangles.Length / 3;
                         if (renderer.renderMode == ParticleSystemRenderMode.Mesh && triangle > maxTris)
@@ -302,8 +357,19 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 
                 foreach (var particle in particles)
                 {
+                    // 物体正则白名单
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false)
+                    {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     var renderer = particle.GetComponent<ParticleSystemRenderer>();
-                    if (renderer != null && renderer.mesh != null)
+                    if (ReferenceEquals(renderer.mesh, null) == false)
                     {
                         var mesh = renderer.mesh;
                         var isError = false;
@@ -356,6 +422,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 foreach (var particle in particles)
                 {
+                    // 物体正则白名单
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false)
+                    {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(particle.gameObject.name))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     var collision = particle.collision.enabled;
                     var trigger = particle.trigger.enabled;
 
@@ -392,6 +469,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             // 遍历每一个粒子系统
             foreach (var particle in particles)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(particle.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 // 获取当前粒子系统的所有子粒子系统
                 var allSubParticleSystems = particle.GetComponentsInChildren<ParticleSystem>(true);
 
@@ -452,6 +540,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
             foreach (var particle in particles)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(particle.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 if (particle.shape.enabled)
                 {
                     if (particle.shape.shapeType == ParticleSystemShapeType.Mesh)

@@ -61,7 +61,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         }
 
                         var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                        var pattern = itemData.writePathRegex;
+                        var pattern = itemData.assetWhiteRegex;
                         if (string.IsNullOrEmpty(pattern) == false)
                         {
                             var regex = new Regex(pattern);
@@ -115,6 +115,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 foreach (var animator in animators)
                 {
+                    // 物体正则白名单
+                    var pattern = item.objectWhiteRegex;
+                    if (string.IsNullOrEmpty(pattern) == false)
+                    {
+                        var regex = new Regex(pattern);
+                        if (regex.IsMatch(animator.gameObject.name))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     if (animator.cullingMode != cullingMode)
                     {
                         var gameObject = animator.gameObject;

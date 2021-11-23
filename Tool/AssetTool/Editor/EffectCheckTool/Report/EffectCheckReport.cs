@@ -131,7 +131,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
              *
              * Animator     -   Cull Mode
              * FBX          -   Read Write Enable
-             * FBX          -   CastShadow
              * FBX          -   NormalsImport
              * FBX          -   OptimizeMesh
              * FBX          -   MeshCompression
@@ -154,11 +153,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                 case EffectCheckReportInfo.EffectCheckReportType.MeshUV:
                     break;
 
-                // 6
+                // 5
                 case EffectCheckReportInfo.EffectCheckReportType.FBXReadWriteEnable:
-                    isCanRepair = true;
-                    break;
-                case EffectCheckReportInfo.EffectCheckReportType.FBXMeshRendererCastShadows:
                     isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.FBXNormals:

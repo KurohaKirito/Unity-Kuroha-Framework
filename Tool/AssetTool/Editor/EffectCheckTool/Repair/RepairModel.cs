@@ -1,10 +1,7 @@
 ﻿using System;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report;
-using Kuroha.Util.RunTime;
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
 {
@@ -22,10 +19,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
             {
                 case CheckModel.CheckOptions.ReadWriteEnable:
                     RepairReadWriteEnable(effectCheckReportInfo);
-                    break;
-
-                case CheckModel.CheckOptions.RendererCastShadow:
-                    RepairRendererCastShadow(effectCheckReportInfo);
                     break;
 
                 case CheckModel.CheckOptions.Normals:
@@ -64,35 +57,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
                     AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
                 }
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
-            }
-        }
-
-        /// <summary>
-        /// 修复模型的阴影投射设置 (是否产生阴影)
-        /// </summary>
-        /// <param name="effectCheckReportInfo"></param>
-        private static void RepairRendererCastShadow(EffectCheckReportInfo effectCheckReportInfo)
-        {
-            if (ReferenceEquals(effectCheckReportInfo.asset, null) == false)
-            {
-                // MeshRenderer && SkinnedMeshRenderer
-                if (effectCheckReportInfo.asset is GameObject obj)
-                {
-                    var renderers = obj.GetComponentsInChildren<Renderer>();
-                    if (renderers.IsNotNullAndEmpty())
-                    {
-                        foreach (var renderer in renderers)
-                        {
-                            if (renderer.shadowCastingMode != ShadowCastingMode.Off)
-                            {
-                                renderer.shadowCastingMode = ShadowCastingMode.Off;
-                            }
-                        }
-
-                        EditorUtility.SetDirty(effectCheckReportInfo.asset);
-                        EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
-                    }
-                }
             }
         }
 

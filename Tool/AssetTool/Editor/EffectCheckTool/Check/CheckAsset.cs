@@ -78,7 +78,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     var assetPath = PathUtil.GetAssetPath(files[index].FullName);
                     
                     // 正则白名单, 被匹配中的资源不进行检测
-                    var pattern = itemData.writePathRegex;
+                    var pattern = itemData.assetWhiteRegex;
                     if (string.IsNullOrEmpty(pattern) == false)
                     {
                         var regex = new Regex(pattern);
@@ -133,9 +133,15 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             {
                 ProgressBar.DisplayProgressBar("特效检测工具", $"文件夹命名规则排查中: {index + 1}/{folders.Length}", index + 1, folders.Length);
                 var assetPath = PathUtil.GetAssetPath(folders[index].FullName);
+
+                // meta 文件
+                if (assetPath.IndexOf(".meta", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    continue;
+                }
                 
                 // 正则白名单, 被匹配中的资源不进行检测
-                var pattern = itemData.writePathRegex;
+                var pattern = itemData.assetWhiteRegex;
                 if (string.IsNullOrEmpty(pattern) == false)
                 {
                     var regex = new Regex(pattern);
@@ -162,18 +168,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             assetPath = assetPath.Replace('\\', '/');
             var assetName = assetPath.Split('/').Last();
             
-            // 正则
-            if (assetName.IndexOf(".meta", StringComparison.Ordinal) < 0)
+            var pattern = item.parameter;
+            var regex = new Regex(pattern);
+            if (regex.IsMatch(assetName) == false)
             {
-                var pattern = item.parameter;
-                var regex = new Regex(pattern);
-                if (regex.IsMatch(assetName) == false)
-                {
-                    var fullName = System.IO.Path.GetFullPath(assetPath);
-                    var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
-                    var content = $"文件夹命名错误! 路径: {fullName}";
-                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FolderName, content, item));
-                }
+                var fullName = System.IO.Path.GetFullPath(assetPath);
+                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+                var content = $"文件夹命名错误! 路径: {fullName}";
+                report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FolderName, content, item));
             }
         }
     }

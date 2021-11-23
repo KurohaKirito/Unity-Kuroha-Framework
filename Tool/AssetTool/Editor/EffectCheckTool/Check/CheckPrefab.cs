@@ -131,7 +131,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     ProgressBar.DisplayProgressBar("特效检测工具", $"Prefab 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
                     
                     var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
-                    var pattern = itemData.writePathRegex;
+                    var pattern = itemData.assetWhiteRegex;
                     if (string.IsNullOrEmpty(pattern) == false)
                     {
                         var regex = new Regex(pattern);
@@ -254,6 +254,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
             foreach (var transform in transforms)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 if (transform.TryGetComponent<Collider>(out _))
                 {
                     var content = $"预制体中不能有碰撞体: {assetPath} 中的子物体 {transform.name}";
@@ -281,6 +292,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
             foreach (var transform in transforms)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 if (transform.gameObject.activeSelf == false)
                 {
                     var content = $"预制体中有 Disable 的物体: {assetPath} 中的子物体 {transform.name}";
@@ -313,31 +335,44 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
             foreach (var transform in transforms)
             {
-                var renderer = transform.GetComponent<Renderer>();
-                if (renderer != null && renderer.sharedMaterials != null)
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
                 {
-                    foreach (var material in renderer.sharedMaterials)
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
                     {
-                        if (material != null)
+                        continue;
+                    }
+                }
+
+                if (transform.TryGetComponent<Renderer>(out var renderer))
+                {
+                    if (renderer.sharedMaterials != null)
+                    {
+                        foreach (var material in renderer.sharedMaterials)
                         {
-                            var textureNames = material.GetTexturePropertyNames();
-                            foreach (var textureName in textureNames)
+                            if (material != null)
                             {
-                                var texture = material.GetTexture(textureName);
-                                if (texture != null)
+                                var textureNames = material.GetTexturePropertyNames();
+                                foreach (var textureName in textureNames)
                                 {
-                                    if (texture.width > width || texture.height > height)
+                                    var texture = material.GetTexture(textureName);
+                                    if (texture != null)
                                     {
-                                        var content = $"纹理尺寸超出限制: {texture.width}X{texture.height}\t物体: {assetPath} 中的子物体 {transform.name}";
-                                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                                        if (texture.width > width || texture.height > height)
+                                        {
+                                            var content = $"纹理尺寸超出限制: {texture.width}X{texture.height}\t物体: {assetPath} 中的子物体 {transform.name}";
+                                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                                        }
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            var content = $"预制体 {assetPath} 中的子物体 {transform.name} 上引用的 Material 为空!";
-                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                            else
+                            {
+                                var content = $"预制体 {assetPath} 中的子物体 {transform.name} 上引用的 Material 为空!";
+                                report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                            }
                         }
                     }
                 }
@@ -368,6 +403,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             // 遍历检测
             foreach (var transform in transforms)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 if (transform.TryGetComponent<SkinnedMeshRenderer>(out var renderer))
                 {
                     if (ReferenceEquals(renderer, null) == false)
@@ -406,8 +452,18 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             // 遍历检测
             foreach (var transform in transforms)
             {
-                var renderer = transform.GetComponent<Renderer>();
-                if (ReferenceEquals(renderer, null) == false)
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
+                if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
                     if (renderer.allowOcclusionWhenDynamic != isOpen)
                     {
@@ -442,6 +498,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             // 遍历检测
             foreach (var transform in transforms)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 if (transform.TryGetComponent<ParticleSystem>(out _))
                 {
                     var content = isForbid? $"预制体中不能有粒子系统: {assetPath} 中的子物体 {transform.name}" : $"预制体中缺少必要的粒子系统: {assetPath} 中的子物体 {transform.name}";
@@ -481,6 +548,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             // 遍历检测
             foreach (var transform in transforms)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
                     if (ReferenceEquals(renderer, null) == false)
@@ -526,6 +604,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             // 遍历检测
             foreach (var transform in transforms)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
                     if (renderer.lightProbeUsage != parameter)
@@ -568,6 +657,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             // 遍历检测
             foreach (var transform in transforms)
             {
+                // 物体正则白名单
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+                
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
                     if (renderer.reflectionProbeUsage != parameter)
