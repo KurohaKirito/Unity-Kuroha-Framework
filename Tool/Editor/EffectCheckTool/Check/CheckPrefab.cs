@@ -107,7 +107,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 var assetGuids = AssetDatabase.FindAssets("t:Prefab", new[] {
                     itemData.path
                 });
-                DebugUtil.Log($"CheckParticleSystem: 查询到了 {assetGuids.Length} 个预制体, 检测路径为: {itemData.path}");
 
                 for (var index = 0; index < assetGuids.Length; index++) {
                     ProgressBar.DisplayProgressBar("特效检测工具", $"Prefab 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
