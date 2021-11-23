@@ -144,11 +144,11 @@ GUID	标题	资源类型	检查类型	路径	资源白名单规则	物体白名�
 143	必须关闭 Mip Maps 设置-Fashion/Countenance	1	1	Assets/Art/Characters/Textures/Fashion/Countenance			False	1	True	True	True	
 144	必须开启读写-Fashion	1	2	Assets/Art/Characters/Textures/Fashion	(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Countenance)|(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Fur)		True	1	True	True	True	全部开启
 145	必须关闭读写-Fashion/Countenance	1	2	Assets/Art/Characters/Textures/Fashion/Countenance			False	1	True	True	True	全部关闭
-146	战场飞高高的动画状态机剔除模式检测	2	0	Assets/ToBundle/GamePlayItem/Aerocraft			3	1	True	True	True	
-147	战场飞高高的纹理最大为 256 * 256	4	3	Assets/ToBundle/GamePlayItem/Aerocraft			2;2	1	True	True	True	
-148	战场飞高高的 Skinned Mesh Renderer 需要关闭运动向量	4	4	Assets/ToBundle/GamePlayItem/Aerocraft			False	1	True	True	True	
-149	战场飞高高的渲染器需要关闭动态遮挡剔除	4	5	Assets/ToBundle/GamePlayItem/Aerocraft			False	1	True	True	True	
-150	战场飞高高的渲染器需要开启阴影投射	4	7	Assets/ToBundle/GamePlayItem/Aerocraft		^Sfx_	1	0	True	True	True	
-151	战场飞高高的渲染器需要关闭光照探针	4	8	Assets/ToBundle/GamePlayItem/Aerocraft			0	1	True	True	True	
-152	战场飞高高的渲染器需要关闭反射探针	4	9	Assets/ToBundle/GamePlayItem/Aerocraft			0	1	True	True	True	
-153	战场飞高高预制禁止直接挂载粒子特效	4	6	Assets/ToBundle/GamePlayItem/Aerocraft			True	0	True	True	True	
+146	飞高高产出检测工具-动画状态机剔除模式检测	2	0	Assets/ToBundle/GamePlayItem/Aerocraft			3	1	True	True	True	
+147	飞高高产出检测工具-纹理最大为 256 * 256	4	3	Assets/ToBundle/GamePlayItem/Aerocraft			2;2	1	True	True	True	
+148	飞高高产出检测工具-关闭运动向量	4	4	Assets/ToBundle/GamePlayItem/Aerocraft			False	1	True	True	True	
+149	飞高高产出检测工具-关闭动态遮挡剔除	4	5	Assets/ToBundle/GamePlayItem/Aerocraft			False	1	True	True	True	
+150	飞高高产出检测工具-开启阴影投射	4	7	Assets/ToBundle/GamePlayItem/Aerocraft		^Sfx_	1	0	True	True	True	
+151	飞高高产出检测工具-关闭光照探针	4	8	Assets/ToBundle/GamePlayItem/Aerocraft			0	1	True	True	True	
+152	飞高高产出检测工具-关闭反射探针	4	9	Assets/ToBundle/GamePlayItem/Aerocraft			0	1	True	True	True	
+153	飞高高产出检测工具-禁止挂载粒子特效	4	6	Assets/ToBundle/GamePlayItem/Aerocraft			True	0	True	True	True	

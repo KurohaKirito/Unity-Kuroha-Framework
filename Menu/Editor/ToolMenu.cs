@@ -110,7 +110,7 @@ namespace Kuroha.Menu.Editor
         [MenuItem("GameObject/LODTool", false, 12)]
         public static void Batch()
         {
-            LodWindow.Open();
+            LodBatchWindow.Open();
         }
 
         #endregion

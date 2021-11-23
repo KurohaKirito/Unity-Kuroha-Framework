@@ -131,7 +131,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
         /// <summary>
         /// 执行检测
         /// </summary>
-        public static List<EffectCheckReportInfo> Detect(bool isAutoCheck)
+        public static List<EffectCheckReportInfo> Detect(bool isAutoCheck, string checkItemNameFilter = null)
         {
             var reportInfos = new List<EffectCheckReportInfo>();
             
@@ -148,16 +148,29 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                     
                     foreach (var checkItemInfo in EffectCheckItemView.CheckItemInfoList)
                     {
-                        if (isAutoCheck)
+                        if (string.IsNullOrEmpty(checkItemNameFilter))
                         {
-                            if (checkItemInfo.cicdEnable == false)
+                            // 自动检测
+                            if (isAutoCheck)
                             {
-                                continue;
+                                if (checkItemInfo.cicdEnable == false)
+                                {
+                                    continue;
+                                }
+                            }
+                            // 特效检测
+                            else
+                            {
+                                if (checkItemInfo.effectEnable == false)
+                                {
+                                    continue;
+                                }
                             }
                         }
+                        // 指定检查项检测
                         else
                         {
-                            if (checkItemInfo.effectEnable == false)
+                            if (checkItemInfo.title.IndexOf(checkItemNameFilter, StringComparison.Ordinal) < 0)
                             {
                                 continue;
                             }
