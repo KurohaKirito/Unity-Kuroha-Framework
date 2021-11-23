@@ -170,12 +170,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckParticleSystem.checkOptions);
                     OnGUI_CheckParticleSystem();
                     break;
-
-                case EffectToolData.AssetsType.Animator:
-                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckAnimator.checkOptions);
-                    OnGUI_CheckAnimator();
-                    break;
-
+                
                 case EffectToolData.AssetsType.Mesh:
                     itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckMesh.checkOptions);
                     OnGUI_CheckMesh();
@@ -319,26 +314,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     throw new ArgumentOutOfRangeException();
             }
         }
-
-        /// <summary>
-        /// 绘制 Animator 检查页面
-        /// </summary>
-        private static void OnGUI_CheckAnimator()
-        {
-            var modeType = (CheckAnimator.CheckOptions)itemInfo.checkType;
-
-            switch (modeType)
-            {
-                case CheckAnimator.CheckOptions.CullMode:
-                    ParameterInt1 = EditorGUILayout.Popup("动画剔除类型", ParameterInt1, CheckAnimator.cullModeOptions);
-                    itemInfo.parameter = ParameterInt1.ToString();
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
+        
         /// <summary>
         /// 绘制 Texture 检查页面
         /// </summary>
@@ -448,7 +424,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     break;
                 
                 case CheckPrefab.CheckOptions.CastShadows:
-                    ParameterInt1 = EditorGUILayout.Popup("阴影投射模式: ", ParameterInt1, CheckPrefab.castShadowsOptions);
+                    ParameterInt1 = EditorGUILayout.Popup("Cast Shadows: ", ParameterInt1, CheckPrefab.castShadowsOptions);
                     itemInfo.parameter = ParameterInt1.ToString();
                     break;
                 
@@ -461,7 +437,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     ParameterInt1 = EditorGUILayout.Popup("Reflection Probes: ", ParameterInt1, CheckPrefab.reflectionProbesOptions);
                     itemInfo.parameter = ParameterInt1.ToString();
                     break;
-                
+
+                case CheckPrefab.CheckOptions.AnimatorCullMode:
+                    ParameterInt1 = EditorGUILayout.Popup("Animator Cull Mode: ", ParameterInt1, CheckPrefab.animatorCullModeOptions);
+                    itemInfo.parameter = ParameterInt1.ToString();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

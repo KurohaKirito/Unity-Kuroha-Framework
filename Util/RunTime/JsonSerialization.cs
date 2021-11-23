@@ -13,9 +13,8 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 实际序列化的字段
         /// </summary>
-        [SerializeField]
-        private List<T> data;
-        
+        [SerializeField] private List<T> data;
+
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -33,7 +32,7 @@ namespace Kuroha.Util.RunTime
             return data;
         }
     }
-    
+
     /// <summary>
     /// Dictionary
     /// </summary>
@@ -43,20 +42,18 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 实际序列化的字段
         /// </summary>
-        [SerializeField]
-        private List<TKey> keys;
-        
+        [SerializeField] private List<TKey> keys;
+
         /// <summary>
         /// 实际序列化的字段
         /// </summary>
-        [SerializeField]
-        private List<TValue> values;
+        [SerializeField] private List<TValue> values;
 
         /// <summary>
         /// 待序列化的数据
         /// </summary>
         private Dictionary<TKey, TValue> data;
-        
+
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -88,7 +85,7 @@ namespace Kuroha.Util.RunTime
                 }
             }
         }
-        
+
         /// <summary>
         /// 转换为字典返回
         /// </summary>

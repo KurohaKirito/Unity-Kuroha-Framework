@@ -17,7 +17,7 @@ namespace Kuroha.Util.RunTime
             BindingFlags.Public |
             BindingFlags.Instance |
             BindingFlags.GetField;
-        
+
         /// <summary>
         /// Private 字段
         /// </summary>
@@ -25,7 +25,7 @@ namespace Kuroha.Util.RunTime
             BindingFlags.NonPublic |
             BindingFlags.Instance |
             BindingFlags.GetField;
-        
+
         /// <summary>
         /// Private Static 字段
         /// </summary>
@@ -33,21 +33,21 @@ namespace Kuroha.Util.RunTime
             BindingFlags.NonPublic |
             BindingFlags.Static |
             BindingFlags.GetField;
-        
+
         /// <summary>
         /// Public 方法
         /// </summary>
         private const BindingFlags PUBLIC_INSTANCE_METHOD =
             BindingFlags.Public |
             BindingFlags.Instance;
-        
+
         /// <summary>
         /// Public Static 方法
         /// </summary>
         private const BindingFlags PUBLIC_STATIC_INSTANCE_METHOD =
             BindingFlags.Public |
             BindingFlags.Static;
-        
+
         /// <summary>
         /// Private 方法
         /// </summary>
@@ -56,7 +56,7 @@ namespace Kuroha.Util.RunTime
             BindingFlags.Instance;
 
         #endregion
-        
+
         /// <summary>
         /// 动态类当前所指代的类
         /// </summary>
@@ -66,7 +66,7 @@ namespace Kuroha.Util.RunTime
         /// 动态类当前所指代的类的实例
         /// </summary>
         private object currentInstance;
-        
+
         /// <summary>
         /// 设置实例
         /// </summary>
@@ -78,7 +78,7 @@ namespace Kuroha.Util.RunTime
                 currentInstance = obj;
             }
         }
-        
+
         /// <summary>
         /// 获取实例
         /// </summary>
@@ -107,7 +107,7 @@ namespace Kuroha.Util.RunTime
             {
                 return;
             }
-            
+
             currentClass = obj.GetType();
             currentInstance = obj;
         }
@@ -140,7 +140,7 @@ namespace Kuroha.Util.RunTime
         #endregion
 
         #region Private
-        
+
         /// <summary>
         /// 获取类中的 private 字段的值
         /// </summary>
@@ -176,7 +176,7 @@ namespace Kuroha.Util.RunTime
         {
             return GetFieldValue_Public(fieldName) as T;
         }
-        
+
         /// <summary>
         /// 获取类中的 public 字段的值
         /// </summary>
@@ -186,9 +186,9 @@ namespace Kuroha.Util.RunTime
         {
             return GetFiledValue(fieldName, PUBLIC_INSTANCE_FIELD);
         }
-        
+
         #endregion
-        
+
         /// <summary>
         /// 获取类中的字段的值
         /// </summary>
@@ -201,7 +201,7 @@ namespace Kuroha.Util.RunTime
             {
                 return null;
             }
-            
+
             var dynamicField = currentClass.GetField(fieldName, flags);
             return dynamicField == null ? null : dynamicField.GetValue(currentInstance);
         }
@@ -219,7 +219,7 @@ namespace Kuroha.Util.RunTime
         {
             return InvokeMethod(methodName, PUBLIC_INSTANCE_METHOD, args);
         }
-        
+
         /// <summary>
         /// 调用 public static 函数
         /// </summary>
@@ -239,7 +239,7 @@ namespace Kuroha.Util.RunTime
         {
             return InvokeMethod(methodName, PRIVATE_INSTANCE_METHOD, args);
         }
-        
+
         /// <summary>
         /// 调用类中的函数
         /// </summary>
@@ -260,9 +260,9 @@ namespace Kuroha.Util.RunTime
 
             return null;
         }
-        
+
         #endregion
-        
+
         /// <summary>
         /// 从源实例中取出与目标实例 "同名字段" 的值
         /// </summary>
@@ -276,11 +276,11 @@ namespace Kuroha.Util.RunTime
             {
                 return;
             }
-            
+
             // 取出两个实例的类型
             var srcType = srcInstance.GetType();
             var dstType = dstInstance.GetType();
-            
+
             // 取出目标实例中的字段
             var dstFields = dstType.GetFields(dstFlags);
             foreach (var dstFieldInfo in dstFields)
@@ -293,7 +293,7 @@ namespace Kuroha.Util.RunTime
                     {
                         // 取出源字段的值
                         var value = srcFieldInfo.GetValue(srcInstance);
-                        
+
                         // 赋值给目标字段
                         dstFieldInfo.SetValue(dstInstance, value);
                     }

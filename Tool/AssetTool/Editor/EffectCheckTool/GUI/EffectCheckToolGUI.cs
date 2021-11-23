@@ -17,7 +17,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
         /// 折叠标志位
         /// </summary>
         private static bool effectCheckToolFoldout = true;
-        
+
         /// <summary>
         /// 代码检测标志
         /// </summary>
@@ -56,7 +56,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                     EditorGUILayout.LabelField("目前支持检查的资源类别有: 网格, 纹理, 动画状态机, 粒子系统, 预制体, 模型.");
                     EditorGUI.indentLevel--;
                     GUILayout.BeginVertical("Box");
-                    if (GUILayout.Button("Add Check Item", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                    if (GUILayout.Button("Add Check Item", GUILayout.Height(UI_BUTTON_HEIGHT),
+                        GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
                         EffectCheckItemSetViewWindow.Open(null);
                     }
@@ -69,7 +70,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                     EditorGUILayout.LabelField("是否在 CICD 中启用, 同时可以对每一个检查项进行编辑和删除.");
                     EditorGUI.indentLevel--;
                     GUILayout.BeginVertical("Box");
-                    if (GUILayout.Button("Show Check Item", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                    if (GUILayout.Button("Show Check Item", GUILayout.Height(UI_BUTTON_HEIGHT),
+                        GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
                         EffectCheckItemViewWindow.Open();
                     }
@@ -82,7 +84,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                     EditorGUILayout.LabelField("只有启用状态下的检查项才会被执行.");
                     EditorGUI.indentLevel--;
                     GUILayout.BeginVertical("Box");
-                    if (GUILayout.Button("Start Check", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                    if (GUILayout.Button("Start Check", GUILayout.Height(UI_BUTTON_HEIGHT),
+                        GUILayout.Width(UI_BUTTON_WIDTH)))
                     {
                         Detect(false);
                     }
@@ -99,15 +102,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
         private static bool CodeCheck()
         {
             var isError = false;
-            
+
             // 检查代码中枚举是否匹配
             if (codeCheckFlag == false)
             {
                 codeCheckFlag = true;
-                
+
                 var reportEnumCount = Enum.GetNames(typeof(EffectCheckReportInfo.EffectCheckReportType)).Length;
-                
-                var checkAnimatorEnumCount = Enum.GetNames(typeof(CheckAnimator.CheckOptions)).Length;
+
                 var checkMeshEnumCount = Enum.GetNames(typeof(CheckMesh.CheckOptions)).Length;
                 var checkModelEnumCount = Enum.GetNames(typeof(CheckModel.CheckOptions)).Length;
                 var checkParticleEnumCount = Enum.GetNames(typeof(CheckParticleSystem.CheckOptions)).Length;
@@ -115,9 +117,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                 var checkTextureEnumCount = Enum.GetNames(typeof(CheckTexture.CheckOptions)).Length;
                 var checkAssetEnumCount = Enum.GetNames(typeof(CheckAsset.CheckOptions)).Length;
 
-                var sum = checkAnimatorEnumCount + checkMeshEnumCount + checkModelEnumCount + checkParticleEnumCount +
-                          checkPrefabEnumCount + checkTextureEnumCount + checkAssetEnumCount;
-                
+                var sum = checkMeshEnumCount + checkModelEnumCount + checkParticleEnumCount + checkPrefabEnumCount + checkTextureEnumCount + checkAssetEnumCount;
+
                 if (reportEnumCount != sum)
                 {
                     Dialog.Display($"代码错误! 报告枚举值的数量 {reportEnumCount} 和各个检查项的枚举值数量 {sum} 不一致, 请检查代码!", Dialog.DialogType.Error, "OK");
@@ -134,18 +135,18 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
         public static List<EffectCheckReportInfo> Detect(bool isAutoCheck, string checkItemNameFilter = null)
         {
             var reportInfos = new List<EffectCheckReportInfo>();
-            
+
             // 代码检测
             var isError = CodeCheck();
             if (isError == false)
             {
                 // 读取配置
                 EffectCheckItemView.CheckItemInfoList = EffectCheckItemSetView.LoadConfig();
-                
+
                 if (EffectCheckItemView.CheckItemInfoList.Count > 0)
                 {
                     #region 检测
-                    
+
                     foreach (var checkItemInfo in EffectCheckItemView.CheckItemInfoList)
                     {
                         if (string.IsNullOrEmpty(checkItemNameFilter))
@@ -181,23 +182,19 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                             case EffectToolData.AssetsType.Model:
                                 CheckModel.Check(checkItemInfo, ref reportInfos);
                                 break;
-                        
+
                             case EffectToolData.AssetsType.Prefab:
                                 CheckPrefab.Check(checkItemInfo, ref reportInfos);
                                 break;
-                        
+
                             case EffectToolData.AssetsType.Texture:
                                 CheckTexture.Check(checkItemInfo, ref reportInfos);
                                 break;
-                        
+
                             case EffectToolData.AssetsType.Mesh:
                                 CheckMesh.Check(checkItemInfo, ref reportInfos);
                                 break;
-                        
-                            case EffectToolData.AssetsType.Animator:
-                                CheckAnimator.Check(checkItemInfo, ref reportInfos);
-                                break;
-                        
+
                             case EffectToolData.AssetsType.ParticleSystem:
                                 CheckParticleSystem.Check(checkItemInfo, ref reportInfos);
                                 break;
@@ -205,14 +202,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                             case EffectToolData.AssetsType.Asset:
                                 CheckAsset.Check(checkItemInfo, ref reportInfos);
                                 break;
-                            
+
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
                     }
 
                     #endregion
-                    
+
                     if (reportInfos.Count > 0)
                     {
                         // 如果不是自动检测, 则弹窗, 展示检测结果
@@ -231,7 +228,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                     Kuroha.GUI.Editor.Dialog.Display("当前未启用任何检查项, 请先启用检查项!", Dialog.DialogType.Message, "OK");
                 }
             }
-            
+
             // 返回结果
             return reportInfos;
         }

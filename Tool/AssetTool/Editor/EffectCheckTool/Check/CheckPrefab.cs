@@ -5,6 +5,7 @@ using Kuroha.GUI.Editor;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report;
+using Kuroha.Util.Editor;
 using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
@@ -29,6 +30,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             "阴影投射",
             "光照探针",
             "反射探针",
+            "动画状态机剔除模式",
         };
 
         /// <summary>
@@ -85,6 +87,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             /// 反射探针
             /// </summary>
             ReflectionProbes,
+
+            /// <summary>
+            /// 动画状态机
+            /// </summary>
+            AnimatorCullMode,
         }
 
         /// <summary>
@@ -99,7 +106,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             "1024",
             "2048"
         };
-        
+
         /// <summary>
         /// 检测 CastShadows 时的子检查项
         /// </summary>
@@ -116,6 +123,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         public static readonly string[] reflectionProbesOptions = Enum.GetNames(typeof(ReflectionProbeUsage));
 
         /// <summary>
+        /// 检查 AnimatorCullMode 时的子检查项
+        /// </summary>
+        public static readonly string[] animatorCullModeOptions = Enum.GetNames(typeof(AnimatorCullingMode));
+
+        /// <summary>
         /// 对预制体进行检测
         /// </summary>
         /// <param name="itemData">待检测的资源信息</param>
@@ -124,12 +136,15 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         {
             if (itemData.path.StartsWith("Assets"))
             {
-                var assetGuids = AssetDatabase.FindAssets("t:Prefab", new[] { itemData.path });
-                
+                var assetGuids = AssetDatabase.FindAssets("t:Prefab", new[]
+                {
+                    itemData.path
+                });
+
                 for (var index = 0; index < assetGuids.Length; index++)
                 {
                     ProgressBar.DisplayProgressBar("特效检测工具", $"Prefab 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
-                    
+
                     var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
                     var pattern = itemData.assetWhiteRegex;
                     if (string.IsNullOrEmpty(pattern) == false)
@@ -140,7 +155,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                             continue;
                         }
                     }
-                    
+
                     switch ((CheckOptions)itemData.checkType)
                     {
                         case CheckOptions.ObjectName:
@@ -158,7 +173,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         case CheckOptions.TextureSize:
                             CheckTextureSize(assetPath, itemData, ref reportInfos);
                             break;
-                        
+
                         case CheckOptions.MotionVectors:
                             CheckMotionVectors(assetPath, itemData, ref reportInfos);
                             break;
@@ -182,7 +197,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         case CheckOptions.ReflectionProbes:
                             CheckReflectionProbes(assetPath, itemData, ref reportInfos);
                             break;
-                        
+
+                        case CheckOptions.AnimatorCullMode:
+                            CheckAnimatorCullMode(assetPath, itemData, ref reportInfos);
+                            break;
+
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -220,15 +239,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 {
                     if (isCheckChinese && CharUtil.IsChinese(cha))
                     {
-                        var content = $"预制体名称中不能有中文: {assetPath} 子物件: {transform.name}";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabName, content, item));
+                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                        var content = $"预制体名称中不能有中文: {assetPath} 子物件: {childPath}";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabName, content, item));
                         break;
                     }
 
                     if (isCheckSpace && CharUtil.IsSpace(cha))
                     {
-                        var content = $"预制体名称中不能有空格: {assetPath} 子物件: {transform.name}";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabName, content, item));
+                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                        var content = $"预制体名称中不能有空格: {assetPath} 子物件: {childPath}";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabName, content, item));
                         break;
                     }
                 }
@@ -264,11 +285,12 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         continue;
                     }
                 }
-                
+
                 if (transform.TryGetComponent<Collider>(out _))
                 {
-                    var content = $"预制体中不能有碰撞体: {assetPath} 中的子物体 {transform.name}";
-                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidCollider, content, item));
+                    var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                    var content = $"预制体中不能有碰撞体: {assetPath} 中的子物体 {childPath}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidCollider, content, item));
                 }
             }
         }
@@ -302,11 +324,12 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         continue;
                     }
                 }
-                
+
                 if (transform.gameObject.activeSelf == false)
                 {
-                    var content = $"预制体中有 Disable 的物体: {assetPath} 中的子物体 {transform.name}";
-                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject, content, item));
+                    var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                    var content = $"预制体中有 Disable 的物体: {assetPath} 中的子物体 {childPath}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject, content, item));
                 }
             }
         }
@@ -352,33 +375,33 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     {
                         foreach (var material in renderer.sharedMaterials)
                         {
-                            if (material != null)
+                            if (ReferenceEquals(material, null) == false)
                             {
-                                var textureNames = material.GetTexturePropertyNames();
-                                foreach (var textureName in textureNames)
+                                TextureUtil.GetTexturesInMaterial(material, out var textureDataList);
+                                foreach (var textureData in textureDataList)
                                 {
-                                    var texture = material.GetTexture(textureName);
-                                    if (texture != null)
+                                    var textureWidth = textureData.asset.width;
+                                    var textureHeight = textureData.asset.height;
+                                    if (textureWidth > width || textureHeight > height)
                                     {
-                                        if (texture.width > width || texture.height > height)
-                                        {
-                                            var content = $"纹理尺寸超出限制: {texture.width}X{texture.height}\t物体: {assetPath} 中的子物体 {transform.name}";
-                                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
-                                        }
+                                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                                        var content = $"纹理尺寸超出限制: {textureWidth}X{textureHeight}\t物体: {assetPath} 中的子物体 {childPath}";
+                                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
                                     }
                                 }
                             }
                             else
                             {
-                                var content = $"预制体 {assetPath} 中的子物体 {transform.name} 上引用的 Material 为空!";
-                                report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                                var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                                var content = $"预制体 {assetPath} 中的子物体 {childPath} 上引用的 Material 为空!";
+                                report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
                             }
                         }
                     }
                 }
             }
         }
-        
+
         /// <summary>
         /// 检测: 运动向量
         /// </summary>
@@ -413,15 +436,16 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         continue;
                     }
                 }
-                
+
                 if (transform.TryGetComponent<SkinnedMeshRenderer>(out var renderer))
                 {
                     if (ReferenceEquals(renderer, null) == false)
                     {
                         if (renderer.skinnedMotionVectors != isOpen)
                         {
-                            var content = $"预制体 {assetPath} 中的子物体 {transform.name} 的运动向量设置错误: ({!isOpen}) => ({isOpen})!";
-                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabMotionVectors, content, item));
+                            var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                            var content = $"预制体 {assetPath} 中的子物体 {childPath} 的运动向量设置错误: ({!isOpen}) => ({isOpen})!";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabMotionVectors, content, item));
                         }
                     }
                 }
@@ -462,13 +486,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         continue;
                     }
                 }
-                
+
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
                     if (renderer.allowOcclusionWhenDynamic != isOpen)
                     {
-                        var content = $"预制体 {assetPath} 中的子物体 {transform.name} 的动态遮挡剔除设置错误: ({!isOpen}) => ({isOpen})!";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion, content, item));
+                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                        var content = $"预制体 {assetPath} 中的子物体 {childPath} 的动态遮挡剔除设置错误: ({!isOpen}) => ({isOpen})!";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion, content, item));
                     }
                 }
             }
@@ -508,11 +533,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         continue;
                     }
                 }
-                
+
                 if (transform.TryGetComponent<ParticleSystem>(out _))
                 {
-                    var content = isForbid? $"预制体中不能有粒子系统: {assetPath} 中的子物体 {transform.name}" : $"预制体中缺少必要的粒子系统: {assetPath} 中的子物体 {transform.name}";
-                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidParticleSystem, content, item));
+                    var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                    var content = isForbid
+                        ? $"预制体中不能有粒子系统: {assetPath} 中的子物体 {childPath}"
+                        : $"预制体中缺少必要的粒子系统: {assetPath} 中的子物体 {childPath}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabForbidParticleSystem, content, item));
                 }
             }
         }
@@ -558,15 +586,16 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         continue;
                     }
                 }
-                
+
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
                     if (ReferenceEquals(renderer, null) == false)
                     {
                         if (renderer.shadowCastingMode != parameter)
                         {
-                            var content = $"预制体中渲染器的阴影投射设置错误: {assetPath} 中的子物体 {transform.name}: ({renderer.shadowCastingMode}) => ({parameter})";
-                            report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabCastShadows, content, item));
+                            var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                            var content = $"预制体中渲染器的阴影投射设置错误: {assetPath} 中的子物体 {childPath}: ({renderer.shadowCastingMode}) => ({parameter})";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabCastShadows, content, item));
                         }
                     }
                 }
@@ -614,13 +643,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         continue;
                     }
                 }
-                
+
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
                     if (renderer.lightProbeUsage != parameter)
                     {
-                        var content = $"预制体中渲染器的光照探针设置错误: {assetPath} 中的子物体 {transform.name}: ({renderer.lightProbeUsage}) => ({parameter})";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabLightProbes, content, item));
+                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                        var content = $"预制体中渲染器的光照探针设置错误: {assetPath} 中的子物体 {childPath}: ({renderer.lightProbeUsage}) => ({parameter})";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabLightProbes, content, item));
                     }
                 }
             }
@@ -667,13 +697,68 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         continue;
                     }
                 }
-                
+
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
                     if (renderer.reflectionProbeUsage != parameter)
                     {
-                        var content = $"预制体中渲染器的反射探针设置错误: {assetPath} 中的子物体 {transform.name}: ({renderer.reflectionProbeUsage}) => ({parameter})";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.PrefabReflectionProbes, content, item));
+                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                        var content = $"预制体中渲染器的反射探针设置错误: {assetPath} 中的子物体 {childPath}: ({renderer.reflectionProbeUsage}) => ({parameter})";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabReflectionProbes, content, item));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 检测: 动画状态机剔除模式
+        /// </summary>
+        /// <param name="assetPath">资源路径</param>
+        /// <param name="item">检查项</param>
+        /// <param name="report">检查结果</param>
+        private static void CheckAnimatorCullMode(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (ReferenceEquals(asset, null))
+            {
+                DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
+                return;
+            }
+
+            // 得到预制上全部的游戏物体
+            var transforms = asset.GetComponentsInChildren<Transform>(true);
+
+            // 获取检测参数
+            var parameter = Convert.ToInt32(item.parameter) switch
+            {
+                0 => AnimatorCullingMode.AlwaysAnimate,
+                1 => AnimatorCullingMode.CullUpdateTransforms,
+                2 => AnimatorCullingMode.CullCompletely,
+                _ => AnimatorCullingMode.CullCompletely
+            };
+
+            // 遍历检测
+            foreach (var transform in transforms)
+            {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+
+                // 检测
+                if (transform.TryGetComponent<Animator>(out var animator))
+                {
+                    if (animator.cullingMode != parameter)
+                    {
+                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                        var content = $"预制体中动画状态机的剔除模式设置错误: {assetPath} 中的子物体 {childPath}: ({animator.cullingMode}) => ({parameter})";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabReflectionProbes, content, item));
                     }
                 }
             }

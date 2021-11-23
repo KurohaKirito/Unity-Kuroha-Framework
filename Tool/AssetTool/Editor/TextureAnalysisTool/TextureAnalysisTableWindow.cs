@@ -47,7 +47,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// 待检测路径
         /// </summary>
         private static string detectPath;
-        
+
         /// <summary>
         /// 待检测游戏物体
         /// </summary>
@@ -96,15 +96,15 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
             fontStyleRed = new GUIStyle
             {
                 alignment = TextAnchor.MiddleLeft,
-                normal = {textColor = new Color((float) 203 / 255, (float) 27 / 255, (float) 69 / 255)}
+                normal = { textColor = new Color((float)203 / 255, (float)27 / 255, (float)69 / 255) }
             };
 
             fontStyleYellow = new GUIStyle
             {
                 alignment = TextAnchor.MiddleLeft,
-                normal = {textColor = new Color((float) 226 / 255, (float) 148 / 255, (float) 59 / 255)}
+                normal = { textColor = new Color((float)226 / 255, (float)148 / 255, (float)59 / 255) }
             };
-            
+
             // 初始化表格
             InitTable();
         }
@@ -180,7 +180,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
             }
 
             #endregion
-            
+
             return dataList;
         }
 
@@ -210,7 +210,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                 case TextureAnalysisData.DetectType.GameObject:
                     TextureUtil.GetTexturesInGameObject(detectGameObject, out assets, out assetPaths);
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

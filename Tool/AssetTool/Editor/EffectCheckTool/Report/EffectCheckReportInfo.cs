@@ -14,9 +14,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
         public enum EffectCheckReportType
         {
             // 1
-            AnimatorCullMode,
-            
-            // 1
             MeshUV,
 
             // 5
@@ -37,7 +34,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             ParticleCollisionAndTrigger,
             ParticleZeroSurface,
             
-            // 4
+            // 11
             PrefabName,
             PrefabForbidCollider,
             PrefabTextureSize,
@@ -48,6 +45,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             PrefabCastShadows,
             PrefabLightProbes,
             PrefabReflectionProbes,
+            PrefabAnimatorCullMode,
             
             // 3
             TextureSize,

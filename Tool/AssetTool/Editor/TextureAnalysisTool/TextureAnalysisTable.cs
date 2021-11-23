@@ -25,6 +25,8 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                 columns,
                 onFilterFunction,
                 onExportFunction,
-                onSelectFunction) { }
+                onSelectFunction)
+        {
+        }
     }
 }

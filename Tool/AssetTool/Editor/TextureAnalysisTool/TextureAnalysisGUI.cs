@@ -33,7 +33,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// 待检测目录
         /// </summary>
         private static string detectPath = "Art/Effects/Textures";
-        
+
         /// <summary>
         /// 待检测游戏物体
         /// </summary>
@@ -68,34 +68,35 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                     EditorGUILayout.LabelField("(2) Scene:       \t检查当前场景中所引用的纹理.");
                     EditorGUILayout.LabelField("(3) Game Object: \t检查指定游戏物体中所引用的纹理.");
                     EditorGUI.indentLevel--;
-                    
+
                     GUILayout.BeginVertical("Box");
                     {
                         detectType = (TextureAnalysisData.DetectType)EditorGUILayout.EnumPopup("选择检查类型", detectType, GUILayout.Width(240));
                     }
                     GUILayout.EndVertical();
 
-                    switch (detectType) {
+                    switch (detectType)
+                    {
                         case TextureAnalysisData.DetectType.Scene:
                             break;
                         case TextureAnalysisData.DetectType.Path:
+                        {
+                            GUILayout.BeginVertical("Box");
                             {
-                                GUILayout.BeginVertical("Box");
-                                {
-                                    detectPath = EditorGUILayout.TextField("输入待检查目录: ", detectPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
-                                }
-                                GUILayout.EndVertical();
+                                detectPath = EditorGUILayout.TextField("输入待检查目录: ", detectPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                             }
+                            GUILayout.EndVertical();
+                        }
                             break;
                         case TextureAnalysisData.DetectType.GameObject:
+                        {
+                            GUILayout.BeginVertical("Box");
                             {
-                                GUILayout.BeginVertical("Box");
-                                {
-                                    detectGameObject = EditorGUILayout.ObjectField("选择检测的游戏物体: ", detectGameObject,
-                                        typeof(GameObject), true, GUILayout.Width(UI_INPUT_AREA_WIDTH)) as GameObject;
-                                }
-                                GUILayout.EndVertical();
+                                detectGameObject = EditorGUILayout.ObjectField("选择检测的游戏物体: ", detectGameObject,
+                                    typeof(GameObject), true, GUILayout.Width(UI_INPUT_AREA_WIDTH)) as GameObject;
                             }
+                            GUILayout.EndVertical();
+                        }
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();

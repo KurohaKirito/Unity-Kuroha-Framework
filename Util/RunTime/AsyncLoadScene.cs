@@ -22,12 +22,12 @@ namespace Kuroha.Util.RunTime
         /// 异步加载进程
         /// </summary>
         private AsyncOperation asyncOperation;
-        
+
         /// <summary>
         /// 单例
         /// </summary>
         public static AsyncLoadScene Async { get; private set; }
-        
+
         /// <summary>
         /// 单例
         /// </summary>
@@ -35,7 +35,7 @@ namespace Kuroha.Util.RunTime
         {
             Async = this;
         }
-        
+
         /// <summary>
         /// 初始化
         /// </summary>

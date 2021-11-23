@@ -75,10 +75,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
         {
             switch (effectCheckReportInfo.assetType)
             {
-                case EffectToolData.AssetsType.Animator:
-                    RepairAnimator.Repair(effectCheckReportInfo);
-                    break;
-
                 case EffectToolData.AssetsType.ParticleSystem:
                     RepairParticle.Repair(effectCheckReportInfo);
                     break;
@@ -91,6 +87,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                     break;
 
                 case EffectToolData.AssetsType.Prefab:
+                    RepairPrefab.Repair(effectCheckReportInfo);
                     break;
 
                 case EffectToolData.AssetsType.Model:
@@ -129,26 +126,30 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             /*
              * 目前支持自动修复的内容仅有:
              *
-             * Animator     -   Cull Mode
              * FBX          -   Read Write Enable
              * FBX          -   NormalsImport
              * FBX          -   OptimizeMesh
              * FBX          -   MeshCompression
              * FBX          -   WeldVertices
+             * 
              * Texture      -   MipMaps
              * Texture      -   Read Write Enable
+             * 
              * Particle     -   ParticleZeroSurface
+             * 
+             * Prefab       -   PrefabMotionVectors
+             * Prefab       -   PrefabDynamicOcclusion
+             * Prefab       -   PrefabCastShadows
+             * Prefab       -   PrefabLightProbes
+             * Prefab       -   PrefabReflectionProbes
+             * Prefab       -   PrefabAnimatorCullMode
+             * 
              */
 
             var isCanRepair = false;
 
             switch (type)
             {
-                // 1
-                case EffectCheckReportInfo.EffectCheckReportType.AnimatorCullMode:
-                    isCanRepair = true;
-                    break;
-                
                 // 1
                 case EffectCheckReportInfo.EffectCheckReportType.MeshUV:
                     break;
@@ -191,7 +192,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                     isCanRepair = true;
                     break;
                 
-                // 10
+                // 11
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabName:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject:
@@ -201,16 +202,24 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabMotionVectors:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabForbidParticleSystem:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabCastShadows:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabLightProbes:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabReflectionProbes:
+                    isCanRepair = true;
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabAnimatorCullMode:
+                    isCanRepair = true;
                     break;
                 
                 // 3
@@ -228,7 +237,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.FolderName:
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

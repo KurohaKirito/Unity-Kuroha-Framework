@@ -24,7 +24,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         private int resultColors;
         private int resultTangents;
         private int resultNormals;
-        
+
         private SceneAnalysisTable table;
         private GUIStyle fontStyleRed;
         private GUIStyle fontStyleYellow;
@@ -135,7 +135,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 if (ReferenceEquals(prefab, null) == false || isDetectCurrentScene)
                 {
                     var dataList = InitRows(isCollider);
-                    
+
                     if (dataList != null)
                     {
                         var columns = InitColumns(isCollider);
@@ -176,7 +176,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 DetectMeshFilter(in dataList, in meshFilters);
                 meshCount += meshFilters.Length;
 
-                
+
                 var skinnedMeshRenderers = isDetectCurrentScene
                     ? FindObjectsOfType<SkinnedMeshRenderer>()
                     : prefab.GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -190,7 +190,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 DetectParticleSystem(in dataList, in particleSystems);
                 meshCount += particleSystems.Length;
             }
-            
+
             AddRowsSum(dataList);
 
             if (meshCount <= 0)
@@ -256,7 +256,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 assetPath = AssetDatabase.GetAssetPath(mesh)
             });
         }
-        
+
         /// <summary>
         /// 检测 MeshCollider
         /// </summary>
@@ -267,7 +267,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             const MeshColliderCookingOptions DEFAULT_OPTIONS = MeshColliderCookingOptions.EnableMeshCleaning &
                                                                MeshColliderCookingOptions.WeldColocatedVertices &
                                                                MeshColliderCookingOptions.CookForFasterSimulation;
-            
+
             foreach (var meshCollider in meshColliders)
             {
                 if (ReferenceEquals(meshCollider, null) == false)
@@ -280,7 +280,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                     else
                     {
                         var readWriteEnable = false;
-                        
+
                         // 负缩放 + 凸体
                         if (meshCollider.transform.localScale.x < 0 || meshCollider.transform.localScale.y < 0 || meshCollider.transform.localScale.z < 0)
                         {
@@ -290,14 +290,14 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                                 readWriteEnable = true;
                             }
                         }
-                        
+
                         // 旋转
                         // else if (meshCollider.transform.localRotation != Quaternion.identity)
                         // {
                         //     DebugUtil.Log("原因 2");
                         //     readWriteEnable = true;
                         // }
-                        
+
                         // Cooking Options
                         else if (meshCollider.cookingOptions != DEFAULT_OPTIONS)
                         {
@@ -336,7 +336,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 AddResult(dataList, sharedMesh, "非碰撞");
             }
         }
-        
+
         /// <summary>
         /// 检测 ParticleSystem
         /// </summary>
@@ -350,7 +350,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 {
                     var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
                     var mesh = renderer.mesh;
-                
+
                     if (ReferenceEquals(mesh, null))
                     {
                         if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
@@ -445,7 +445,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private CommonTableColumn<SceneAnalysisData> CreateColumn_Verts()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -483,7 +483,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private CommonTableColumn<SceneAnalysisData> CreateColumn_Tris()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -521,7 +521,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private static CommonTableColumn<SceneAnalysisData> CreateColumn_ReadWrite()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -543,7 +543,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -564,7 +564,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV2()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -585,7 +585,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV3()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -606,7 +606,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV4()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -627,7 +627,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private static CommonTableColumn<SceneAnalysisData> CreateColumn_Colors()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -648,7 +648,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private static CommonTableColumn<SceneAnalysisData> CreateColumn_Tangents()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -669,7 +669,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 },
             };
         }
-        
+
         private static CommonTableColumn<SceneAnalysisData> CreateColumn_Normals()
         {
             return new CommonTableColumn<SceneAnalysisData>
@@ -692,7 +692,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         }
 
         #endregion
-        
+
         /// <summary>
         /// 初始化列
         /// </summary>
@@ -713,12 +713,12 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 CreateColumn_Tangents(),
                 CreateColumn_Normals()
             };
-            
+
             if (collider)
             {
                 columns.Add(CreateColumn_ReadWrite());
             }
-            
+
             return columns.ToArray();
         }
 

@@ -24,7 +24,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 this.obj = obj;
             }
         }
-        
+
         /// <summary>
         /// 全局默认 margin
         /// </summary>
@@ -89,7 +89,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         public static void OnGUI()
         {
             InitTitle();
-            
+
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
             // 折叠框
@@ -270,17 +270,19 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                     foreach (var material in meshRenderer.sharedMaterials)
                     {
                         TextureUtil.GetAllTexturesInMaterial(material, out var textureDataList);
-                        
+
                         if (textureDataList.Count > 0)
                         {
                             infos.AddRange(from textureData in textureDataList
-                                select textureData.asset into asset where asset != null && (asset.width > WIDTH || asset.height > HEIGHT)
+                                select textureData.asset
+                                into asset
+                                where asset != null && (asset.width > WIDTH || asset.height > HEIGHT)
                                 select new PrintNode($"纹理尺寸过大: {asset.width} X {asset.height}, {asset.name}", asset));
                         }
                     }
                 }
             }
-            
+
             // 打印
             foreach (var info in infos)
             {

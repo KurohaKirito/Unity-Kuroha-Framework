@@ -25,6 +25,8 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 columns,
                 onFilterFunction,
                 onExportFunction,
-                onSelectFunction) { }
+                onSelectFunction)
+        {
+        }
     }
 }

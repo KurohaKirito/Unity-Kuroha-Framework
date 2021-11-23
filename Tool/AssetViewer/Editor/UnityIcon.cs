@@ -131,7 +131,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
                 const BindingFlags FLAGS = BindingFlags.Static | BindingFlags.NonPublic;
                 var info = typeof(EditorGUIUtility).GetMethod("GetEditorAssetBundle", FLAGS);
                 var bundle = info?.Invoke(null, null) as AssetBundle;
-                
+
                 if (ReferenceEquals(bundle, null) == false)
                 {
                     var objects = bundle.LoadAllAssets();

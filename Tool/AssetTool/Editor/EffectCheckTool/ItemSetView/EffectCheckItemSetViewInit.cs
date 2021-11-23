@@ -29,10 +29,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                         InitParticleSystem(itemInfo);
                         break;
 
-                    case EffectToolData.AssetsType.Animator:
-                        InitAnimator(itemInfo);
-                        break;
-
                     case EffectToolData.AssetsType.Mesh:
                         InitMesh(itemInfo);
                         break;
@@ -48,7 +44,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     case EffectToolData.AssetsType.Asset:
                         InitAsset(itemInfo);
                         break;
-                    
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -60,7 +56,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     string.Empty, string.Empty, 0, true, false, true, string.Empty);
             }
         }
-        
+
         /// <summary>
         /// 初始化 Mesh 检查项设置页面
         /// </summary>
@@ -71,7 +67,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             {
                 case CheckMesh.CheckOptions.MeshUV:
                     var parameter = info.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
-                    
+
                     if (parameter.Length >= 1 && bool.TryParse(parameter[0], out var flag1))
                     {
                         EffectCheckItemSetViewWindow.ParameterBool1 = flag1;
@@ -98,7 +94,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
+
         /// <summary>
         /// 初始化 Texture 检查项设置页面
         /// </summary>
@@ -125,25 +121,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
-        /// <summary>
-        /// 初始化 Animator 检查项设置页面
-        /// </summary>
-        /// <param name="info">检查项信息</param>
-        private static void InitAnimator(CheckItemInfo info)
-        {
-            switch ((CheckAnimator.CheckOptions)info.checkType)
-            {
-                case CheckAnimator.CheckOptions.CullMode:
-                    var parameter = Convert.ToInt32(info.parameter);
-                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter;
-                    break;
 
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-        
         /// <summary>
         /// 初始化 ParticleSystem 检查项设置页面
         /// </summary>
@@ -181,7 +159,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
 
                 case CheckParticleSystem.CheckOptions.ZeroSurface:
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -206,6 +184,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     {
                         EffectCheckItemSetViewWindow.ParameterBool2 = flag2;
                     }
+
                     break;
 
                 case CheckPrefab.CheckOptions.DisableObject:
@@ -219,7 +198,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(parameterTextureSize[0]);
                     EffectCheckItemSetViewWindow.ParameterInt2 = Convert.ToInt32(parameterTextureSize[1]);
                     break;
-                
+
                 case CheckPrefab.CheckOptions.MotionVectors:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
@@ -233,20 +212,21 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     break;
 
                 case CheckPrefab.CheckOptions.CastShadows:
-                    var parameter1 = Convert.ToInt32(info.parameter);
-                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter1;
+                    EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
                     break;
 
                 case CheckPrefab.CheckOptions.LightProbes:
-                    var parameter2 = Convert.ToInt32(info.parameter);
-                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter2;
+                    EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
                     break;
 
                 case CheckPrefab.CheckOptions.ReflectionProbes:
-                    var parameter3 = Convert.ToInt32(info.parameter);
-                    EffectCheckItemSetViewWindow.ParameterInt1 = parameter3;
+                    EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
                     break;
 
+                case CheckPrefab.CheckOptions.AnimatorCullMode:
+                    EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -273,16 +253,16 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                 case CheckModel.CheckOptions.MeshCompression:
                     EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
                     break;
-                
+
                 case CheckModel.CheckOptions.WeldVertices:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
+
         /// <summary>
         /// 初始化 Asset 检查项设置页面
         /// </summary>
@@ -300,7 +280,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     var parameterFolderName = info.parameter;
                     EffectCheckItemSetViewWindow.ParameterString1 = parameterFolderName;
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

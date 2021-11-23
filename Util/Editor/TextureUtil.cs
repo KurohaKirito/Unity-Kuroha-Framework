@@ -25,7 +25,7 @@ namespace Kuroha.Util.Editor
             public string path;
             public string guid;
         }
-        
+
         /// <summary>
         /// 产生一份可读写的源纹理的拷贝并返回
         /// </summary>
@@ -107,15 +107,15 @@ namespace Kuroha.Util.Editor
             while (samplePoints.Count > 0 && sampleCountMax > 0 && iterateMax-- > 0)
             {
                 // 在这些点中随便选一个采样点
-                var next = (int) Mathf.Lerp(0, samplePoints.Count - 1, UnityEngine.Random.value);
+                var next = (int)Mathf.Lerp(0, samplePoints.Count - 1, UnityEngine.Random.value);
                 var sample = samplePoints[next];
-                
+
                 // 定义 "是否找到临近分布点" 标志
                 var found = false;
-                
+
                 // 迭代 30 次, 找到泊松分布点
                 const int LOOP = 30;
-                
+
                 // 采样半径为 1 像素
                 const float RADIUS = 1;
 
@@ -168,7 +168,7 @@ namespace Kuroha.Util.Editor
             RenderTexture.ReleaseTemporary(renderTexture);
             return true;
         }
-        
+
         /// <summary>
         /// 获取 Unity 纹理的原始尺寸
         /// </summary>
@@ -188,10 +188,10 @@ namespace Kuroha.Util.Editor
             var method = typeof(TextureImporter).GetMethod("GetWidthAndHeight", BindingFlags.NonPublic | BindingFlags.Instance);
             method?.Invoke(textureImporter, args);
 
-            originWidth = (int) args[0];
-            originHeight = (int) args[1];
+            originWidth = (int)args[0];
+            originHeight = (int)args[1];
         }
-        
+
         /// <summary>
         /// 获取纹理导入设置的最大尺寸 (Default)
         /// </summary>
@@ -213,7 +213,7 @@ namespace Kuroha.Util.Editor
             // 参数名可选: "Standalone", "Web", "iPhone", "Android", "WebGL", "Windows Store Apps", "PS4", "XboxOne", "Nintendo Switch", "tvOS".
             return textureImporter.GetPlatformTextureSettings("Android", out maxSize, out _);
         }
-        
+
         /// <summary>
         /// 获取纹理导入设置的最大尺寸 (iPhone)
         /// </summary>
@@ -364,7 +364,7 @@ namespace Kuroha.Util.Editor
                 {
                     var path = AssetDatabase.GetAssetPath(asset);
                     var guid = AssetDatabase.AssetPathToGUID(path);
-                    
+
                     textureDataList.Add(new TextureData
                     {
                         asset = asset,
@@ -374,7 +374,7 @@ namespace Kuroha.Util.Editor
                 }
             }
         }
-        
+
         /// <summary>
         /// 获取一个材质球中引用的全部纹理 (包含冗余纹理)
         /// </summary>
@@ -383,7 +383,7 @@ namespace Kuroha.Util.Editor
         public static void GetAllTexturesInMaterial(Material material, out List<TextureData> textureDataList)
         {
             textureDataList = new List<TextureData>();
-            
+
             // 直接以文本形式逐行读取 Material 文件 (这样才能读取到的冗余的纹理引用)
             var materialPathName = Path.GetFullPath(AssetDatabase.GetAssetPath(material));
             if (materialPathName.IndexOf("Assets", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -404,7 +404,7 @@ namespace Kuroha.Util.Editor
                                 var guid = match.Groups[1].Value;
                                 var path = AssetDatabase.GUIDToAssetPath(guid);
                                 var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
-                    
+
                                 textureDataList.Add(new TextureData
                                 {
                                     asset = asset,
