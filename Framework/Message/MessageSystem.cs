@@ -11,50 +11,43 @@ namespace Kuroha.Framework.Message
     public class MessageSystem : Singleton<MessageSystem>
     {
         /// <summary>
-        /// 消息委托
-        /// 返回值为消息处理终止标志
-        /// 当消息由当前监听者处理完之后禁止后续处理的时候, 返回 true, 禁止后续监听者处理, 返回 false, 则允许后续监听者处理消息.
-        /// </summary>
-        public delegate bool MessageHandlerDelegate(BaseMessage message);
-
-        /// <summary>
         /// 单例
         /// </summary>
         public static MessageSystem Instance => InstanceBase as MessageSystem;
 
         /// <summary>
+        /// 消息处理器
+        /// 返回终止处理标志: 禁止后续处理返回 true, 允许后续处理返回 false.
+        /// </summary>
+        public delegate bool MessageHandler(BaseMessage message);
+
+        /// <summary>
         /// 监听字典
         /// </summary>
-        private readonly Dictionary<string, List<MessageHandlerDelegate>> listenerDic = new Dictionary<string, List<MessageHandlerDelegate>>();
+        private readonly Dictionary<string, List<MessageHandler>> listenerDic = new Dictionary<string, List<MessageHandler>>();
+
+        #region 内部 API
 
         /// <summary>
         /// 注册监听
         /// </summary>
-        /// <param name="type"></param>
         /// <param name="handler"></param>
         /// <returns>成功标志</returns>
-        public bool AddListener(System.Type type, MessageHandlerDelegate handler)
+        private bool AddListener<T>(MessageHandler handler) where T : BaseMessage
         {
             var flag = false;
 
-            if (ReferenceEquals(type, null))
+            var msgName = typeof(T).Name;
+            if (listenerDic.ContainsKey(msgName) == false)
             {
-                DebugUtil.LogError("全局消息系统: 监听注册失败, 因为没有指定类型!", null, "red");
+                listenerDic.Add(msgName, new List<MessageHandler>());
             }
-            else
-            {
-                var msgName = type.Name;
-                if (listenerDic.ContainsKey(msgName) == false)
-                {
-                    listenerDic.Add(msgName, new List<MessageHandlerDelegate>());
-                }
 
-                var listenerList = listenerDic[msgName];
-                if (listenerList.Contains(handler) == false)
-                {
-                    listenerList.Add(handler);
-                    flag = true;
-                }
+            var listenerList = listenerDic[msgName];
+            if (listenerList.Contains(handler) == false)
+            {
+                listenerList.Add(handler);
+                flag = true;
             }
 
             return flag;
@@ -63,35 +56,27 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 移除监听
         /// </summary>
-        /// <param name="type"></param>
         /// <param name="handler"></param>
         /// <returns>成功标志</returns>
-        public bool RemoveListener(System.Type type, MessageHandlerDelegate handler)
+        private bool RemoveListener<T>(MessageHandler handler)
         {
             var flag = false;
 
-            if (ReferenceEquals(type, null))
+            var msgName = typeof(T).Name;
+            if (listenerDic.ContainsKey(msgName) == false)
             {
-                DebugUtil.LogError("全局消息系统: 监听移除失败, 因为没有指定类型!", null, "red");
+                DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为此消息 {msgName} 当前没有任何监听者, 请排查错误!", null, "red");
+            }
+
+            var listenerList = listenerDic[msgName];
+            if (listenerList.Contains(handler) == false)
+            {
+                DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为待移除的监听器并没有监听该类型的消息 {msgName}!", null, "red");
             }
             else
             {
-                var msgName = type.Name;
-                if (listenerDic.ContainsKey(msgName) == false)
-                {
-                    DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为此消息 {nameof(type)} 当前没有任何监听者, 请排查错误!", null, "red");
-                }
-
-                var listenerList = listenerDic[msgName];
-                if (listenerList.Contains(handler) == false)
-                {
-                    DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为待移除的监听器并没有监听该类型的消息 {nameof(type)}!", null, "red");
-                }
-                else
-                {
-                    listenerList.Remove(handler);
-                    flag = true;
-                }
+                listenerList.Remove(handler);
+                flag = true;
             }
 
             return flag;
@@ -107,7 +92,7 @@ namespace Kuroha.Framework.Message
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public bool EnqueueMessage(BaseMessage message)
+        private bool EnqueueMessage(BaseMessage message)
         {
             var flag = false;
             if (messageQueue.Contains(message) == false)
@@ -122,7 +107,7 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 消息队列的最大处理时长
         /// </summary>
-        public float maxQueueProcessTime = 0.16667f;
+        private const float MAX_QUEUE_PROCESS_TIME = 0.16667f;
 
         /// <summary>
         /// 帧更新
@@ -132,15 +117,12 @@ namespace Kuroha.Framework.Message
             var timer = 0f;
             while (messageQueue.Count > 0)
             {
-                if (maxQueueProcessTime > 0)
+                if (timer > MAX_QUEUE_PROCESS_TIME)
                 {
-                    if (timer > maxQueueProcessTime)
-                    {
-                        return;
-                    }
+                    return;
                 }
 
-                // 出队, 处理消息
+                // 处理消息
                 var message = messageQueue.Dequeue();
                 if (TriggerMessage(message))
                 {
@@ -152,11 +134,10 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 触发消息
         /// 正常情况下是在 Update 中触发事件 (下一帧)
-        /// 设置为 Public 外部也可以通过调用该方法立即触发事件
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool TriggerMessage(BaseMessage msg)
+        private bool TriggerMessage(BaseMessage msg)
         {
             var msgName = msg.messageName;
             if (listenerDic.ContainsKey(msgName) == false)
@@ -164,12 +145,20 @@ namespace Kuroha.Framework.Message
                 DebugUtil.LogError($"没有监听器在监听该消息 {msgName}, 因此忽略该消息!", null, "red");
                 return false;
             }
-            
+
             var listenerList = listenerDic[msgName];
-            foreach (var listener in listenerList)
+            var listenerCount = listenerList.Count;
+            for (var i = 0; i < listenerCount; ++i)
             {
                 // 如果有消息禁止了后续的消息处理, 则中止消息处理
-                if (listener(msg))
+                var isOverHandle = listenerList[i](msg);
+                
+                if (listenerList.Count != listenerCount)
+                {
+                    DebugUtil.Log($"消息 {msgName} 的监听者被动态修改了, {listenerCount} => {listenerList.Count}, 请检查是否在该消息的处理方法中注册或注销了该消息的监听!", this, "yellow");
+                }
+
+                if (isOverHandle)
                 {
                     return true;
                 }
@@ -177,5 +166,45 @@ namespace Kuroha.Framework.Message
 
             return true;
         }
+
+        #endregion
+
+        #region 对外 API
+
+        /// <summary>
+        /// 注册
+        /// </summary>
+        public bool Register<T>(MessageHandler handler) where T : BaseMessage
+        {
+            return AddListener<T>(handler);
+        }
+
+        /// <summary>
+        /// 注销
+        /// </summary>
+        public bool Unregister<T>(MessageHandler handler) where T : BaseMessage
+        {
+            return RemoveListener<T>(handler);
+        }
+
+        /// <summary>
+        /// 向消息系统发送一条消息
+        /// </summary>
+        /// <returns></returns>
+        public bool Send(BaseMessage msg)
+        {
+            return EnqueueMessage(msg);
+        }
+
+        /// <summary>
+        /// 向消息系统请求一条消息
+        /// </summary>
+        /// <returns></returns>
+        public bool Request(BaseMessage msg)
+        {
+            return TriggerMessage(msg);
+        }
+
+        #endregion
     }
 }

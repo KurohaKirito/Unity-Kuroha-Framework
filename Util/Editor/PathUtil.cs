@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kuroha.Util.Editor
 {
@@ -12,22 +13,11 @@ namespace Kuroha.Util.Editor
         /// <returns></returns>
         public static List<string> GetAssetPath(in string[] absolutePaths)
         {
-            var result = new List<string>();
-
-            foreach (var path in absolutePaths)
-            {
-                if (string.IsNullOrEmpty(path) == false)
-                {
-                    var assetsIndex = path.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
-                    var assetPath = path.Substring(assetsIndex);
-                    if (assetPath.IndexOf(".meta", StringComparison.OrdinalIgnoreCase) < 0)
-                    {
-                        result.Add(assetPath);
-                    }
-                }
-            }
-
-            return result;
+            return (from path in absolutePaths
+                where string.IsNullOrEmpty(path) == false
+                let assetPath = path.Substring(path.IndexOf("Assets", StringComparison.OrdinalIgnoreCase))
+                where assetPath.IndexOf(".meta", StringComparison.OrdinalIgnoreCase) < 0
+                select assetPath).ToList();
         }
 
         /// <summary>

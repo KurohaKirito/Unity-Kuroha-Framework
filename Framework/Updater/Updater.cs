@@ -1,6 +1,9 @@
-﻿using Kuroha.Framework.Message;
+﻿using System.Collections.Generic;
+
+using Kuroha.Framework.Message;
 using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
+
 using UnityEngine;
 
 namespace Kuroha.Framework.Updater
@@ -21,33 +24,46 @@ namespace Kuroha.Framework.Updater
         private UpdateMessage updateMessage;
 
         /// <summary>
+        /// 帧更新器类列表
+        /// </summary>
+        [SerializeField]
+        private List<string> updateClassList;
+
+        /// <summary>
         /// 帧更新
         /// </summary>
         private void Update()
         {
             updateMessage ??= new UpdateMessage(Time.deltaTime);
             updateMessage.deltaTime = Time.deltaTime;
-            MessageSystem.Instance.EnqueueMessage(updateMessage);
+            MessageSystem.Instance.Send(updateMessage);
         }
 
         /// <summary>
         /// 注册帧更新
         /// </summary>
         /// <param name="updateable"></param>
-        public void RegisterUpdateableObject(UpdateableMonoBehaviour updateable)
+        public void Register(UpdateableMonoBehaviour updateable)
         {
-            DebugUtil.Log($"{Time.deltaTime} 注册帧更新消息成功!", this, "green");
-            MessageSystem.Instance.AddListener(typeof(UpdateMessage), updateable.OnUpdate);
+            if (MessageSystem.Instance.Register<UpdateMessage>(updateable.OnUpdate))
+            {
+                updateClassList ??= new List<string>(5);
+                updateClassList.Add(updateable.GetType().FullName);
+                DebugUtil.Log($"{updateMessage?.deltaTime} 成功注册帧更新事件!");
+            }
         }
 
         /// <summary>
         /// 注销帧更新
         /// </summary>
         /// <param name="updateable"></param>
-        public void UnregisterUpdateableObject(UpdateableMonoBehaviour updateable)
+        public void Unregister(UpdateableMonoBehaviour updateable)
         {
-            DebugUtil.Log($"{Time.deltaTime} 注销帧更新消息成功!", this, "green");
-            MessageSystem.Instance.RemoveListener(typeof(UpdateMessage), updateable.OnUpdate);
+            if (MessageSystem.Instance.Unregister<UpdateMessage>(updateable.OnUpdate))
+            {
+                updateClassList.Remove(updateable.GetType().FullName);
+                DebugUtil.Log($"{updateMessage?.deltaTime} 成功注销帧更新事件!");
+            }
         }
     }
 }
