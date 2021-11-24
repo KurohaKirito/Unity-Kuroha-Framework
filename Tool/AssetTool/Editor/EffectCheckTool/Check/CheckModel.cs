@@ -114,7 +114,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 if (modelImporter.isReadable)
                 {
                     var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                    var content = $"模型读写权限设置错误, 应关闭读写权限! 资源路径为: {assetPath}";
+                    var content = $"模型的读写权限错误!\t路径: {assetPath}";
                     report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXReadWriteEnable, content, item));
                 }
             }
@@ -140,7 +140,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     if (modelImporter.importNormals != ModelImporterNormals.None)
                     {
                         var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                        var content = $"模型未关闭 Normals! 资源路径为: {assetPath}";
+                        var content = $"模型的法线设置错误!\t路径: {assetPath}";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXNormals, content, item));
                     }
                 }
@@ -165,7 +165,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 var set = bool.Parse(item.parameter);
                 if (model.optimizeMeshVertices != set)
                 {
-                    var content = $"OptimizeMesh 未开启: {assetPath} ({model.optimizeMeshVertices}) >>> ({set})";
+                    var content = $"模型的网格优化错误!\t路径: {assetPath} ({model.optimizeMeshVertices}) >>> ({set})";
                     report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXOptimizeMesh, content, item));
                 }
             }
@@ -193,14 +193,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 };
                 if (model.meshCompression != parameter)
                 {
-                    var content = $"MeshCompression 设置错误: {assetPath} ({model.meshCompression}) >>> ({parameter})";
+                    var content = $"模型的网格压缩错误!\t路径: : {assetPath} ({model.meshCompression}) >>> ({parameter})";
                     report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXMeshCompression, content, item));
                 }
             }
         }
         
         /// <summary>
-        /// 检测: OptimizeMesh
+        /// 检测: WeldVertices
         /// </summary>
         /// <param name="assetPath">资源路径</param>
         /// <param name="item">检查项</param>
@@ -213,7 +213,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 var set = bool.Parse(item.parameter);
                 if (model.weldVertices != set)
                 {
-                    var content = $"WeldVertices 未开启: {assetPath} ({model.weldVertices}) >>> ({set})";
+                    var content = $"模型的顶点焊接错误: {assetPath} ({model.weldVertices}) >>> ({set})";
                     report.Add(EffectCheckReport.AddReportInfo(model, assetPath, EffectCheckReportInfo.EffectCheckReportType.FBXWeldVertices, content, item));
                 }
             }

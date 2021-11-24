@@ -115,7 +115,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 var fullName = System.IO.Path.GetFullPath(assetPath);
                 var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
                 
-                var content = $"资源命名错误! 资源路径: {fullName}";
+                var content = $"不符合规范!\t路径: {fullName}";
                 report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.AssetName, content, item));
             }
         }
@@ -174,7 +174,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             {
                 var fullName = System.IO.Path.GetFullPath(assetPath);
                 var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
-                var content = $"文件夹命名错误! 路径: {fullName}";
+                var content = $"文件夹命名不合规范!\t路径: {fullName}";
                 report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.FolderName, content, item));
             }
         }
