@@ -75,10 +75,38 @@ namespace Kuroha.Tool.AssetTool.Editor.AutoCheckTool.GUI
                         GUILayout.Space(2 * UI_DEFAULT_MARGIN);
                     }
 
-                    if (GUILayout.Button("执行检测", GUILayout.Height(UI_BUTTON_HEIGHT)))
+                    GUILayout.BeginHorizontal();
                     {
-                        Check();
+                        GUILayout.FlexibleSpace();
+
+                        if (GUILayout.Button("全选", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(120)))
+                        {
+                            for (var i = 0; i < checkToggle.Length; i++)
+                            {
+                                checkToggle[i] = true;
+                            }
+                        }
+
+                        GUILayout.FlexibleSpace();
+
+                        if (GUILayout.Button("全不选", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(120)))
+                        {
+                            for (var i = 0; i < checkToggle.Length; i++)
+                            {
+                                checkToggle[i] = false;
+                            }
+                        }
+
+                        GUILayout.FlexibleSpace();
+
+                        if (GUILayout.Button("执行检测", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(120)))
+                        {
+                            Check();
+                        }
+
+                        GUILayout.FlexibleSpace();
                     }
+                    GUILayout.EndHorizontal();
                 }
                 GUILayout.EndVertical();
             }
