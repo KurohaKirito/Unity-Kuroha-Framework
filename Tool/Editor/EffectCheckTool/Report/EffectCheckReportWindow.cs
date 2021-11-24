@@ -55,6 +55,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
         /// [GUI] 分页管理器: 总页数
         /// </summary>
         private int pageCount;
+        
+        /// <summary>
+        /// 问题项 GUI 风格
+        /// </summary>
+        private static GUIStyle checkItemGUIStyle;
 
         /// <summary>
         /// 开启页面
@@ -64,6 +69,19 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
             EffectCheckReport.reportInfos = results;
             var window = GetWindow<EffectCheckReportWindow>("特效检测结果");
             window.minSize = new Vector2(1000, 650);
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        private void OnEnable() {
+            checkItemGUIStyle = new GUIStyle {
+                fontSize = 16,
+                alignment = TextAnchor.MiddleLeft,
+                normal = new GUIStyleState {
+                    textColor = EditorGUIUtility.isProSkin? Color.white : Color.black
+                }
+            };
         }
 
         /// <summary>
@@ -156,13 +174,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
         private static void OnGUI_ShowItemReport(EffectCheckReportInfo effectCheckReportInfo) {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            effectCheckReportInfo.isEnable = EditorGUILayout.Toggle(effectCheckReportInfo.isEnable, GUILayout.Width(20));
+            effectCheckReportInfo.isEnable = EditorGUILayout.Toggle(effectCheckReportInfo.isEnable, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_HEIGHT));
 
+            // 危险等级
             UnityEngine.GUI.skin.label.normal.textColor = effectCheckReportInfo.dangerLevel == 0? Color.yellow : Color.red;
-            GUILayout.Label(EffectCheckItemSetView.dangerLevelOptions[effectCheckReportInfo.dangerLevel], GUILayout.Width(40));
+            EditorGUILayout.SelectableLabel(EffectCheckItemSetView.dangerLevelOptions[effectCheckReportInfo.dangerLevel], checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(40));
             UnityEngine.GUI.skin.label.normal.textColor = EditorGUIUtility.isProSkin? Color.white : Color.black;
 
-            GUILayout.Label(effectCheckReportInfo.content);
+            // 错误信息
+            EditorGUILayout.SelectableLabel(effectCheckReportInfo.content, checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(1600));
 
             GUILayout.FlexibleSpace();
 
@@ -171,14 +191,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                 var isCanRepair = EffectCheckReport.RepairOrSelect(effectCheckReportInfo.effectCheckReportType);
 
                 if (isCanRepair) {
-                    if (GUILayout.Button("修复", GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
+                    if (GUILayout.Button("修复", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
                         EffectCheckReport.Repair(effectCheckReportInfo);
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
                     }
                 }
 
-                if (GUILayout.Button("选中", GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
+                if (GUILayout.Button("选中", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
                     EffectCheckReport.Ping(effectCheckReportInfo);
                 }
             }

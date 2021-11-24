@@ -153,7 +153,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                     var renderMode = particle.GetComponent<ParticleSystemRenderer>().renderMode;
                     if (renderMode != parameter) {
-                        var content = $"粒子特效 Renderer Mode 错误: {assetPath} 子物体: {particle.name} 的渲染方式: {renderMode} >>> {parameter}";
+                        var content = $"粒子的渲染方式错误!\t路径: {assetPath} 子物体: {particle.name} 的渲染方式: {renderMode} >>> {parameter}";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleRendererMode, content, item));
                     }
                 }
@@ -192,7 +192,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     continue;
                 }
 
-                var content = $"粒子特效 Prewarm 设置错误: {assetPath} 子物体: {particle.name} Prewarm: true >>> false";
+                var content = $"粒子的预热设置错误!\t路径: {assetPath} 子物体: {particle.name} Prewarm: true >>> false";
                 report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticlePrewarm, content, item));
             }
         }
@@ -219,7 +219,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                     var castShadows = particle.GetComponent<ParticleSystemRenderer>().shadowCastingMode;
                     if (castShadows != ShadowCastingMode.Off) {
-                        var content = $"粒子应强制关闭阴影投射: {assetPath} 子物体: {particle.name} 的阴影投射应设置为: {ShadowCastingMode.Off}";
+                        var content = $"粒子的阴影投射错误!\t路径: {assetPath} 子物体: {particle.name} 的阴影投射应设置为: {ShadowCastingMode.Off}";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleCastShadows, content, item));
                     }
                 }
@@ -250,7 +250,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                     var receiveShadows = particle.GetComponent<ParticleSystemRenderer>().receiveShadows;
                     if (receiveShadows) {
-                        var content = $"粒子强制关闭阴影接收: {assetPath} 子物体: {particle.name} 的阴影接收应设置为: false";
+                        var content = $"粒子的阴影接收错误!\t路径: {assetPath} 子物体: {particle.name} 的阴影接收应设置为: false";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleReceiveShadows, content, item));
                     }
                 }
@@ -285,7 +285,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     if (renderer != null && renderer.mesh != null) {
                         var triangle = renderer.mesh.triangles.Length / 3;
                         if (renderer.renderMode == ParticleSystemRenderMode.Mesh && triangle > maxTris) {
-                            var content = $"粒子的渲染模式为 Mesh 并且面数大于 {maxTris}, 路径: {assetPath} 子物体: {particle.name} 的网格面数超出限制! {triangle}";
+                            var content = $"粒子网格面数超限制!\t路径: {assetPath} 子物体: {particle.name} 的网格面数超出限制! {triangle}";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleMeshTrisLimit, content, item));
                         }
                     }
@@ -344,7 +344,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                         if (isError) {
                             tips = tips.Substring(0, tips.Length - 2);
-                            var content = $"Mesh UV 错误: {assetPath} 子物件: {particle.name} 当前 Mesh: {tips} >>> 去除";
+                            var content = $"粒子网格UV信息错误!\t路径: {assetPath} 子物件: {particle.name} 当前 Mesh: {tips} >>> 去除";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleMeshVertexData, content, item));
                         }
                     }
@@ -378,7 +378,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     var trigger = particle.trigger.enabled;
 
                     if (collision || trigger) {
-                        var content = $"特效需要关闭 Collision 和 Trigger, 路径: {assetPath} : 子物件: {particle.name}";
+                        var content = $"粒子具有碰撞触发器!\t路径: {assetPath} : 子物件: {particle.name}";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleCollisionAndTrigger, content, item));
                     }
                 }
@@ -426,7 +426,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                     // 错误 1: Sub-Emitters 为空
                     if (ReferenceEquals(subEmitter, null)) {
-                        var content = $"粒子特效的 Sub-Emitters 为空! : {assetPath} 子物体: {particle.name} 的第 {index + 1} 个设置为空!";
+                        var content = $"粒子 Sub-Emitters 为空!\t物体: {assetPath} 子物体: {particle.name} 的第 {index + 1} 个设置为空!";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleSubEmittersError, content, item));
                     } else {
                         // 错误 2: Sub-Emitters 引用了非子物体的粒子系统
@@ -439,7 +439,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                         }
 
                         if (isError) {
-                            var content = $"粒子特效 Sub-Emitters 设置错误: {assetPath} 子物体: {particle.name} 的第 {index + 1} 个设置引用的 {subEmitter.name} 粒子系统不是子系统!";
+                            var content = $"粒子 Sub-Emitters 错误!\t物体: {assetPath} 子物体: {particle.name} 的第 {index + 1} 个设置引用的 {subEmitter.name} 粒子系统不是子系统!";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleSubEmittersError, content, item));
                         }
                     }
@@ -476,12 +476,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     if (particle.shape.shapeType == ParticleSystemShapeType.Mesh) {
                         var mesh = particle.shape.mesh;
                         if (ReferenceEquals(mesh, null)) {
-                            var content = $"特效的发射器类型为 Mesh, 但是没有指定 Mesh! {assetPath} 子物件 {particle.name}";
+                            var content = $"特效 Mesh 没有指定!\t物体: {assetPath} 子物件 {particle.name}";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface, content, item));
                         } else if (mesh.isReadable == false) {
                             // 根据 Mesh 获取到的路径不是 Mesh 的路径, 而是 Mesh 所在的模型文件的路径
                             var modelPath = AssetDatabase.GetAssetPath(mesh);
-                            var content = $"特效的发射器类型为 Mesh, 但是 Mesh 没有开启读写! {assetPath} 子物件 {particle.name}, 模型路径 {modelPath}";
+                            var content = $"特效 Mesh 读写错误!\t物体: {assetPath} 子物件 {particle.name}, 模型路径 {modelPath}";
                             report.Add(EffectCheckReport.AddReportInfo(mesh, modelPath, EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface, content, item));
                         }
                     }

@@ -115,7 +115,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     }
 
                     if (isError) {
-                        var content = $"SkinnedMeshRenderer: mesh 顶点属性错误: {assetInfo.FullName} 子物件: {skinnedMesh.gameObject.name} 引用的 {mesh.name} 网格: {message} >>> 去除!";
+                        var content = $"网格的顶点属性错误!\t物体: {assetInfo.FullName} 子物体: {skinnedMesh.gameObject.name} 引用的 {mesh.name} 网格: {message} >>> 去除!";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.MeshUV, content, item));
                     }
                 }
@@ -168,7 +168,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     }
 
                     if (isError) {
-                        var content = $"MeshFilter: mesh 顶点属性错误: {assetInfo.FullName} 子物件: {meshFilter.gameObject.name} 引用的 {mesh.name} 网格: {message} >>> 去除!";
+                        var content = $"网格的顶点属性错误!\t物体: {assetInfo.FullName} 子物体: {meshFilter.gameObject.name} 引用的 {mesh.name} 网格: {message} >>> 去除!";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.MeshUV, content, item));
                     }
                 }
