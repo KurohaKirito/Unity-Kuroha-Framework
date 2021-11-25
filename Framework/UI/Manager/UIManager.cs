@@ -16,6 +16,11 @@ namespace Kuroha.Framework.UI.Manager
         public static UIManager Instance => InstanceBase as UIManager;
 
         /// <summary>
+        /// 唯一相机
+        /// </summary>
+        public Camera mainCamera;
+        
+        /// <summary>
         /// Panel Manager
         /// </summary>
         public UIPanelManager Panel { get; private set; }
@@ -59,7 +64,12 @@ namespace Kuroha.Framework.UI.Manager
             }
             else
             {
-                DebugUtil.LogError("UIManager 的变量未赋值!", this, "red");
+                DebugUtil.LogError("Panel 或者 Window 未赋值!", this, "red");
+            }
+            
+            if (ReferenceEquals(mainCamera, null))
+            {
+                DebugUtil.LogError("Main Camera 未赋值!", this, "red");
             }
         }
         
