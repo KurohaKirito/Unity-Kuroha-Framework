@@ -105,7 +105,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
         /// </summary>
         private static void CheckFolderName(DirectoryInfo direction, CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos) {
             var searchType = itemData.isCheckSubFile? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            var folders = direction.GetFiles("*", searchType);
+            var folders = direction.GetDirectories("*", searchType);
             for (var index = 0; index < folders.Length; index++) {
                 ProgressBar.DisplayProgressBar("特效检测工具", $"文件夹命名规则排查中: {index + 1}/{folders.Length}", index + 1, folders.Length);
                 var assetPath = PathUtil.GetAssetPath(folders[index].FullName);
