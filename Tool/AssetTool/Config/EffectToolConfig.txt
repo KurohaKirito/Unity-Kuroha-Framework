@@ -114,10 +114,10 @@ GUID	标题	资源类型	检查类型	路径	资源白名单规则	物体白名�
 113	特效模型命名-Models/Weapon	5	0	Assets/Art/Effects/Models/Weapon			^Sfx_Weapon_	0	True	True	True	
 114	特效模型命名-Models/Character	5	0	Assets/Art/Effects/Models/Character			^Sfx_Character_	0	True	True	True	
 115	特效模型命名-Models/Scene	5	0	Assets/Art/Effects/Models/Scene			^Sfx_Scene_	0	True	True	True	
-116	必须关闭读写-Models/Aerocraft	4	0	Assets/Art/Effects/Models/Aerocraft			False;False;False;False	1	True	True	True	
+116	必须关闭读写-Models/Aerocraft	4	0	Assets/Art/Effects/Models/Aerocraft	Sfx_		False;False;False;False	1	True	True	True	
 117	必须关闭读写-Models/Backpack	4	0	Assets/Art/Effects/Models/Backpack			False;False;False;False	1	True	True	True	
 118	必须关闭读写-Models/Buff	4	0	Assets/Art/Effects/Models/Buff			False;False;False;False	1	True	True	True	
-119	必须关闭读写-Models/Carrier	4	0	Assets/Art/Effects/Models/Carrier			False;False;False;False	1	True	True	True	
+119	必须关闭读写-Models/Carrier	4	0	Assets/Art/Effects/Models/Carrier	Sfx_		False;False;False;False	1	True	True	True	
 120	粒子系统零表面错误	2	8	Assets/ToBundle/Effect			0	1	True	True	True	
 121	角色纹理文件夹命名-Fashion/Bottoms	5	1	Assets/Art/Characters/Textures/Fashion/Bottoms			^Bottoms_[0-9]+	1	True	True	True	
 122	角色纹理资源命名-Fashion/Bottoms	5	0	Assets/Art/Characters/Textures/Fashion/Bottoms			^Bottoms_[0-9]+	1	True	True	True	
