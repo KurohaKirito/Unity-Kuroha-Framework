@@ -38,7 +38,7 @@ namespace Kuroha.Framework.AsyncLoad
         /// </summary>
         private void Start()
         {
-            // 这一句不写也是可以的. 写着一句主要是为了 Unity 序列化可以看到当前在异步加载什么
+            // 这一句不写也是可以的. 写着一句主要是为了让 Unity 序列化此脚本, 这样我们可以看到当前在异步加载什么
             DontDestroyOnLoad(this);
             MessageSystem.Instance.Register<AsyncLoadSceneMessage>(Load);
         }

@@ -26,6 +26,16 @@ namespace Kuroha.Framework.Message
         /// </summary>
         private readonly Dictionary<string, List<MessageHandler>> listenerDic = new Dictionary<string, List<MessageHandler>>();
 
+        /// <summary>
+        /// 消息队列的最大处理时长
+        /// </summary>
+        private const float MAX_QUEUE_PROCESS_TIME = 0.16667f;
+        
+        /// <summary>
+        /// 消息队列
+        /// </summary>
+        private readonly Queue<BaseMessage> messageQueue = new Queue<BaseMessage>();
+        
         #region 内部 API
 
         /// <summary>
@@ -81,12 +91,7 @@ namespace Kuroha.Framework.Message
 
             return flag;
         }
-
-        /// <summary>
-        /// 消息队列
-        /// </summary>
-        private readonly Queue<BaseMessage> messageQueue = new Queue<BaseMessage>();
-
+        
         /// <summary>
         /// 消息入队
         /// </summary>
@@ -103,12 +108,7 @@ namespace Kuroha.Framework.Message
 
             return flag;
         }
-
-        /// <summary>
-        /// 消息队列的最大处理时长
-        /// </summary>
-        private const float MAX_QUEUE_PROCESS_TIME = 0.16667f;
-
+        
         /// <summary>
         /// 帧更新
         /// </summary>
@@ -188,16 +188,15 @@ namespace Kuroha.Framework.Message
         }
 
         /// <summary>
-        /// 向消息系统发送一条消息
+        /// 向消息系统发送一条消息 (将当前消息排队到消息队列, 等待处理)
         /// </summary>
-        /// <returns></returns>
         public bool Send(BaseMessage msg)
         {
             return EnqueueMessage(msg);
         }
 
         /// <summary>
-        /// 向消息系统请求一条消息
+        /// 向消息系统请求一条消息 (插队, 立即处理当前消息)
         /// </summary>
         /// <returns></returns>
         public bool Request(BaseMessage msg)
