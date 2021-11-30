@@ -24,6 +24,18 @@ namespace Kuroha.Menu.Editor
         {
             return Kuroha.Util.RunTime.DebugUtil.LogEnable == false;
         }
+        
+        [MenuItem("Kuroha/日志/关闭", false, 0)]
+        public static void CloseDebugLog()
+        {
+            Kuroha.Util.RunTime.DebugUtil.LogEnable = false;
+        }
+        
+        [MenuItem("Kuroha/日志/关闭", true, 0)]
+        public static bool CloseDebugLogValidate()
+        {
+            return Kuroha.Util.RunTime.DebugUtil.LogEnable;
+        }
 
         #endregion
         
