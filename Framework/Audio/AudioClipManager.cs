@@ -12,6 +12,7 @@ namespace Kuroha.Framework.Audio
         private const string CFG_PATH = "AudioClip/AudioClipCfg";
 
         private Dictionary<string, string> clipNamePathDic;
+        
         private readonly Dictionary<string, SingleClip> clipNameAudioDic;
         
         private string[] clipPathLst;
@@ -42,14 +43,11 @@ namespace Kuroha.Framework.Audio
             }
         }
         
-        
         public SingleClip GetAudioByName(string clipName) {
             clipNameAudioDic.TryGetValue(clipName, out var item);
             return item;
         }
-
         
-
         private void LoadClip() {
             foreach (var item in clipNamePathDic) {
                 Debug.Log(GetType() + "/LoadClip()/item.Value == " + item.Value);
