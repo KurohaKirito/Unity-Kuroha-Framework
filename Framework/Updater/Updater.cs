@@ -47,7 +47,7 @@ namespace Kuroha.Framework.Updater
         /// 注册帧更新
         /// </summary>
         /// <param name="updateable"></param>
-        public void Register(UpdateableMonoBehaviour updateable)
+        public void Register(IUpdateable updateable)
         {
             if (MessageSystem.Instance.AddListener<UpdateMessage>(updateable.OnUpdate))
             {
@@ -64,7 +64,7 @@ namespace Kuroha.Framework.Updater
         /// 注销帧更新
         /// </summary>
         /// <param name="updateable"></param>
-        public void Unregister(UpdateableMonoBehaviour updateable)
+        public void Unregister(IUpdateable updateable)
         {
             if (MessageSystem.Instance.RemoveListener<UpdateMessage>(updateable.OnUpdate))
             {

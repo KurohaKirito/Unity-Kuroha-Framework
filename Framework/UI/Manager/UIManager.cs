@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
+using Kuroha.Framework.Message;
 using Kuroha.Framework.Singleton;
 using Kuroha.Framework.UI.Panel;
 using Kuroha.Framework.UI.Window;
+using Kuroha.Framework.Updater;
 using Kuroha.Util.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.UI.Manager
 {
-    public class UIManager : Singleton<UIManager>
+    public class UIManager : Singleton<UIManager>, IUpdateable
     {
         /// <summary>
         /// 单例
@@ -64,7 +66,7 @@ namespace Kuroha.Framework.UI.Manager
             }
             else
             {
-                DebugUtil.LogError("Panel 或者 Window 未赋值!", this, "red");
+                DebugUtil.LogError("Panel Parent 或者 Window Parent 未赋值!", this, "red");
             }
             
             if (ReferenceEquals(mainCamera, null))
@@ -76,9 +78,10 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 帧更新
         /// </summary>
-        private void Update()
+        public bool OnUpdate(BaseMessage message)
         {
             UpdateEvent?.Invoke();
+            return false;
         }
 
         /// <summary>

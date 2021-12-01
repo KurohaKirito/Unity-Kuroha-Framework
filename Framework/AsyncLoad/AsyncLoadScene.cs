@@ -1,4 +1,5 @@
-﻿using Kuroha.Framework.Message;
+﻿using Kuroha.Framework.Launcher;
+using Kuroha.Framework.Message;
 using Kuroha.Framework.Updater;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,24 +9,21 @@ namespace Kuroha.Framework.AsyncLoad
     /// <summary>
     /// 协程实现异步加载场景
     /// </summary>
-    public class AsyncLoadScene : UpdateableMonoBehaviour
+    public class AsyncLoadScene : IUpdateable, ILauncher
     {
         /// <summary>
         /// 计时器
         /// </summary>
-        [SerializeField]
         private float timer;
 
         /// <summary>
         /// 最短加载时长
         /// </summary>
-        [SerializeField]
         private float minLoadTime;
 
         /// <summary>
         /// 正在加载的场景的路径
         /// </summary>
-        [SerializeField]
         private string scenePath;
         
         /// <summary>
@@ -36,19 +34,15 @@ namespace Kuroha.Framework.AsyncLoad
         /// <summary>
         /// 初始化
         /// </summary>
-        private void Start()
+        public void OnLauncher()
         {
-            #if UNITY_EDITOR
-            DontDestroyOnLoad(this);
-            #endif
-            
             MessageSystem.Instance.AddListener<AsyncLoadSceneMessage>(Load);
         }
 
         /// <summary>
         /// 帧更新
         /// </summary>
-        public override bool OnUpdate(BaseMessage message)
+        public bool OnUpdate(BaseMessage message)
         {
             if (message is UpdateMessage msg)
             {
@@ -68,7 +62,7 @@ namespace Kuroha.Framework.AsyncLoad
                 }
             }
 
-            return base.OnUpdate(message);
+            return false;
         }
         
         /// <summary>

@@ -12,7 +12,8 @@ namespace Kuroha.Framework.Message
     {
         #region 编辑器 API
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
+        
         [System.Serializable]
         public struct MessageListener
         {
@@ -53,7 +54,8 @@ namespace Kuroha.Framework.Message
                 messageListenerList.Add(val);
             }
         }
-#endif
+        
+        #endif
         
         #endregion
         
