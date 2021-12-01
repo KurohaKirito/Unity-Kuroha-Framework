@@ -7,3 +7,4 @@ namespace Kuroha.Framework.Updater
         public bool OnUpdate(BaseMessage message);
     }
 }
+

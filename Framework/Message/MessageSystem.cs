@@ -23,11 +23,13 @@ namespace Kuroha.Framework.Message
         }
         
         [Header("消息系统的最大单帧处理时长")]
-        public float maxQueueProcessTime;
+        [SerializeField]
+        private float maxQueueProcessTime;
         
         [Header("当前的消息及监听者列表")]
-        public List<MessageListener> messageListenerList;
-
+        [SerializeField]
+        private List<MessageListener> messageListenerList;
+        
         private void OnGUI()
         {
             maxQueueProcessTime = MAX_QUEUE_PROCESS_TIME;
@@ -82,77 +84,6 @@ namespace Kuroha.Framework.Message
         private readonly Queue<BaseMessage> messageQueue = new Queue<BaseMessage>();
         
         #region 内部 API
-
-        /// <summary>
-        /// 注册监听
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns>成功标志</returns>
-        private bool AddListener<T>(MessageHandler handler) where T : BaseMessage
-        {
-            var flag = false;
-
-            var msgName = typeof(T).Name;
-            if (listenerDic.ContainsKey(msgName) == false)
-            {
-                listenerDic.Add(msgName, new List<MessageHandler>());
-            }
-
-            var listenerList = listenerDic[msgName];
-            if (listenerList.Contains(handler) == false)
-            {
-                listenerList.Add(handler);
-                flag = true;
-            }
-
-            return flag;
-        }
-
-        /// <summary>
-        /// 移除监听
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns>成功标志</returns>
-        private bool RemoveListener<T>(MessageHandler handler)
-        {
-            var flag = false;
-
-            var msgName = typeof(T).Name;
-            if (listenerDic.ContainsKey(msgName) == false)
-            {
-                DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为此消息 {msgName} 当前没有任何监听者, 请排查错误!", null, "red");
-            }
-
-            var listenerList = listenerDic[msgName];
-            if (listenerList.Contains(handler) == false)
-            {
-                DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为待移除的监听器并没有监听该类型的消息 {msgName}!", null, "red");
-            }
-            else
-            {
-                listenerList.Remove(handler);
-                flag = true;
-            }
-
-            return flag;
-        }
-        
-        /// <summary>
-        /// 消息入队
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        private bool EnqueueMessage(BaseMessage message)
-        {
-            var flag = false;
-            if (messageQueue.Contains(message) == false)
-            {
-                messageQueue.Enqueue(message);
-                flag = true;
-            }
-
-            return flag;
-        }
         
         /// <summary>
         /// 帧更新
@@ -174,6 +105,23 @@ namespace Kuroha.Framework.Message
                     timer += Time.deltaTime;
                 }
             }
+        }
+        
+        /// <summary>
+        /// 消息入队
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private bool EnqueueMessage(BaseMessage message)
+        {
+            var flag = false;
+            if (messageQueue.Contains(message) == false)
+            {
+                messageQueue.Enqueue(message);
+                flag = true;
+            }
+
+            return flag;
         }
 
         /// <summary>
@@ -215,21 +163,59 @@ namespace Kuroha.Framework.Message
         #endregion
 
         #region 对外 API
-
+        
         /// <summary>
-        /// 注册
+        /// 注册监听
         /// </summary>
-        public bool Register<T>(MessageHandler handler) where T : BaseMessage
+        /// <param name="handler"></param>
+        /// <returns>成功标志</returns>
+        public bool AddListener<T>(MessageHandler handler) where T : BaseMessage
         {
-            return AddListener<T>(handler);
+            var flag = false;
+
+            var msgName = typeof(T).Name;
+            if (listenerDic.ContainsKey(msgName) == false)
+            {
+                listenerDic.Add(msgName, new List<MessageHandler>());
+            }
+
+            var listenerList = listenerDic[msgName];
+            if (listenerList.Contains(handler) == false)
+            {
+                listenerList.Add(handler);
+                flag = true;
+            }
+
+            return flag;
         }
 
         /// <summary>
-        /// 注销
+        /// 移除监听
         /// </summary>
-        public bool Unregister<T>(MessageHandler handler) where T : BaseMessage
+        /// <param name="handler"></param>
+        /// <returns>成功标志</returns>
+        public bool RemoveListener<T>(MessageHandler handler) where T : BaseMessage
         {
-            return RemoveListener<T>(handler);
+            var flag = false;
+
+            var msgName = typeof(T).Name;
+            if (listenerDic.ContainsKey(msgName) == false)
+            {
+                DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为此消息 {msgName} 当前没有任何监听者, 请排查错误!", null, "red");
+            }
+
+            var listenerList = listenerDic[msgName];
+            if (listenerList.Contains(handler) == false)
+            {
+                DebugUtil.LogError($"全局消息系统: 监听移除失败, 因为待移除的监听器并没有监听该类型的消息 {msgName}!", null, "red");
+            }
+            else
+            {
+                listenerList.Remove(handler);
+                flag = true;
+            }
+
+            return flag;
         }
 
         /// <summary>

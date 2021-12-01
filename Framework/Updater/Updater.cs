@@ -23,12 +23,16 @@ namespace Kuroha.Framework.Updater
         /// </summary>
         private UpdateMessage updateMessage;
 
-        /// <summary>
-        /// 帧更新器类列表
-        /// </summary>
-        [SerializeField]
-        private List<string> updateClassList;
+        #region 编辑器 API
 
+        #if UNITY_EDITOR
+        [Header("帧更新列表")]
+        [SerializeField]
+        private List<string> updaterList;
+        #endif
+        
+        #endregion
+        
         /// <summary>
         /// 帧更新
         /// </summary>
@@ -45,10 +49,13 @@ namespace Kuroha.Framework.Updater
         /// <param name="updateable"></param>
         public void Register(UpdateableMonoBehaviour updateable)
         {
-            if (MessageSystem.Instance.Register<UpdateMessage>(updateable.OnUpdate))
+            if (MessageSystem.Instance.AddListener<UpdateMessage>(updateable.OnUpdate))
             {
-                updateClassList ??= new List<string>(5);
-                updateClassList.Add(updateable.GetType().FullName);
+                #if UNITY_EDITOR
+                updaterList ??= new List<string>(5);
+                updaterList.Add(updateable.GetType().FullName);
+                #endif
+                
                 DebugUtil.Log($"{updateMessage?.deltaTime} 成功注册帧更新事件!");
             }
         }
@@ -59,9 +66,12 @@ namespace Kuroha.Framework.Updater
         /// <param name="updateable"></param>
         public void Unregister(UpdateableMonoBehaviour updateable)
         {
-            if (MessageSystem.Instance.Unregister<UpdateMessage>(updateable.OnUpdate))
+            if (MessageSystem.Instance.RemoveListener<UpdateMessage>(updateable.OnUpdate))
             {
-                updateClassList.Remove(updateable.GetType().FullName);
+                #if UNITY_EDITOR
+                updaterList.Remove(updateable.GetType().FullName);
+                #endif
+                
                 DebugUtil.Log($"{updateMessage?.deltaTime} 成功注销帧更新事件!");
             }
         }
