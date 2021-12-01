@@ -42,7 +42,7 @@ namespace Kuroha.Framework.UI.Window
         {
             // UI 的 Controller 类的命名规则就是: uiPrefabName_Controller
             var uiPrefabName = typeof(T).Name.Replace("_Controller", "");
-            
+
             // 先检查 UI 是否已经打开了
             if (current != null && current.Name == uiPrefabName)
             {
@@ -69,13 +69,13 @@ namespace Kuroha.Framework.UI.Window
                     {
                         DebugUtil.LogError($"未获取到 {prefabPath} 预制体, 请检查命名是否符合规则: uiPrefabName_Controller", null, "red");
                     }
-                    
+
                     var newUI = Object.Instantiate(uiPrefab, uiParent, false);
                     var newView = newUI.GetComponent<UIWindowView>();
                     var newController = new T();
                     newController.Init(newView, uiPrefabName);
                     newController.Display(message);
-                    
+
                     current = newController;
                     uiPool[uiPrefabName] = newController;
                     DebugUtil.Log("新建了 UI, 并加入缓存池", null, "green");
@@ -92,7 +92,7 @@ namespace Kuroha.Framework.UI.Window
         {
             // 关闭 (隐藏) 当前 UI
             current?.Hide();
-            
+
             // 清空 current
             current = null;
         }

@@ -10,7 +10,7 @@ namespace Kuroha.Framework.UI.Panel
         /// UI 预制体路径
         /// </summary>
         private const string UI_PREFAB_PATH = "Prefabs/UI/Panel/";
-        
+
         /// <summary>
         /// UI 栈
         /// </summary>
@@ -32,7 +32,7 @@ namespace Kuroha.Framework.UI.Panel
                 {
                     return null;
                 }
-                
+
                 return uiStack.Peek();
             }
         }
@@ -58,7 +58,7 @@ namespace Kuroha.Framework.UI.Panel
         {
             // UI 的 Controller 类的命名规则就是: uiPrefabName_Controller
             var uiPrefabName = typeof(T).Name.Replace("_Controller", "");
-            
+
             // 先检查 UI 是否已经打开了
             if (Current != null && Current.Name == uiPrefabName)
             {
@@ -67,7 +67,7 @@ namespace Kuroha.Framework.UI.Panel
             else
             {
                 DebugUtil.Log($"UI {uiPrefabName} 没有打开", null, "green");
-                
+
                 // 如果当前正在显示 UI, 则关闭当前 UI
                 Current?.UI.SetActive(false);
 
@@ -87,12 +87,12 @@ namespace Kuroha.Framework.UI.Panel
                     {
                         DebugUtil.LogError($"未获取到 {prefabPath} 预制体, 请检查命名是否符合规则: uiPrefabName_Controller", null, "red");
                     }
-                    
+
                     var newUI = Object.Instantiate(uiPrefab, uiParent, false);
                     var newView = newUI.GetComponent<UIPanelView>();
                     var newController = new T();
                     newController.Init(newView, uiPrefabName);
-                    
+
                     uiStack.Push(newController);
                     uiPool[uiPrefabName] = newController;
                     DebugUtil.Log("新建了 UI, 并加入缓存池", null, "green");
@@ -111,11 +111,11 @@ namespace Kuroha.Framework.UI.Panel
             {
                 // 关闭 (隐藏) 当前 UI
                 Current.UI.SetActive(false);
-                
+
                 // 当前 UI 出栈
                 uiStack.Pop();
             }
-            
+
             // 显示上一级 UI
             if (Current != null && uiStack.Count > 0)
             {

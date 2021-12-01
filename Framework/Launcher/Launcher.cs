@@ -19,7 +19,7 @@ namespace Kuroha.Framework.Launcher
             InitLauncher();
             RegisterFrameworkLauncher();
             RegisterLauncher();
-            
+
             // 启动所有的启动器, 延时一段时间是因为需要等待全部的 Start 方法执行完
             Invoke(nameof(LauncherComponent), 0.25f);
         }
@@ -39,7 +39,7 @@ namespace Kuroha.Framework.Launcher
         {
             launcherQueue.Enqueue(new AsyncLoadScene());
         }
-        
+
         /// <summary>
         /// 注册组件
         /// </summary>

@@ -28,7 +28,7 @@ namespace Kuroha.Framework.AsyncLoad
         /// 正在加载的场景的路径
         /// </summary>
         private string scenePath;
-        
+
         /// <summary>
         /// 异步加载进程
         /// </summary>
@@ -41,7 +41,7 @@ namespace Kuroha.Framework.AsyncLoad
         {
             MessageSystem.Instance.AddListener<AsyncLoadSceneMessage>(Load);
         }
-        
+
         /// <summary>
         /// 开始加载
         /// </summary>
@@ -52,7 +52,7 @@ namespace Kuroha.Framework.AsyncLoad
             {
                 ResetAsyncLoad(async.minLoadTime);
                 scenePath = async.path;
-                
+
                 asyncOperation = SceneManager.LoadSceneAsync(scenePath);
                 asyncOperation.allowSceneActivation = false;
                 Updater.Updater.Instance.Register(this);
@@ -60,7 +60,7 @@ namespace Kuroha.Framework.AsyncLoad
 
             return true;
         }
-        
+
         /// <summary>
         /// 帧更新
         /// </summary>
@@ -86,7 +86,7 @@ namespace Kuroha.Framework.AsyncLoad
 
             return false;
         }
-        
+
         /// <summary>
         /// 清理
         /// </summary>
@@ -95,7 +95,7 @@ namespace Kuroha.Framework.AsyncLoad
             ResetAsyncLoad(0);
             Updater.Updater.Instance.Unregister(this);
         }
-        
+
         /// <summary>
         /// 重置异步加载器
         /// </summary>

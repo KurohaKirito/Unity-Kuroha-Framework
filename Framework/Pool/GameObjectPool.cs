@@ -9,7 +9,7 @@ namespace Kuroha.Framework.Pool
         /// 对象池游戏物体的创建方法
         /// </summary>
         private readonly Func<T> createFunc;
-        
+
         /// <summary>
         /// 指定泛型的对象池 (栈)
         /// </summary>
@@ -43,8 +43,8 @@ namespace Kuroha.Framework.Pool
         public T GetFromPool(Func<T> create = null)
         {
             T poolObject;
-                
-            if (objectPool.Count > 0 )
+
+            if (objectPool.Count > 0)
             {
                 poolObject = objectPool.Pop();
             }
@@ -52,7 +52,7 @@ namespace Kuroha.Framework.Pool
             {
                 poolObject = create != null ? create() : createFunc();
             }
-            
+
             poolObject.Enable();
             return poolObject;
         }
@@ -76,7 +76,7 @@ namespace Kuroha.Framework.Pool
             {
                 poolObject.Release();
             }
-            
+
             objectPool.Clear();
             objectPool = null;
         }

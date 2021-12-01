@@ -14,7 +14,7 @@ namespace Kuroha.Framework.Singleton
         /// 单例活动标志
         /// </summary>
         private bool active = true;
-        
+
         /// <summary>
         /// 单例
         /// </summary>
@@ -36,10 +36,10 @@ namespace Kuroha.Framework.Singleton
                         // 在场景中创建单例物体
                         script = CreateSingleton();
                     }
-                    
+
                     script.OnLaunch();
                 }
-                
+
                 return instanceBase;
             }
         }
@@ -51,15 +51,15 @@ namespace Kuroha.Framework.Singleton
         {
             script = null;
             var toCreate = false;
-            
+
             var components = FindObjectsOfType<T>();
-            
+
             // 场景中没有预先创建此单例
             if (components.Length == 0)
             {
                 toCreate = true;
             }
-            
+
             // 场景中预先创建了此单例
             else if (components.Length == 1)
             {
@@ -67,7 +67,7 @@ namespace Kuroha.Framework.Singleton
                 DontDestroyOnLoad(instanceBase);
                 script = instanceBase;
             }
-            
+
             // 错误, 场景中预先创建了多个此单例
             else if (components.Length > 1)
             {
@@ -76,9 +76,10 @@ namespace Kuroha.Framework.Singleton
                 {
                     Destroy(component);
                 }
+
                 toCreate = true;
             }
-            
+
             return toCreate;
         }
 
@@ -97,7 +98,9 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 初始化
         /// </summary>
-        public virtual void OnLaunch() { }
+        public virtual void OnLaunch()
+        {
+        }
 
         /// <summary>
         /// 单例活动标志

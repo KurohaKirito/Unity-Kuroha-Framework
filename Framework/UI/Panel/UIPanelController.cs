@@ -11,12 +11,12 @@ namespace Kuroha.Framework.UI.Panel
         /// View 层
         /// </summary>
         protected UIPanelView baseView;
-        
+
         /// <summary>
         /// UI 名 (同时作为 UI 的唯一标识)
         /// </summary>
         public string Name { get; private set; }
-        
+
         /// <summary>
         /// 得到 UI 在 Hierarchy 面板中的游戏物体
         /// </summary>

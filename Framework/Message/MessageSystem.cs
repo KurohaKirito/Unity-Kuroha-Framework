@@ -12,34 +12,34 @@ namespace Kuroha.Framework.Message
     {
         #region 编辑器 API
 
-        #if UNITY_EDITOR
-        
+#if UNITY_EDITOR
+
         [System.Serializable]
         public struct MessageListener
         {
             public string messageTypeName;
-            
-            [SerializeField]
-            public List<string> listenerList;
+
+            [SerializeField] public List<string> listenerList;
         }
-        
-        [Header("当前的消息及监听者列表")]
-        [SerializeField]
+
+        [Header("当前的消息及监听者列表")] [SerializeField]
         private List<MessageListener> messageListenerList;
-        
+
         private void OnGUI()
         {
             messageListenerList ??= new List<MessageListener>();
-            
+
             messageListenerList.Clear();
             foreach (var key in listenerDic.Keys)
             {
-                var val = new MessageListener {
+                var val = new MessageListener
+                {
                     messageTypeName = key
                 };
 
                 var valList = new List<string>();
-                foreach (var handlers in listenerDic[key]) {
+                foreach (var handlers in listenerDic[key])
+                {
                     var methodFullName = $"{handlers.Target.GetType().FullName}.{handlers.Method.Name}()";
                     valList.Add(methodFullName);
                 }
@@ -48,22 +48,22 @@ namespace Kuroha.Framework.Message
                 messageListenerList.Add(val);
             }
         }
-        
-        #endif
-        
+
+#endif
+
         #endregion
-        
+
         /// <summary>
         /// 消息处理器
         /// 返回终止处理标志: 禁止后续处理返回 true, 允许后续处理返回 false.
         /// </summary>
         public delegate bool MessageHandler(BaseMessage message);
-        
+
         /// <summary>
         /// 单例
         /// </summary>
         public static MessageSystem Instance => InstanceBase as MessageSystem;
-        
+
         /// <summary>
         /// 监听字典
         /// </summary>
@@ -78,9 +78,9 @@ namespace Kuroha.Framework.Message
         /// 消息队列
         /// </summary>
         private readonly Queue<BaseMessage> messageQueue = new Queue<BaseMessage>();
-        
+
         #region 内部 API
-        
+
         /// <summary>
         /// 帧更新
         /// </summary>
@@ -102,7 +102,7 @@ namespace Kuroha.Framework.Message
                 }
             }
         }
-        
+
         /// <summary>
         /// 消息入队
         /// </summary>
@@ -141,7 +141,7 @@ namespace Kuroha.Framework.Message
             {
                 // 如果有消息禁止了后续的消息处理, 则中止消息处理
                 var isOverHandle = listenerList[i](msg);
-                
+
                 if (listenerList.Count != listenerCount)
                 {
                     DebugUtil.Log($"消息 {msgName} 的监听者被动态修改了, {listenerCount} => {listenerList.Count}, 请检查是否在该消息的处理方法中注册或注销了该消息的监听!", this, "yellow");
@@ -159,7 +159,7 @@ namespace Kuroha.Framework.Message
         #endregion
 
         #region 对外 API
-        
+
         /// <summary>
         /// 注册监听
         /// </summary>

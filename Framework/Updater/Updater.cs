@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-
 using Kuroha.Framework.Message;
 using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
-
 using UnityEngine;
 
 namespace Kuroha.Framework.Updater
@@ -27,14 +25,12 @@ namespace Kuroha.Framework.Updater
 
         #region 编辑器 API
 
-        #if UNITY_EDITOR
-        [Header("帧更新列表")]
-        [SerializeField]
-        private List<string> updaterList;
-        #endif
-        
+#if UNITY_EDITOR
+        [Header("帧更新列表")] [SerializeField] private List<string> updaterList;
+#endif
+
         #endregion
-        
+
         /// <summary>
         /// 帧更新
         /// </summary>
@@ -53,11 +49,11 @@ namespace Kuroha.Framework.Updater
         {
             if (MessageSystem.Instance.AddListener<UpdateMessage>(updater.OnUpdate))
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 updaterList ??= new List<string>(5);
                 updaterList.Add(updater.GetType().FullName);
-                #endif
-                
+#endif
+
                 DebugUtil.Log($"{updateMessage?.deltaTime} 成功注册帧更新事件!");
             }
         }
@@ -70,10 +66,10 @@ namespace Kuroha.Framework.Updater
         {
             if (MessageSystem.Instance.RemoveListener<UpdateMessage>(updater.OnUpdate))
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 updaterList.Remove(updater.GetType().FullName);
-                #endif
-                
+#endif
+
                 DebugUtil.Log($"{updateMessage?.deltaTime} 成功注销帧更新事件!");
             }
         }
