@@ -4,8 +4,7 @@ using UnityEngine;
 namespace Kuroha.Framework.Audio
 {
     /// <summary>
-    /// 音频片段管理器
-    /// 管理所有的音频资源
+    /// 音频片段管理器, 管理所有的音频资源
     /// </summary>
     public class AudioClipManager
     {
@@ -43,13 +42,16 @@ namespace Kuroha.Framework.Audio
             }
         }
         
-        public SingleClip GetAudioByName(string clipName) {
+        public SingleClip GetAudioByName(string clipName)
+        {
             clipNameAudioDic.TryGetValue(clipName, out var item);
             return item;
         }
         
-        private void LoadClip() {
-            foreach (var item in clipNamePathDic) {
+        private void LoadClip()
+        {
+            foreach (var item in clipNamePathDic)
+            {
                 Debug.Log(GetType() + "/LoadClip()/item.Value == " + item.Value);
                 var clip = Resources.Load<AudioClip>(item.Value);
                 var singleClip = new SingleClip(clip);
