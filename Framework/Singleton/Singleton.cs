@@ -1,3 +1,4 @@
+using Kuroha.Framework.Launcher;
 using Kuroha.Util.RunTime;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace Kuroha.Framework.Singleton
     /// 单例基类
     /// 每个单例首次访问时都会进行合法性验证, 仅在编辑器内验证, 发布后不进行验证
     /// </summary>
-    public class Singleton<T> : MonoBehaviour where T : Singleton<T>
+    public class Singleton<T> : MonoBehaviour, ILauncher where T : Singleton<T>
     {
         /// <summary>
         /// 单例活动标志
@@ -30,24 +31,25 @@ namespace Kuroha.Framework.Singleton
                 if (ReferenceEquals(instanceBase, null))
                 {
                     // 判断是否需要新建单例物体
-                    if (IsNeedCreateSingleton())
+                    if (IsNeedCreateSingleton(out var script))
                     {
                         // 在场景中创建单例物体
-                        CreateSingleton();
+                        script = CreateSingleton();
                     }
+                    
+                    script.OnLauncher();
                 }
                 
                 return instanceBase;
             }
-            
-            set => instanceBase = value as T;
         }
 
         /// <summary>
         /// 检测场景中的单例
         /// </summary>
-        private static bool IsNeedCreateSingleton()
+        private static bool IsNeedCreateSingleton(out T script)
         {
+            script = null;
             var toCreate = false;
             
             var components = FindObjectsOfType<T>();
@@ -63,6 +65,7 @@ namespace Kuroha.Framework.Singleton
             {
                 instanceBase = components[0];
                 DontDestroyOnLoad(instanceBase);
+                script = instanceBase;
             }
             
             // 错误, 场景中预先创建了多个此单例
@@ -82,12 +85,19 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 创建一个单例
         /// </summary>
-        private static void CreateSingleton()
+        private static T CreateSingleton()
         {
             var gameObject = new GameObject($"Singleton_{typeof(T).Name}", typeof(T));
             instanceBase = gameObject.GetComponent<T>();
             DontDestroyOnLoad(instanceBase);
+
+            return instanceBase;
         }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public virtual void OnLauncher() { }
 
         /// <summary>
         /// 单例活动标志

@@ -57,7 +57,7 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 单例
         /// </summary>
-        private void Start()
+        public override void OnLauncher()
         {
             if (ReferenceEquals(panelParent, null) == false && ReferenceEquals(windowParent, null) == false)
             {
@@ -74,7 +74,7 @@ namespace Kuroha.Framework.UI.Manager
                 DebugUtil.LogError("Main Camera 未赋值!", this, "red");
             }
         }
-        
+
         /// <summary>
         /// 帧更新
         /// </summary>
@@ -91,6 +91,7 @@ namespace Kuroha.Framework.UI.Manager
         {
             eventNameList.Add(methodName);
             UpdateEvent += action;
+            Updater.Updater.Instance.Register(this);
         }
         
         /// <summary>
@@ -100,6 +101,7 @@ namespace Kuroha.Framework.UI.Manager
         {
             eventNameList.Remove(methodName);
             UpdateEvent -= action;
+            Updater.Updater.Instance.Unregister(this);
         }
     }
 }
