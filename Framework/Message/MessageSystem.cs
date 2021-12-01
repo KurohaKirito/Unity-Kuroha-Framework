@@ -10,17 +10,62 @@ namespace Kuroha.Framework.Message
     /// </summary>
     public class MessageSystem : Singleton<MessageSystem>
     {
-        /// <summary>
-        /// 单例
-        /// </summary>
-        public static MessageSystem Instance => InstanceBase as MessageSystem;
+        #region 编辑器 API
 
+#if UNITY_EDITOR
+        [System.Serializable]
+        public struct MessageListener
+        {
+            public string messageTypeName;
+            
+            [SerializeField]
+            public List<string> listenerList;
+        }
+        
+        [Header("消息系统的最大单帧处理时长")]
+        public float maxQueueProcessTime;
+        
+        [Header("当前的消息及监听者列表")]
+        public List<MessageListener> messageListenerList;
+
+        private void OnGUI()
+        {
+            maxQueueProcessTime = MAX_QUEUE_PROCESS_TIME;
+            
+            messageListenerList ??= new List<MessageListener>();
+            
+            messageListenerList.Clear();
+            foreach (var key in listenerDic.Keys)
+            {
+                var val = new MessageListener {
+                    messageTypeName = key
+                };
+
+                var valList = new List<string>();
+                foreach (var handlers in listenerDic[key]) {
+                    var methodFullName = $"{handlers.Target.GetType().FullName}.{handlers.Method.Name}()";
+                    valList.Add(methodFullName);
+                }
+
+                val.listenerList = valList;
+                messageListenerList.Add(val);
+            }
+        }
+#endif
+        
+        #endregion
+        
         /// <summary>
         /// 消息处理器
         /// 返回终止处理标志: 禁止后续处理返回 true, 允许后续处理返回 false.
         /// </summary>
         public delegate bool MessageHandler(BaseMessage message);
-
+        
+        /// <summary>
+        /// 单例
+        /// </summary>
+        public static MessageSystem Instance => InstanceBase as MessageSystem;
+        
         /// <summary>
         /// 监听字典
         /// </summary>
@@ -30,7 +75,7 @@ namespace Kuroha.Framework.Message
         /// 消息队列的最大处理时长
         /// </summary>
         private const float MAX_QUEUE_PROCESS_TIME = 0.16667f;
-        
+
         /// <summary>
         /// 消息队列
         /// </summary>
