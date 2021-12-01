@@ -2,6 +2,6 @@
 {
     public interface ILauncher
     {
-        public abstract void OnLauncher();
+        public abstract void OnLaunch();
     }
 }

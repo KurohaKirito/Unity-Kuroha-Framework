@@ -10,6 +10,8 @@ namespace Kuroha.Framework.Updater
 {
     /// <summary>
     /// 帧更新器
+    ///
+    /// 这里的 Update() 方法仅用来给消息系统发送更新消息, 真正的更新逻辑的触发是由消息系统触发的
     /// </summary>
     public class Updater : Singleton<Updater>
     {
@@ -46,14 +48,14 @@ namespace Kuroha.Framework.Updater
         /// <summary>
         /// 注册帧更新
         /// </summary>
-        /// <param name="updateable"></param>
-        public void Register(IUpdateable updateable)
+        /// <param name="updater"></param>
+        public void Register(IUpdater updater)
         {
-            if (MessageSystem.Instance.AddListener<UpdateMessage>(updateable.OnUpdate))
+            if (MessageSystem.Instance.AddListener<UpdateMessage>(updater.OnUpdate))
             {
                 #if UNITY_EDITOR
                 updaterList ??= new List<string>(5);
-                updaterList.Add(updateable.GetType().FullName);
+                updaterList.Add(updater.GetType().FullName);
                 #endif
                 
                 DebugUtil.Log($"{updateMessage?.deltaTime} 成功注册帧更新事件!");
@@ -63,13 +65,13 @@ namespace Kuroha.Framework.Updater
         /// <summary>
         /// 注销帧更新
         /// </summary>
-        /// <param name="updateable"></param>
-        public void Unregister(IUpdateable updateable)
+        /// <param name="updater"></param>
+        public void Unregister(IUpdater updater)
         {
-            if (MessageSystem.Instance.RemoveListener<UpdateMessage>(updateable.OnUpdate))
+            if (MessageSystem.Instance.RemoveListener<UpdateMessage>(updater.OnUpdate))
             {
                 #if UNITY_EDITOR
-                updaterList.Remove(updateable.GetType().FullName);
+                updaterList.Remove(updater.GetType().FullName);
                 #endif
                 
                 DebugUtil.Log($"{updateMessage?.deltaTime} 成功注销帧更新事件!");

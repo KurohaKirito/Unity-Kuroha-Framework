@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Kuroha.Framework.UI.Manager
 {
-    public class UIManager : Singleton<UIManager>, IUpdateable
+    public class UIManager : Singleton<UIManager>, IUpdater
     {
         /// <summary>
         /// 单例
@@ -57,7 +57,7 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 单例
         /// </summary>
-        public override void OnLauncher()
+        public override void OnLaunch()
         {
             if (ReferenceEquals(panelParent, null) == false && ReferenceEquals(windowParent, null) == false)
             {

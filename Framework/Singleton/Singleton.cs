@@ -37,7 +37,7 @@ namespace Kuroha.Framework.Singleton
                         script = CreateSingleton();
                     }
                     
-                    script.OnLauncher();
+                    script.OnLaunch();
                 }
                 
                 return instanceBase;
@@ -97,7 +97,7 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 初始化
         /// </summary>
-        public virtual void OnLauncher() { }
+        public virtual void OnLaunch() { }
 
         /// <summary>
         /// 单例活动标志
