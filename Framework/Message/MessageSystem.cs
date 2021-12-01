@@ -23,18 +23,12 @@ namespace Kuroha.Framework.Message
             public List<string> listenerList;
         }
         
-        [Header("消息系统的最大单帧处理时长")]
-        [SerializeField]
-        private float maxQueueProcessTime;
-        
         [Header("当前的消息及监听者列表")]
         [SerializeField]
         private List<MessageListener> messageListenerList;
         
         private void OnGUI()
         {
-            maxQueueProcessTime = MAX_QUEUE_PROCESS_TIME;
-            
             messageListenerList ??= new List<MessageListener>();
             
             messageListenerList.Clear();
