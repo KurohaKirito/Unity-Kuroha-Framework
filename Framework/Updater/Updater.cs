@@ -25,7 +25,7 @@ namespace Kuroha.Framework.Updater
 
         #region 编辑器 API
 
-#if UNITY_EDITOR
+#if KUROHA_TEST
         [Header("帧更新列表")] [SerializeField] private List<string> updaterList;
 #endif
 
@@ -49,7 +49,7 @@ namespace Kuroha.Framework.Updater
         {
             if (MessageSystem.Instance.AddListener<UpdateMessage>(updater.OnUpdate))
             {
-#if UNITY_EDITOR
+#if KUROHA_TEST
                 updaterList ??= new List<string>(5);
                 updaterList.Add(updater.GetType().FullName);
 #endif
@@ -66,7 +66,7 @@ namespace Kuroha.Framework.Updater
         {
             if (MessageSystem.Instance.RemoveListener<UpdateMessage>(updater.OnUpdate))
             {
-#if UNITY_EDITOR
+#if KUROHA_TEST
                 updaterList.Remove(updater.GetType().FullName);
 #endif
 

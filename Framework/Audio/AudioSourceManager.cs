@@ -1,88 +1,75 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Kuroha.Framework.Audio
 {
     public class AudioSourceManager
     {
-        private List<AudioSource> allSourcesLst;
-        private readonly GameObject owner;
-
+        /// <summary>
+        /// Audio Source Pool
+        /// 管理所有的 Audio Source 组件, 这些组件都挂载在 audioSourceOwner 上面
+        /// </summary>
+        private List<AudioSource> audioSourcePool;
+        
+        /// <summary>
+        /// audio Source 挂载者
+        /// </summary>
+        private readonly GameObject audioSourceOwner;
+        
+        /// <summary>
+        /// 构造方法
+        /// </summary>
         public AudioSourceManager(GameObject owner)
         {
-            this.owner = owner;
+            audioSourceOwner = owner;
             Init();
         }
 
         /// <summary>
-        /// 初始化列表，并预加载两个 AudioSource
+        /// 预加载 2 个 AudioSource
         /// </summary>
         private void Init()
         {
-            allSourcesLst = new List<AudioSource>();
-
-            for (var i = 0; i < 2; i++)
-            {
-                var item = owner.AddComponent<AudioSource>();
-                allSourcesLst.Add(item);
-            }
+            audioSourcePool ??= new List<AudioSource>(5);
+            audioSourcePool.Add(audioSourceOwner.AddComponent<AudioSource>());
+            audioSourcePool.Add(audioSourceOwner.AddComponent<AudioSource>());
         }
 
         /// <summary>
         /// 获得闲置的 AudioSource
         /// </summary>
         /// <returns></returns>
-        public AudioSource GetIdleAudioSource()
+        public AudioSource Get()
         {
-            //Debug.Log(GetType() + "/GetIdleAudioSource()/");
-
-            foreach (var audioSource in allSourcesLst.Where(audioSource => audioSource.isPlaying == false))
+            // 判断当前有没有闲置的 Audio Source
+            foreach (var audioSource in audioSourcePool)
             {
-                return audioSource;
-            }
-
-            var item = owner.AddComponent<AudioSource>();
-            allSourcesLst.Add(item);
-
-            return item;
-        }
-
-        /// <summary>
-        /// 释放多余的 AudioSource
-        /// 包正列表中不会有太多 AudioSource
-        /// </summary>
-        public void ReleaseUnnecessaryAudioSource()
-        {
-            var tmpCount = 0;
-            var tmpSourceLst = new List<AudioSource>();
-            foreach (var t in allSourcesLst.Where(t => t.isPlaying == false))
-            {
-                tmpCount++;
-
-                if (tmpCount > 3)
+                if (audioSource.isPlaying == false)
                 {
-                    tmpSourceLst.Add(t);
+                    return audioSource;
                 }
             }
 
-            foreach (var item in tmpSourceLst)
-            {
-                allSourcesLst.Remove(item);
+            // 新挂载一个 Audio Source
+            var newAudioSource = audioSourceOwner.AddComponent<AudioSource>();
+            audioSourcePool.Add(newAudioSource);
 
-                Object.Destroy(item);
-            }
-
-            tmpSourceLst.Clear();
+            return newAudioSource;
         }
 
-        public void Stop(string audioName)
+        /// <summary>
+        /// 停止特定音乐或者音效的播放
+        /// </summary>
+        public void Stop(string clipName)
         {
-            if (string.IsNullOrEmpty(audioName) == false)
+            if (string.IsNullOrEmpty(clipName) == false)
             {
-                foreach (var t in allSourcesLst.Where(t => t.isPlaying == true && t.clip.name.Equals(audioName)))
+                foreach (var audioSource in audioSourcePool)
                 {
-                    t.Stop();
+                    if (audioSource.isPlaying && audioSource.clip.name.Equals(clipName))
+                    {
+                        audioSource.Stop();
+                    }
                 }
             }
         }

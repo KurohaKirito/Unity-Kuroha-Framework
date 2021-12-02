@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Kuroha.Util.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.Audio
@@ -8,59 +9,48 @@ namespace Kuroha.Framework.Audio
     /// </summary>
     public class AudioClipManager
     {
-        private const string CFG_PATH = "AudioClip/AudioClipCfg";
+        /// <summary>
+        /// 音频数据库路径
+        /// </summary>
+        private const string AUDIO_DATABASE_PATH = "DataBase/Audio";
 
-        private Dictionary<string, string> clipNamePathDic;
+        /// <summary>
+        /// 音频数据库字典
+        /// </summary>
+        private readonly Dictionary<string, SingleClip> singleClipDic;
         
-        private readonly Dictionary<string, SingleClip> clipNameAudioDic;
-        
-        private string[] clipPathLst;
-
+        /// <summary>
+        /// 构造方法
+        /// </summary>
         public AudioClipManager()
         {
-            clipNamePathDic = new Dictionary<string, string>();
-            clipNameAudioDic = new Dictionary<string, SingleClip>();
+            singleClipDic = new Dictionary<string, SingleClip>();
 
-            ReadConfig();
-            LoadClip();
+            ReadAudioDataBase();
         }
         
-        private void ReadConfig()
+        /// <summary>
+        /// 读取所有的 SingleClip
+        /// </summary>
+        private void ReadAudioDataBase()
         {
-            var strConfig = Resources.Load<TextAsset>(CFG_PATH).text;
-            var linesStr = strConfig.Split('\n');
+            // TODO: 优化点, 用到哪个音频资源就加载哪个音频资源, 而不是一下子全部加载
+            var singleClipArray = Resources.LoadAll<SingleClip>(AUDIO_DATABASE_PATH);
+            DebugUtil.Log($"一共加载到了 {singleClipArray.Length} 个音频资源");
 
-            if (int.TryParse(linesStr[0], out var clipCount))
+            foreach (var singleClip in singleClipArray)
             {
-                clipPathLst = new string[clipCount];
-                for (var i = 1; i <= clipCount; i++)
-                {
-                    var namesPaths = linesStr[i].Split(':');
-                    clipNamePathDic.Add(namesPaths[0], namesPaths[1].Trim());
-                    clipPathLst[i - 1] = namesPaths[1];
-                }
+                singleClipDic[singleClip.id] = singleClip;
             }
         }
-        
-        public SingleClip GetAudioByName(string clipName)
-        {
-            clipNameAudioDic.TryGetValue(clipName, out var item);
-            return item;
-        }
-        
-        private void LoadClip()
-        {
-            foreach (var item in clipNamePathDic)
-            {
-                Debug.Log(GetType() + "/LoadClip()/item.Value == " + item.Value);
-                var clip = Resources.Load<AudioClip>(item.Value);
-                var singleClip = new SingleClip(clip);
-                clipNameAudioDic.Add(item.Key, singleClip);
-            }
 
-            // clipNamePathDic 这个可能用不上了，可以清空，避免一直占用内存
-            clipNamePathDic.Clear();
-            clipNamePathDic = null;
+        /// <summary>
+        /// 获取 SingleClip
+        /// </summary>
+        public SingleClip Get(string clipID)
+        {
+            singleClipDic.TryGetValue(clipID, out var singleClip);
+            return singleClip;
         }
     }
 }

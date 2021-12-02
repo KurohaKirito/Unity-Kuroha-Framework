@@ -43,6 +43,11 @@ namespace Kuroha.Framework.Singleton
                 return instanceBase;
             }
         }
+        
+        /// <summary>
+        /// 单例活动标志
+        /// </summary>
+        public static bool IsActive => ReferenceEquals(instanceBase, null) == false && InstanceBase.active;
 
         /// <summary>
         /// 检测场景中的单例
@@ -103,14 +108,9 @@ namespace Kuroha.Framework.Singleton
         }
 
         /// <summary>
-        /// 单例活动标志
-        /// </summary>
-        public static bool IsActive => ReferenceEquals(instanceBase, null) == false && InstanceBase.active;
-
-        /// <summary>
         /// 销毁
         /// </summary>
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             active = false;
         }
@@ -118,7 +118,7 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 隐藏
         /// </summary>
-        private void OnApplicationQuit()
+        protected virtual void OnApplicationQuit()
         {
             active = false;
         }

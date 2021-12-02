@@ -12,27 +12,19 @@ namespace Kuroha.Framework.Message
     {
         #region 编辑器 API
 
-#if UNITY_EDITOR
-
-        [System.Serializable]
-        public struct MessageListener
-        {
-            public string messageTypeName;
-
-            [SerializeField] public List<string> listenerList;
-        }
+        #if KUROHA_TEST
 
         [Header("当前的消息及监听者列表")] [SerializeField]
-        private List<MessageListener> messageListenerList;
+        private List<Kuroha.Framework.Message.MessageListener> messageListenerList;
 
         private void OnGUI()
         {
-            messageListenerList ??= new List<MessageListener>();
+            messageListenerList ??= new List<Kuroha.Framework.Message.MessageListener>();
 
             messageListenerList.Clear();
             foreach (var key in listenerDic.Keys)
             {
-                var val = new MessageListener
+                var val = new Kuroha.Framework.Message.MessageListener
                 {
                     messageTypeName = key
                 };
@@ -49,7 +41,7 @@ namespace Kuroha.Framework.Message
             }
         }
 
-#endif
+        #endif
 
         #endregion
 

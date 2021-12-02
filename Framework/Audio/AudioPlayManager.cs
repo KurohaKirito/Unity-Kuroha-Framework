@@ -1,5 +1,5 @@
 ﻿using Kuroha.Framework.Singleton;
-using UnityEngine;
+using Kuroha.Util.RunTime;
 
 namespace Kuroha.Framework.Audio
 {
@@ -15,24 +15,62 @@ namespace Kuroha.Framework.Audio
         /// </summary>
         public static AudioPlayManager Instance => InstanceBase as AudioPlayManager;
 
+        /// <summary>
+        /// 音频播放器
+        /// </summary>
         private AudioSourceManager audioSourceManager;
+        
+        /// <summary>
+        /// 音频资源
+        /// </summary>
         private AudioClipManager audioClipManager;
 
-        public void Play(string audioName, bool isLoop = false)
+        /// <summary>
+        /// 播放
+        /// </summary>
+        public void Play(string clipID, bool isLoop = false)
         {
             audioSourceManager ??= new AudioSourceManager(gameObject);
             audioClipManager ??= new AudioClipManager();
             
-            Debug.Log(GetType() + "/Play()/ audioName : " + audioName);
-            var clip = audioClipManager.GetAudioByName(audioName);
-            var source = audioSourceManager.GetIdleAudioSource();
-            clip?.Play(source, isLoop);
+            var clip = audioClipManager.Get(clipID);
+            var source = audioSourceManager.Get();
+
+            if (ReferenceEquals(clip, null))
+            {
+                DebugUtil.LogError("找不到指定 ID 的音频资源, 请检查音频数据库!", null, "red");
+            }
+            else
+            {
+                clip.Play(source, isLoop);
+            }
         }
 
-        public void Stop(string audioName)
+        /// <summary>
+        /// 停止
+        /// </summary>
+        public void Stop(string clipID)
         {
-            Debug.Log(GetType() + "/Stop()/ audioName : " + audioName);
-            audioSourceManager.Stop(audioName);
+            var clip = audioClipManager.Get(clipID);
+            
+            if (ReferenceEquals(clip, null))
+            {
+                DebugUtil.LogError("找不到指定 ID 的音频资源, 请检查音频数据库!", null, "red");
+            }
+            else
+            {
+                audioSourceManager.Stop(clip.GetClipName());
+            }
+        }
+
+        /// <summary>
+        /// 内存卸载
+        /// </summary>
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            audioSourceManager = null;
+            audioClipManager = null;
         }
     }
 }
