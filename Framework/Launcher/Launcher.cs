@@ -9,7 +9,7 @@ namespace Kuroha.Framework.Launcher
         /// <summary>
         /// 启动器队列
         /// </summary>
-        private Queue<ILauncher> launcherQueue;
+        protected Queue<ILauncher> launcherQueue;
 
         /// <summary>
         /// 启动游戏
@@ -21,7 +21,7 @@ namespace Kuroha.Framework.Launcher
             RegisterLauncher();
 
             // 启动所有的启动器, 延时一段时间是因为需要等待全部的 Start 方法执行完
-            Invoke(nameof(LauncherComponent), 0.25f);
+            Invoke(nameof(LauncherComponent), 0.5f);
         }
 
         /// <summary>
