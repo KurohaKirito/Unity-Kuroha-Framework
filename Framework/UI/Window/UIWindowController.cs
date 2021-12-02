@@ -11,12 +11,12 @@ namespace Kuroha.Framework.UI.Window
         /// View 层
         /// </summary>
         protected UIWindowView baseView;
-        
+
         /// <summary>
         /// UI 名 (同时作为 UI 的唯一标识)
         /// </summary>
         public string Name { get; private set; }
-        
+
         /// <summary>
         /// 得到 UI 在 Hierarchy 面板中的游戏物体
         /// </summary>
@@ -31,12 +31,12 @@ namespace Kuroha.Framework.UI.Window
             baseView = view;
             Name = prefabName;
         }
-        
+
         /// <summary>
         /// 重置
         /// </summary>
         public virtual void Reset() { }
-        
+
         /// <summary>
         /// 关闭窗口
         /// </summary>
@@ -48,11 +48,15 @@ namespace Kuroha.Framework.UI.Window
         /// <summary>
         /// 显示窗口
         /// </summary>
-        public virtual void Display<T>(T content) { }
-        
+        public virtual void Display<T>(T content)
+        {
+        }
+
         /// <summary>
         /// 隐藏窗口
         /// </summary>
-        public virtual void Hide() { }
+        public virtual void Hide()
+        {
+        }
     }
 }
