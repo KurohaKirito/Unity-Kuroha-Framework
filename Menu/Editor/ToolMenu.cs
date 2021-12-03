@@ -36,6 +36,12 @@ namespace Kuroha.Menu.Editor
         {
             return Kuroha.Util.RunTime.DebugUtil.LogEnable;
         }
+        
+        [MenuItem("Kuroha/日志/清空", false, 0)]
+        public static void ClearDebugLog()
+        {
+            Kuroha.Util.RunTime.DebugUtil.ClearConsole();
+        }
 
         #endregion
         

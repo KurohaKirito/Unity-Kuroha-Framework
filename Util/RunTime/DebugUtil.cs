@@ -7,17 +7,36 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 日志开关
         /// </summary>
-        public static bool LogEnable { get; set; } = true;
+        private static bool logEnable;
+
+        /// <summary>
+        /// 日志开关
+        /// </summary>
+        public static bool LogEnable
+        {
+            get => logEnable;
+            set
+            {
+                if (value)
+                {
+                    logEnable = true;
+                }
+                else
+                {
+                    ClearConsole();
+                    logEnable = false;
+                }
+            }
+        }
 
         /// <summary>
         /// 清空控制台
         /// </summary>
         public static void ClearConsole()
         {
-            var assembly = System.Reflection.Assembly.GetAssembly(typeof(SceneView));
-            var logEntries = assembly?.GetType("UnityEditor.LogEntries");
-            var clearConsoleMethod = logEntries?.GetMethod("Clear");
-            clearConsoleMethod?.Invoke(new object(), null);
+            var dynamicAssembly = new DynamicAssembly(typeof(SceneView));
+            var dynamicClass = dynamicAssembly.GetClass("UnityEditor.LogEntries");
+            dynamicClass.CallMethod_PublicStatic("Clear");
         }
 
         /// <summary>
