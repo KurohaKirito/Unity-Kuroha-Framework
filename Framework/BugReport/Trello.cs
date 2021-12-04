@@ -61,7 +61,7 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 获取当前用户的全部看板
         /// </summary>
-        public IEnumerator GetUserAllBoards()
+        public IEnumerator WebRequest_GetUserAllBoards()
         {
             userAllBoards = null;
 
@@ -103,7 +103,7 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 获取当前用户的当前看板下的全部列表
         /// </summary>
-        public IEnumerator GetUserAllLists()
+        public IEnumerator WebRequest_GetUserAllLists()
         {
             userAllLists = null;
 
@@ -142,6 +142,36 @@ namespace Kuroha.Framework.BugReport
             }
         }
         
+        /// <summary>
+        /// 在当前用户的当前看板中上传一个新列表
+        /// </summary>
+        public IEnumerator WebRequest_UploadNewUserList(TrelloList list)
+        {
+            var post = new List<IMultipartFormSection>
+            {
+                new MultipartFormDataSection("name", list.name),
+                new MultipartFormDataSection("idBoard", list.boardID),
+                new MultipartFormDataSection("pos", list.position),
+            };
+
+            var url = $"{LIST_BASE_URL}?key={userKey}&token={userToken}";
+            var request = UnityWebRequest.Post(url, post);
+            yield return request.SendWebRequest();
+
+            if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
+            {
+                yield return dict["id"].ToString();
+            }
+        }
+        
+        /// <summary>
+        /// 新建一张卡片
+        /// </summary>
+        /// <param name="title">卡片标题</param>
+        /// <param name="description">卡片描述</param>
+        /// <param name="listName">所属的列表名</param>
+        /// <param name="newCardsOnTop">是否添加在列表的顶部</param>
+        /// <returns></returns>
         public TrelloCard NewCard(string title, string description, string listName, bool newCardsOnTop = true)
         {
             string currentListId;
@@ -152,54 +182,39 @@ namespace Kuroha.Framework.BugReport
             }
             else
             {
-                throw new System.Exception("List specified not found.");
+                DebugUtil.LogError($"未找到名为 {listName} 的列表, 请检查!", null, "red");
+                return null;
             }
 
             var card = new TrelloCard
             {
                 listID = currentListId,
                 name = title,
-                description = description
+                description = description,
+                position = newCardsOnTop ? "top" : "bottom",
             };
-
-            if (newCardsOnTop)
-            {
-                card.position = "top";
-            }
             
             return card;
         }
         
-        // 上传
-        public IEnumerator UploadCardRoutine(TrelloCard card)
+        /// <summary>
+        /// 在当前用户的当前看板中的特定列表中上传一张新卡片
+        /// </summary>
+        public IEnumerator WebRequest_UploadNewUserCard(TrelloCard card)
         {
-            var post = new WWWForm();
-            post.AddField("name", card.name);
-            post.AddField("desc", card.description);
-            post.AddField("pos", card.position);
-            post.AddField("due", card.due);
-            post.AddField("idList", card.listID);
-
-            var request = UnityWebRequest.Post(CARD_BASE_URL + "?" + "key=" + userKey + "&token=" + userToken, post);
-            yield return request.SendWebRequest();
-            
-            if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
+            var post = new List<IMultipartFormSection>
             {
-                yield return dict["id"].ToString();
-            }
-        }
-
-        // 上传
-        public IEnumerator UploadListRoutine(TrelloList list)
-        {
-            var post = new WWWForm();
-            post.AddField("name", list.name);
-            post.AddField("idBoard", list.boardID);
-            post.AddField("pos", list.position);
+                new MultipartFormDataSection("name", card.name),
+                new MultipartFormDataSection("desc", card.description),
+                new MultipartFormDataSection("pos", card.position),
+                new MultipartFormDataSection("due", card.due),
+                new MultipartFormDataSection("idList", card.listID),
+            };
             
-            var request = UnityWebRequest.Post(LIST_BASE_URL + "?" + "key=" + userKey + "&token=" + userToken, post);
+            var url = $"{CARD_BASE_URL}?key={userKey}&token={userToken}";
+            var request = UnityWebRequest.Post(url, post);
             yield return request.SendWebRequest();
-
+            
             if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
             {
                 yield return dict["id"].ToString();
