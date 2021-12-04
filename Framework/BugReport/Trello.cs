@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Kuroha.Util.RunTime;
 using MiniJSON;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -17,47 +18,128 @@ namespace Kuroha.Framework.BugReport
 
         #endregion
         
-        private readonly string token;
-        private readonly string key;
+        /// <summary>
+        /// 用户密钥
+        /// </summary>
+        private readonly string userKey;
+        
+        /// <summary>
+        /// 用户令牌
+        /// </summary>
+        private readonly string userToken;
+        
+        /// <summary>
+        /// 当前看板 ID
+        /// </summary>
+        private string currentBoardId = string.Empty;
         
         /// <summary>
         /// 当前用户全部的看板
         /// </summary>
-        private List<object> boards;
+        private List<object> userAllBoards;
         
-        private List<object> lists;
+        /// <summary>
+        /// 当前用户的当前看板中的全部列表
+        /// </summary>
+        private List<object> userAllLists;
+        
         private List<object> cards;
-        private string currentBoardId = "";
         // private string currentListId = "";
 
         // Dictionary<ListName, listId>
         public readonly Dictionary<string, string> cachedLists = new Dictionary<string, string>();
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public Trello(string key, string token)
         {
-            this.key = key;
-            this.token = token;
+            userKey = key;
+            userToken = token;
         }
         
-        public void SetCurrentBoard(string name)
+        /// <summary>
+        /// 获取当前用户的全部看板
+        /// </summary>
+        public IEnumerator GetUserAllBoards()
         {
-            if (boards == null)
-            {
-                throw new System.Exception("You have not yet populated the list of boards, so one cannot be selected.");
-            }
+            userAllBoards = null;
 
-            for (var i = 0; i < boards.Count; i++)
+            var url = $"{MEMBER_BASE_URL}?key={userKey}&token={userToken}&boards=all";
+            var request = UnityWebRequest.Get(url);
+            yield return request.SendWebRequest();
+
+            var requestResult = request.downloadHandler.text;
+            if (Json.Deserialize(requestResult) is Dictionary<string, object> dict)
             {
-                var board = (Dictionary<string, object>)boards[i];
-                if ((string)board["name"] == name)
+                userAllBoards = dict["boards"] as List<object>;
+            }
+        }
+        
+        /// <summary>
+        /// 设置当前看板
+        /// </summary>
+        public string SetCurrentBoard(string name)
+        {
+            currentBoardId = string.Empty;
+            
+            for (var index = 0; index < userAllBoards.Count; ++index)
+            {
+                if (userAllBoards[index] is Dictionary<string, object> board)
                 {
-                    currentBoardId = (string)board["id"];
-                    return;
+                    if (board["name"].ToString() == name)
+                    {
+                        currentBoardId = board["id"].ToString();
+                        return currentBoardId;
+                    }
                 }
             }
+            
+            DebugUtil.LogError("错误: 请填写正确的看板名称!", null, "red");
+            
+            return currentBoardId;
+        }
+        
+        /// <summary>
+        /// 获取当前用户的当前看板下的全部列表
+        /// </summary>
+        public IEnumerator GetUserAllLists()
+        {
+            userAllLists = null;
 
-            currentBoardId = "";
-            throw new System.Exception("No such board found.");
+            var url = $"{BOARD_BASE_URL}{currentBoardId}?key={userKey}&token={userToken}&lists=all";
+            var request = UnityWebRequest.Get(url);
+            yield return request.SendWebRequest();
+            
+            var requestResult = request.downloadHandler.text;
+            if (Json.Deserialize(requestResult) is Dictionary<string, object> dict)
+            {
+                userAllLists = dict["lists"] as List<object>;
+            }
+
+            CacheUserAllList();
+        }
+
+        /// <summary>
+        /// 缓存当前用户的当前看板下的全部列表
+        /// </summary>
+        private void CacheUserAllList()
+        {
+            if (userAllLists != null)
+            {
+                for (var index = 0; index < userAllLists.Count; ++index)
+                {
+                    if (userAllLists[index] is Dictionary<string, object> list)
+                    {
+                        var listName = list["name"].ToString();
+                        var listID = list["id"].ToString();
+                        if (cachedLists.ContainsKey(listName) == false)
+                        {
+                            cachedLists.Add(listName, listID);
+                        }
+                    }
+                }
+            }
         }
         
         public TrelloCard NewCard(string title, string description, string listName, bool newCardsOnTop = true)
@@ -87,70 +169,6 @@ namespace Kuroha.Framework.BugReport
             
             return card;
         }
-
-        public TrelloList NewList(string name)
-        {
-            if (currentBoardId == "")
-            {
-                throw new System.Exception("Cannot create a list if there is no board selected.");
-            }
-
-            var list = new TrelloList
-            {
-                boardID = currentBoardId,
-                name = name
-            };
-
-            return list;
-        }
-
-        /// <summary>
-        /// 获取当前用户的全部看板
-        /// </summary>
-        public IEnumerator PopulateBoardsRoutine()
-        {
-            boards = null;
-            
-            var url = MEMBER_BASE_URL + "?" + "key=" + key + "&token=" + token + "&boards=all";
-            var request = UnityWebRequest.Get(url);
-            yield return request.SendWebRequest();
-
-            Debug.Log("所有的看板: " + request.downloadHandler.text);
-            
-            if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
-            {
-                boards = dict["boards"] as List<object>;
-            }
-        }
-
-        // Populate
-        public IEnumerator PopulateListsRoutine()
-        {
-            lists = null;
-            if (currentBoardId == "")
-            {
-                throw new System.Exception("Cannot the lists, you have not selected a board yet.");
-            }
-
-            var www = UnityWebRequest.Get(BOARD_BASE_URL + currentBoardId + "?" + "key=" + key + "&token=" + token + "&lists=all");
-            yield return www.SendWebRequest();
-
-            if (Json.Deserialize(www.downloadHandler.text) is Dictionary<string, object> dict)
-            {
-                lists = (List<object>)dict["lists"];
-            }
-
-            // cache the lists
-            if (lists != null)
-            {
-                for (var i = 0; i < lists.Count; i++)
-                {
-                    var list = (Dictionary<string, object>)lists[i];
-                    if (cachedLists.ContainsKey((string)list["name"])) continue;
-                    cachedLists.Add((string)list["name"], (string)list["id"]);
-                }
-            }
-        }
         
         // 上传
         public IEnumerator UploadCardRoutine(TrelloCard card)
@@ -162,7 +180,7 @@ namespace Kuroha.Framework.BugReport
             post.AddField("due", card.due);
             post.AddField("idList", card.listID);
 
-            var request = UnityWebRequest.Post(CARD_BASE_URL + "?" + "key=" + key + "&token=" + token, post);
+            var request = UnityWebRequest.Post(CARD_BASE_URL + "?" + "key=" + userKey + "&token=" + userToken, post);
             yield return request.SendWebRequest();
             
             if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
@@ -179,7 +197,7 @@ namespace Kuroha.Framework.BugReport
             post.AddField("idBoard", list.boardID);
             post.AddField("pos", list.position);
             
-            var request = UnityWebRequest.Post(LIST_BASE_URL + "?" + "key=" + key + "&token=" + token, post);
+            var request = UnityWebRequest.Post(LIST_BASE_URL + "?" + "key=" + userKey + "&token=" + userToken, post);
             yield return request.SendWebRequest();
 
             if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
@@ -196,7 +214,7 @@ namespace Kuroha.Framework.BugReport
             {
                 new MultipartFormFileSection("file", bytes, attachmentName, "image/png")
             };
-            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + key + "&token=" + token, formData);
+            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + userKey + "&token=" + userToken, formData);
             yield return www.SendWebRequest();
         }
 
@@ -209,7 +227,7 @@ namespace Kuroha.Framework.BugReport
             {
                 new MultipartFormFileSection("file", bytes, attachmentName, "text/plain")
             };
-            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + key + "&token=" + token, formData);
+            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + userKey + "&token=" + userToken, formData);
             yield return www.SendWebRequest();
         }
         
@@ -225,7 +243,7 @@ namespace Kuroha.Framework.BugReport
                 new MultipartFormFileSection("file", bytes, attachmentName, "text/plain")
             };
             
-            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + key + "&token=" + token, formData);
+            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + userKey + "&token=" + userToken, formData);
             yield return www.SendWebRequest();
         }
         
