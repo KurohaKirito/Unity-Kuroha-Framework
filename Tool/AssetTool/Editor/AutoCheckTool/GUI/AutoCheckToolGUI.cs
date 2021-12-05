@@ -221,7 +221,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AutoCheckTool.GUI
         {
             var resultFilePath = $"{Application.dataPath}/AutoCheckResult.txt";
             var jsonSerialization = new JsonSerialization<Dictionary<string, string>>(checkResult.resultList);
-            JsonUtil.ToJsonFile(jsonSerialization, resultFilePath);
+            var json = JsonUtility.ToJson(jsonSerialization);
+            System.IO.File.WriteAllText(resultFilePath, json);
         }
     }
 }

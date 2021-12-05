@@ -1,4 +1,3 @@
-using System.Collections;
 using Kuroha.Framework.Launcher;
 using Kuroha.Util.RunTime;
 using UnityEngine;
@@ -39,7 +38,6 @@ namespace Kuroha.Framework.Singleton
                     }
 
                     script.OnLaunch();
-                    script.StartOnLaunchCoroutine();
                 }
 
                 return instanceBase;
@@ -108,23 +106,6 @@ namespace Kuroha.Framework.Singleton
         public virtual void OnLaunch()
         {
             // ...
-        }
-
-        /// <summary>
-        /// 启动协程
-        /// </summary>
-        private void StartOnLaunchCoroutine()
-        {
-            StartCoroutine(OnLaunchCoroutine());
-        }
-        
-        /// <summary>
-        /// 初始化 [协程]
-        /// </summary>
-        /// <returns></returns>
-        protected virtual IEnumerator OnLaunchCoroutine()
-        {
-            yield break;
         }
 
         /// <summary>

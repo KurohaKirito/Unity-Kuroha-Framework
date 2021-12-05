@@ -36,7 +36,5 @@
         /// 链接指向
         /// </summary>
         public string urlSource = "null";
-        
-        //public Texture2D image;
     }
 }

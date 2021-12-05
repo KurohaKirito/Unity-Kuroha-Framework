@@ -1,12 +1,14 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Kuroha.Util.RunTime;
-using MiniJSON;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Kuroha.Framework.BugReport
 {
+    [Serializable]
     public class Trello
     {
         #region 网址
@@ -17,43 +19,31 @@ namespace Kuroha.Framework.BugReport
         private const string CARD_BASE_URL = "https://api.trello.com/1/cards/";
 
         #endregion
-        
-        /// <summary>
-        /// 用户密钥
-        /// </summary>
-        private readonly string userKey;
-        
-        /// <summary>
-        /// 用户令牌
-        /// </summary>
-        private readonly string userToken;
 
+        [Header("用户密钥")] [SerializeField]
+        private string userKey;
+        
+        [Header("用户令牌")] [SerializeField]
+        private string userToken;
+
+        [Header("当前看板 ID")] [SerializeField]
+        private string currentBoardId = string.Empty;
+        
+        [Header("当前用户全部的看板")] [SerializeField]
+        private List<TrelloBoard> userAllBoards;
+        
+        [Header("当前用户的当前看板中的全部列表")] [SerializeField]
+        private List<TrelloList> userAllLists;
+        
         /// <summary>
-        /// URI: Uniform Resource Identifier [统一资源标识符]
+        /// [临时变量] URI: Uniform Resource Identifier [统一资源标识符]
         /// URL: Uniform Resource Locator [统一资源定位符]
         /// URN: Uniform Resource Name [统一资源名称]
         /// </summary>
         private string uri = string.Empty;
         
         /// <summary>
-        /// 当前看板 ID
-        /// </summary>
-        private string currentBoardId = string.Empty;
-        
-        /// <summary>
-        /// 当前用户全部的看板
-        /// </summary>
-        private List<object> userAllBoards;
-        
-        /// <summary>
-        /// 当前用户的当前看板中的全部列表
-        /// </summary>
-        private List<object> userAllLists;
-        
-        /// <summary>
-        /// [缓存] 当前用户的当前看板中的全部列表
-        /// Key: 列表名
-        /// Value: 列表 ID
+        /// [缓存] 当前用户的当前看板中的全部列表 [Key: name] [Value: id]
         /// </summary>
         public readonly Dictionary<string, string> cachedUserLists = new Dictionary<string, string>();
 
@@ -65,66 +55,86 @@ namespace Kuroha.Framework.BugReport
             userKey = key;
             userToken = token;
         }
+
+        /// <summary>
+        /// 从 Json 中取出特定名称的数组
+        /// </summary>
+        /// <returns></returns>
+        private static string GetTrelloJson_Array(string originalJson, string arrayName)
+        {
+            var json = string.Empty;
+            var regex = new Regex(@$"(?<=""{arrayName}\"":)\[([^\]])+\]");
+            var match = regex.Match(originalJson);
+            if (match.Success)
+            {
+                json = @$"{{""data"":{match.Value}}}";
+            }
+
+            return json;
+        }
+        
+        /// <summary>
+        /// 从 Json 中取出特定名称的字符串
+        /// </summary>
+        /// <returns></returns>
+        private static string GetTrelloJson_String(string originalJson, string stringName)
+        {
+            var json = string.Empty;
+            var regex = new Regex(@$"(?<=""{stringName}"":"")([0-9,a-z,A-Z]+)(?="")");
+            var match = regex.Match(originalJson);
+            if (match.Success)
+            {
+                json = match.Value;
+            }
+
+            return json;
+        }
         
         /// <summary>
         /// 获取当前用户的全部看板
         /// </summary>
-        public IEnumerator WebRequest_GetUserAllBoards()
+        public async Task WebRequest_GetUserAllBoards()
         {
-            userAllBoards = null;
-
             uri = $"{MEMBER_BASE_URL}?key={userKey}&token={userToken}&boards=all";
             var request = UnityWebRequest.Get(uri);
-            yield return request.SendWebRequest();
+            await request.SendWebRequest();
 
             var requestResult = request.downloadHandler.text;
-            if (Json.Deserialize(requestResult) is Dictionary<string, object> dict)
-            {
-                userAllBoards = dict["boards"] as List<object>;
-            }
+            var json = GetTrelloJson_Array(requestResult, "boards");
+            userAllBoards = JsonUtility.FromJson<JsonSerialization<TrelloBoard>>(json).ToList();
         }
         
         /// <summary>
         /// 设置当前看板
         /// </summary>
-        public string SetCurrentBoard(string name)
+        public void SetCurrentBoard(string name)
         {
-            currentBoardId = string.Empty;
-            
-            for (var index = 0; index < userAllBoards.Count; ++index)
+            foreach (var board in userAllBoards)
             {
-                if (userAllBoards[index] is Dictionary<string, object> board)
+                if (board.name == name)
                 {
-                    if (board["name"].ToString() == name)
-                    {
-                        currentBoardId = board["id"].ToString();
-                        return currentBoardId;
-                    }
+                    currentBoardId = board.id;
+                    return;
                 }
             }
             
             DebugUtil.LogError("错误: 请填写正确的看板名称!", null, "red");
-            
-            return currentBoardId;
         }
         
         /// <summary>
         /// 获取当前用户的当前看板下的全部列表
         /// </summary>
-        public IEnumerator WebRequest_GetUserAllLists()
+        public async Task WebRequest_GetUserAllLists()
         {
-            userAllLists = null;
-
             uri = $"{BOARD_BASE_URL}{currentBoardId}?key={userKey}&token={userToken}&lists=all";
             var request = UnityWebRequest.Get(uri);
-            yield return request.SendWebRequest();
             
-            var requestResult = request.downloadHandler.text;
-            if (Json.Deserialize(requestResult) is Dictionary<string, object> dict)
-            {
-                userAllLists = dict["lists"] as List<object>;
-            }
+            await request.SendWebRequest();
 
+            var requestResult = request.downloadHandler.text;
+            var json = GetTrelloJson_Array(requestResult, "lists");
+            userAllLists = JsonUtility.FromJson<JsonSerialization<TrelloList>>(json).ToList();
+            
             CacheUserAllList();
         }
 
@@ -133,19 +143,13 @@ namespace Kuroha.Framework.BugReport
         /// </summary>
         private void CacheUserAllList()
         {
-            if (userAllLists != null)
+            foreach (var trelloList in userAllLists)
             {
-                for (var index = 0; index < userAllLists.Count; ++index)
+                var listName = trelloList.name;
+                var listID = trelloList.id;
+                if (cachedUserLists.ContainsKey(listName) == false)
                 {
-                    if (userAllLists[index] is Dictionary<string, object> list)
-                    {
-                        var listName = list["name"].ToString();
-                        var listID = list["id"].ToString();
-                        if (cachedUserLists.ContainsKey(listName) == false)
-                        {
-                            cachedUserLists.Add(listName, listID);
-                        }
-                    }
+                    cachedUserLists.Add(listName, listID);
                 }
             }
         }
@@ -153,23 +157,36 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 在当前用户的当前看板中上传一个新列表
         /// </summary>
-        public IEnumerator WebRequest_UploadNewUserList(TrelloList list)
+        public async Task WebRequest_UploadNewUserList(TrelloList list)
         {
             var post = new List<IMultipartFormSection>
             {
                 new MultipartFormDataSection("name", list.name),
-                new MultipartFormDataSection("idBoard", list.boardID),
-                new MultipartFormDataSection("pos", list.position),
+                new MultipartFormDataSection("idBoard", list.idBoard),
+                new MultipartFormDataSection("pos", "bottom"),
             };
 
             uri = $"{LIST_BASE_URL}?key={userKey}&token={userToken}";
             var request = UnityWebRequest.Post(uri, post);
-            yield return request.SendWebRequest();
-
-            if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
+            await request.SendWebRequest();
+        }
+        
+        /// <summary>
+        /// 新建一个列表
+        /// </summary>
+        /// <param name="title">列表标题</param>
+        /// <param name="isOnRight">是否新增在所有列表的右侧</param>
+        /// <returns></returns>
+        public TrelloList NewList(string title, bool isOnRight = true)
+        {
+            var newList = new TrelloList
             {
-                yield return dict["id"].ToString();
-            }
+                name = title,
+                idBoard = currentBoardId,
+                pos = isOnRight ? "bottom" : "top",
+            };
+            
+            return newList;
         }
         
         /// <summary>
@@ -178,9 +195,9 @@ namespace Kuroha.Framework.BugReport
         /// <param name="title">卡片标题</param>
         /// <param name="description">卡片描述</param>
         /// <param name="listName">所属的列表名</param>
-        /// <param name="newCardsOnTop">是否添加在列表的顶部</param>
+        /// <param name="isOnTop">是否添加在列表的顶部</param>
         /// <returns></returns>
-        public TrelloCard NewCard(string title, string description, string listName, bool newCardsOnTop = true)
+        public TrelloCard NewCard(string title, string description, string listName, bool isOnTop = true)
         {
             string currentListId;
 
@@ -199,7 +216,7 @@ namespace Kuroha.Framework.BugReport
                 listID = currentListId,
                 name = title,
                 description = description,
-                position = newCardsOnTop ? "top" : "bottom",
+                position = isOnTop ? "top" : "bottom",
             };
             
             return card;
@@ -208,7 +225,7 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 在当前用户的当前看板中的特定列表中上传一张新卡片
         /// </summary>
-        public IEnumerator WebRequest_UploadNewUserCard(TrelloCard card)
+        public async Task<string> WebRequest_UploadNewUserCard(TrelloCard card)
         {
             var post = new List<IMultipartFormSection>
             {
@@ -221,12 +238,11 @@ namespace Kuroha.Framework.BugReport
             
             uri = $"{CARD_BASE_URL}?key={userKey}&token={userToken}";
             var request = UnityWebRequest.Post(uri, post);
-            yield return request.SendWebRequest();
+            await request.SendWebRequest();
             
-            if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
-            {
-                yield return dict["id"].ToString();
-            }
+            var requestResult = request.downloadHandler.text;
+            var newCardID = GetTrelloJson_String(requestResult, "id");
+            return newCardID;
         }
 
         /// <summary>
@@ -236,10 +252,10 @@ namespace Kuroha.Framework.BugReport
         /// <param name="attachmentFileName">附件文件名称</param>
         /// <param name="image">图片</param>
         /// <returns></returns>
-        public IEnumerator WebRequest_UploadAttachmentToCard_Image(string cardId, string attachmentFileName, Texture2D image)
+        public async Task WebRequest_UploadAttachmentToCard_Image(string cardId, string attachmentFileName, Texture2D image)
         {
             var bytes = image.EncodeToPNG();
-            yield return WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
+            await WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
         }
 
         /// <summary>
@@ -249,10 +265,10 @@ namespace Kuroha.Framework.BugReport
         /// <param name="attachmentFileName">附件文件名称</param>
         /// <param name="text">文本字符串</param>
         /// <returns></returns>
-        public IEnumerator WebRequest_UploadAttachmentToCard_String(string cardId, string attachmentFileName, string text)
+        public async Task WebRequest_UploadAttachmentToCard_String(string cardId, string attachmentFileName, string text)
         {
             var bytes = System.Text.Encoding.UTF8.GetBytes(text.ToCharArray());
-            yield return WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
+            await WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
         }
         
         /// <summary>
@@ -262,10 +278,10 @@ namespace Kuroha.Framework.BugReport
         /// <param name="attachmentFileName">附件文件名称</param>
         /// <param name="textFilePath">文本文件路径</param>
         /// <returns></returns>
-        public IEnumerator WebRequest_UploadAttachmentToCard_TextFile(string cardId, string attachmentFileName, string textFilePath)
+        public async Task WebRequest_UploadAttachmentToCard_TextFile(string cardId, string attachmentFileName, string textFilePath)
         {
             var bytes = System.IO.File.ReadAllBytes(textFilePath);
-            yield return WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
+            await WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
         }
         
         /// <summary>
@@ -275,7 +291,7 @@ namespace Kuroha.Framework.BugReport
         /// <param name="attachmentFileName">附件文件名称</param>
         /// <param name="bytes">字节流</param>
         /// <returns></returns>
-        private IEnumerator WebRequest_UploadAttachmentToCard_Bytes(string cardId, string attachmentFileName, byte[] bytes)
+        private async Task WebRequest_UploadAttachmentToCard_Bytes(string cardId, string attachmentFileName, byte[] bytes)
         {
             var formData = new List<IMultipartFormSection>
             {
@@ -284,7 +300,7 @@ namespace Kuroha.Framework.BugReport
             
             uri = $"{CARD_BASE_URL}{cardId}/attachments?key={userKey}&token={userToken}";
             var request = UnityWebRequest.Post(uri, formData);
-            yield return request.SendWebRequest();
+            await request.SendWebRequest();
         }
     }
 }

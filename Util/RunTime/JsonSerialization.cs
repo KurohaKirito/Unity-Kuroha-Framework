@@ -13,7 +13,8 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 实际序列化的字段
         /// </summary>
-        [SerializeField] private List<T> data;
+        [SerializeField]
+        private List<T> data;
 
         /// <summary>
         /// 构造方法
@@ -76,12 +77,19 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public void OnAfterDeserialize()
         {
-            if (keys.Count == values.Count)
+            if (keys.IsNullOrEmpty() || values.IsNullOrEmpty())
             {
-                data = new Dictionary<TKey, TValue>(keys.Count);
-                for (var index = 0; index < keys.Count; ++index)
+                DebugUtil.LogError("反序列化失败!", null, "red");
+            }
+            else
+            {
+                if (keys.Count == values.Count)
                 {
-                    data.Add(keys[index], values[index]);
+                    data = new Dictionary<TKey, TValue>(keys.Count);
+                    for (var index = 0; index < keys.Count; ++index)
+                    {
+                        data.Add(keys[index], values[index]);
+                    }
                 }
             }
         }
@@ -93,20 +101,6 @@ namespace Kuroha.Util.RunTime
         public Dictionary<TKey, TValue> ToDictionary()
         {
             return data;
-        }
-    }
-
-    public static class JsonUtil
-    {
-        /// <summary>
-        /// 生成 Json
-        /// </summary>
-        /// <param name="obj">数据</param>
-        /// <param name="filePathAndName">json 路径以及文件名</param>
-        public static void ToJsonFile(object obj, string filePathAndName)
-        {
-            var json = JsonUtility.ToJson(obj);
-            System.IO.File.WriteAllText(filePathAndName, json);
         }
     }
 }

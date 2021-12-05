@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
 using UnityEngine;
@@ -12,6 +10,7 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// Trello API
         /// </summary>
+        [SerializeField]
         private Trello trello;
         
         /// <summary>
@@ -35,7 +34,7 @@ namespace Kuroha.Framework.BugReport
         /// 初始化 BugReport
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerator OnLaunchCoroutine()
+        public override async void OnLaunch()
         {
             DebugUtil.Log("初始化 Bug Report 中...", this, "yellow");
             
@@ -43,15 +42,16 @@ namespace Kuroha.Framework.BugReport
             trello = new Trello(trelloUserKey, trelloUserToken);
 
             // 网络请求用户所有的看板
-            yield return trello.WebRequest_GetUserAllBoards();
-            
+            await trello.WebRequest_GetUserAllBoards();
+
             // 设置当前看板
-            var currentBoardId = trello.SetCurrentBoard(trelloUserTokenBoard);
+            trello.SetCurrentBoard(trelloUserTokenBoard);
             
             // 网络请求当前用户的当前看板下的全部列表
-            yield return trello.WebRequest_GetUserAllLists();
-            
-            // 自动同步看板列表
+            await trello.WebRequest_GetUserAllLists();
+
+            #region 自动同步看板列表
+
             if (userListName.IsNullOrEmpty())
             {
                 userListName = new List<string>();
@@ -71,23 +71,23 @@ namespace Kuroha.Framework.BugReport
                 }
             }
 
-            // 自动创建新列表到看板
+            #endregion
+            
+            #region 自动创建新列表到看板
+
             foreach (var listName in userListName)
             {
                 if (trello.cachedUserLists.ContainsKey(listName) == false)
                 {
-                    var newList = new TrelloList
-                    {
-                        boardID = currentBoardId,
-                        name = listName
-                    };
-                    
-                    yield return trello.WebRequest_UploadNewUserList(newList);
+                    var newList = trello.NewList(listName);
+                    await trello.WebRequest_UploadNewUserList(newList);
                 }
             }
-            
+
+            #endregion
+
             // 再次网络请求当前用户的当前看板下的全部列表
-            yield return trello.WebRequest_GetUserAllLists();
+            await trello.WebRequest_GetUserAllLists();
             
             DebugUtil.Log("Bug Report 初始化完成!", this, "green");
         }
@@ -99,25 +99,24 @@ namespace Kuroha.Framework.BugReport
         /// <param name="cardDescription">卡片描述</param>
         /// <param name="cardList">卡片所属列表</param>
         /// <returns></returns>
-        public IEnumerator ReportError(string cardTitle, string cardDescription, string cardList)
+        public async void ReportError(string cardTitle, string cardDescription, string cardList)
         {
             // 新建卡片
             var card = trello.NewCard(cardTitle, cardDescription, cardList);
-            
+
             // 上传卡片, 成功后返回 CardID
-            var uploadCardCoroutine = new CoroutineUtil(this, trello.WebRequest_UploadNewUserCard(card));
-            yield return uploadCardCoroutine.coroutine;
-            var cardID = uploadCardCoroutine.result.ToString();
+            var newCardID = await trello.WebRequest_UploadNewUserCard(card);
+            DebugUtil.Log($"新建卡片: {cardTitle}, ID 为: {newCardID}", this, "green");
 
             // 上传附件 [截图]
             var screenshot = ScreenshotUtil.Instance.CaptureCameraShot(new Rect(0, 0, Screen.width, Screen.height), Camera.main);
-            yield return trello.WebRequest_UploadAttachmentToCard_Image(cardID, "ErrorScreenshot.png", screenshot);
+            await trello.WebRequest_UploadAttachmentToCard_Image(newCardID, "ErrorScreenshot.png", screenshot);
             
             // 上传附件 [字符串]
-            yield return trello.WebRequest_UploadAttachmentToCard_String(cardID, "ErrorInfo.txt", "这里是详细的报错信息, 使用字符串的形式进行上传");
+            await trello.WebRequest_UploadAttachmentToCard_String(newCardID, "ErrorInfo.txt", "这里是详细的报错信息, 使用字符串的形式进行上传");
             
             // 上传附件 [文本类文件]
-            yield return trello.WebRequest_UploadAttachmentToCard_TextFile(cardID, "这是报错日志.json", @"C:\Users\Kuroha\Desktop\Untitled-1.json");
+            await trello.WebRequest_UploadAttachmentToCard_TextFile(newCardID, "这是报错日志.json", @"C:\Users\Kuroha\Desktop\Untitled-1.json");
             
             DebugUtil.Log("报错上传成功!", this, "green");
         }
