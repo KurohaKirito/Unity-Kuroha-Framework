@@ -27,6 +27,13 @@ namespace Kuroha.Framework.BugReport
         /// 用户令牌
         /// </summary>
         private readonly string userToken;
+
+        /// <summary>
+        /// URI: Uniform Resource Identifier [统一资源标识符]
+        /// URL: Uniform Resource Locator [统一资源定位符]
+        /// URN: Uniform Resource Name [统一资源名称]
+        /// </summary>
+        private string uri = string.Empty;
         
         /// <summary>
         /// 当前看板 ID
@@ -43,11 +50,12 @@ namespace Kuroha.Framework.BugReport
         /// </summary>
         private List<object> userAllLists;
         
-        private List<object> cards;
-        // private string currentListId = "";
-
-        // Dictionary<ListName, listId>
-        public readonly Dictionary<string, string> cachedLists = new Dictionary<string, string>();
+        /// <summary>
+        /// [缓存] 当前用户的当前看板中的全部列表
+        /// Key: 列表名
+        /// Value: 列表 ID
+        /// </summary>
+        public readonly Dictionary<string, string> cachedUserLists = new Dictionary<string, string>();
 
         /// <summary>
         /// 构造函数
@@ -65,8 +73,8 @@ namespace Kuroha.Framework.BugReport
         {
             userAllBoards = null;
 
-            var url = $"{MEMBER_BASE_URL}?key={userKey}&token={userToken}&boards=all";
-            var request = UnityWebRequest.Get(url);
+            uri = $"{MEMBER_BASE_URL}?key={userKey}&token={userToken}&boards=all";
+            var request = UnityWebRequest.Get(uri);
             yield return request.SendWebRequest();
 
             var requestResult = request.downloadHandler.text;
@@ -107,8 +115,8 @@ namespace Kuroha.Framework.BugReport
         {
             userAllLists = null;
 
-            var url = $"{BOARD_BASE_URL}{currentBoardId}?key={userKey}&token={userToken}&lists=all";
-            var request = UnityWebRequest.Get(url);
+            uri = $"{BOARD_BASE_URL}{currentBoardId}?key={userKey}&token={userToken}&lists=all";
+            var request = UnityWebRequest.Get(uri);
             yield return request.SendWebRequest();
             
             var requestResult = request.downloadHandler.text;
@@ -133,9 +141,9 @@ namespace Kuroha.Framework.BugReport
                     {
                         var listName = list["name"].ToString();
                         var listID = list["id"].ToString();
-                        if (cachedLists.ContainsKey(listName) == false)
+                        if (cachedUserLists.ContainsKey(listName) == false)
                         {
-                            cachedLists.Add(listName, listID);
+                            cachedUserLists.Add(listName, listID);
                         }
                     }
                 }
@@ -154,8 +162,8 @@ namespace Kuroha.Framework.BugReport
                 new MultipartFormDataSection("pos", list.position),
             };
 
-            var url = $"{LIST_BASE_URL}?key={userKey}&token={userToken}";
-            var request = UnityWebRequest.Post(url, post);
+            uri = $"{LIST_BASE_URL}?key={userKey}&token={userToken}";
+            var request = UnityWebRequest.Post(uri, post);
             yield return request.SendWebRequest();
 
             if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
@@ -176,9 +184,9 @@ namespace Kuroha.Framework.BugReport
         {
             string currentListId;
 
-            if (cachedLists.ContainsKey(listName))
+            if (cachedUserLists.ContainsKey(listName))
             {
-                currentListId = cachedLists[listName];
+                currentListId = cachedUserLists[listName];
             }
             else
             {
@@ -211,8 +219,8 @@ namespace Kuroha.Framework.BugReport
                 new MultipartFormDataSection("idList", card.listID),
             };
             
-            var url = $"{CARD_BASE_URL}?key={userKey}&token={userToken}";
-            var request = UnityWebRequest.Post(url, post);
+            uri = $"{CARD_BASE_URL}?key={userKey}&token={userToken}";
+            var request = UnityWebRequest.Post(uri, post);
             yield return request.SendWebRequest();
             
             if (Json.Deserialize(request.downloadHandler.text) is Dictionary<string, object> dict)
@@ -221,104 +229,62 @@ namespace Kuroha.Framework.BugReport
             }
         }
 
-        // 设置
-        public IEnumerator SetUpAttachmentInCardRoutine(string cardId, string attachmentName, Texture2D image)
+        /// <summary>
+        /// 上传附件到指定 ID 的卡片 [图片]
+        /// </summary>
+        /// <param name="cardId">指定的卡片 ID</param>
+        /// <param name="attachmentFileName">附件文件名称</param>
+        /// <param name="image">图片</param>
+        /// <returns></returns>
+        public IEnumerator WebRequest_UploadAttachmentToCard_Image(string cardId, string attachmentFileName, Texture2D image)
         {
             var bytes = image.EncodeToPNG();
-            var formData = new List<IMultipartFormSection>
-            {
-                new MultipartFormFileSection("file", bytes, attachmentName, "image/png")
-            };
-            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + userKey + "&token=" + userToken, formData);
-            yield return www.SendWebRequest();
+            yield return WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
         }
 
-        // 设置
-        public IEnumerator SetUpAttachmentInCardRoutine(string cardId, string attachmentName, string data)
+        /// <summary>
+        /// 上传附件到指定 ID 的卡片 [字符串]
+        /// </summary>
+        /// <param name="cardId">指定的卡片 ID</param>
+        /// <param name="attachmentFileName">附件文件名称</param>
+        /// <param name="text">文本字符串</param>
+        /// <returns></returns>
+        public IEnumerator WebRequest_UploadAttachmentToCard_String(string cardId, string attachmentFileName, string text)
         {
-            var bytes = System.Text.Encoding.UTF8.GetBytes(data.ToCharArray());
-            
-            var formData = new List<IMultipartFormSection>
-            {
-                new MultipartFormFileSection("file", bytes, attachmentName, "text/plain")
-            };
-            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + userKey + "&token=" + userToken, formData);
-            yield return www.SendWebRequest();
+            var bytes = System.Text.Encoding.UTF8.GetBytes(text.ToCharArray());
+            yield return WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
         }
         
-        // 设置
-        public IEnumerator SetUpAttachmentInCardFromFileRoutine(string cardId, string attachmentName, string path)
+        /// <summary>
+        /// 上传附件到指定 ID 的卡片 [文本文件]
+        /// </summary>
+        /// <param name="cardId">指定的卡片 ID</param>
+        /// <param name="attachmentFileName">附件文件名称</param>
+        /// <param name="textFilePath">文本文件路径</param>
+        /// <returns></returns>
+        public IEnumerator WebRequest_UploadAttachmentToCard_TextFile(string cardId, string attachmentFileName, string textFilePath)
         {
-            Debug.Assert(System.IO.File.Exists(path), "The path to the log file specified is not correct");
-
-            var bytes = System.IO.File.ReadAllBytes(path);
-
-            var formData = new List<IMultipartFormSection>
-            {
-                new MultipartFormFileSection("file", bytes, attachmentName, "text/plain")
-            };
-            
-            var www = UnityWebRequest.Post(CARD_BASE_URL + cardId + "/attachments" + "?" + "key=" + userKey + "&token=" + userToken, formData);
-            yield return www.SendWebRequest();
+            var bytes = System.IO.File.ReadAllBytes(textFilePath);
+            yield return WebRequest_UploadAttachmentToCard_Bytes(cardId, attachmentFileName, bytes);
         }
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
-        
-        
-        
-        
-        // private void CheckWwwStatus(string errorMessage, WWW www)
-        // {
-        //     if (!string.IsNullOrEmpty(www.error))
-        //     {
-        //         throw new System.Exception(errorMessage + ": " + www.error);
-        //     }
-        // }
-        
-        // public IEnumerator PopulateCardsFromListRoutine(string listId)
-        // {
-        //     cards = null;
-        //     if (listId == "")
-        //     {
-        //         throw new System.Exception("Cannot retreive the cards, you have not selected a list yet.");
-        //     }
-        //
-        //     WWW www = new WWW(LIST_BASE_URL + listId + "?" + "key=" + key + "&token=" + token + "&cards=all");
-        //
-        //     yield return www;
-        //     CheckWwwStatus("Something went wrong: ", www);
-        //
-        //     var dict = Json.Deserialize(www.text) as Dictionary<string, object>;
-        //     cards = (List<object>)dict["cards"];
-        // }
-
-        // public TrelloCard UploadExceptionCard(System.Exception e)
-        // {
-        //     var card = NewCard("Bug");
-        //     card.name = e.GetType().ToString();
-        //     card.description = e.Message;
-        //     return card; // uploadCard(card);
-        // }
+        /// <summary>
+        /// 上传附件到指定 ID 的卡片 [字节流]
+        /// </summary>
+        /// <param name="cardId">指定的卡片 ID</param>
+        /// <param name="attachmentFileName">附件文件名称</param>
+        /// <param name="bytes">字节流</param>
+        /// <returns></returns>
+        private IEnumerator WebRequest_UploadAttachmentToCard_Bytes(string cardId, string attachmentFileName, byte[] bytes)
+        {
+            var formData = new List<IMultipartFormSection>
+            {
+                new MultipartFormFileSection("file", bytes, attachmentFileName, "text/plain")
+            };
+            
+            uri = $"{CARD_BASE_URL}{cardId}/attachments?key={userKey}&token={userToken}";
+            var request = UnityWebRequest.Post(uri, formData);
+            yield return request.SendWebRequest();
+        }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Kuroha.Framework.Singleton;
 using UnityEngine;
 
 namespace Kuroha.Util.RunTime
@@ -6,7 +8,7 @@ namespace Kuroha.Util.RunTime
     /// <summary>
     /// 屏幕截图类
     /// </summary>
-    public class ScreenShotUtil : Framework.Singleton.Singleton<ScreenShotUtil>
+    public class ScreenshotUtil : Singleton<ScreenshotUtil>
     {
         [SerializeField]
         private RenderTexture renderTexture;
@@ -20,7 +22,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 单例
         /// </summary>
-        public static ScreenShotUtil Instance => InstanceBase as ScreenShotUtil;
+        public static ScreenshotUtil Instance => InstanceBase as ScreenshotUtil;
 
         /// <summary>
         /// 初始化

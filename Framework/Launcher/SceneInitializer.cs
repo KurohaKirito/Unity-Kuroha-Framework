@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Kuroha.Framework.Launcher
 {
@@ -7,9 +8,21 @@ namespace Kuroha.Framework.Launcher
     /// </summary>
     public class SceneInitializer : MonoBehaviour
     {
+        /// <summary>
+        /// 初始化
+        /// </summary>
         private void Start()
         {
-            Invoke(nameof(SceneInit), 0.5f);
+            Invoke(nameof(Init), 0.5f);
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        private void Init()
+        {
+            SceneInit();
+            StartCoroutine(SceneInitCoroutine());
         }
 
         /// <summary>
@@ -18,6 +31,15 @@ namespace Kuroha.Framework.Launcher
         protected virtual void SceneInit()
         {
             // ...
+        }
+
+        /// <summary>
+        /// 初始化场景 [协程]
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IEnumerator SceneInitCoroutine()
+        {
+            yield break;
         }
     }
 }

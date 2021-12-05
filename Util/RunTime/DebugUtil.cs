@@ -7,7 +7,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 日志开关
         /// </summary>
-        private static bool logEnable;
+        private static bool logEnable = true;
 
         /// <summary>
         /// 日志开关
