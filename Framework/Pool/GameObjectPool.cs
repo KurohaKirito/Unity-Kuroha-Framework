@@ -11,9 +11,9 @@ namespace Kuroha.Framework.Pool
         private readonly Func<T> createFunc;
 
         /// <summary>
-        /// 指定泛型的对象池 (栈)
+        /// 指定泛型的对象池 (队列: 先被回收的, 也会被先用)
         /// </summary>
-        private Stack<T> objectPool = new Stack<T>();
+        private Queue<T> objectPool = new Queue<T>();
 
         /// <summary>
         /// 构造方法
@@ -33,7 +33,7 @@ namespace Kuroha.Framework.Pool
         {
             while (objectPool.Count < reserveCount)
             {
-                objectPool.Push(create != null ? create() : createFunc());
+                objectPool.Enqueue(create != null ? create() : createFunc());
             }
         }
 
@@ -46,7 +46,7 @@ namespace Kuroha.Framework.Pool
 
             if (objectPool.Count > 0)
             {
-                poolObject = objectPool.Pop();
+                poolObject = objectPool.Dequeue();
             }
             else
             {
@@ -64,7 +64,7 @@ namespace Kuroha.Framework.Pool
         public void BackToPool(T poolObject)
         {
             poolObject.Disable();
-            objectPool.Push(poolObject);
+            objectPool.Enqueue(poolObject);
         }
 
         /// <summary>
