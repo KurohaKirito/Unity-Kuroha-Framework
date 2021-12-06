@@ -5,6 +5,7 @@ using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
 using Kuroha.Tool.AssetViewer.Editor;
+using Kuroha.Util.Editor;
 using UnityEditor;
 
 namespace Kuroha.Menu.Editor
@@ -41,6 +42,34 @@ namespace Kuroha.Menu.Editor
         public static void ClearDebugLog()
         {
             Kuroha.Util.RunTime.DebugUtil.ClearConsole();
+        }
+
+        #endregion
+        
+        #region 调试开关
+
+        [MenuItem("Kuroha/调试模式/开启", false, 1)]
+        public static void OpenKurohaDebugMode()
+        {
+            UnityDefineUtil.AddDefine("KUROHA_DEBUG_MODE", BuildTargetGroup.Standalone);
+        }
+        
+        [MenuItem("Kuroha/调试模式/开启", true, 1)]
+        public static bool OpenKurohaDebugModeValidate()
+        {
+            return UnityDefineUtil.IsDefine("KUROHA_DEBUG_MODE", BuildTargetGroup.Standalone, out _) == false;
+        }
+        
+        [MenuItem("Kuroha/调试模式/关闭", false, 1)]
+        public static void CloseKurohaDebugMode()
+        {
+            UnityDefineUtil.RemoveDefine("KUROHA_DEBUG_MODE", BuildTargetGroup.Standalone);
+        }
+        
+        [MenuItem("Kuroha/调试模式/关闭", true, 1)]
+        public static bool CloseKurohaDebugModeValidate()
+        {
+            return UnityDefineUtil.IsDefine("KUROHA_DEBUG_MODE", BuildTargetGroup.Standalone, out _);
         }
 
         #endregion
@@ -121,7 +150,7 @@ namespace Kuroha.Menu.Editor
         {
             EffectCheckToolGUI.Detect(false, "飞高高产出检测工具");
         }
-        
+
         #endregion
 
         #region 右键菜单

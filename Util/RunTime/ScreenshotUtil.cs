@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Kuroha.Framework.Singleton;
 using UnityEngine;
 
@@ -27,14 +26,13 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 初始化
         /// </summary>
-        public override void OnLaunch()
+        protected sealed override void Init()
         {
-            base.OnLaunch();
             cameraShotWidth = Screen.width;
             cameraShotHeight = Screen.height;
 
-            renderTexture = new RenderTexture(cameraShotWidth, cameraShotHeight, 0);
-            cameraShot = new Texture2D(cameraShotWidth, cameraShotHeight, TextureFormat.RGBA32, false, true);
+            renderTexture ??= new RenderTexture(cameraShotWidth, cameraShotHeight, 0);
+            cameraShot ??= new Texture2D(cameraShotWidth, cameraShotHeight, TextureFormat.RGBA32, false, true);
         }
 
         /// <summary>

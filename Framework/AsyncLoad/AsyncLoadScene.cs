@@ -1,5 +1,4 @@
-﻿using Kuroha.Framework.Launcher;
-using Kuroha.Framework.Message;
+﻿using Kuroha.Framework.Message;
 using Kuroha.Framework.Updater;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,7 +11,7 @@ namespace Kuroha.Framework.AsyncLoad
     /// Load() 方法使用消息系统进行触发
     /// 
     /// </summary>
-    public class AsyncLoadScene : IUpdater, ILauncher
+    public class AsyncLoadScene : IUpdater
     {
         /// <summary>
         /// 计时器
@@ -70,12 +69,10 @@ namespace Kuroha.Framework.AsyncLoad
             {
                 if (asyncOperation is { isDone: false })
                 {
-                    // 计时中
                     if (timer < minLoadTime)
                     {
                         timer += msg.deltaTime;
                     }
-                    // 计时完成
                     else
                     {
                         asyncOperation.allowSceneActivation = true;

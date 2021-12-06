@@ -1,4 +1,4 @@
-using Kuroha.Framework.Launcher;
+using System.Threading.Tasks;
 using Kuroha.Util.RunTime;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ namespace Kuroha.Framework.Singleton
     /// 单例基类
     /// 每个单例首次访问时都会进行合法性验证, 仅在编辑器内验证, 发布后不进行验证
     /// </summary>
-    public class Singleton<T> : MonoBehaviour, ILauncher where T : Singleton<T>
+    public class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
         /// <summary>
         /// 单例活动标志
@@ -37,7 +37,7 @@ namespace Kuroha.Framework.Singleton
                         script = CreateSingleton();
                     }
 
-                    script.OnLaunch();
+                    script.Init();
                 }
 
                 return instanceBase;
@@ -103,9 +103,14 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 初始化
         /// </summary>
-        public virtual void OnLaunch()
+        protected virtual void Init() { }
+
+        /// <summary>
+        /// [Async] 初始化
+        /// </summary>
+        public virtual Task InitAsync()
         {
-            // ...
+            return null;
         }
 
         /// <summary>
@@ -117,7 +122,7 @@ namespace Kuroha.Framework.Singleton
         }
 
         /// <summary>
-        /// 隐藏
+        /// 退出游戏
         /// </summary>
         protected virtual void OnApplicationQuit()
         {

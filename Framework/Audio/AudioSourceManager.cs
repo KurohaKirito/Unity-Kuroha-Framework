@@ -1,20 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Kuroha.Framework.Audio
 {
+    /// <summary>
+    /// 音频播放器管理器
+    /// </summary>
+    [Serializable]
     public class AudioSourceManager
     {
-        /// <summary>
-        /// Audio Source Pool
-        /// 管理所有的 Audio Source 组件, 这些组件都挂载在 audioSourceOwner 上面
-        /// </summary>
+        [Header("音频播放器对象池")] [SerializeField]
         private List<AudioSource> audioSourcePool;
-        
-        /// <summary>
-        /// audio Source 挂载者
-        /// </summary>
-        private readonly GameObject audioSourceOwner;
+
+        [Header("音频播放器挂载者")] [SerializeField]
+        private GameObject audioSourceOwner;
         
         /// <summary>
         /// 构造方法

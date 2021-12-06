@@ -1,4 +1,4 @@
-﻿#if KUROHA_TEST
+﻿#if KUROHA_DEBUG_MODE
 
 using System.Collections.Generic;
 using UnityEngine;

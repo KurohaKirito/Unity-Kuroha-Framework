@@ -1,5 +1,7 @@
-﻿using Kuroha.Framework.Singleton;
+﻿using System.Threading.Tasks;
+using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
+using UnityEngine;
 
 namespace Kuroha.Framework.Audio
 {
@@ -10,6 +12,19 @@ namespace Kuroha.Framework.Audio
     /// </summary>
     public class AudioPlayManager : Singleton<AudioPlayManager>
     {
+        #region 编辑器 API
+        
+        #if KUROHA_DEBUG_MODE
+
+        private void OnGUI()
+        {
+            audioClipManager?.InspectorUpdate();
+        }
+        
+        #endif
+        
+        #endregion
+        
         /// <summary>
         /// 单例
         /// </summary>
@@ -18,21 +33,33 @@ namespace Kuroha.Framework.Audio
         /// <summary>
         /// 音频播放器
         /// </summary>
+        [SerializeField]
         private AudioSourceManager audioSourceManager;
         
         /// <summary>
         /// 音频资源
         /// </summary>
+        [SerializeField]
         private AudioClipManager audioClipManager;
 
+        /// <summary>
+        /// [Async] 初始化
+        /// </summary>
+        public sealed override async Task InitAsync()
+        {
+            if (audioClipManager == null || audioSourceManager == null)
+            {
+                audioSourceManager ??= new AudioSourceManager(gameObject);
+                audioClipManager ??= new AudioClipManager();
+                await audioClipManager.OnInit();
+            }
+        }
+        
         /// <summary>
         /// 播放
         /// </summary>
         public void Play(string clipID, bool isLoop = false)
         {
-            audioSourceManager ??= new AudioSourceManager(gameObject);
-            audioClipManager ??= new AudioClipManager();
-            
             var clip = audioClipManager.Get(clipID);
             var source = audioSourceManager.Get();
 

@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Kuroha.Util.RunTime;
+using UnityEditor;
 using UnityEngine;
 
 namespace Kuroha.Framework.Audio
@@ -7,40 +10,76 @@ namespace Kuroha.Framework.Audio
     /// <summary>
     /// 音频片段管理器, 管理所有的音频资源
     /// </summary>
+    [Serializable]
     public class AudioClipManager
     {
-        /// <summary>
-        /// 音频数据库路径
-        /// </summary>
-        private const string AUDIO_DATABASE_PATH = "DataBase/Audio";
+        #region 编辑器 API
 
+        #if KUROHA_DEBUG_MODE
+
+        [Header("音频资源个数")] [SerializeField]
+        private int singleClipCount;
+
+        [Header("当前全部的音频资源")] [SerializeField]
+        private List<Kuroha.Framework.Audio.SingleClip> singleClipList;
+
+        public void InspectorUpdate()
+        {
+            if (singleClipList.IsNullOrEmpty())
+            {
+                singleClipList = new List<Kuroha.Framework.Audio.SingleClip>();
+
+                foreach (var singleClip in singleClipDic.Values)
+                {
+                    singleClipList.Add(singleClip);
+                }
+
+                singleClipCount = singleClipList.Count;
+            }
+
+            if (singleClipCount != singleClipDic.Count)
+            {
+                singleClipList.Clear();
+            
+                foreach (var singleClip in singleClipDic.Values)
+                {
+                    singleClipList.Add(singleClip);
+                }
+                
+                singleClipCount = singleClipList.Count;
+            }
+        }
+
+        #endif
+
+        #endregion
+        
         /// <summary>
         /// 音频数据库字典
         /// </summary>
-        private readonly Dictionary<string, SingleClip> singleClipDic;
-        
-        /// <summary>
-        /// 构造方法
-        /// </summary>
-        public AudioClipManager()
-        {
-            singleClipDic = new Dictionary<string, SingleClip>();
+        private readonly Dictionary<string, SingleClip> singleClipDic = new Dictionary<string, SingleClip>();
 
-            ReadAudioDataBase();
-        }
-        
         /// <summary>
-        /// 读取所有的 SingleClip
+        /// [Async] 初始化, 读取所有的 SingleClip
         /// </summary>
-        private void ReadAudioDataBase()
+        public async Task OnInit()
         {
-            // TODO: 优化点, 用到哪个音频资源就加载哪个音频资源, 而不是一下子全部加载
-            var singleClipArray = Resources.LoadAll<SingleClip>(AUDIO_DATABASE_PATH);
-            DebugUtil.Log($"一共加载到了 {singleClipArray.Length} 个音频资源");
-
-            foreach (var singleClip in singleClipArray)
+            var guids = AssetDatabase.FindAssets($"t:{nameof(SingleClip)}", new[]
             {
-                singleClipDic[singleClip.id] = singleClip;
+                "Assets/Resources/DataBase/Audio/"
+            });
+            
+            foreach (var guid in guids)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                assetPath = assetPath.Replace("Assets/Resources/", "").Replace(".asset", "");
+                var singleClipRequest = Resources.LoadAsync<SingleClip>(assetPath);
+                await singleClipRequest;
+
+                if (singleClipRequest.asset is SingleClip singleClip)
+                {
+                    singleClipDic[singleClip.id] = singleClip;
+                }
             }
         }
 

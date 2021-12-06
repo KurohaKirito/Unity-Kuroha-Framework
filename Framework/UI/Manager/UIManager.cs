@@ -5,7 +5,6 @@ using Kuroha.Framework.Singleton;
 using Kuroha.Framework.UI.Panel;
 using Kuroha.Framework.UI.Window;
 using Kuroha.Framework.Updater;
-using Kuroha.Util.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.UI.Manager
@@ -13,14 +12,25 @@ namespace Kuroha.Framework.UI.Manager
     public class UIManager : Singleton<UIManager>, IUpdater
     {
         /// <summary>
+        /// Panel 类面板的父物体
+        /// </summary>
+        private Transform panelParent;
+
+        /// <summary>
+        /// Window 类面板的父物体
+        /// </summary>
+        /// <returns></returns>
+        private Transform windowParent;
+        
+        /// <summary>
         /// 单例
         /// </summary>
         public static UIManager Instance => InstanceBase as UIManager;
-
+        
         /// <summary>
-        /// 唯一相机
+        /// 主相机
         /// </summary>
-        public Camera mainCamera;
+        public Camera MainCamera { get; private set; }
 
         /// <summary>
         /// Panel Manager
@@ -31,18 +41,7 @@ namespace Kuroha.Framework.UI.Manager
         /// Window Manager
         /// </summary>
         public UIWindowManager Window { get; private set; }
-
-        /// <summary>
-        /// Panel 类面板的父物体
-        /// </summary>
-        public Transform panelParent;
-
-        /// <summary>
-        /// Window 类面板的父物体
-        /// </summary>
-        /// <returns></returns>
-        public Transform windowParent;
-
+        
         /// <summary>
         /// UI 帧更新事件
         /// </summary>
@@ -56,21 +55,17 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 单例
         /// </summary>
-        public override void OnLaunch()
+        protected sealed override void Init()
         {
-            if (ReferenceEquals(panelParent, null) == false && ReferenceEquals(windowParent, null) == false)
+            if (MainCamera == null || Panel == null || Window == null)
             {
+                MainCamera = transform.Find("Camera").GetComponent<Camera>();
+            
+                panelParent = transform.Find("UGUI/Panel");
                 Panel = new UIPanelManager(panelParent);
+            
+                windowParent = transform.Find("UGUI/Window");
                 Window = new UIWindowManager(windowParent);
-            }
-            else
-            {
-                DebugUtil.LogError("Panel Parent 或者 Window Parent 未赋值!", this, "red");
-            }
-
-            if (ReferenceEquals(mainCamera, null))
-            {
-                DebugUtil.LogError("Main Camera 未赋值!", this, "red");
             }
         }
 

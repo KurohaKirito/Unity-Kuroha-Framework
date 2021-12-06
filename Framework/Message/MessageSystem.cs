@@ -12,7 +12,7 @@ namespace Kuroha.Framework.Message
     {
         #region 编辑器 API
 
-        #if KUROHA_TEST
+        #if KUROHA_DEBUG_MODE
 
         [Header("当前的消息及监听者列表")] [SerializeField]
         private List<Kuroha.Framework.Message.MessageListener> messageListenerList;
@@ -32,8 +32,7 @@ namespace Kuroha.Framework.Message
                 var valList = new List<string>();
                 foreach (var handlers in listenerDic[key])
                 {
-                    var methodFullName = $"{handlers.Target.GetType().FullName}.{handlers.Method.Name}()";
-                    valList.Add(methodFullName);
+                    valList.Add($"{handlers.Method.DeclaringType}.{handlers.Method.Name}()");
                 }
 
                 val.listenerList = valList;
@@ -70,9 +69,7 @@ namespace Kuroha.Framework.Message
         /// 消息队列
         /// </summary>
         private readonly Queue<BaseMessage> messageQueue = new Queue<BaseMessage>();
-
-        #region 内部 API
-
+        
         /// <summary>
         /// 帧更新
         /// </summary>
@@ -147,8 +144,6 @@ namespace Kuroha.Framework.Message
 
             return true;
         }
-
-        #endregion
 
         #region 对外 API
 

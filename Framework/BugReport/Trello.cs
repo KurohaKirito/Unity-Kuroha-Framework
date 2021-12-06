@@ -93,15 +93,28 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 获取当前用户的全部看板
         /// </summary>
-        public async Task WebRequest_GetUserAllBoards()
+        public async Task<KeyValuePair<bool, string>> WebRequest_GetUserAllBoards()
         {
+            var isSuccess = true;
+            var message = string.Empty;
+            
             uri = $"{MEMBER_BASE_URL}?key={userKey}&token={userToken}&boards=all";
             var request = UnityWebRequest.Get(uri);
             await request.SendWebRequest();
 
-            var requestResult = request.downloadHandler.text;
-            var json = GetTrelloJson_Array(requestResult, "boards");
-            userAllBoards = JsonUtility.FromJson<JsonSerialization<TrelloBoard>>(json).ToList();
+            var downloadText = request.downloadHandler.text;
+            if (downloadText.IsNullOrEmpty())
+            {
+                isSuccess = false;
+                message = request.error;
+            }
+            else
+            {
+                var json = GetTrelloJson_Array(downloadText, "boards");
+                userAllBoards = JsonUtility.FromJson<JsonSerialization<TrelloBoard>>(json).ToList();
+            }
+
+            return new KeyValuePair<bool, string>(isSuccess, message);
         }
         
         /// <summary>
@@ -124,18 +137,30 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 获取当前用户的当前看板下的全部列表
         /// </summary>
-        public async Task WebRequest_GetUserAllLists()
+        public async Task<KeyValuePair<bool, string>> WebRequest_GetUserAllLists()
         {
+            var isSuccess = true;
+            var message = string.Empty;
+            
             uri = $"{BOARD_BASE_URL}{currentBoardId}?key={userKey}&token={userToken}&lists=all";
             var request = UnityWebRequest.Get(uri);
             
             await request.SendWebRequest();
 
-            var requestResult = request.downloadHandler.text;
-            var json = GetTrelloJson_Array(requestResult, "lists");
-            userAllLists = JsonUtility.FromJson<JsonSerialization<TrelloList>>(json).ToList();
+            var downloadText = request.downloadHandler.text;
+            if (downloadText.IsNullOrEmpty())
+            {
+                isSuccess = false;
+                message = request.error;
+            }
+            else
+            {
+                var json = GetTrelloJson_Array(downloadText, "lists");
+                userAllLists = JsonUtility.FromJson<JsonSerialization<TrelloList>>(json).ToList();
+                CacheUserAllList();
+            }
             
-            CacheUserAllList();
+            return new KeyValuePair<bool, string>(isSuccess, message);
         }
 
         /// <summary>
@@ -157,8 +182,11 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 在当前用户的当前看板中上传一个新列表
         /// </summary>
-        public async Task WebRequest_UploadNewUserList(TrelloList list)
+        public async Task<KeyValuePair<bool, string>> WebRequest_UploadNewUserList(TrelloList list)
         {
+            var isSuccess = true;
+            string message;
+            
             var post = new List<IMultipartFormSection>
             {
                 new MultipartFormDataSection("name", list.name),
@@ -169,6 +197,19 @@ namespace Kuroha.Framework.BugReport
             uri = $"{LIST_BASE_URL}?key={userKey}&token={userToken}";
             var request = UnityWebRequest.Post(uri, post);
             await request.SendWebRequest();
+
+            var downloadText = request.downloadHandler.text;
+            if (downloadText.IsNullOrEmpty())
+            {
+                isSuccess = false;
+                message = request.error;
+            }
+            else
+            {
+                message = GetTrelloJson_String(downloadText, "id");
+            }
+            
+            return new KeyValuePair<bool, string>(isSuccess, message);
         }
         
         /// <summary>
@@ -225,8 +266,11 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 在当前用户的当前看板中的特定列表中上传一张新卡片
         /// </summary>
-        public async Task<string> WebRequest_UploadNewUserCard(TrelloCard card)
+        public async Task<KeyValuePair<bool, string>> WebRequest_UploadNewUserCard(TrelloCard card)
         {
+            var isSuccess = true;
+            string message;
+            
             var post = new List<IMultipartFormSection>
             {
                 new MultipartFormDataSection("name", card.name),
@@ -240,9 +284,18 @@ namespace Kuroha.Framework.BugReport
             var request = UnityWebRequest.Post(uri, post);
             await request.SendWebRequest();
             
-            var requestResult = request.downloadHandler.text;
-            var newCardID = GetTrelloJson_String(requestResult, "id");
-            return newCardID;
+            var downloadText = request.downloadHandler.text;
+            if (downloadText.IsNullOrEmpty())
+            {
+                isSuccess = false;
+                message = request.error;
+            }
+            else
+            {
+                message = GetTrelloJson_String(downloadText, "id");
+            }
+            
+            return new KeyValuePair<bool, string>(isSuccess, message);
         }
 
         /// <summary>

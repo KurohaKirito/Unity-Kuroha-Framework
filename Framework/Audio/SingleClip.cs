@@ -8,11 +8,7 @@ namespace Kuroha.Framework.Audio
     {
         [Header("音频唯一标识")]
         public string id;
-        
-        [Header("音频资源用途描述")]
-        [SerializeField]
-        private string describe;
-        
+
         [Header("音频资源")]
         [SerializeField]
         private AudioClip audioClip;
@@ -20,10 +16,9 @@ namespace Kuroha.Framework.Audio
         /// <summary>
         /// 构造方法
         /// </summary>
-        public SingleClip(string id, string describe, AudioClip audioClip)
+        public SingleClip(string id, AudioClip audioClip)
         {
             this.id = id;
-            this.describe = describe;
             this.audioClip = audioClip;
         }
 
