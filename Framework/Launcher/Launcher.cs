@@ -42,6 +42,14 @@ namespace Kuroha.Framework.Launcher
         }
 
         /// <summary>
+        /// 初始化
+        /// </summary>
+        protected sealed override void Init()
+        {
+            base.Init();
+        }
+
+        /// <summary>
         /// [Async] 初始化
         /// </summary>
         public sealed override async Task InitAsync()
@@ -50,14 +58,14 @@ namespace Kuroha.Framework.Launcher
             await AudioPlayManager.Instance.InitAsync();
             await BugReport.BugReport.Instance.InitAsync();
 
-            RegisterUnityEvent();
+            OnStart();
             ExecuteOnStart();
         }
 
         /// <summary>
-        /// 注册 Unity 事件
+        /// 可以通过 Register 一类的方法来注册 Unity 事件, 或者写一些初始化逻辑
         /// </summary>
-        protected virtual void RegisterUnityEvent() { }
+        protected virtual void OnStart() { }
 
         /// <summary>
         /// 初始化场景异步加载器
@@ -77,7 +85,9 @@ namespace Kuroha.Framework.Launcher
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            
             asyncLoadScene = null;
+            
             ExecuteOnDestroy();
         }
 
@@ -87,7 +97,9 @@ namespace Kuroha.Framework.Launcher
         protected override void OnApplicationQuit()
         {
             base.OnApplicationQuit();
+            
             asyncLoadScene = null;
+            
             ExecuteOnApplicationQuit();
         }
 
