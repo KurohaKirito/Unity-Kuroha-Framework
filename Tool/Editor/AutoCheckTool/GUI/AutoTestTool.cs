@@ -38,4 +38,10 @@ public static class AutoTestTool {
 
         return isPlay;
     }
+    
+    public static void PlayUnity() {
+        if (EditorApplication.isPlaying == false) {
+            EditorApplication.isPlaying = true;
+        }
+    }
 }
