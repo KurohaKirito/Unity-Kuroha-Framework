@@ -8,12 +8,12 @@ namespace Kuroha.Framework.BugReport
     [Serializable]
     public class TrelloList
     {
-        public string id;
         public string name;
-        public bool closed = false;
+        public bool closed;
         public string pos;
         public string softLimit;
         public string idBoard;
         public string subscribed;
+        public string id;
     }
 }

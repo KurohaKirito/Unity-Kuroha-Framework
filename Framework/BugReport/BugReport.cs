@@ -12,6 +12,9 @@ namespace Kuroha.Framework.BugReport
         
         [Header("Trello API")] [SerializeField]
         private Trello trello;
+        
+        [Header("初始化成功标志")] [SerializeField]
+        private bool initSuccess;
 
         [Header("用户密钥")] [SerializeField]
         private string trelloUserKey = "ac263348103d7880336bc34541819cfa";
@@ -32,41 +35,27 @@ namespace Kuroha.Framework.BugReport
         {
             if (trello == null)
             {
-                DebugUtil.Log("初始化 Bug Report 中...", this, "green");
-
-                // 初始化 Trello
                 trello = new Trello(trelloUserKey, trelloUserToken);
-    
-                // 网络请求用户所有的看板
+                
                 var pair = await trello.WebRequest_GetUserAllBoards();
                 if (pair.Key)
                 {
-                    // 设置当前看板
                     trello.SetCurrentBoard(trelloUserTokenBoard);
-
-                    // 网络请求当前用户的当前看板下的全部列表
                     pair = await trello.WebRequest_GetUserAllLists();
                     if (pair.Key)
                     {
-                        // 同步看板列表
                         SyncList();
-
-                        // 创建新列表到看板
                         pair = await CreateNewList();
                         if (pair.Key)
                         {
-                            // 再次网络请求当前用户的当前看板下的全部列表
                             pair = await trello.WebRequest_GetUserAllLists();
                             if (pair.Key)
                             {
-                                DebugUtil.Log("Bug Report 初始化完成!", this, "green");
-                                return;
+                                initSuccess = true;
                             }
                         }
                     }
                 }
-                
-                DebugUtil.Log($"Bug Report 初始化失败! {pair.Value}", this, "red");
             }
         }
 
@@ -125,12 +114,14 @@ namespace Kuroha.Framework.BugReport
         /// <param name="cardDescription">卡片描述</param>
         /// <param name="cardList">卡片所属列表</param>
         /// <returns></returns>
-        public async void ReportError(string cardTitle, string cardDescription, string cardList)
+        public async Task<bool> ReportError(string cardTitle, string cardDescription, string cardList)
         {
-            // 新建卡片
+            if (initSuccess == false)
+            {
+                return false;
+            }
+            
             var card = trello.NewCard(cardTitle, cardDescription, cardList);
-
-            // 上传卡片, 成功后返回 CardID
             var pair = await trello.WebRequest_UploadNewUserCard(card);
             var newCardID = pair.Value;
 
@@ -144,11 +135,11 @@ namespace Kuroha.Framework.BugReport
             await trello.WebRequest_UploadAttachmentToCard_String(newCardID, "ErrorInfo.txt", "这里是详细的报错信息, 使用字符串的形式进行上传");
             
             // 上传附件 [文本类文件]
-            await trello.WebRequest_UploadAttachmentToCard_TextFile(newCardID, "这是报错日志.json", @"C:\Users\Kuroha\Desktop\Untitled-1.json");
+            // await trello.WebRequest_UploadAttachmentToCard_TextFile(newCardID, "这是报错日志.json", @"C:\Users\Kuroha\Desktop\Untitled-1.json");
 
             #endregion
 
-            DebugUtil.Log("报错上传成功!", this, "green");
+            return true;
         }
     }
 }

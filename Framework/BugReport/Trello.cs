@@ -276,7 +276,6 @@ namespace Kuroha.Framework.BugReport
                 new MultipartFormDataSection("name", card.name),
                 new MultipartFormDataSection("desc", card.description),
                 new MultipartFormDataSection("pos", card.position),
-                new MultipartFormDataSection("due", card.due),
                 new MultipartFormDataSection("idList", card.listID),
             };
             
@@ -285,6 +284,7 @@ namespace Kuroha.Framework.BugReport
             await request.SendWebRequest();
             
             var downloadText = request.downloadHandler.text;
+            Debug.Log(downloadText);
             if (downloadText.IsNullOrEmpty())
             {
                 isSuccess = false;
