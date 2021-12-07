@@ -140,6 +140,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
                 // 定义当前检测路径
                 var currentPath = allDirectory[progressBar];
+                if (currentPath.Name == ".git") {
+                    progressBar++;
+                    continue;
+                }
 
                 // 获取 当前检测路径 中所有的子文件夹
                 var dirs = currentPath.GetDirectories();
