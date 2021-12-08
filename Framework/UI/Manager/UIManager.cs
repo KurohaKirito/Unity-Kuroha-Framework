@@ -45,7 +45,7 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// UI 帧更新事件
         /// </summary>
-        private event Action UpdateEvent;
+        private event Action UIUpdateEvent;
 
         /// <summary>
         /// UI 帧更新事件列表
@@ -72,9 +72,9 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 帧更新
         /// </summary>
-        public bool OnUpdate(BaseMessage message)
+        public bool UpdateEvent(BaseMessage message)
         {
-            UpdateEvent?.Invoke();
+            UIUpdateEvent?.Invoke();
             return false;
         }
 
@@ -84,7 +84,7 @@ namespace Kuroha.Framework.UI.Manager
         public void AddUpdateListener(Action action, string methodName)
         {
             eventNameList.Add(methodName);
-            UpdateEvent += action;
+            UIUpdateEvent += action;
             Updater.Updater.Instance.Register(this);
         }
 
@@ -94,7 +94,7 @@ namespace Kuroha.Framework.UI.Manager
         public void RemoveUpdateListener(Action action, string methodName)
         {
             eventNameList.Remove(methodName);
-            UpdateEvent -= action;
+            UIUpdateEvent -= action;
             Updater.Updater.Instance.Unregister(this);
         }
     }

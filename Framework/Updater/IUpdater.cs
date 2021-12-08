@@ -4,6 +4,6 @@ namespace Kuroha.Framework.Updater
 {
     public interface IUpdater
     {
-        public bool OnUpdate(BaseMessage message);
+        public bool UpdateEvent(BaseMessage message);
     }
 }

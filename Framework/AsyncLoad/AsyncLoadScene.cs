@@ -63,7 +63,7 @@ namespace Kuroha.Framework.AsyncLoad
         /// <summary>
         /// 帧更新
         /// </summary>
-        public bool OnUpdate(BaseMessage message)
+        public bool UpdateEvent(BaseMessage message)
         {
             if (message is UpdateMessage msg)
             {

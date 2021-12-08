@@ -46,7 +46,7 @@ namespace Kuroha.Framework.Updater
         /// <param name="updater"></param>
         public void Register(IUpdater updater)
         {
-            if (MessageSystem.Instance.AddListener<UpdateMessage>(updater.OnUpdate))
+            if (MessageSystem.Instance.AddListener<UpdateMessage>(updater.UpdateEvent))
             {
                 #if KUROHA_DEBUG_MODE
                 updaterList ??= new System.Collections.Generic.List<string>(5);
@@ -63,7 +63,7 @@ namespace Kuroha.Framework.Updater
         /// <param name="updater"></param>
         public void Unregister(IUpdater updater)
         {
-            if (MessageSystem.Instance.RemoveListener<UpdateMessage>(updater.OnUpdate))
+            if (MessageSystem.Instance.RemoveListener<UpdateMessage>(updater.UpdateEvent))
             {
                 #if KUROHA_DEBUG_MODE
                 updaterList.Remove(updater.GetType().FullName);

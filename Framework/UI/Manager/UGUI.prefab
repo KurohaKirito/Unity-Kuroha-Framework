@@ -59,8 +59,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: -1936781713
-  m_SortingOrder: 10
+  m_SortingLayerID: -23344913
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &3732545823486780750
 MonoBehaviour:
@@ -331,9 +331,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1927b550d5a79144f83d70aafb33fda7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 3732545824490385352}
-  panelParent: {fileID: 3732545825382700334}
-  windowParent: {fileID: 3732545823912465262}
   eventNameList: []
 --- !u!1 &3732545825382700333
 GameObject:

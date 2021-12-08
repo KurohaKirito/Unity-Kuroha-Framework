@@ -6,20 +6,9 @@ namespace Kuroha.Framework.Launcher
 {
     public class SceneLauncher : MonoBehaviour
     {
-        /// <summary>
-        /// Start 事件队列
-        /// </summary>
-        private Queue<IOnStart> onStartQueue;
-        
-        /// <summary>
-        /// OnDestroy 事件队列
-        /// </summary>
-        private Queue<IOnDestroy> onDestroyQueue;
-        
-        /// <summary>
-        /// OnApplicationQuit 事件队列
-        /// </summary>
-        private Queue<IOnApplicationQuit> onApplicationQuitQueue;
+        private Queue<IOnStart> startEventQueue;
+        private Queue<IOnDestroy> destroyEventQueue;
+        private Queue<IOnApplicationQuit> applicationQuitEventQueue;
 
         /// <summary>
         /// 初始化
@@ -43,101 +32,61 @@ namespace Kuroha.Framework.Launcher
             }
         }
 
-        /// <summary>
-        /// Unity 事件: Start
-        /// </summary>
         private async void Start()
         {
-            // 启动游戏框架
             await LaunchFramework();
-            
-            // 注册用户事件
             RegisterEvent();
-            
-            // 执行用户注册的 Start 事件
-            ExecuteStart();
-            
-            // 执行场景的初始化
+            ExecuteStartEvent();
             SceneStart();
         }
-
-        /// <summary>
-        /// Unity 事件: OnDestroy
-        /// </summary>
         private void OnDestroy()
         {
-            ExecuteOnDestroy();
+            ExecuteDestroyEvent();
         }
-
-        /// <summary>
-        /// Unity 事件: OnApplicationQuit
-        /// </summary>
         private void OnApplicationQuit()
         {
-            ExecuteOnApplicationQuit();
+            ExecuteApplicationQuitEvent();
         }
         
-        /// <summary>
-        /// 执行 Start 事件队列
-        /// </summary>
-        private void ExecuteStart()
+        private void ExecuteStartEvent()
         {
-            onStartQueue ??= new Queue<IOnStart>();
-            while (onStartQueue.Count > 0)
+            startEventQueue ??= new Queue<IOnStart>();
+            while (startEventQueue.Count > 0)
             {
-                onStartQueue.Dequeue().OnStart();
+                startEventQueue.Dequeue().StartEvent();
+            }
+        }
+        private void ExecuteDestroyEvent()
+        {
+            destroyEventQueue ??= new Queue<IOnDestroy>();
+            while (destroyEventQueue.Count > 0)
+            {
+                destroyEventQueue.Dequeue().DestroyEvent();
+            }
+        }
+        private void ExecuteApplicationQuitEvent()
+        {
+            applicationQuitEventQueue ??= new Queue<IOnApplicationQuit>();
+            while (applicationQuitEventQueue.Count > 0)
+            {
+                applicationQuitEventQueue.Dequeue().ApplicationQuitEvent();
             }
         }
         
-        /// <summary>
-        /// 执行 OnDestroy 事件队列
-        /// </summary>
-        private void ExecuteOnDestroy()
+        protected void RegisterStartEvent(IOnStart func)
         {
-            onDestroyQueue ??= new Queue<IOnDestroy>();
-            while (onDestroyQueue.Count > 0)
-            {
-                onDestroyQueue.Dequeue().OnDestroy();
-            }
+            startEventQueue ??= new Queue<IOnStart>();
+            startEventQueue.Enqueue(func);
         }
-        
-        /// <summary>
-        /// 执行 OnApplicationQuit 事件队列
-        /// </summary>
-        private void ExecuteOnApplicationQuit()
+        protected void RegisterDestroyEvent(IOnDestroy func)
         {
-            onApplicationQuitQueue ??= new Queue<IOnApplicationQuit>();
-            while (onApplicationQuitQueue.Count > 0)
-            {
-                onApplicationQuitQueue.Dequeue().OnApplicationQuit();
-            }
+            destroyEventQueue ??= new Queue<IOnDestroy>();
+            destroyEventQueue.Enqueue(func);
         }
-        
-        /// <summary>
-        /// 注册 Start 事件
-        /// </summary>
-        protected void RegisterStart(IOnStart func)
-        {
-            onStartQueue ??= new Queue<IOnStart>();
-            onStartQueue.Enqueue(func);
-        }
-        
-        /// <summary>
-        /// 注册 OnDestroy 事件
-        /// </summary>
-        protected void RegisterOnDestroy(IOnDestroy func)
-        {
-            onDestroyQueue ??= new Queue<IOnDestroy>();
-            onDestroyQueue.Enqueue(func);
-        }
-        
-        /// <summary>
-        /// 注册 OnApplicationQuit 事件
-        /// </summary>
         protected void RegisterOnApplicationQuit(IOnApplicationQuit func)
         {
-            onApplicationQuitQueue ??= new Queue<IOnApplicationQuit>();
-            onApplicationQuitQueue.Enqueue(func);
+            applicationQuitEventQueue ??= new Queue<IOnApplicationQuit>();
+            applicationQuitEventQueue.Enqueue(func);
         }
     }
 }

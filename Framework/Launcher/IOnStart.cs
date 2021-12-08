@@ -2,6 +2,6 @@
 {
     public interface IOnStart
     {
-        public void OnStart();
+        public void StartEvent();
     }
 }

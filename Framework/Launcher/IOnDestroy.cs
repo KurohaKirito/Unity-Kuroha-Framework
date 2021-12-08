@@ -2,6 +2,6 @@
 {
     public interface IOnDestroy 
     {
-        public void OnDestroy();
+        public void DestroyEvent();
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IOnApplicationQuit
     {
-        public void OnApplicationQuit();
+        public void ApplicationQuitEvent();
     }
 }
