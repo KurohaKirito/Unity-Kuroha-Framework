@@ -3,11 +3,37 @@ using System.Threading.Tasks;
 using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Kuroha.Framework.BugReport
 {
     public class BugReport : Singleton<BugReport>
     {
+        #region 编辑器 API
+
+#if KUROHA_DEBUG_MODE
+
+        [UnityEngine.Header("当前收集的全部日志")] [UnityEngine.SerializeField]
+        private List<Kuroha.Framework.BugReport.UnityLog> logList;
+
+        private void OnGUI()
+        {
+            logList ??= new List<Kuroha.Framework.BugReport.UnityLog>();
+            unityLogDic ??= new Dictionary<int, Kuroha.Framework.BugReport.UnityLog>();
+
+            logList.Clear();
+            foreach (var value in unityLogDic.Values)
+            {
+                logList.Add(value);
+            }
+        }
+
+#endif
+
+        #endregion
+        
+        private Dictionary<int, UnityLog> unityLogDic;
+        
         public static BugReport Instance => InstanceBase as BugReport;
         
         [Header("Trello API")] [SerializeField]
@@ -28,15 +54,16 @@ namespace Kuroha.Framework.BugReport
         [Header("卡片列表 [可自动同步看板列表] [可自动创建新列表到看板]")] [SerializeField]
         private List<string> userListName;
 
-        [Header("日志队列")] [SerializeField]
-        private List<UnityLog> unityLogList;
+        [Header("错误上传按钮")] [SerializeField]
+        private Button bugReportButton;
 
         /// <summary>
         /// [Async] 初始化
         /// </summary>
         public sealed override async Task InitAsync()
         {
-            if (trello == null)
+            unityLogDic ??= new Dictionary<int, UnityLog>();
+            if (trello?.cachedUserLists == null || trello.cachedUserLists.Count <= 0)
             {
                 trello = new Trello(trelloUserKey, trelloUserToken);
                 
@@ -56,6 +83,8 @@ namespace Kuroha.Framework.BugReport
                             {
                                 initSuccess = true;
                                 RegisterLogCollect();
+                                bugReportButton.onClick.AddListener(ReportError);
+                                DebugUtil.Log("日志上报初始化完成", this, "green");
                             }
                         }
                     }
@@ -114,36 +143,29 @@ namespace Kuroha.Framework.BugReport
         /// <summary>
         /// 上传报错
         /// </summary>
-        /// <param name="cardTitle">卡片标题</param>
-        /// <param name="cardDescription">卡片描述</param>
-        /// <param name="cardList">卡片所属列表</param>
-        /// <returns></returns>
-        public async Task<bool> ReportError(string cardTitle, string cardDescription, string cardList)
+        private async void ReportError()
         {
-            if (initSuccess == false)
+            if (initSuccess)
             {
-                return false;
+                foreach (var pair in unityLogDic)
+                {
+                    var card = trello.NewCard(pair.Key.ToString(), $"异常一共出现了 {pair.Value.count} 次", "New_Bug");
+                    var request = await trello.WebRequest_UploadNewUserCard(card);
+                    var newCardID = request.Value;
+                    
+                    // 上传附件 [截图]
+                    var screenshot = ScreenshotUtil.Instance.CaptureCameraShot(new Rect(0, 0, Screen.width, Screen.height), Camera.main);
+                    await trello.WebRequest_UploadAttachmentToCard_Image(newCardID, "ErrorScreenshot.png", screenshot);
+            
+                    // 上传附件 [字符串]
+                    await trello.WebRequest_UploadAttachmentToCard_String(newCardID, "ErrorInfo.txt", $"{pair.Value.condition}\r\n{pair.Value.stacktrace}");
+            
+                    // 上传附件 [文本类文件]
+                    // await trello.WebRequest_UploadAttachmentToCard_TextFile(newCardID, "这是报错日志.json", @"C:\Users\Kuroha\Desktop\Untitled-1.json");
+                }
+                
+                DebugUtil.Log("日志上传完成!", this, "green");
             }
-            
-            var card = trello.NewCard(cardTitle, cardDescription, cardList);
-            var pair = await trello.WebRequest_UploadNewUserCard(card);
-            var newCardID = pair.Value;
-
-            #region 上传附件代码示例
-
-            // 上传附件 [截图]
-            var screenshot = ScreenshotUtil.Instance.CaptureCameraShot(new Rect(0, 0, Screen.width, Screen.height), Camera.main);
-            await trello.WebRequest_UploadAttachmentToCard_Image(newCardID, "ErrorScreenshot.png", screenshot);
-            
-            // 上传附件 [字符串]
-            await trello.WebRequest_UploadAttachmentToCard_String(newCardID, "ErrorInfo.txt", "这里是详细的报错信息, 使用字符串的形式进行上传");
-            
-            // 上传附件 [文本类文件]
-            // await trello.WebRequest_UploadAttachmentToCard_TextFile(newCardID, "这是报错日志.json", @"C:\Users\Kuroha\Desktop\Untitled-1.json");
-
-            #endregion
-
-            return true;
         }
         
         /// <summary>
@@ -162,11 +184,18 @@ namespace Kuroha.Framework.BugReport
         /// <param name="type">日志类型</param>
         private void ApplicationOnLogMessageReceived(string condition, string stacktrace, LogType type)
         {
-            unityLogList ??= new List<UnityLog>();
-            
-            if (type == LogType.Exception)
+            // 收集指定特征的异常
+            if (type == LogType.Exception && condition.Contains("指定异常"))
             {
-                unityLogList.Add(new UnityLog(condition, stacktrace, type));
+                var hash = condition.GetHashCode();
+                if (unityLogDic.TryGetValue(hash, out var log))
+                {
+                    log.count++;
+                }
+                else
+                {
+                    unityLogDic[hash] = new UnityLog(condition, stacktrace, type);
+                }
             }
         }
     }

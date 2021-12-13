@@ -304,7 +304,6 @@ namespace Kuroha.Framework.BugReport
             await request.SendWebRequest();
             
             var downloadText = request.downloadHandler.text;
-            Debug.Log(downloadText);
             if (downloadText.IsNullOrEmpty())
             {
                 isSuccess = false;

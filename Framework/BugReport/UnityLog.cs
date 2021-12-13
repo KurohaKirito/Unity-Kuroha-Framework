@@ -21,11 +21,18 @@ namespace Kuroha.Framework.BugReport
         /// </summary>
         public LogType type;
 
+        /// <summary>
+        /// 日志出现次数
+        /// </summary>
+        public int count;
+
         public UnityLog(string condition, string stacktrace, LogType type)
         {
             this.condition = condition;
             this.stacktrace = stacktrace;
             this.type = type;
+            
+            count = 1;
         }
     }
 }
