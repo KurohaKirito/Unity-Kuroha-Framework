@@ -128,7 +128,7 @@ public static class AutoCheckToolGUI {
 
         // 检测 Assets/Art/Effects/Models 下的无引用模型
         if (checkToggle[9]) {
-            results.AddRange(UnusedModelDetect.Check("Assets/Art/Effects/Materials", "傅佳亿", false));
+            results.AddRange(UnusedModelDetect.Check("Assets/Art/Effects/Models", "傅佳亿", false));
         }
 
         // 检测 Assets/Art/Effects/Models 下的资源与文件夹同级问题

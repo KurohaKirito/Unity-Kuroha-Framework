@@ -10,6 +10,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
         /// 批处理工具类型
         /// </summary>
         public enum BatchType {
+            SetTextureImportSettings,
             RedundantTextureReferencesCleaner,
             GunAttachmentsCloseCastShadows,
             BundleAssetCounter,
@@ -20,13 +21,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             CheckSubEmitterInAllScene,
             FbxUVColorsChecker,
             AnimationClipCompress,
-            AutoCheckTool = 10
+            AutoCheckTool = 11
         }
 
         /// <summary>
         /// 批处理工具类型
         /// </summary>
         public static readonly string[] batches = {
+            "批量修改纹理导入设置工具",
             "材质球冗余纹理引用清除器", "关闭枪械配件阴影投射", "捆绑包资源数量分析", "资源批量删除工具", "资源批量移动工具", "材质球的着色器引用检测器", "废弃资源检测工具", "场景粒子 Sub-Emitter 检测", "模型 UV 信息检查器", "动画片段压缩工具", "自动检测工具"
         };
 
@@ -110,6 +112,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             GUILayout.BeginArea(rect);
             {
                 switch (currentBatch) {
+                    case BatchType.SetTextureImportSettings:
+                        SetTextureImportSettings.OnGUI();
+                        break;
+                        
                     case BatchType.RedundantTextureReferencesCleaner:
                         RedundantTextureReferencesCleaner.OnGUI();
                         break;
