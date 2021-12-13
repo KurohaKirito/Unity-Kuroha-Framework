@@ -27,7 +27,10 @@ namespace Kuroha.Framework.BugReport
         
         [Header("卡片列表 [可自动同步看板列表] [可自动创建新列表到看板]")] [SerializeField]
         private List<string> userListName;
-        
+
+        [Header("日志队列")] [SerializeField]
+        private List<UnityLog> unityLogList;
+
         /// <summary>
         /// [Async] 初始化
         /// </summary>
@@ -52,6 +55,7 @@ namespace Kuroha.Framework.BugReport
                             if (pair.Key)
                             {
                                 initSuccess = true;
+                                RegisterLogCollect();
                             }
                         }
                     }
@@ -140,6 +144,30 @@ namespace Kuroha.Framework.BugReport
             #endregion
 
             return true;
+        }
+        
+        /// <summary>
+        /// 注册日志收集
+        /// </summary>
+        private void RegisterLogCollect()
+        {
+            Application.logMessageReceivedThreaded += ApplicationOnLogMessageReceived;
+        }
+        
+        /// <summary>
+        /// 日志收集
+        /// </summary>
+        /// <param name="condition">日志信息</param>
+        /// <param name="stacktrace">堆栈跟踪</param>
+        /// <param name="type">日志类型</param>
+        private void ApplicationOnLogMessageReceived(string condition, string stacktrace, LogType type)
+        {
+            unityLogList ??= new List<UnityLog>();
+            
+            if (type == LogType.Exception)
+            {
+                unityLogList.Add(new UnityLog(condition, stacktrace, type));
+            }
         }
     }
 }

@@ -129,7 +129,7 @@ GUID	标题	资源类型	检查类型	路径	资源白名单规则	物体白名�
 128	角色纹理资源命名-Fashion/Gloves	5	0	Assets/Art/Characters/Textures/Fashion/Gloves			^Gloves_[0-9]+	1	True	True	True	
 129	角色纹理文件夹命名-Fashion/Hair	5	1	Assets/Art/Characters/Textures/Fashion/Hair			^Hair_[0-9]+	1	True	True	True	
 130	角色纹理资源命名-Fashion/Hair	5	0	Assets/Art/Characters/Textures/Fashion/Hair			^Hair_[0-9]+	1	True	True	True	
-131	角色纹理文件夹命名-Fashion/Heads	5	1	Assets/Art/Characters/Textures/Fashion/Heads			^Heads_[0-9]+	1	True	True	True	
+131	角色纹理文件夹命名-Fashion/Heads	5	1	Assets/Art/Characters/Textures/Fashion/Heads			^Head_[0-9]+	1	True	True	True	
 132	角色纹理资源命名-Fashion/Heads	5	0	Assets/Art/Characters/Textures/Fashion/Heads			^Heads_[0-9]+	1	True	True	True	
 133	角色纹理文件夹命名-Fashion/Legs	5	1	Assets/Art/Characters/Textures/Fashion/Legs			^Legs_[0-9]+	1	True	True	True	
 134	角色纹理资源命名-Fashion/Legs	5	0	Assets/Art/Characters/Textures/Fashion/Legs			^Legs_[0-9]+	1	True	True	True	
@@ -142,13 +142,16 @@ GUID	标题	资源类型	检查类型	路径	资源白名单规则	物体白名�
 141	角色纹理资源命名-Fashion/Countenance	5	0	Assets/Art/Characters/Textures/Fashion/Countenance			^Countenance_[0-9]+	1	True	True	True	
 142	必须开启 Mip Maps 设置-Fashion	1	1	Assets/Art/Characters/Textures/Fashion	(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Countenance)|(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Fur)		True	1	True	True	True	
 143	必须关闭 Mip Maps 设置-Fashion/Countenance	1	1	Assets/Art/Characters/Textures/Fashion/Countenance			False	1	True	True	True	
-144	必须开启读写-Fashion	1	2	Assets/Art/Characters/Textures/Fashion	(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Countenance)|(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Fur)		True	1	True	True	True	全部开启
+144	必须开启读写-Fashion	1	2	Assets/Art/Characters/Textures/Fashion	(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Countenance)|(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Fur)|(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)Hair)|(Assets(\\|/)Art(\\|/)Characters(\\|/)Textures(\\|/)Fashion(\\|/)XCC)		True	1	True	True	True	文件夹白名单:Countenance,Fur,Hair,XCC
 145	必须关闭读写-Fashion/Countenance	1	2	Assets/Art/Characters/Textures/Fashion/Countenance			False	1	True	True	True	全部关闭
-146	飞高高产出检测工具-动画状态机剔除模式检测	3	10	Assets/ToBundle/GamePlayItem/Aerocraft			3	1	True	True	True	
-147	飞高高产出检测工具-纹理最大为 256 * 256	3	3	Assets/ToBundle/GamePlayItem/Aerocraft			2;2	1	True	True	True	
-148	飞高高产出检测工具-关闭运动向量	3	4	Assets/ToBundle/GamePlayItem/Aerocraft			False	1	True	True	True	
-149	飞高高产出检测工具-关闭动态遮挡剔除	3	5	Assets/ToBundle/GamePlayItem/Aerocraft			False	1	True	True	True	
-150	飞高高产出检测工具-开启阴影投射	3	7	Assets/ToBundle/GamePlayItem/Aerocraft		^Sfx_	1	0	True	True	True	
-151	飞高高产出检测工具-关闭光照探针	3	8	Assets/ToBundle/GamePlayItem/Aerocraft			0	1	True	True	True	
-152	飞高高产出检测工具-关闭反射探针	3	9	Assets/ToBundle/GamePlayItem/Aerocraft			0	1	True	True	True	
-153	飞高高产出检测工具-禁止挂载粒子特效	3	6	Assets/ToBundle/GamePlayItem/Aerocraft			True	0	True	True	True	
+146	必须关闭读写-Fashion/Hair	1	2	Assets/Art/Characters/Textures/Fashion/Hair			False	1	True	True	True	全部关闭
+147	必须关闭读写-Fashion/XCC	1	2	Assets/Art/Characters/Textures/Fashion/XCC			False	1	True	True	True	全部关闭
+148	必须关闭读写-Fashion/Fur	1	2	Assets/Art/Characters/Textures/Fashion/Fur			False	1	True	True	True	全部关闭
+149	飞高高产出检测工具-动画状态机剔除模式检测	3	10	Assets/ToBundle/GamePlayItem/Aerocraft		Aerocraft_48	3	1	True	True	True	飞高高-红莲哈雷设置完全剔除会出现飞高高看不见的问题
+150	飞高高产出检测工具-纹理最大为 256 * 256	3	3	Assets/ToBundle/GamePlayItem/Aerocraft			2;2	1	True	True	True	
+151	飞高高产出检测工具-关闭运动向量	3	4	Assets/ToBundle/GamePlayItem/Aerocraft			False	1	True	True	True	
+152	飞高高产出检测工具-关闭动态遮挡剔除	3	5	Assets/ToBundle/GamePlayItem/Aerocraft			False	1	True	True	True	
+153	飞高高产出检测工具-开启阴影投射	3	7	Assets/ToBundle/GamePlayItem/Aerocraft		^Sfx_	1	0	True	True	True	
+154	飞高高产出检测工具-关闭光照探针	3	8	Assets/ToBundle/GamePlayItem/Aerocraft			0	1	True	True	True	
+155	飞高高产出检测工具-关闭反射探针	3	9	Assets/ToBundle/GamePlayItem/Aerocraft			0	1	True	True	True	
+156	飞高高产出检测工具-禁止挂载粒子特效	3	6	Assets/ToBundle/GamePlayItem/Aerocraft			True	0	True	True	True	

@@ -62,10 +62,20 @@ namespace Kuroha.Framework.BugReport
         /// <returns></returns>
         private static string GetTrelloJson_Array(string originalJson, string arrayName)
         {
-            var json = string.Empty;
-            var regex = new Regex(@$"(?<=""{arrayName}\"":)\[([^\]])+\]");
+            var regex = new Regex("");
+            switch (arrayName)
+            {
+                case "boards":
+                    regex = new Regex(@"(?<=""boards"":)\[([^\]])+\]");
+                    break;
+                case "lists":
+                    regex = new Regex(@"(?<=""lists"":)\[([^\]])+\]");
+                    break;
+            }
             var match = regex.Match(originalJson);
-            if (match.Success)
+            
+            var json = string.Empty;
+            if (match is { Success: true })
             {
                 json = @$"{{""data"":{match.Value}}}";
             }
@@ -79,10 +89,20 @@ namespace Kuroha.Framework.BugReport
         /// <returns></returns>
         private static string GetTrelloJson_String(string originalJson, string stringName)
         {
-            var json = string.Empty;
-            var regex = new Regex(@$"(?<=""{stringName}"":"")([0-9,a-z,A-Z]+)(?="")");
+            var regex = new Regex("");
+            switch (stringName)
+            {
+                case "id":
+                    regex = new Regex(@"(?<=""id"":"")([0-9,a-z,A-Z]+)(?="")");
+                    break;
+                case "board":
+                    regex = new Regex(@"(?<=""board"":"")([0-9,a-z,A-Z]+)(?="")");
+                    break;
+            }
             var match = regex.Match(originalJson);
-            if (match.Success)
+            
+            var json = string.Empty;
+            if (match is { Success: true })
             {
                 json = match.Value;
             }
