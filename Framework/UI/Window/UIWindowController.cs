@@ -48,15 +48,11 @@ namespace Kuroha.Framework.UI.Window
         /// <summary>
         /// 显示窗口
         /// </summary>
-        public virtual void Display<T>(T content)
-        {
-        }
+        public virtual void Display<T>(T content) { }
 
         /// <summary>
         /// 隐藏窗口
         /// </summary>
-        public virtual void Hide()
-        {
-        }
+        public virtual void Hide() { }
     }
 }

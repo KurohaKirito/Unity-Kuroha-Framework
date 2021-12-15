@@ -81,9 +81,9 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 添加监听
         /// </summary>
-        public void AddUpdateListener(Action action, string methodName)
+        public void AddUpdateListener(Action action)
         {
-            eventNameList.Add(methodName);
+            eventNameList.Add($"{action.Method.DeclaringType}.{action.Method.Name}()");
             UIUpdateEvent += action;
             Updater.Updater.Instance.Register(this);
         }
@@ -91,9 +91,9 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 移除监听
         /// </summary>
-        public void RemoveUpdateListener(Action action, string methodName)
+        public void RemoveUpdateListener(Action action)
         {
-            eventNameList.Remove(methodName);
+            eventNameList.Remove($"{action.Method.DeclaringType}.{action.Method.Name}()");
             UIUpdateEvent -= action;
             Updater.Updater.Instance.Unregister(this);
         }

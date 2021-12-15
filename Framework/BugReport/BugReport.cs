@@ -83,7 +83,8 @@ namespace Kuroha.Framework.BugReport
                             {
                                 initSuccess = true;
                                 RegisterLogCollect();
-                                bugReportButton.onClick.AddListener(ReportError);
+                                // TODO: 上传的触发
+                                // bugReportButton.onClick.AddListener(ReportError);
                                 DebugUtil.Log("日志上报初始化完成", this, "green");
                             }
                         }
@@ -149,7 +150,7 @@ namespace Kuroha.Framework.BugReport
             {
                 foreach (var pair in unityLogDic)
                 {
-                    var card = trello.NewCard(pair.Key.ToString(), $"异常一共出现了 {pair.Value.count} 次", "New_Bug");
+                    var card = trello.NewCard(pair.Key.ToString(), $"该日志一共出现了 {pair.Value.count} 次", "New_Bug");
                     var request = await trello.WebRequest_UploadNewUserCard(card);
                     var newCardID = request.Value;
                     
