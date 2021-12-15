@@ -31,11 +31,19 @@ namespace Kuroha.Framework.Updater
         #endregion
 
         /// <summary>
+        /// 单例初始化
+        /// </summary>
+        protected override void Init()
+        {
+            base.Init();
+            updateMessage ??= new UpdateMessage(Time.deltaTime);
+        }
+
+        /// <summary>
         /// 帧更新
         /// </summary>
         private void Update()
         {
-            updateMessage ??= new UpdateMessage(Time.deltaTime);
             updateMessage.deltaTime = Time.deltaTime;
             MessageSystem.Instance.Send(updateMessage);
         }
