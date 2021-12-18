@@ -150,7 +150,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
                 // 定义当前检测路径
                 var currentPath = allDirectory[progressBar];
                 
-                if (currentPath.Name == ".git") {
+                if (currentPath.Name == ".git")
+                {
                     progressBar++;
                     continue;
                 }
