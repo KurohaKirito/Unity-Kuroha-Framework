@@ -315,7 +315,8 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                         iconRect.width = 20f;
                         cellRect.xMin += 20f;
 
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("RawImage Icon"));
+                        // EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("RawImage Icon"));
+                        EditorGUI.LabelField(iconRect, new GUIContent(AssetDatabase.GetCachedIcon(data.texturePath)));
                         EditorGUI.LabelField(cellRect, data.textureName.Contains("/")
                             ? data.textureName.Split('/').Last()
                             : data.textureName.Split('\\').Last());
@@ -342,17 +343,17 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
 
                         if (data.width > widthError)
                         {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.errorIcon.sml"));
                             EditorGUI.LabelField(cellRect, data.width.ToString(), fontStyleRed);
                         }
                         else if (data.width > widthWarn)
                         {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
                             EditorGUI.LabelField(cellRect, data.width.ToString(), fontStyleYellow);
                         }
                         else
                         {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
                             EditorGUI.LabelField(cellRect, data.width.ToString());
                         }
                     }
@@ -378,17 +379,17 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
 
                         if (data.height > heightError)
                         {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.errorIcon.sml"));
                             EditorGUI.LabelField(cellRect, data.height.ToString(), fontStyleRed);
                         }
                         else if (data.height > heightWarn)
                         {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
                             EditorGUI.LabelField(cellRect, data.height.ToString(), fontStyleYellow);
                         }
                         else
                         {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
                             EditorGUI.LabelField(cellRect, data.height.ToString());
                         }
                     }

@@ -75,7 +75,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 remarkStringBuilder.Append("\n　(4) 场景中引用的模型资源的法线导入设置.");
                 remarkStringBuilder.Append("\n　(5) 场景中所有隐藏的游戏物体.");
 
-                oneKeyContent = new GUIContent(EditorGUIUtility.IconContent("console.infoicon.sml"))
+                oneKeyContent = new GUIContent(EditorGUIUtility.IconContent("console.infoIcon.sml"))
                 {
                     tooltip = remarkStringBuilder.ToString(),
                     text = "  开始检测       "

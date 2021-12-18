@@ -436,7 +436,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                     iconRect.width = 20f;
                     EditorGUI.LabelField(iconRect,
                         data.assetName.Equals("总和")
-                            ? EditorGUIUtility.IconContent("console.infoicon.sml")
+                            ? EditorGUIUtility.IconContent("console.infoIcon.sml")
                             : EditorGUIUtility.IconContent("PrefabModel Icon"));
                     cellRect.xMin += 20f;
                     EditorGUI.LabelField(cellRect,
@@ -468,17 +468,17 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                     cellRect.xMin += 20f;
                     if (data.verts > vertsError)
                     {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.errorIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.verts.ToString(), fontStyleRed);
                     }
                     else if (data.verts > vertsWarn)
                     {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.verts.ToString(), fontStyleYellow);
                     }
                     else
                     {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.verts.ToString());
                     }
                 },
@@ -506,17 +506,17 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                     cellRect.xMin += 20f;
                     if (data.tris > trisError)
                     {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.errorIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.tris.ToString(), fontStyleRed);
                     }
                     else if (data.tris > trisWarn)
                     {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.tris.ToString(), fontStyleYellow);
                     }
                     else
                     {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.tris.ToString());
                     }
                 },

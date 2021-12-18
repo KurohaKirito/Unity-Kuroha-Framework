@@ -150,15 +150,15 @@ namespace Kuroha.GUI.Editor
             switch (windowType)
             {
                 case DialogType.Message:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.infoicon@2x"));
+                    GUILayout.Label(EditorGUIUtility.IconContent("console.infoIcon@2x"));
                     break;
 
                 case DialogType.Warn:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.warnicon@2x"));
+                    GUILayout.Label(EditorGUIUtility.IconContent("console.warnIcon@2x"));
                     break;
 
                 case DialogType.Error:
-                    GUILayout.Label(EditorGUIUtility.IconContent("console.erroricon@2x"));
+                    GUILayout.Label(EditorGUIUtility.IconContent("console.errorIcon@2x"));
                     break;
                 
                 default:
