@@ -180,6 +180,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 id = dataList.Count + 1,
                 tris = resultTris,
                 verts = resultVerts,
+                readwrite = "/",
                 uv = resultUV,
                 uv2 = resultUV2,
                 uv3 = resultUV3,
