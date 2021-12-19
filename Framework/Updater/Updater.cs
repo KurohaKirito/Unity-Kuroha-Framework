@@ -1,6 +1,5 @@
 ﻿using Kuroha.Framework.Message;
 using Kuroha.Framework.Singleton;
-using Kuroha.Util.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.Updater
@@ -60,8 +59,6 @@ namespace Kuroha.Framework.Updater
                 updaterList ??= new System.Collections.Generic.List<string>(5);
                 updaterList.Add(updater.GetType().FullName);
                 #endif
-
-                DebugUtil.Log($"{updateMessage?.deltaTime} 成功注册帧更新事件!");
             }
         }
 
@@ -76,8 +73,6 @@ namespace Kuroha.Framework.Updater
                 #if KUROHA_DEBUG_MODE
                 updaterList.Remove(updater.GetType().FullName);
                 #endif
-
-                DebugUtil.Log($"{updateMessage?.deltaTime} 成功注销帧更新事件!");
             }
         }
     }

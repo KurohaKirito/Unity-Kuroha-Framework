@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Kuroha.Util.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.Launcher
@@ -35,6 +36,7 @@ namespace Kuroha.Framework.Launcher
         private async void Start()
         {
             await LaunchFramework();
+            DebugUtil.Log("框架启动完成!", this, "green");
             RegisterEvent();
             ExecuteStartEvent();
             SceneStart();
