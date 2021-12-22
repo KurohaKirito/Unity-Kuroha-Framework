@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Menu {
     public class ToolMenu : MonoBehaviour {
-        [MenuItem("GameObject/LODTool", false, 12)]
+        [MenuItem("GameObject/Scene Batch Tool/LODTool", false, 12)]
         public static void Tool1() {
             LodBatchWindow.Open();
         }
@@ -19,6 +19,11 @@ namespace Script.Effect.Editor.AssetTool.Menu {
         [MenuItem("Funny/资源检测工具/飞高高产出检测工具")]
         public static void Tool3() {
             EffectCheckToolGUI.Detect(false, "飞高高产出检测工具");
+        }
+        
+        [MenuItem("Assets/Scene Batch Tool/Pick Mesh Collider", false, 12)]
+        public static void Tool4() {
+            BatchToolInScene.PickUpAllCollider();
         }
     }
 }
