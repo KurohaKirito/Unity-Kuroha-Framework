@@ -43,6 +43,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
             PrefabLightProbes,
             PrefabReflectionProbes,
             PrefabAnimatorCullingMode,
+            PrefabLODGroupRenderers,
 
             // 3
             TextureSize,
@@ -51,7 +52,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
 
             // 2
             AssetName,
-            FolderName
+            FolderName,
         }
 
         /// <summary>

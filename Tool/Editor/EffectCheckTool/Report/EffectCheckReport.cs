@@ -207,6 +207,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabAnimatorCullingMode:
                     isCanRepair = true;
                     break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers:
+                    break;
 
                 // 3
                 case EffectCheckReportInfo.EffectCheckReportType.TextureSize:

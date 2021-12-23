@@ -422,6 +422,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                     ParameterInt1 = EditorGUILayout.Popup("Animator Culling Mode: ", ParameterInt1, CheckPrefab.animatorCullingModeOptions);
                     itemInfo.parameter = ParameterInt1.ToString();
                     break;
+
+                case CheckPrefab.CheckOptions.LODGroupRenderers:
+                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+                    GUILayout.Label("描述: LODGroup 只有 LOD0 时, LOD0 不能为空!");
+                    UnityEngine.GUI.skin.label.alignment = oldAlignment;
+                    break;
                 
                 default:
                     throw new ArgumentOutOfRangeException();

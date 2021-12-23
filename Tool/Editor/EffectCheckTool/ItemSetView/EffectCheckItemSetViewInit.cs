@@ -207,6 +207,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                     var parameter4 = Convert.ToInt32(info.parameter);
                     EffectCheckItemSetViewWindow.ParameterInt1 = parameter4;
                     break;
+
+                case CheckPrefab.CheckOptions.LODGroupRenderers:
+                    break;
                 
                 default:
                     throw new ArgumentOutOfRangeException();

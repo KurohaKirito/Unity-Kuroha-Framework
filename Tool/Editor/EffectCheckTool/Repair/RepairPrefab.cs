@@ -55,6 +55,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
                 case CheckPrefab.CheckOptions.AnimatorCullingMode:
                     RepairAnimatorCullingMode(effectCheckReportInfo);
                     break;
+
+                case CheckPrefab.CheckOptions.LODGroupRenderers:
+                    break;
                 
                 default:
                     throw new ArgumentOutOfRangeException();

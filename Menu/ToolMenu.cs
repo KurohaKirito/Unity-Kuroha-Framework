@@ -25,5 +25,10 @@ namespace Script.Effect.Editor.AssetTool.Menu {
         public static void Tool4() {
             BatchToolInScene.PickUpAllCollider();
         }
+        
+        [MenuItem("Funny/资源检测工具/PickItem检测工具")]
+        public static void Tool5() {
+            EffectCheckToolGUI.Detect(false, "PickItem检测工具");
+        }
     }
 }
