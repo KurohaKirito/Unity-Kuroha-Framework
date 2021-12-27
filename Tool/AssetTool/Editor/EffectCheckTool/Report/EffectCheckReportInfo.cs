@@ -34,7 +34,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             ParticleCollisionAndTrigger,
             ParticleZeroSurface,
             
-            // 11
+            // 12
             PrefabName,
             PrefabForbidCollider,
             PrefabTextureSize,
@@ -46,6 +46,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             PrefabLightProbes,
             PrefabReflectionProbes,
             PrefabAnimatorCullMode,
+            PrefabLODGroupRenderers,
             
             // 3
             TextureSize,
@@ -54,7 +55,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             
             // 2
             AssetName,
-            FolderName
+            FolderName,
         }
 
         /// <summary>

@@ -150,6 +150,18 @@ namespace Kuroha.Menu.Editor
         {
             EffectCheckToolGUI.Detect(false, "飞高高产出检测工具");
         }
+        
+        [MenuItem("Kuroha/PickItem Check Tool", false, 60)]
+        public static void PickItemCheckTool()
+        {
+            EffectCheckToolGUI.Detect(false, "PickItem检测工具");
+        }
+        
+        [MenuItem("Kuroha/Car Set LOD Tool")]
+        public static void CarSetLODTool()
+        {
+            CarSetLOD.Open();
+        }
 
         #endregion
 

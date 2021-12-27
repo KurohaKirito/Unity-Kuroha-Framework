@@ -31,6 +31,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             "光照探针",
             "反射探针",
             "动画状态机剔除模式",
+            "LOD渲染层级设置",
         };
 
         /// <summary>
@@ -92,6 +93,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             /// 动画状态机
             /// </summary>
             AnimatorCullMode,
+            
+            /// <summary>
+            /// LOD Renderer 设置
+            /// </summary>
+            LODGroupRenderers,
         }
 
         /// <summary>
@@ -200,6 +206,10 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                         case CheckOptions.AnimatorCullMode:
                             CheckAnimatorCullMode(assetPath, itemData, ref reportInfos);
+                            break;
+                        
+                        case CheckOptions.LODGroupRenderers:
+                            CheckLODGroupRenderers(assetPath, itemData, ref reportInfos);
                             break;
 
                         default:
@@ -759,6 +769,88 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         var childPath = PrefabUtil.GetHierarchyPath(transform, false);
                         var content = $"动画状态机剔除错误!\t预制体: {assetPath} 子物体: {childPath}: ({animator.cullingMode}) => ({parameter})";
                         report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabReflectionProbes, content, item));
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 检测: LOD渲染层级设置
+        /// </summary>
+        private static void CheckLODGroupRenderers(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (ReferenceEquals(asset, null))
+            {
+                DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
+                return;
+            }
+
+            // 得到预制上全部的游戏物体
+            var transforms = asset.GetComponentsInChildren<Transform>(true);
+
+            // 遍历检测
+            foreach (var transform in transforms)
+            {
+                // 正则
+                var pattern = item.objectWhiteRegex;
+                if (string.IsNullOrEmpty(pattern) == false)
+                {
+                    var regex = new Regex(pattern);
+                    if (regex.IsMatch(transform.gameObject.name))
+                    {
+                        continue;
+                    }
+                }
+
+                // 检测
+                if (transform.TryGetComponent<LODGroup>(out var lodGroup))
+                {
+                    var lods = lodGroup.GetLODs();
+                    
+                    // LODs 的层级数不包含 Cull 层, 例如: LOD0 + Cull 的层数为: 1
+                    if (lods[0].renderers == null || lods[0].renderers.Length <= 0)
+                    {
+                        DebugUtil.Log($"{transform.name} 物体的 LOD 层数为: {lods.Length}", null, "red");
+                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                        if (childPath.IsNullOrEmpty())
+                        {
+                            var content = $"LODGroups设置错误!\t预制体: {assetPath}";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers, content, item));
+                        }
+                        else
+                        {
+                            var content = $"LODGroups设置错误!\t预制体: {assetPath} 子物体: {childPath}";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers, content, item));
+                        }
+                    }
+                    else
+                    {
+                        // 检查 LOD0
+                        var isError = false;
+                        foreach (var renderer in lods[0].renderers)
+                        {
+                            if (renderer == null)
+                            {
+                                isError = true;
+                            }
+                        }
+
+                        if (isError)
+                        {
+                            DebugUtil.Log($"{transform.name} 物体的 LOD 层数为: {lods.Length}", null, "red");
+                            var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                            if (childPath.IsNullOrEmpty())
+                            {
+                                var content = $"LOD0存在空物体!\t预制体: {assetPath}";
+                                report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers, content, item));
+                            }
+                            else
+                            {
+                                var content = $"LOD0存在空物体!\t预制体: {assetPath} 子物体: {childPath}";
+                                report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers, content, item));
+                            }
+                        }
                     }
                 }
             }

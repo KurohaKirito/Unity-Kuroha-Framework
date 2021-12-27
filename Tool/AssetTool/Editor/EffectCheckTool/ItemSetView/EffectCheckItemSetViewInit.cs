@@ -227,6 +227,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
                     break;
                 
+                case CheckPrefab.CheckOptions.LODGroupRenderers:
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

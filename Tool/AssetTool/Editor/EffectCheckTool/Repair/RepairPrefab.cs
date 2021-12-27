@@ -58,6 +58,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
                 case CheckPrefab.CheckOptions.AnimatorCullMode:
                     RepairAnimatorCullingMode(effectCheckReportInfo);
                     break;
+                
+                case CheckPrefab.CheckOptions.LODGroupRenderers:
+                    break;
 
                 default:
                     throw new ArgumentOutOfRangeException();

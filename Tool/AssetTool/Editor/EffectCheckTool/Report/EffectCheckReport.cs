@@ -192,7 +192,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                     isCanRepair = true;
                     break;
                 
-                // 11
+                // 12
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabName:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabDisableObject:
@@ -220,6 +220,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabAnimatorCullMode:
                     isCanRepair = true;
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers:
                     break;
                 
                 // 3
