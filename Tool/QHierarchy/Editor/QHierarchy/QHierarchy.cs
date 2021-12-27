@@ -39,7 +39,7 @@ namespace qtools.qhierarchy.phierarchy
             componentDictionary.Add((int)QHierarchyComponentEnum.LayerIconComponent        , new QLayerIconComponent());
             componentDictionary.Add((int)QHierarchyComponentEnum.ColorComponent            , new QColorComponent());
             componentDictionary.Add((int)QHierarchyComponentEnum.ComponentsComponent       , new QComponentsComponent());
-            componentDictionary.Add((int)QHierarchyComponentEnum.ChildrenCountComponent    , new QC_ChildrenCount());
+            componentDictionary.Add((int)QHierarchyComponentEnum.ChildrenCountComponent    , new QHierarchyComponentChildrenCount());
             componentDictionary.Add((int)QHierarchyComponentEnum.PrefabComponent           , new QPrefabComponent());
             componentDictionary.Add((int)QHierarchyComponentEnum.VerticesAndTrianglesCount , new QVerticesAndTrianglesCountComponent());
 

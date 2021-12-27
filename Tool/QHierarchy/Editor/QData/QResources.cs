@@ -46,7 +46,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 		private static QResources instance;
 		public static QResources getInstance()
 		{
-			if (instance == null) instance = new QResources();
+			if (instance == null) {
+				instance = new QResources();
+			}
 			return instance;
 		}
 

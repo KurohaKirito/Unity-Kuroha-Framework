@@ -105,7 +105,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     if (!showModifierWarning || EditorUtility.DisplayDialog("Change locking", "Are you sure you want to " + (isLock ? "unlock" : "lock") + " this GameObject and all its children? (You can disable this warning in the settings)", "Yes", "Cancel"))
                     {
-                        GETGameObjectListRecursive(gameObject, ref targetGameObjects);           
+                        GetGameObjectListRecursive(gameObject, ref targetGameObjects);           
                     }
                 }
                 else if (currentEvent.alt)
@@ -114,7 +114,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         if (!showModifierWarning || EditorUtility.DisplayDialog("Change locking", "Are you sure you want to " + (isLock ? "unlock" : "lock") + " this GameObject and its siblings? (You can disable this warning in the settings)", "Yes", "Cancel"))
                         {
-                            GETGameObjectListRecursive(gameObject.transform.parent.gameObject, ref targetGameObjects, 1);
+                            GetGameObjectListRecursive(gameObject.transform.parent.gameObject, ref targetGameObjects, 1);
                             targetGameObjects.Remove(gameObject.transform.parent.gameObject);
                         }
                     }
@@ -132,7 +132,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     }
                     else
                     {
-                        GETGameObjectListRecursive(gameObject, ref targetGameObjects, 0);
+                        GetGameObjectListRecursive(gameObject, ref targetGameObjects, 0);
                     };
                 }
                 

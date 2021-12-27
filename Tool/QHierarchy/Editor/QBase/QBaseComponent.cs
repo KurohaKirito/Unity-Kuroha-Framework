@@ -19,17 +19,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
             return EM_QLayoutStatus.Success;
         }
 
-        public virtual void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
-        {
-        }
+        public virtual void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect) { }
 
-        public virtual void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent)
-        {
-        }
+        public virtual void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent) { }
 
-        public virtual void DisabledHandler(GameObject gameObject, QObjectList objectList)
-        {
-        }
+        public virtual void DisabledHandler(GameObject gameObject, QObjectList objectList) { }
 
         public bool IsEnabled()
         {
@@ -41,7 +35,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
             return !Application.isPlaying || showComponentDuringPlayMode;
         }
 
-        protected static void GETGameObjectListRecursive(GameObject gameObject, ref List<GameObject> result, int maxDepth = int.MaxValue)
+        protected static void GetGameObjectListRecursive(GameObject gameObject, ref List<GameObject> result, int maxDepth = int.MaxValue)
         {
             result.Add(gameObject);
             if (maxDepth > 0)
@@ -49,7 +43,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
                 var transform = gameObject.transform;
                 for (var index = transform.childCount - 1; index >= 0; index--)
                 {
-                    GETGameObjectListRecursive(transform.GetChild(index).gameObject, ref result, maxDepth - 1);
+                    GetGameObjectListRecursive(transform.GetChild(index).gameObject, ref result, maxDepth - 1);
                 }
             }
         }

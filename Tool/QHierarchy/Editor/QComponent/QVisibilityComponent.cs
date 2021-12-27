@@ -176,7 +176,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         if (!showWarning || EditorUtility.DisplayDialog("Change edit-time visibility", "Are you sure you want to turn " + (gameObject.activeSelf ? "off" : "on") + " the edit-time visibility of this GameObject and all its children? (You can disable this warning in the settings)", "Yes", "Cancel"))
                         {
-                            GETGameObjectListRecursive(gameObject, ref targetGameObjects);
+                            GetGameObjectListRecursive(gameObject, ref targetGameObjects);
                         }
                     }
                     else if (currentEvent.alt)
@@ -185,7 +185,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         {
                             if (!showWarning || EditorUtility.DisplayDialog("Change edit-time visibility", "Are you sure you want to turn " + (gameObject.activeSelf ? "off" : "on") + " the edit-time visibility this GameObject and its siblings? (You can disable this warning in the settings)", "Yes", "Cancel"))
                             {
-                                GETGameObjectListRecursive(gameObject.transform.parent.gameObject, ref targetGameObjects, 1);
+                                GetGameObjectListRecursive(gameObject.transform.parent.gameObject, ref targetGameObjects, 1);
                                 targetGameObjects.Remove(gameObject.transform.parent.gameObject);
                             }
                         }
@@ -197,14 +197,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     }
                     else
                     {
-                        GETGameObjectListRecursive(gameObject, ref targetGameObjects, 0);
+                        GetGameObjectListRecursive(gameObject, ref targetGameObjects, 0);
                     }
                 }
                 else if (currentEvent.shift)
                 {
                     if (!showWarning || EditorUtility.DisplayDialog("Change visibility", "Are you sure you want to turn " + (gameObject.activeSelf ? "off" : "on") + " the visibility of this GameObject and all its children? (You can disable this warning in the settings)", "Yes", "Cancel"))
                     {
-                        GETGameObjectListRecursive(gameObject, ref targetGameObjects);           
+                        GetGameObjectListRecursive(gameObject, ref targetGameObjects);           
                     }
                 }
                 else if (currentEvent.alt) 
@@ -213,7 +213,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         if (!showWarning || EditorUtility.DisplayDialog("Change visibility", "Are you sure you want to turn " + (gameObject.activeSelf ? "off" : "on") + " the visibility this GameObject and its siblings? (You can disable this warning in the settings)", "Yes", "Cancel"))
                         {
-                            GETGameObjectListRecursive(gameObject.transform.parent.gameObject, ref targetGameObjects, 1);
+                            GetGameObjectListRecursive(gameObject.transform.parent.gameObject, ref targetGameObjects, 1);
                             targetGameObjects.Remove(gameObject.transform.parent.gameObject);
                         }
                     }
@@ -231,7 +231,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     }
                     else
                     {
-                        GETGameObjectListRecursive(gameObject, ref targetGameObjects, 0);
+                        GetGameObjectListRecursive(gameObject, ref targetGameObjects, 0);
                     };
                 }
                 

@@ -7,16 +7,16 @@ using UnityEngine;
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
     /// <summary>
-    /// 显示子物体数量
+    /// QHierarchyComponent : 显示子物体数量
     /// </summary>
-    public class QC_ChildrenCount : QBaseComponent
+    public class QHierarchyComponentChildrenCount : QBaseComponent
     {
         private readonly GUIStyle labelStyle;
 
         /// <summary>
         /// 构造函数
         /// </summary>
-        public QC_ChildrenCount()
+        public QHierarchyComponentChildrenCount()
         {
             labelStyle = new GUIStyle
             {
@@ -28,15 +28,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width = 22;
             rect.height = 16;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountShow, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountShowDuringPlayMode, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountLabelSize, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountLabelColor, settingsChanged);
-            settingsChanged();
+            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountShow, OnSettingsChanged);
+            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountShowDuringPlayMode, OnSettingsChanged);
+            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountLabelSize, OnSettingsChanged);
+            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountLabelColor, OnSettingsChanged);
+            OnSettingsChanged();
         }
 
-        // PRIVATE
-        private void settingsChanged()
+        /// <summary>
+        /// 当用户更改设置时触发
+        /// </summary>
+        private void OnSettingsChanged()
         {
             enabled = QSettings.getInstance().get<bool>(EM_QSetting.ChildrenCountShow);
             showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.ChildrenCountShowDuringPlayMode);

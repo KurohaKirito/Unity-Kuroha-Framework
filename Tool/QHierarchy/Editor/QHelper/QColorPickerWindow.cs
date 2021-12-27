@@ -12,14 +12,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 
     public class QColorPickerWindow: PopupWindowContent 
     {
-        // PRIVATE
         private GameObject[] gameObjects;
         private QColorSelectedHandler colorSelectedHandler;
         private QColorRemovedHandler colorRemovedHandler;
-        private Texture2D colorPaletteTexture;
+        private readonly Texture2D colorPaletteTexture;
         private Rect paletteRect;
 
-        // CONSTRUCTOR
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public QColorPickerWindow(GameObject[] gameObjects, QColorSelectedHandler colorSelectedHandler, QColorRemovedHandler colorRemovedHandler)
         {
             this.gameObjects = gameObjects;
@@ -48,7 +49,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         {
             UnityEngine.GUI.DrawTexture(paletteRect, colorPaletteTexture);
 
-            Vector2 mousePosition = Event.current.mousePosition;
+            var mousePosition = Event.current.mousePosition;
             if (Event.current.isMouse && Event.current.button == 0 && Event.current.type == EventType.MouseUp && paletteRect.Contains(mousePosition))
             {
                 Event.current.Use();
