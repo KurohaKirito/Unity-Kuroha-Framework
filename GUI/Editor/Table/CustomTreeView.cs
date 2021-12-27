@@ -82,7 +82,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         }
         
         public void OnDeduplicateGUI(Vector2 position, bool isDraw, float width, float height, List<T> dataList) {
-            if (MethodExport == null) {
+            if (MethodDeduplicate == null) {
                 return;
             }
 
@@ -90,9 +90,8 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
                 return;
             }
 
-            if (UnityEngine.GUI.Button(new Rect(position.x, position.y -1, width, height), "Export")) {
-                var path = EditorUtility.SaveFilePanel("Export DataList", Application.dataPath, "dataList.txt", "");
-                MethodExport(path, dataList);
+            if (UnityEngine.GUI.Button(new Rect(position.x, position.y -1, width, height), "Deduplicate")) {
+                MethodDeduplicate(dataList);
             }
         }
 

@@ -126,8 +126,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     if (dataList != null) {
                         var columns = InitColumns(isCollider);
                         if (columns != null) {
-                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList, true, true, true, columns,
-                                OnFilterEnter, OnExportPressed, OnRowSelect, null);
+                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList, true, true, true, columns, OnFilterEnter, OnExportPressed, OnRowSelect, OnDeduplicatePressed);
                         }
                     }
                 }
@@ -240,25 +239,30 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     } else {
                         var readWriteEnable = false;
 
-                        // 负缩放 + 凸体
+                        // 负缩放的凸多面体
                         if (meshCollider.transform.localScale.x < 0 || meshCollider.transform.localScale.y < 0 || meshCollider.transform.localScale.z < 0) {
                             if (meshCollider.convex) {
-                                DebugUtil.Log("原因 1");
                                 readWriteEnable = true;
+                                if (sharedMesh.isReadable == false) {
+                                    DebugUtil.Log($"{meshCollider.name} 是一个负缩放的凸多面体, 需要开启读写!", meshCollider.gameObject, "red");
+                                }
                             }
                         }
 
-                        // 旋转
-                        // else if (meshCollider.transform.localRotation != Quaternion.identity)
-                        // {
-                        //     DebugUtil.Log("原因 2");
-                        //     readWriteEnable = true;
-                        // }
-
-                        // Cooking Options
-                        else if (meshCollider.cookingOptions != DEFAULT_OPTIONS) {
-                            DebugUtil.Log("原因 3");
+                        // 倾斜
+                        else if (meshCollider.transform.localRotation != Quaternion.identity && meshCollider.transform.parent.localScale != Vector3.one) {
                             readWriteEnable = true;
+                            if (sharedMesh.isReadable == false) {
+                                DebugUtil.Log($"{meshCollider.name} 的旋转是倾斜的, 需要开启读写!", meshCollider.gameObject, "red");
+                            }
+                        }
+
+                        // 烘焙选项非默认
+                        else if (meshCollider.cookingOptions != DEFAULT_OPTIONS) {
+                            readWriteEnable = true;
+                            if (sharedMesh.isReadable == false) {
+                                DebugUtil.Log($"{meshCollider.name} 的烘焙选项非默认, 需要开启读写!", meshCollider.gameObject, "red");
+                            }
                         }
 
                         var readWriteEnableStr = $"{sharedMesh.isReadable} => {readWriteEnable}";
@@ -704,6 +708,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             #endregion
 
             return isMatched;
+        }
+
+        /// <summary>
+        /// 数据去重事件
+        /// </summary>
+        private static void OnDeduplicatePressed(in List<SceneAnalysisData> dataList) {
+            DebugUtil.Log("去重", null, "red");
         }
     }
 }
