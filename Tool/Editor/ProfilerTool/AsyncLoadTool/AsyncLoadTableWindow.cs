@@ -39,7 +39,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
                     if (columns != null) {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        table = new AsyncLoadTable(space, min, dataList, true, true, 50, 50, columns, OnFilterEnter, null, null);
+                        table = new AsyncLoadTable(space, min, dataList, true, true, true, columns,
+                            OnFilterEnter, null, null, null);
                     }
                 }
             }
@@ -77,9 +78,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private static CommonTableColumn<AsyncLoadData>[] InitColumns() {
+        private static CustomTableColumn<AsyncLoadData>[] InitColumns() {
             return new[] {
-                new CommonTableColumn<AsyncLoadData> {
+                new CustomTableColumn<AsyncLoadData> {
                     headerContent = new GUIContent("ID"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 50,
@@ -96,7 +97,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
                         EditorGUI.LabelField(cellRect, data.id.ToString());
                     }
                 },
-                new CommonTableColumn<AsyncLoadData> {
+                new CustomTableColumn<AsyncLoadData> {
                     headerContent = new GUIContent("Bundle"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 600,
@@ -117,7 +118,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
                         EditorGUI.LabelField(cellRect, data.bundlePath);
                     }
                 },
-                new CommonTableColumn<AsyncLoadData> {
+                new CustomTableColumn<AsyncLoadData> {
                     headerContent = new GUIContent("StartTime"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 80,
@@ -133,7 +134,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
                         EditorGUI.LabelField(cellRect, data.startTime);
                     }
                 },
-                new CommonTableColumn<AsyncLoadData> {
+                new CustomTableColumn<AsyncLoadData> {
                     headerContent = new GUIContent("EndTime"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 80,
@@ -149,7 +150,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
                         EditorGUI.LabelField(cellRect, data.endTime);
                     }
                 },
-                new CommonTableColumn<AsyncLoadData> {
+                new CustomTableColumn<AsyncLoadData> {
                     headerContent = new GUIContent("UseTime (ms)"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 120,
@@ -164,7 +165,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
                         EditorGUI.LabelField(cellRect, data.useTime.ToString("F1"));
                     }
                 },
-                new CommonTableColumn<AsyncLoadData> {
+                new CustomTableColumn<AsyncLoadData> {
                     headerContent = new GUIContent("Stack"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 300,

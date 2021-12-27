@@ -114,7 +114,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     if (columns != null) {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        table = new TextureAnalysisTable(space, min, dataList, true, true, 50, 50, columns, OnFilterEnter, OnExportPressed, OnRowSelect);
+                        table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns,
+                            OnFilterEnter, OnExportPressed, OnRowSelect, null);
                     }
                 }
             }
@@ -245,9 +246,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private CommonTableColumn<TextureAnalysisData>[] InitColumns() {
+        private CustomTableColumn<TextureAnalysisData>[] InitColumns() {
             return new[] {
-                new CommonTableColumn<TextureAnalysisData> {
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("ID"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 50,
@@ -264,7 +265,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         EditorGUI.LabelField(cellRect, data.id.ToString());
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData> {
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Name"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 240,
@@ -285,7 +286,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         EditorGUI.LabelField(cellRect, data.textureName.Contains("/")? data.textureName.Split('/').Last() : data.textureName.Split('\\').Last());
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData> {
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Width"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 80,
@@ -314,7 +315,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         }
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData> {
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Height"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 80,
@@ -343,7 +344,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         }
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData> {
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Solid"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 80,
@@ -365,7 +366,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         }
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData> {
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Repeat"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 300,

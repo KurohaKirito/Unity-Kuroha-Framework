@@ -6,31 +6,38 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
-    public class CommonTreeView<T> : TreeView where T : class {
+    public class CustomTreeView<T> : TreeView where T : class {
         private int filterMask = -1;
         private string filterText;
-        private List<CommonTreeViewItem<T>> items;
+        private List<CustomTreeViewItem<T>> items;
 
         #region private property
 
         private List<T> DataList { get; }
 
-        private CommonTableDelegate.FilterMethod<T> MethodFilter { get; }
+        private CustomTableDelegate.FilterMethod<T> MethodFilter { get; }
 
-        private CommonTableDelegate.ExportMethod<T> MethodExport { get; }
+        private CustomTableDelegate.ExportMethod<T> MethodExport { get; }
 
-        private CommonTableDelegate.SelectMethod<T> MethodSelect { get; }
+        private CustomTableDelegate.SelectMethod<T> MethodSelect { get; }
+        
+        private CustomTableDelegate.DeduplicateMethod<T> MethodDeduplicate { get; }
 
         #endregion
 
         #region Constructor
 
-        public CommonTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, List<T> dataList, CommonTableDelegate.FilterMethod<T> methodFilter, CommonTableDelegate.ExportMethod<T> methodExport, CommonTableDelegate.SelectMethod<T> methodSelect) : base(state, multiColumnHeader) {
+        public CustomTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, List<T> dataList,
+            CustomTableDelegate.FilterMethod<T> methodFilter,
+            CustomTableDelegate.ExportMethod<T> methodExport,
+            CustomTableDelegate.SelectMethod<T> methodSelect,
+            CustomTableDelegate.DeduplicateMethod<T> methodDeduplicate) : base(state, multiColumnHeader) {
             DataList = dataList;
 
             MethodFilter = methodFilter;
             MethodExport = methodExport;
             MethodSelect = methodSelect;
+            MethodDeduplicate = methodDeduplicate;
 
             multiColumnHeader.sortingChanged += OnSortingChanged;
             multiColumnHeader.visibleColumnsChanged += OnVisibleColumnChanged;
@@ -42,34 +49,30 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
 
         #endregion
 
-        public void OnExportGUI(Vector2 exportPosition, bool isDrawExport, float exportWidth, float filterHeight, List<T> dataList) {
-            const float EXPORT_OFFSET = -1;
-
+        public void OnExportGUI(Vector2 exportPosition, bool isDraw, float width, float height, List<T> dataList) {
             if (MethodExport == null) {
                 return;
             }
 
-            if (!isDrawExport) {
+            if (isDraw == false) {
                 return;
             }
 
-            if (!UnityEngine.GUI.Button(new Rect(exportPosition.x, exportPosition.y + EXPORT_OFFSET, exportWidth, filterHeight), "Export")) {
-                return;
+            if (UnityEngine.GUI.Button(new Rect(exportPosition.x, exportPosition.y -1, width, height), "Export")) {
+                var path = EditorUtility.SaveFilePanel("Export DataList", Application.dataPath, "dataList.txt", "");
+                MethodExport(path, dataList);
             }
-
-            var path = EditorUtility.SaveFilePanel("Export DataList", Application.dataPath, "dataList.txt", "");
-            MethodExport(path, dataList);
         }
 
-        public void OnFilterGUI(Rect rect, bool drawFilter, float rightSpace, string[] displayedOptions) {
-            if (!drawFilter) {
+        public void OnFilterGUI(Rect rect, bool isDraw, float rightSpace, string[] displayedOptions) {
+            if (isDraw == false) {
                 return;
             }
 
             EditorGUI.BeginChangeCheck();
 
             var width = rect.width;
-            rect.width = UnityEngine.GUI.skin.label.CalcSize(CommonTableStyles.filterSelection).x;
+            rect.width = UnityEngine.GUI.skin.label.CalcSize(CustomTableStyles.filterSelection).x;
             rect.x = width - rect.width + rightSpace;
             FilterGUI(rect, displayedOptions);
 
@@ -77,26 +80,43 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
                 Reload();
             }
         }
+        
+        public void OnDeduplicateGUI(Vector2 position, bool isDraw, float width, float height, List<T> dataList) {
+            if (MethodExport == null) {
+                return;
+            }
+
+            if (isDraw == false) {
+                return;
+            }
+
+            if (UnityEngine.GUI.Button(new Rect(position.x, position.y -1, width, height), "Export")) {
+                var path = EditorUtility.SaveFilePanel("Export DataList", Application.dataPath, "dataList.txt", "");
+                MethodExport(path, dataList);
+            }
+        }
+
 
         private void FilterGUI(Rect rect, string[] displayedOptions) {
             const float FILTER_TYPE_WIDTH = 80;
-            const float FILTER_TYPE_OFFSET = -1;
+            const float FILTER_TYPE_OFFSET = 1;
+            const float FILTER_TYPE_SPACE = 5;
             const float FILTER_NONE_BUTTON_WIDTH = 16;
 
             // Filter Type
             rect.x -= FILTER_TYPE_WIDTH;
-            filterMask = EditorGUI.MaskField(new Rect(rect.x, rect.y + FILTER_TYPE_OFFSET, FILTER_TYPE_WIDTH, rect.height), filterMask, displayedOptions);
+            filterMask = EditorGUI.MaskField(new Rect(rect.x - FILTER_TYPE_SPACE, rect.y + FILTER_TYPE_OFFSET, FILTER_TYPE_WIDTH, rect.height), filterMask, displayedOptions);
             rect.x += FILTER_TYPE_WIDTH;
 
             // Filter GUI
             rect.width -= FILTER_NONE_BUTTON_WIDTH;
-            filterText = EditorGUI.DelayedTextField(rect, GUIContent.none, filterText, CommonTableStyles.searchField);
+            filterText = EditorGUI.DelayedTextField(rect, GUIContent.none, filterText, CustomTableStyles.searchField);
 
             // Filter Clear Button
             rect.x += rect.width;
             rect.width = FILTER_NONE_BUTTON_WIDTH;
             var flag = !string.IsNullOrEmpty(filterText);
-            var style = !flag? CommonTableStyles.searchFieldCancelButtonEmpty : CommonTableStyles.searchFieldCancelButton;
+            var style = !flag? CustomTableStyles.searchFieldCancelButtonEmpty : CustomTableStyles.searchFieldCancelButton;
             if (!UnityEngine.GUI.Button(rect, GUIContent.none, style) || !flag) {
                 return;
             }
@@ -107,7 +127,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
 
         private void CellGUI(Rect cellRect, T item, int columnIndex) {
             CenterRectUsingSingleLineHeight(ref cellRect);
-            var column = (CommonTableColumn<T>)multiColumnHeader.GetColumn(columnIndex);
+            var column = (CustomTableColumn<T>)multiColumnHeader.GetColumn(columnIndex);
             column.DrawCell?.Invoke(cellRect, item);
         }
 
@@ -118,7 +138,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         /// </summary>
         /// <param name="rows">所有行的全部具体信息</param>
         /// <returns></returns>
-        private List<CommonTreeViewItem<T>> Filter(IEnumerable<CommonTreeViewItem<T>> rows) {
+        private List<CustomTreeViewItem<T>> Filter(IEnumerable<CustomTreeViewItem<T>> rows) {
             var enumerable = rows;
 
             if (multiColumnHeader.state.visibleColumns.Any(visible => visible == 0) && MethodFilter != null) {
@@ -140,7 +160,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             var sortType = multiColumnHeader.IsSortedAscending(sortColumnIndex);
 
             // 获取排序
-            var compare = ((CommonTableColumn<T>)multiColumnHeader.state.columns[sortColumnIndex]).Compare;
+            var compare = ((CustomTableColumn<T>)multiColumnHeader.state.columns[sortColumnIndex]).Compare;
             var list = (List<TreeViewItem>)rows;
             if (compare == null) {
                 return;
@@ -155,15 +175,15 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
 
             // 升序排序
             int ComparisonAsc(TreeViewItem rowA, TreeViewItem rowB) {
-                var itemA = (CommonTreeViewItem<T>)rowA;
-                var itemB = (CommonTreeViewItem<T>)rowB;
+                var itemA = (CustomTreeViewItem<T>)rowA;
+                var itemB = (CustomTreeViewItem<T>)rowB;
                 return compare(itemA.Data, itemB.Data, true);
             }
 
             // 降序排序
             int ComparisonDesc(TreeViewItem rowA, TreeViewItem rowB) {
-                var itemA = (CommonTreeViewItem<T>)rowA;
-                var itemB = (CommonTreeViewItem<T>)rowB;
+                var itemA = (CustomTreeViewItem<T>)rowA;
+                var itemB = (CustomTreeViewItem<T>)rowB;
                 return -compare(itemA.Data, itemB.Data, false);
             }
         }
@@ -173,22 +193,22 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         #region override
 
         protected override void RowGUI(RowGUIArgs args) {
-            var item = (CommonTreeViewItem<T>)args.item;
+            var item = (CustomTreeViewItem<T>)args.item;
             for (var i = 0; i < args.GetNumVisibleColumns(); i++) {
                 CellGUI(args.GetCellRect(i), item.Data, args.GetColumn(i));
             }
         }
 
         protected override TreeViewItem BuildRoot() {
-            return new CommonTreeViewItem<T>(-1, -1, null);
+            return new CustomTreeViewItem<T>(-1, -1, null);
         }
 
         protected override IList<TreeViewItem> BuildRows(TreeViewItem root) {
             if (items == null) {
-                items = new List<CommonTreeViewItem<T>>();
+                items = new List<CustomTreeViewItem<T>>();
                 for (var i = 0; i < DataList.Count; i++) {
                     var data = DataList[i];
-                    items.Add(new CommonTreeViewItem<T>(i, 0, data));
+                    items.Add(new CustomTreeViewItem<T>(i, 0, data));
                 }
             }
 
@@ -215,7 +235,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
                 return;
             }
 
-            UnityEngine.GUI.FocusControl(CommonTableStyles.FOCUS_HELPER);
+            UnityEngine.GUI.FocusControl(CustomTableStyles.FOCUS_HELPER);
 
             Event.current.Use();
         }

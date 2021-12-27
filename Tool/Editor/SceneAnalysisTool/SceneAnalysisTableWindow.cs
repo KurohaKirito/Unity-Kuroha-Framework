@@ -126,7 +126,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     if (dataList != null) {
                         var columns = InitColumns(isCollider);
                         if (columns != null) {
-                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList, true, true, 50, 50, columns, OnFilterEnter, OnExportPressed, OnRowSelect);
+                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList, true, true, true, columns,
+                                OnFilterEnter, OnExportPressed, OnRowSelect, null);
                         }
                     }
                 }
@@ -333,8 +334,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
 
         #region 创建数据列
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_ID() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ID() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("ID"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 50,
@@ -351,8 +352,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_Name() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Name() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Name"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 300,
@@ -373,8 +374,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private CommonTableColumn<SceneAnalysisData> CreateColumn_Verts() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private CustomTableColumn<SceneAnalysisData> CreateColumn_Verts() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Verts"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 80,
@@ -403,8 +404,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private CommonTableColumn<SceneAnalysisData> CreateColumn_Tris() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private CustomTableColumn<SceneAnalysisData> CreateColumn_Tris() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Tris"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 80,
@@ -433,8 +434,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_ReadWrite() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ReadWrite() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("R/W"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 120,
@@ -451,8 +452,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("UV"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 50,
@@ -469,8 +470,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV2() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV2() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("UV2"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 50,
@@ -487,8 +488,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV3() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV3() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("UV3"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 40,
@@ -505,8 +506,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV4() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV4() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("UV4"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 40,
@@ -523,8 +524,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_Colors() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Colors() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Colors"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 60,
@@ -541,8 +542,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_Tangents() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Tangents() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Tangents"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 70,
@@ -559,8 +560,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_Normals() {
-            return new CommonTableColumn<SceneAnalysisData> {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Normals() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Normals"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 70,
@@ -583,8 +584,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private CommonTableColumn<SceneAnalysisData>[] InitColumns(bool collider) {
-            var columns = new List<CommonTableColumn<SceneAnalysisData>> {
+        private CustomTableColumn<SceneAnalysisData>[] InitColumns(bool collider) {
+            var columns = new List<CustomTableColumn<SceneAnalysisData>> {
                 CreateColumn_ID(),
                 CreateColumn_Name(),
                 CreateColumn_Verts(),

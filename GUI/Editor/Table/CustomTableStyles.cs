@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
-    internal static class CommonTableStyles {
+    internal static class CustomTableStyles {
         public const string FOCUS_HELPER = "SerializedPropertyTreeViewFocusHelper";
         public const string SERIALIZE_FILTER_SELECTION = "_FilterSelection";
         public const string SERIALIZE_FILTER_DISABLE = "_FilterDisable";
