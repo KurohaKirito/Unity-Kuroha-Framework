@@ -9,35 +9,32 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
     public class CustomTreeView<T> : TreeView where T : class {
         private int filterMask = -1;
         private string filterText;
+        private bool isReBuildRows;
+        private List<T> dataList;
         private List<CustomTreeViewItem<T>> items;
 
         #region private property
-
-        private List<T> DataList { get; }
 
         private CustomTableDelegate.FilterMethod<T> MethodFilter { get; }
 
         private CustomTableDelegate.ExportMethod<T> MethodExport { get; }
 
         private CustomTableDelegate.SelectMethod<T> MethodSelect { get; }
-        
-        private CustomTableDelegate.DeduplicateMethod<T> MethodDeduplicate { get; }
+
+        private CustomTableDelegate.DistinctMethod<T> MethodDistinct { get; }
 
         #endregion
 
-        #region Constructor
-
-        public CustomTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, List<T> dataList,
-            CustomTableDelegate.FilterMethod<T> methodFilter,
-            CustomTableDelegate.ExportMethod<T> methodExport,
-            CustomTableDelegate.SelectMethod<T> methodSelect,
-            CustomTableDelegate.DeduplicateMethod<T> methodDeduplicate) : base(state, multiColumnHeader) {
-            DataList = dataList;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public CustomTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, List<T> dataList, CustomTableDelegate.FilterMethod<T> methodFilter, CustomTableDelegate.ExportMethod<T> methodExport, CustomTableDelegate.SelectMethod<T> methodSelect, CustomTableDelegate.DistinctMethod<T> methodDistinct) : base(state, multiColumnHeader) {
+            this.dataList = dataList;
 
             MethodFilter = methodFilter;
             MethodExport = methodExport;
             MethodSelect = methodSelect;
-            MethodDeduplicate = methodDeduplicate;
+            MethodDistinct = methodDistinct;
 
             multiColumnHeader.sortingChanged += OnSortingChanged;
             multiColumnHeader.visibleColumnsChanged += OnVisibleColumnChanged;
@@ -45,23 +42,6 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             showBorder = true;
             showAlternatingRowBackgrounds = true;
             rowHeight = EditorGUIUtility.singleLineHeight;
-        }
-
-        #endregion
-
-        public void OnExportGUI(Vector2 exportPosition, bool isDraw, float width, float height, List<T> dataList) {
-            if (MethodExport == null) {
-                return;
-            }
-
-            if (isDraw == false) {
-                return;
-            }
-
-            if (UnityEngine.GUI.Button(new Rect(exportPosition.x, exportPosition.y -1, width, height), "Export")) {
-                var path = EditorUtility.SaveFilePanel("Export DataList", Application.dataPath, "dataList.txt", "");
-                MethodExport(path, dataList);
-            }
         }
 
         public void OnFilterGUI(Rect rect, bool isDraw, float rightSpace, string[] displayedOptions) {
@@ -80,9 +60,9 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
                 Reload();
             }
         }
-        
-        public void OnDeduplicateGUI(Vector2 position, bool isDraw, float width, float height, List<T> dataList) {
-            if (MethodDeduplicate == null) {
+
+        public void OnExportGUI(Vector2 exportPosition, bool isDraw, float width, float height) {
+            if (MethodExport == null) {
                 return;
             }
 
@@ -90,12 +70,28 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
                 return;
             }
 
-            if (UnityEngine.GUI.Button(new Rect(position.x, position.y -1, width, height), "Deduplicate")) {
-                MethodDeduplicate(dataList);
+            if (UnityEngine.GUI.Button(new Rect(exportPosition.x, exportPosition.y - 1, width, height), "Export")) {
+                var path = EditorUtility.SaveFilePanel("Export DataList", Application.dataPath, "dataList.txt", "");
+                MethodExport(path, dataList);
             }
         }
 
+        public void OnDistinctGUI(Vector2 position, bool isDraw, float width, float height) {
+            if (MethodDistinct == null) {
+                return;
+            }
 
+            if (isDraw == false) {
+                return;
+            }
+
+            if (UnityEngine.GUI.Button(new Rect(position.x, position.y - 1, width, height), "Distinct")) {
+                MethodDistinct(ref dataList);
+                isReBuildRows = true;
+                Reload();
+            }
+        }
+        
         private void FilterGUI(Rect rect, string[] displayedOptions) {
             const float FILTER_TYPE_WIDTH = 80;
             const float FILTER_TYPE_OFFSET = 1;
@@ -111,17 +107,15 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             rect.width -= FILTER_NONE_BUTTON_WIDTH;
             filterText = EditorGUI.DelayedTextField(rect, GUIContent.none, filterText, CustomTableStyles.searchField);
 
-            // Filter Clear Button
+            // Filter Clear Button [x]
             rect.x += rect.width;
             rect.width = FILTER_NONE_BUTTON_WIDTH;
-            var flag = !string.IsNullOrEmpty(filterText);
-            var style = !flag? CustomTableStyles.searchFieldCancelButtonEmpty : CustomTableStyles.searchFieldCancelButton;
-            if (!UnityEngine.GUI.Button(rect, GUIContent.none, style) || !flag) {
-                return;
+            var isEmpty = string.IsNullOrEmpty(filterText);
+            var buttonStyle = isEmpty ? CustomTableStyles.searchFieldCancelButtonEmpty : CustomTableStyles.searchFieldCancelButton;
+            if (UnityEngine.GUI.Button(rect, GUIContent.none, buttonStyle) && isEmpty == false) {
+                filterText = string.Empty;
+                GUIUtility.keyboardControl = 0;
             }
-
-            filterText = "";
-            GUIUtility.keyboardControl = 0;
         }
 
         private void CellGUI(Rect cellRect, T item, int columnIndex) {
@@ -205,14 +199,24 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         protected override IList<TreeViewItem> BuildRows(TreeViewItem root) {
             if (items == null) {
                 items = new List<CustomTreeViewItem<T>>();
-                for (var i = 0; i < DataList.Count; i++) {
-                    var data = DataList[i];
+                for (var i = 0; i < dataList.Count; i++) {
+                    var data = dataList[i];
                     items.Add(new CustomTreeViewItem<T>(i, 0, data));
                 }
             }
 
+            if (isReBuildRows) {
+                items.Clear();
+                for (var i = 0; i < dataList.Count; i++) {
+                    var data = dataList[i];
+                    items.Add(new CustomTreeViewItem<T>(i, 0, data));
+                }
+
+                isReBuildRows = false;
+            }
+
             var itemList = items;
-            if (!string.IsNullOrEmpty(filterText)) {
+            if (string.IsNullOrEmpty(filterText) == false) {
                 itemList = Filter(itemList);
             }
 
@@ -243,12 +247,12 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             var list = new List<T>();
 
             foreach (var id in selectedIds) {
-                if (id < 0 || id > this.DataList.Count) {
+                if (id < 0 || id > dataList.Count) {
                     DebugUtil.LogError(id + "out of range");
                     continue;
                 }
 
-                var data = DataList[id];
+                var data = dataList[id];
                 list.Add(data);
             }
 

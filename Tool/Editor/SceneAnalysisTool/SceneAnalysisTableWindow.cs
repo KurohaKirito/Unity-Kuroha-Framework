@@ -126,7 +126,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     if (dataList != null) {
                         var columns = InitColumns(isCollider);
                         if (columns != null) {
-                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList, true, true, true, columns, OnFilterEnter, OnExportPressed, OnRowSelect, OnDeduplicatePressed);
+                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList,
+                                true, true, true, columns,
+                                OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
                         }
                     }
                 }
@@ -188,7 +190,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 colors = resultColors,
                 normals = resultNormals,
                 tangents = resultTangents,
-                assetName = "总和",
+                assetName = "Sum",
                 assetPath = string.Empty, });
         }
 
@@ -371,7 +373,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     cellRect.xMin += 3f;
                     var iconRect = cellRect;
                     iconRect.width = 20f;
-                    EditorGUI.LabelField(iconRect, data.assetName.Equals("总和")? EditorGUIUtility.IconContent("console.infoicon.sml") : EditorGUIUtility.IconContent("PrefabModel Icon"));
+                    EditorGUI.LabelField(iconRect, data.assetName.Equals("Sum")? EditorGUIUtility.IconContent("console.infoicon.sml") : EditorGUIUtility.IconContent("PrefabModel Icon"));
                     cellRect.xMin += 20f;
                     EditorGUI.LabelField(cellRect, data.assetName.Contains("/")? data.assetName.Split('/').Last() : data.assetName.Split('\\').Last());
                 },
@@ -713,8 +715,40 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         /// <summary>
         /// 数据去重事件
         /// </summary>
-        private static void OnDeduplicatePressed(in List<SceneAnalysisData> dataList) {
-            DebugUtil.Log("去重", null, "red");
+        private void OnDistinctPressed(ref List<SceneAnalysisData> dataList) {
+            var newList = new List<SceneAnalysisData>();
+            foreach (var data in dataList) {
+                if (data.assetName != "Sum" && newList.Exists(analysisData => analysisData.Equals(data)) == false) {
+                    newList.Add(data);
+                }
+            }
+            
+            dataList = newList;
+
+            resultTris = 0;
+            resultVerts = 0;
+            resultUV = 0;
+            resultUV2 = 0;
+            resultUV3 = 0;
+            resultUV4 = 0;
+            resultColors = 0;
+            resultNormals = 0;
+            resultTangents = 0;
+
+            for (var index = 0; index < dataList.Count; ++index) {
+                dataList[index].id = index + 1;
+                resultTris += dataList[index].tris;
+                resultVerts += dataList[index].verts;
+                resultUV += dataList[index].uv;
+                resultUV2 += dataList[index].uv2;
+                resultUV3 += dataList[index].uv3;
+                resultUV4 += dataList[index].uv4;
+                resultColors += dataList[index].colors;
+                resultNormals += dataList[index].normals;
+                resultTangents += dataList[index].tangents;
+            }
+            
+            AddRowsSum(dataList);
         }
     }
 }

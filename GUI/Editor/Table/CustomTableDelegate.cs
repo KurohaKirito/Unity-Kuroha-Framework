@@ -9,7 +9,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
 
         public delegate void ExportMethod<T>(string filePath, in List<T> dataList);
         
-        public delegate void DeduplicateMethod<T>(in List<T> dataList);
+        public delegate void DistinctMethod<T>(ref List<T> dataList);
 
         public delegate void DrawCellMethod<in T>(Rect cellRect, T item);
 
