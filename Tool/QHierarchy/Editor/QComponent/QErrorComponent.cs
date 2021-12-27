@@ -248,7 +248,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
 								if (field.IsPrivate || !field.IsPublic) 
 								{
-									if (!Attribute.IsDefined(field, typeof(SerializeField)))
+									if (!System.Attribute.IsDefined(field, typeof(SerializeField)))
 									{
 										continue;
 									}
