@@ -5,6 +5,7 @@ using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
 using Kuroha.Tool.AssetViewer.Editor;
+using Kuroha.Tool.LODSetTool.Editor;
 using Kuroha.Util.Editor;
 using UnityEditor;
 
