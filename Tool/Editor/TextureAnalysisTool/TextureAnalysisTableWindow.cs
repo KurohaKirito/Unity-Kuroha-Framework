@@ -101,6 +101,46 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
             // 初始化表格
             InitTable();
         }
+        
+        /// <summary>
+        /// 绘制界面
+        /// </summary>
+        protected void OnGUI() {
+            GUILayout.Space(20);
+            GUILayout.BeginHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            GUILayout.BeginVertical("Box");
+            widthWarn = EditorGUILayout.IntField("Enter Width Warning Line", widthWarn, GUILayout.Width(200));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            GUILayout.BeginVertical("Box");
+            widthError = EditorGUILayout.IntField("Enter Width Error Line", widthError, GUILayout.Width(200));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            GUILayout.BeginVertical("Box");
+            heightWarn = EditorGUILayout.IntField("Enter Height Warning Line", heightWarn, GUILayout.Width(200));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            GUILayout.BeginVertical("Box");
+            heightError = EditorGUILayout.IntField("Enter Tris Error Line", heightError, GUILayout.Width(200));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndHorizontal();
+
+            table?.OnGUI();
+        }
 
         /// <summary>
         /// 初始化表格
@@ -114,13 +154,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     if (columns != null) {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns,
-                            OnFilterEnter, OnExportPressed, OnRowSelect, null);
+                        table = new TextureAnalysisTable(space, min, dataList,
+                            true, false, true, columns,
+                            OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
                     }
                 }
             }
         }
-
+        
         /// <summary>
         /// 初始化数据
         /// </summary>
@@ -387,47 +428,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 }
             };
         }
-
-        /// <summary>
-        /// 绘制界面
-        /// </summary>
-        protected void OnGUI() {
-            GUILayout.Space(20);
-            GUILayout.BeginHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            widthWarn = EditorGUILayout.IntField("Enter Width Warning Line", widthWarn, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            widthError = EditorGUILayout.IntField("Enter Width Error Line", widthError, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            heightWarn = EditorGUILayout.IntField("Enter Height Warning Line", heightWarn, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            heightError = EditorGUILayout.IntField("Enter Tris Error Line", heightError, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndHorizontal();
-
-            table?.OnGUI();
-        }
-
+        
         /// <summary>
         /// 行选中事件
         /// </summary>
@@ -546,6 +547,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
             #endregion
 
             return isMatched;
+        }
+        
+        /// <summary>
+        /// 数据去重事件
+        /// </summary>
+        private void OnDistinctPressed(ref List<TextureAnalysisData> dataList) {
+            var newList = new List<TextureAnalysisData>();
+            foreach (var data in dataList) {
+                if (newList.Exists(analysisData => analysisData.Equal(data)) == false) {
+                    newList.Add(data);
+                }
+            }
+            
+            dataList = newList;
         }
     }
 }

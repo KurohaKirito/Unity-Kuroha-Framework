@@ -718,7 +718,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         private void OnDistinctPressed(ref List<SceneAnalysisData> dataList) {
             var newList = new List<SceneAnalysisData>();
             foreach (var data in dataList) {
-                if (data.assetName != "Sum" && newList.Exists(analysisData => analysisData.Equals(data)) == false) {
+                if (data.assetName != "Sum" && newList.Exists(analysisData => analysisData.Equal(data)) == false) {
                     newList.Add(data);
                 }
             }

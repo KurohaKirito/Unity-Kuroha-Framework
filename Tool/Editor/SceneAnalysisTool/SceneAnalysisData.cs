@@ -16,7 +16,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         public string assetName;
         public string assetPath;
 
-        public bool Equals(SceneAnalysisData other) {
+        public bool Equal(SceneAnalysisData other) {
             if (other != null) {
                 if (tris == other.tris &&
                     verts == other.verts &&

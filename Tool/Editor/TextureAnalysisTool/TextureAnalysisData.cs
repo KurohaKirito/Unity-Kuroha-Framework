@@ -27,5 +27,17 @@
         public string repeatInfo;
         public string textureName;
         public string texturePath;
+        
+        public bool Equal(TextureAnalysisData other) {
+            if (other != null) {
+                if (width == other.width &&
+                    height == other.height &&
+                    textureName == other.textureName) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

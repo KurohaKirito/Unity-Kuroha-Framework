@@ -696,8 +696,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 return;
             }
             
-            DebugUtil.Log($"在检查 {asset.name} 预制体", null, "yellow");
-
             // 得到预制上全部的游戏物体
             var transforms = asset.GetComponentsInChildren<Transform>(true);
 
@@ -718,7 +716,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     
                     // LODs 的层级数不包含 Cull 层, 例如: LOD0 + Cull 的层数为: 1
                     if (lods[0].renderers == null || lods[0].renderers.Length <= 0) {
-                        DebugUtil.Log($"{transform.name} 物体的 LOD 层数为: {lods.Length}", null, "red");
                         var childPath = PrefabUtil.GetHierarchyPath(transform, false);
                         if (childPath.IsNullOrEmpty()) {
                             var content = $"LODGroups设置错误!\t预制体: {assetPath}";
@@ -737,7 +734,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                         }
 
                         if (isError) {
-                            DebugUtil.Log($"{transform.name} 物体的 LOD 层数为: {lods.Length}", null, "red");
                             var childPath = PrefabUtil.GetHierarchyPath(transform, false);
                             if (childPath.IsNullOrEmpty()) {
                                 var content = $"LOD0存在空物体!\t预制体: {assetPath}";
