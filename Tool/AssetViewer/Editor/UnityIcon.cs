@@ -17,13 +17,13 @@ namespace Kuroha.Tool.AssetViewer.Editor
         private static Vector2 scrollPos;
         private static readonly List<Texture2D> builtInTextures = new List<Texture2D>();
 
-        private const int UI_COUNT_ROW = 10;
+        private const int UI_COUNT_ROW = 13;
         private const int UI_SPACE = 5;
         private const float UI_WIDTH = 50f;
         private const float UI_HEIGHT = 30f;
 
-        public static int windowWidth = 546;
-        public static int windowHeight = 565;
+        public static int windowWidth = 705;
+        public static int windowHeight = 492;
         public static UnityIcon window;
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
                                     var index = i + j;
                                     if (index < cursors.Length)
                                     {
-                                        GUILayout.Button(Enum.GetName(typeof(MouseCursor), cursors[index]), GUILayout.Width(257));
+                                        GUILayout.Button(Enum.GetName(typeof(MouseCursor), cursors[index]), GUILayout.Width(327));
                                         EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), cursors[index]);
                                         GUILayout.Space(UI_SPACE);
                                     }
