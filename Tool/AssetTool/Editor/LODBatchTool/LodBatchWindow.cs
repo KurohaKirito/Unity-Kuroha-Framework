@@ -3,7 +3,7 @@ using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
+namespace Kuroha.Tool.AssetTool.Editor.LODBatchTool
 {
     public class LodBatchWindow: EditorWindow
     {
