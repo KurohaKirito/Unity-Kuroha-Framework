@@ -155,7 +155,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
                         table = new TextureAnalysisTable(space, min, dataList,
-                            true, false, true, columns,
+                            true, true, true, columns,
                             OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
                     }
                 }
@@ -552,7 +552,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// <summary>
         /// 数据去重事件
         /// </summary>
-        private void OnDistinctPressed(ref List<TextureAnalysisData> dataList) {
+        private static void OnDistinctPressed(ref List<TextureAnalysisData> dataList) {
             var newList = new List<TextureAnalysisData>();
             foreach (var data in dataList) {
                 if (newList.Exists(analysisData => analysisData.Equal(data)) == false) {
@@ -561,6 +561,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
             }
             
             dataList = newList;
+            
+            // 重新编号
+            for (var index = 0; index < dataList.Count; ++index) {
+                dataList[index].id = index + 1;
+            }
         }
     }
 }

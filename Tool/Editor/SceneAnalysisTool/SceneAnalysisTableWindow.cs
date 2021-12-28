@@ -735,6 +735,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             resultNormals = 0;
             resultTangents = 0;
 
+            // 重新编号并求和
             for (var index = 0; index < dataList.Count; ++index) {
                 dataList[index].id = index + 1;
                 resultTris += dataList[index].tris;
