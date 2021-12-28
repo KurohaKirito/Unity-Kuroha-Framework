@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
 {
-    public class SceneAnalysisTable : CommonTable<SceneAnalysisData>
+    public class SceneAnalysisTable : CustomTable<SceneAnalysisData>
     {
         public SceneAnalysisTable(
             Vector2 space,
@@ -12,20 +12,23 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             List<SceneAnalysisData> dataList,
             bool isDrawFilter,
             bool isDrawExport,
-            float exportWidth,
-            float filterHeight,
-            CommonTableColumn<SceneAnalysisData>[] columns, CommonTableDelegate.FilterMethod<SceneAnalysisData> onFilterFunction, CommonTableDelegate.ExportMethod<SceneAnalysisData> onExportFunction, CommonTableDelegate.SelectMethod<SceneAnalysisData> onSelectFunction)
+            bool isDrawDistinct,
+            CustomTableColumn<SceneAnalysisData>[] columns,
+            CustomTableDelegate.FilterMethod<SceneAnalysisData> onFilterFunction,
+            CustomTableDelegate.ExportMethod<SceneAnalysisData> onExportFunction,
+            CustomTableDelegate.SelectMethod<SceneAnalysisData> onSelectFunction,
+            CustomTableDelegate.DistinctMethod<SceneAnalysisData> onDistinctFunction)
             : base(space,
                 minSize,
                 dataList,
                 isDrawFilter,
                 isDrawExport,
-                exportWidth,
-                filterHeight,
+                isDrawDistinct,
                 columns,
                 onFilterFunction,
                 onExportFunction,
-                onSelectFunction)
+                onSelectFunction,
+                onDistinctFunction)
         {
         }
     }

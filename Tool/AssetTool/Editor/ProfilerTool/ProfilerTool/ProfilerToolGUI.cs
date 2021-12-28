@@ -1,6 +1,6 @@
 ﻿using System;
 using Kuroha.GUI.Editor.Splitter;
-using Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool;
+using Kuroha.Tool.AssetTool.Editor.ProfilerTool.LoadTimeRecordTool;
 using Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool;
 using Kuroha.Util.RunTime;
 using UnityEditor;

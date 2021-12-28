@@ -2,9 +2,9 @@
 using Kuroha.GUI.Editor.Table;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
+namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.LoadTimeRecordTool
 {
-    public class LoadTimeRecordTable : CommonTable<LoadTimeRecordData>
+    public class LoadTimeRecordTable : CustomTable<LoadTimeRecordData>
     {
         public LoadTimeRecordTable(
             Vector2 space,
@@ -12,22 +12,22 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
             List<LoadTimeRecordData> dataList,
             bool isDrawFilter,
             bool isDrawExport,
-            float exportWidth,
-            float filterHeight,
-            CommonTableColumn<LoadTimeRecordData>[] columns,
-            CommonTableDelegate.FilterMethod<LoadTimeRecordData> onFilterFunction,
-            CommonTableDelegate.ExportMethod<LoadTimeRecordData> onExportFunction,
-            CommonTableDelegate.SelectMethod<LoadTimeRecordData> onSelectFunction)
+            bool isDrawDistinct,
+            CustomTableColumn<LoadTimeRecordData>[] columns,
+            CustomTableDelegate.FilterMethod<LoadTimeRecordData> onFilterFunction,
+            CustomTableDelegate.ExportMethod<LoadTimeRecordData> onExportFunction,
+            CustomTableDelegate.SelectMethod<LoadTimeRecordData> onSelectFunction,
+            CustomTableDelegate.DistinctMethod<LoadTimeRecordData> onDistinctFunction)
             : base(space,
                 minSize,
                 dataList,
                 isDrawFilter,
                 isDrawExport,
-                exportWidth,
-                filterHeight,
+                isDrawDistinct,
                 columns,
                 onFilterFunction,
                 onExportFunction,
-                onSelectFunction) { }
+                onSelectFunction,
+                onDistinctFunction) { }
     }
 }

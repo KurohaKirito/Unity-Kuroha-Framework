@@ -1,4 +1,4 @@
-﻿namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
+﻿namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.LoadTimeRecordTool
 {
     public class LoadTimeRecordData
     {

@@ -4,29 +4,18 @@ using UnityEngine;
 
 namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
 {
-    public class TextureAnalysisTable : CommonTable<TextureAnalysisData>
-    {
-        public TextureAnalysisTable(
-            Vector2 space,
-            Vector2 minSize,
-            List<TextureAnalysisData> dataList,
-            bool isDrawFilter,
-            bool isDrawExport,
-            float exportWidth,
-            float filterHeight,
-            CommonTableColumn<TextureAnalysisData>[] columns, CommonTableDelegate.FilterMethod<TextureAnalysisData> onFilterFunction, CommonTableDelegate.ExportMethod<TextureAnalysisData> onExportFunction, CommonTableDelegate.SelectMethod<TextureAnalysisData> onSelectFunction)
-            : base(space,
-                minSize,
-                dataList,
-                isDrawFilter,
-                isDrawExport,
-                exportWidth,
-                filterHeight,
-                columns,
+    public class TextureAnalysisTable : CustomTable<TextureAnalysisData> {
+        public TextureAnalysisTable(Vector2 space, Vector2 minSize, List<TextureAnalysisData> dataList, bool isDrawFilter, bool isDrawExport, bool isDrawDistinct,
+            CustomTableColumn<TextureAnalysisData>[] columns,
+            CustomTableDelegate.FilterMethod<TextureAnalysisData> onFilterFunction,
+            CustomTableDelegate.ExportMethod<TextureAnalysisData> onExportFunction,
+            CustomTableDelegate.SelectMethod<TextureAnalysisData> onSelectFunction,
+            CustomTableDelegate.DistinctMethod<TextureAnalysisData> onDistinctFunction)
+            : base(space, minSize, dataList, isDrawFilter, isDrawExport, isDrawDistinct, columns,
                 onFilterFunction,
                 onExportFunction,
-                onSelectFunction)
-        {
+                onSelectFunction,
+                onDistinctFunction) {
         }
     }
 }

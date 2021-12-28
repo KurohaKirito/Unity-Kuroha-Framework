@@ -6,7 +6,7 @@ using Kuroha.GUI.Editor.Table;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
+namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.LoadTimeRecordTool
 {
     public class LoadTimeRecordTableWindow : EditorWindow
     {
@@ -48,7 +48,9 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
                     {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        timeRecordTable = new LoadTimeRecordTable(space, min, dataList, true, true, 50, 50, columns, OnFilterEnter, null, null);
+                        timeRecordTable = new LoadTimeRecordTable(space, min, dataList, 
+                            true, true, true, columns,
+                            OnFilterEnter, null, null, null);
                     }
                 }
             }
@@ -90,11 +92,11 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private static CommonTableColumn<LoadTimeRecordData>[] InitColumns()
+        private static CustomTableColumn<LoadTimeRecordData>[] InitColumns()
         {
             return new[]
             {
-                new CommonTableColumn<LoadTimeRecordData>
+                new CustomTableColumn<LoadTimeRecordData>
                 {
                     headerContent = new GUIContent("ID"),
                     headerTextAlignment = TextAlignment.Center,
@@ -113,7 +115,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
                         EditorGUI.LabelField(cellRect, data.id.ToString());
                     }
                 },
-                new CommonTableColumn<LoadTimeRecordData>
+                new CustomTableColumn<LoadTimeRecordData>
                 {
                     headerContent = new GUIContent("Bundle"),
                     headerTextAlignment = TextAlignment.Center,
@@ -136,7 +138,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
                         EditorGUI.LabelField(cellRect, data.bundlePath);
                     }
                 },
-                new CommonTableColumn<LoadTimeRecordData>
+                new CustomTableColumn<LoadTimeRecordData>
                 {
                     headerContent = new GUIContent("StartTime"),
                     headerTextAlignment = TextAlignment.Center,
@@ -154,7 +156,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
                         EditorGUI.LabelField(cellRect, data.startTime);
                     }
                 },
-                new CommonTableColumn<LoadTimeRecordData>
+                new CustomTableColumn<LoadTimeRecordData>
                 {
                     headerContent = new GUIContent("EndTime"),
                     headerTextAlignment = TextAlignment.Center,
@@ -172,7 +174,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
                         EditorGUI.LabelField(cellRect, data.endTime);
                     }
                 },
-                new CommonTableColumn<LoadTimeRecordData>
+                new CustomTableColumn<LoadTimeRecordData>
                 {
                     headerContent = new GUIContent("UseTime (ms)"),
                     headerTextAlignment = TextAlignment.Center,
@@ -189,7 +191,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
                         EditorGUI.LabelField(cellRect, data.useTime.ToString("F1"));
                     }
                 },
-                new CommonTableColumn<LoadTimeRecordData>
+                new CustomTableColumn<LoadTimeRecordData>
                 {
                     headerContent = new GUIContent("Stack"),
                     headerTextAlignment = TextAlignment.Center,

@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.AsyncLoadTool
+namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.LoadTimeRecordTool
 {
     public static class LoadTimeRecordGUI
     {

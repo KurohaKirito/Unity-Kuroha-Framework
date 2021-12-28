@@ -108,6 +108,47 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
             // 初始化表格
             InitTable();
         }
+        
+        /// <summary>
+        /// 绘制界面
+        /// </summary>
+        protected void OnGUI()
+        {
+            GUILayout.Space(20);
+            GUILayout.BeginHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            GUILayout.BeginVertical("Box");
+            widthWarn = EditorGUILayout.IntField("Enter Width Warning Line", widthWarn, GUILayout.Width(200));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            GUILayout.BeginVertical("Box");
+            widthError = EditorGUILayout.IntField("Enter Width Error Line", widthError, GUILayout.Width(200));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            GUILayout.BeginVertical("Box");
+            heightWarn = EditorGUILayout.IntField("Enter Height Warning Line", heightWarn, GUILayout.Width(200));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            GUILayout.BeginVertical("Box");
+            heightError = EditorGUILayout.IntField("Enter Tris Error Line", heightError, GUILayout.Width(200));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndHorizontal();
+
+            table?.OnGUI();
+        }
 
         /// <summary>
         /// 初始化表格
@@ -125,8 +166,9 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                     {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        table = new TextureAnalysisTable(space, min, dataList, true, true, 50, 50, columns,
-                            OnFilterEnter, OnExportPressed, OnRowSelect);
+                        table = new TextureAnalysisTable(space, min, dataList,
+                            true, true, true, columns,
+                            OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
                     }
                 }
             }
@@ -273,11 +315,11 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private CommonTableColumn<TextureAnalysisData>[] InitColumns()
+        private CustomTableColumn<TextureAnalysisData>[] InitColumns()
         {
             return new[]
             {
-                new CommonTableColumn<TextureAnalysisData>
+                new CustomTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("ID"),
                     headerTextAlignment = TextAlignment.Center,
@@ -296,7 +338,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                         EditorGUI.LabelField(cellRect, data.id.ToString());
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData>
+                new CustomTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Name"),
                     headerTextAlignment = TextAlignment.Center,
@@ -322,7 +364,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                             : data.textureName.Split('\\').Last());
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData>
+                new CustomTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Width"),
                     headerTextAlignment = TextAlignment.Center,
@@ -358,7 +400,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                         }
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData>
+                new CustomTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Height"),
                     headerTextAlignment = TextAlignment.Center,
@@ -394,7 +436,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                         }
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData>
+                new CustomTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Solid"),
                     headerTextAlignment = TextAlignment.Center,
@@ -420,7 +462,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                         }
                     }
                 },
-                new CommonTableColumn<TextureAnalysisData>
+                new CustomTableColumn<TextureAnalysisData>
                 {
                     headerContent = new GUIContent("Repeat"),
                     headerTextAlignment = TextAlignment.Center,
@@ -444,48 +486,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                 }
             };
         }
-
-        /// <summary>
-        /// 绘制界面
-        /// </summary>
-        protected void OnGUI()
-        {
-            GUILayout.Space(20);
-            GUILayout.BeginHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            widthWarn = EditorGUILayout.IntField("Enter Width Warning Line", widthWarn, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            widthError = EditorGUILayout.IntField("Enter Width Error Line", widthError, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            heightWarn = EditorGUILayout.IntField("Enter Height Warning Line", heightWarn, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            heightError = EditorGUILayout.IntField("Enter Tris Error Line", heightError, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndHorizontal();
-
-            table?.OnGUI();
-        }
-
+        
         /// <summary>
         /// 行选中事件
         /// </summary>
@@ -632,6 +633,25 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
             #endregion
 
             return isMatched;
+        }
+        
+        /// <summary>
+        /// 数据去重事件
+        /// </summary>
+        private static void OnDistinctPressed(ref List<TextureAnalysisData> dataList) {
+            var newList = new List<TextureAnalysisData>();
+            foreach (var data in dataList) {
+                if (newList.Exists(analysisData => analysisData.Equal(data)) == false) {
+                    newList.Add(data);
+                }
+            }
+            
+            dataList = newList;
+            
+            // 重新编号
+            for (var index = 0; index < dataList.Count; ++index) {
+                dataList[index].id = index + 1;
+            }
         }
     }
 }

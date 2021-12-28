@@ -141,9 +141,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                         var columns = InitColumns(isCollider);
                         if (columns != null)
                         {
-                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300),
-                                dataList, true, true, 50, 50, columns,
-                                OnFilterEnter, OnExportPressed, OnRowSelect);
+                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList,
+                                true, true, true, columns,
+                                OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
                         }
                     }
                 }
@@ -220,7 +220,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 colors = resultColors,
                 normals = resultNormals,
                 tangents = resultTangents,
-                assetName = "总和",
+                assetName = "Sum",
                 assetPath = string.Empty,
             });
         }
@@ -282,28 +282,33 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                     {
                         var readWriteEnable = false;
 
-                        // 负缩放 + 凸体
+                        // 负缩放的凸多面体
                         if (meshCollider.transform.localScale.x < 0 || meshCollider.transform.localScale.y < 0 || meshCollider.transform.localScale.z < 0)
                         {
                             if (meshCollider.convex)
                             {
-                                DebugUtil.Log("原因 1");
                                 readWriteEnable = true;
+                                if (sharedMesh.isReadable == false) {
+                                    DebugUtil.Log($"{meshCollider.name} 是一个负缩放的凸多面体, 需要开启读写!", meshCollider.gameObject, "red");
+                                }
                             }
                         }
 
-                        // 旋转
-                        // else if (meshCollider.transform.localRotation != Quaternion.identity)
-                        // {
-                        //     DebugUtil.Log("原因 2");
-                        //     readWriteEnable = true;
-                        // }
+                        // 倾斜
+                        else if (meshCollider.transform.localRotation != Quaternion.identity && meshCollider.transform.parent.localScale != Vector3.one) {
+                            readWriteEnable = true;
+                            if (sharedMesh.isReadable == false) {
+                                DebugUtil.Log($"{meshCollider.name} 的旋转是倾斜的, 需要开启读写!", meshCollider.gameObject, "red");
+                            }
+                        }
 
-                        // Cooking Options
+                        // 烘焙选项非默认
                         else if (meshCollider.cookingOptions != DEFAULT_OPTIONS)
                         {
-                            DebugUtil.Log("原因 3");
                             readWriteEnable = true;
+                            if (sharedMesh.isReadable == false) {
+                                DebugUtil.Log($"{meshCollider.name} 的烘焙选项非默认, 需要开启读写!", meshCollider.gameObject, "red");
+                            }
                         }
 
                         var readWriteEnableStr = $"{sharedMesh.isReadable} => {readWriteEnable}";
@@ -394,9 +399,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
 
         #region 创建数据列
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_ID()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ID()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("ID"),
                 headerTextAlignment = TextAlignment.Center,
@@ -415,9 +420,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_Name()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Name()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("Name"),
                 headerTextAlignment = TextAlignment.Center,
@@ -435,7 +440,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                     var iconRect = cellRect;
                     iconRect.width = 20f;
                     EditorGUI.LabelField(iconRect,
-                        data.assetName.Equals("总和")
+                        data.assetName.Equals("Sum")
                             ? EditorGUIUtility.IconContent("console.infoIcon.sml")
                             : EditorGUIUtility.IconContent("PrefabModel Icon"));
                     cellRect.xMin += 20f;
@@ -447,9 +452,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private CommonTableColumn<SceneAnalysisData> CreateColumn_Verts()
+        private CustomTableColumn<SceneAnalysisData> CreateColumn_Verts()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("Verts"),
                 headerTextAlignment = TextAlignment.Center,
@@ -485,9 +490,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private CommonTableColumn<SceneAnalysisData> CreateColumn_Tris()
+        private CustomTableColumn<SceneAnalysisData> CreateColumn_Tris()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("Tris"),
                 headerTextAlignment = TextAlignment.Center,
@@ -523,9 +528,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_ReadWrite()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ReadWrite()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("R/W"),
                 headerTextAlignment = TextAlignment.Center,
@@ -545,9 +550,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("UV"),
                 headerTextAlignment = TextAlignment.Center,
@@ -566,9 +571,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV2()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV2()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("UV2"),
                 headerTextAlignment = TextAlignment.Center,
@@ -587,9 +592,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV3()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV3()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("UV3"),
                 headerTextAlignment = TextAlignment.Center,
@@ -608,9 +613,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_UV4()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV4()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("UV4"),
                 headerTextAlignment = TextAlignment.Center,
@@ -629,9 +634,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_Colors()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Colors()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("Colors"),
                 headerTextAlignment = TextAlignment.Center,
@@ -650,9 +655,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_Tangents()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Tangents()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("Tangents"),
                 headerTextAlignment = TextAlignment.Center,
@@ -671,9 +676,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CommonTableColumn<SceneAnalysisData> CreateColumn_Normals()
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Normals()
         {
-            return new CommonTableColumn<SceneAnalysisData>
+            return new CustomTableColumn<SceneAnalysisData>
             {
                 headerContent = new GUIContent("Normals"),
                 headerTextAlignment = TextAlignment.Center,
@@ -698,9 +703,9 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private CommonTableColumn<SceneAnalysisData>[] InitColumns(bool collider)
+        private CustomTableColumn<SceneAnalysisData>[] InitColumns(bool collider)
         {
-            var columns = new List<CommonTableColumn<SceneAnalysisData>>
+            var columns = new List<CustomTableColumn<SceneAnalysisData>>
             {
                 CreateColumn_ID(),
                 CreateColumn_Name(),
@@ -844,6 +849,46 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
             #endregion
 
             return isMatched;
+        }
+        
+        /// <summary>
+        /// 数据去重事件
+        /// </summary>
+        private void OnDistinctPressed(ref List<SceneAnalysisData> dataList) {
+            var newList = new List<SceneAnalysisData>();
+            foreach (var data in dataList) {
+                if (data.assetName != "Sum" && newList.Exists(analysisData => analysisData.Equal(data)) == false) {
+                    newList.Add(data);
+                }
+            }
+            
+            dataList = newList;
+
+            resultTris = 0;
+            resultVerts = 0;
+            resultUV = 0;
+            resultUV2 = 0;
+            resultUV3 = 0;
+            resultUV4 = 0;
+            resultColors = 0;
+            resultNormals = 0;
+            resultTangents = 0;
+
+            // 重新编号并求和
+            for (var index = 0; index < dataList.Count; ++index) {
+                dataList[index].id = index + 1;
+                resultTris += dataList[index].tris;
+                resultVerts += dataList[index].verts;
+                resultUV += dataList[index].uv;
+                resultUV2 += dataList[index].uv2;
+                resultUV3 += dataList[index].uv3;
+                resultUV4 += dataList[index].uv4;
+                resultColors += dataList[index].colors;
+                resultNormals += dataList[index].normals;
+                resultTangents += dataList[index].tangents;
+            }
+            
+            AddRowsSum(dataList);
         }
     }
 }

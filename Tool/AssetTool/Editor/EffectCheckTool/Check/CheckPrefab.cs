@@ -811,7 +811,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     // LODs 的层级数不包含 Cull 层, 例如: LOD0 + Cull 的层数为: 1
                     if (lods[0].renderers == null || lods[0].renderers.Length <= 0)
                     {
-                        DebugUtil.Log($"{transform.name} 物体的 LOD 层数为: {lods.Length}", null, "red");
                         var childPath = PrefabUtil.GetHierarchyPath(transform, false);
                         if (childPath.IsNullOrEmpty())
                         {
@@ -838,7 +837,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                         if (isError)
                         {
-                            DebugUtil.Log($"{transform.name} 物体的 LOD 层数为: {lods.Length}", null, "red");
                             var childPath = PrefabUtil.GetHierarchyPath(transform, false);
                             if (childPath.IsNullOrEmpty())
                             {
