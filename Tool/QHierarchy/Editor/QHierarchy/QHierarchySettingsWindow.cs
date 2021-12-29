@@ -11,7 +11,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
     {
         #region 常量
 
-        private const float SPACE_DEFAULT = 12;
         private const float MENU_WIDTH = 240;
 
         #endregion
@@ -88,7 +87,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             Init();
             
             // 绘制前初始化 indentLevel
-            indentLevel = 10;
+            indentLevel = 8;
             
             // 绘制前初始化 lastRect
             lastRect = new Rect(0, 1, 0, 0);
@@ -96,13 +95,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             // 绘制
             scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
             {
-                // 获取可绘制区域的宽度, 高度默认是 EditorGUIUtility.singleLineHeight, 即 18
-                // 这里不需要告诉 Layout 高度, 所以传 0, 如果不传值会导致使用了 Layout 系统的滑动条的范围高度多出部分像素
-                // 另外 Unity 默认会有部分留白, 我们不需要留白, 所以最后再加上部分像素, 覆盖掉留白
-                totalWidth = EditorGUILayout.GetControlRect(GUILayout.Height(0)).width + SPACE_DEFAULT;
+                // 计算前景区域的宽度
+                // EditorGUILayout.GetControlRect 获取到的高度默认是 EditorGUIUtility.singleLineHeight, 即 18, 宽度则为窗口的尽可能宽
+                // 这里不需要告诉 Layout 高度, 所以传 0, 如果使用默认值会导致使用了 Layout 系统的滑动条的范围高度多出部分像素
+                totalWidth = EditorGUILayout.GetControlRect(GUILayout.Height(0)).width;
+                
+                // 另外获取的默认宽度会有部分留白, 大概 24 像素, 所以最后再加上部分像素, 覆盖掉留白 (注意需要考虑到左右对称缩进)
+                totalWidth += 24 - indentLevel * 2;
 
-                // 绘制菜单框
+                // 绘制菜单框 COMPONENTS SETTINGS
                 DrawMenuBox("COMPONENTS SETTINGS", MENU_WIDTH, ref isOpenComponentsSettings);
+                
                 var sectionStartY = lastRect.y + lastRect.height;
                 if (isOpenComponentsSettings)
                 {
@@ -170,15 +173,33 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         /// <summary>
         /// 获得一个新的 UI 绘制区域
-        /// 自动更新 lastRect
+        /// 1. 自动通知 Layout 系统的组件
+        /// 2. 自动更新 lastRect
         /// </summary>
-        private Rect GetNewRect(float width, float height, float addIndent = 0, float remWidth = 0)
+        /// <param name="width">区域的宽度</param>
+        /// <param name="rectHeight">区域的高度</param>
+        /// <param name="addIndent">缩进调整</param>
+        /// <param name="remWidth"></param>
+        /// <returns></returns>
+        private Rect GetNewRect(float width, float rectHeight, float addIndent = 0, float remWidth = 0)
         {
-            // 为了使 GUILayout 的滑动条检测生效, 必须有这一句
-            EditorGUILayout.GetControlRect(false, height, GUIStyle.none, GUILayout.ExpandWidth(true));
-            var rect = new Rect(indentLevel + addIndent, lastRect.y + lastRect.height, width == 0
-                ? totalWidth - indentLevel - addIndent - remWidth : width, height);
+            // 为了使 GUILayout 的滑动条检测正确生效, 必须有这一句
+            EditorGUILayout.GetControlRect(false, rectHeight, GUIStyle.none, GUILayout.ExpandWidth(true));
+            
+            // Rect Width
+            var rectWidth = width == 0 ? totalWidth - indentLevel - addIndent - remWidth : width;
+            
+            // Position X
+            var positionX = indentLevel + addIndent;
+            
+            // Position Y
+            var positionY = lastRect.y + lastRect.height;
+            
+            var rect = new Rect(positionX, positionY, rectWidth, rectHeight);
+            
+            // Update lastRect
             lastRect = rect;
+            
             return rect;
         }
         
@@ -187,31 +208,36 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private void DrawMenuBox(string sectionTitle, float buttonWidth, ref bool buttonFlag)
         {
-            var rect = GetNewRect(0, 24, -3, 0);
+            // 告诉 Layout 要绘制一个默认宽度, 指定高度的区域
+            var rect = GetNewRect(0, 24);
             
-            // 底色 Box
+            // 覆盖右侧留白
+            rect.width *= 2;
+            
+            // 绘制底色 Box
             rect.x = 0;
             UnityEngine.GUI.Box(rect, string.Empty);
 
-            // 左侧竖线
+            // 绘制左侧竖线
             DrawLine(rect.y, rect.y + 24, yellowColor);
             rect.x += 10;
 
-            // 折叠图标
+            // 绘制折叠图标
+            var oldAlignment = UnityEngine.GUI.skin.button.alignment;
             UnityEngine.GUI.skin.button.alignment = TextAnchor.MiddleLeft;
             var autoCheckIcon = EditorGUIUtility.IconContent(buttonFlag ? "sv_icon_dot11_pix16_gizmo" : "sv_icon_dot8_pix16_gizmo");
             if (UnityEngine.GUI.Button(new Rect(rect.x, rect.y, buttonWidth, rect.height), autoCheckIcon))
             {
                 buttonFlag = !buttonFlag;
             }
-
+            UnityEngine.GUI.skin.button.alignment = oldAlignment;
             rect.x += 28;
 
-            // 设置图标
+            // 绘制设置图标
             EditorGUI.LabelField(rect, EditorGUIUtility.IconContent("GameManager Icon"));
             rect.x += 28;
 
-            // 名称
+            // 绘制名称
             EditorGUI.LabelField(rect, sectionTitle);
         }
 
