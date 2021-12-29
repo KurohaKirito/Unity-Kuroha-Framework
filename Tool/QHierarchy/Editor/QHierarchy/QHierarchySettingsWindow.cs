@@ -11,7 +11,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
     {
         #region 常量
 
-        private const float SPACE_DEFAULT = 10;
+        private const float SPACE_DEFAULT = 12;
         private const float MENU_WIDTH = 240;
 
         #endregion
@@ -87,15 +87,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             // 初始化
             Init();
             
-            // 每次绘制前初始化缩进
+            // 绘制前初始化 indentLevel
             indentLevel = 10;
+            
+            // 绘制前初始化 lastRect
+            lastRect = new Rect(0, 1, 0, 0);
 
             // 绘制
             scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
             {
-                totalWidth = EditorGUILayout.GetControlRect().width + indentLevel;
-
-                lastRect = new Rect(0, 1, 0, 0);
+                // 获取可绘制区域的宽度, 高度默认是 EditorGUIUtility.singleLineHeight, 即 18
+                // 这里不需要告诉 Layout 高度, 所以传 0, 如果不传值会导致使用了 Layout 系统的滑动条的范围高度多出部分像素
+                // 另外 Unity 默认会有部分留白, 我们不需要留白, 所以最后再加上部分像素, 覆盖掉留白
+                totalWidth = EditorGUILayout.GetControlRect(GUILayout.Height(0)).width + SPACE_DEFAULT;
 
                 // 绘制菜单框
                 DrawMenuBox("COMPONENTS SETTINGS", MENU_WIDTH, ref isOpenComponentsSettings);
