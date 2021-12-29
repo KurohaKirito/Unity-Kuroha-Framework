@@ -7,19 +7,12 @@ using UnityEngine;
 
 public static class RedundantTextureReferencesDetect {
     /// <summary>
-    /// 自动检测使用
-    /// </summary>
-    public static void Detect() {
-        Check("Assets/Art/Effects/Materials", "傅佳亿");
-    }
-
-    /// <summary>
     /// 执行检测
     /// </summary>
     /// <param name="path">检测路径</param>
     /// <param name="principal">负责人</param>
     /// <param name="isExportFile">是否导出文件, 默认导出文件</param>
-    public static List<Dictionary<string, string>> Check(string path, string principal, bool isExportFile = true) {
+    public static IEnumerable<Dictionary<string, string>> Check(string path, string principal, bool isExportFile = true) {
         var results = new List<Dictionary<string, string>>();
 
         // 获取相对目录下所有的材质球文件
@@ -41,17 +34,11 @@ public static class RedundantTextureReferencesDetect {
             var material = materials[index];
             if (RedundantTextureReferencesCleaner.Detect(material, false)) {
                 var result = new Dictionary<string, string> {
-                    {
-                        "错误名称", "材质球中存在冗余的纹理引用"
-                    }, {
-                        "资源路径", AssetDatabase.GetAssetPath(material)
-                    }, {
-                        "错误等级", "Error"
-                    }, {
-                        "负责人", principal
-                    }, {
-                        "备注", "可使用资源检测工具批处理标签页面中的材质球冗余引用清除工具自动清除"
-                    }
+                    { "错误名称", "材质球中存在冗余的纹理引用" },
+                    { "资源路径", AssetDatabase.GetAssetPath(material) },
+                    { "错误等级", "Error" },
+                    { "负责人", principal },
+                    { "备注", "可使用资源检测工具批处理标签页面中的材质球冗余引用清除工具自动清除" }
                 };
 
                 results.Add(result);

@@ -30,7 +30,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// <summary>
         /// 待检测目录
         /// </summary>
-        private static string detectPath = "Art/Effects/Textures";
+        private static string detectPath = "Assets/Art/Effects/Textures";
 
         /// <summary>
         /// 待检测游戏物体
@@ -99,7 +99,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     GUILayout.BeginVertical("Box");
                     {
                         if (GUILayout.Button("开始", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
-                            TextureAnalysisTableWindow.Open(detectType, $"Assets/{detectPath}", detectGameObject);
+                            TextureAnalysisTableWindow.Open(detectType, detectPath, detectGameObject);
                         }
                     }
                     GUILayout.EndVertical();

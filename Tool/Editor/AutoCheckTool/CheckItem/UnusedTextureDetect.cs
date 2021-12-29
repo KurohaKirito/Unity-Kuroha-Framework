@@ -4,19 +4,12 @@ using Script.Effect.Editor.AssetTool.Util.RunTime;
 
 public static class UnusedTextureDetect {
     /// <summary>
-    /// 自动检测使用
-    /// </summary>
-    public static void Detect() {
-        Check("Assets/Art/Effects/Textures", "邱泽浩");
-    }
-
-    /// <summary>
     /// 检测无引用的纹理 (废弃纹理)
     /// </summary>
     /// <param name="path">检测路径</param>
     /// <param name="principal">负责人</param>
     /// <param name="isExportFile">是否导出文件, 默认导出文件</param>
-    public static List<Dictionary<string, string>> Check(string path, string principal, bool isExportFile = true) {
+    public static IEnumerable<Dictionary<string, string>> Check(string path, string principal, bool isExportFile = true) {
         var results = new List<Dictionary<string, string>>();
 
         // 执行检测

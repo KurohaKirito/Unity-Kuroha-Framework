@@ -6,19 +6,12 @@ using UnityEditor;
 
 public static class SolidTextureDetect {
     /// <summary>
-    /// 自动检测使用
-    /// </summary>
-    public static void Detect() {
-        Check("Assets/Art/Effects/Textures", "傅佳亿");
-    }
-
-    /// <summary>
     /// 执行检测
     /// </summary>
     /// <param name="path">检测路径</param>
     /// <param name="principal">负责人</param>
     /// <param name="isExportFile">是否导出文件, 默认导出文件</param>
-    public static List<Dictionary<string, string>> Check(string path, string principal, bool isExportFile = true) {
+    public static IEnumerable<Dictionary<string, string>> Check(string path, string principal, bool isExportFile = true) {
         var results = new List<Dictionary<string, string>>();
 
         // 获取全部纹理
@@ -40,17 +33,11 @@ public static class SolidTextureDetect {
                         if (isSolid) {
                             if (textures[index].width > 32 || textures[index].height > 32) {
                                 var result = new Dictionary<string, string> {
-                                    {
-                                        "错误名称", "尺寸大于 32 X 32 的纯色纹理"
-                                    }, {
-                                        "资源路径", texturePaths[index]
-                                    }, {
-                                        "错误等级", "Error"
-                                    }, {
-                                        "负责人", principal
-                                    }, {
-                                        "备注", $"人工确认并修复, 当前尺寸: {textures[index].width} X {textures[index].height}"
-                                    }
+                                    { "错误名称", "尺寸大于 32 X 32 的纯色纹理" },
+                                    { "资源路径", texturePaths[index] },
+                                    { "错误等级", "Error" },
+                                    { "负责人", principal },
+                                    { "备注", $"人工确认并修复, 当前尺寸: {textures[index].width} X {textures[index].height}" }
                                 };
 
                                 results.Add(result);

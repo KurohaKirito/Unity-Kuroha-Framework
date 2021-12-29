@@ -5,7 +5,21 @@ using UnityEngine;
 
 public static class AutoCheckToolGUI {
     private static readonly string[] checkItem = {
-        "执行特效检测工具", "检测 Assets/Art/Effects/Textures 下纹理的重复纹理", "检测 Assets/Art/Effects/Textures 下存在的大于 32x32 的纯色纹理", "检测 Assets/Art/Effects/Textures 下的无引用纹理", "检测 Assets/Art/Effects/Textures 下的资源与文件夹同级问题", "检测 Assets/Art/Effects/Materials 下的无引用材质球", "检测 Assets/Art/Effects/Materials 下哪些材质球使用了 LWRP 着色器", "检测 Assets/Art/Effects/Materials 下的资源与文件夹同级问题", "检测 Assets/Art/Effects/Materials 下材质球的冗余纹理引用问题", "检测 Assets/Art/Effects/Models 下的无引用模型", "检测 Assets/Art/Effects/Models 下的资源与文件夹同级问题", "检测 Assets/Art/Characters/Textures/Fashion 下存在的重复纹理", "检测 Assets/Art/Characters/Textures/Fashion 下存在的大于 32x32 的纯色纹理", "检测 Assets/Art/Characters/Textures/Fashion 下的无引用纹理", "检测 Assets/Art/Characters/Textures/Fashion 下的资源与文件夹同级问题",
+        "执行特效检测工具",
+        "检测 Assets/Art/Effects/Textures 下纹理的重复纹理",
+        "检测 Assets/Art/Effects/Textures 下存在的大于 32x32 的纯色纹理",
+        "检测 Assets/Art/Effects/Textures 下的无引用纹理",
+        "检测 Assets/Art/Effects/Textures 下的资源与文件夹同级问题",
+        "检测 Assets/Art/Effects/Materials 下的无引用材质球",
+        "检测 Assets/Art/Effects/Materials 下哪些材质球使用了 LWRP 着色器",
+        "检测 Assets/Art/Effects/Materials 下的资源与文件夹同级问题",
+        "检测 Assets/Art/Effects/Materials 下材质球的冗余纹理引用问题",
+        "检测 Assets/Art/Effects/Models 下的无引用模型",
+        "检测 Assets/Art/Effects/Models 下的资源与文件夹同级问题",
+        "检测 Assets/Art/Characters/Textures/Fashion 下存在的重复纹理",
+        "检测 Assets/Art/Characters/Textures/Fashion 下存在的大于 32x32 的纯色纹理",
+        "检测 Assets/Art/Characters/Textures/Fashion 下的无引用纹理",
+        "检测 Assets/Art/Characters/Textures/Fashion 下的资源与文件夹同级问题",
     };
 
     private static readonly bool[] checkToggle = {
