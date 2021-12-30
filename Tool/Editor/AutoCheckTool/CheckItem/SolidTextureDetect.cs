@@ -33,11 +33,17 @@ public static class SolidTextureDetect {
                         if (isSolid) {
                             if (textures[index].width > 32 || textures[index].height > 32) {
                                 var result = new Dictionary<string, string> {
-                                    { "错误名称", "尺寸大于 32 X 32 的纯色纹理" },
-                                    { "资源路径", texturePaths[index] },
-                                    { "错误等级", "Error" },
-                                    { "负责人", principal },
-                                    { "备注", $"人工确认并修复, 当前尺寸: {textures[index].width} X {textures[index].height}" }
+                                    {
+                                        "错误名称", "尺寸大于 32 X 32 的纯色纹理"
+                                    }, {
+                                        "资源路径", texturePaths[index]
+                                    }, {
+                                        "错误等级", "Error"
+                                    }, {
+                                        "负责人", principal
+                                    }, {
+                                        "备注", $"人工确认并修复, 当前尺寸: {textures[index].width} X {textures[index].height}"
+                                    }
                                 };
 
                                 results.Add(result);

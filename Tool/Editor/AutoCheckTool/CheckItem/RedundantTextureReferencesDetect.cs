@@ -34,11 +34,17 @@ public static class RedundantTextureReferencesDetect {
             var material = materials[index];
             if (RedundantTextureReferencesCleaner.Detect(material, false)) {
                 var result = new Dictionary<string, string> {
-                    { "错误名称", "材质球中存在冗余的纹理引用" },
-                    { "资源路径", AssetDatabase.GetAssetPath(material) },
-                    { "错误等级", "Error" },
-                    { "负责人", principal },
-                    { "备注", "可使用资源检测工具批处理标签页面中的材质球冗余引用清除工具自动清除" }
+                    {
+                        "错误名称", "材质球中存在冗余的纹理引用"
+                    }, {
+                        "资源路径", AssetDatabase.GetAssetPath(material)
+                    }, {
+                        "错误等级", "Error"
+                    }, {
+                        "负责人", principal
+                    }, {
+                        "备注", "可使用资源检测工具批处理标签页面中的材质球冗余引用清除工具自动清除"
+                    }
                 };
 
                 results.Add(result);

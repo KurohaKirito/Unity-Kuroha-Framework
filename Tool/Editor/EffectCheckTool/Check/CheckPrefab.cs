@@ -328,7 +328,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 }
 
                 var renderer = transform.GetComponent<Renderer>();
-                if (renderer != null && renderer.sharedMaterials != null) {
+                if (renderer != null && renderer.sharedMaterials != null && renderer is ParticleSystemRenderer == false) {
                     foreach (var material in renderer.sharedMaterials) {
                         if (material != null) {
                             var textureNames = material.GetTexturePropertyNames();
@@ -423,10 +423,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 }
 
                 if (transform.TryGetComponent<Renderer>(out var renderer)) {
-                    if (renderer.allowOcclusionWhenDynamic != isOpen) {
-                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
-                        var content = $"动态遮挡剔除不规范!\t预制体: {assetPath} 子物体: {childPath} : ({!isOpen}) => ({isOpen})!";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion, content, item));
+                    if (renderer is ParticleSystemRenderer == false) {
+                        if (renderer.allowOcclusionWhenDynamic != isOpen) {
+                            var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                            var content = $"动态遮挡剔除不规范!\t预制体: {assetPath} 子物体: {childPath} : ({!isOpen}) => ({isOpen})!";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion, content, item));
+                        }
                     }
                 }
             }

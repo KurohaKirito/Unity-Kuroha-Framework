@@ -42,11 +42,17 @@ public static class MaterialShaderDetect {
         // 整理数据
         foreach (var path in detectResult) {
             var result = new Dictionary<string, string> {
-                { "错误名称", "材质球引用了 Lightweight Render Pipeline 着色器" },
-                { "资源路径", path },
-                { "错误等级", "Error" },
-                { "负责人", principal },
-                { "备注", "请仔细检查并修复" }
+                {
+                    "错误名称", "材质球引用了 Lightweight Render Pipeline 着色器"
+                }, {
+                    "资源路径", path
+                }, {
+                    "错误等级", "Error"
+                }, {
+                    "负责人", principal
+                }, {
+                    "备注", "请仔细检查并修复"
+                }
             };
 
             results.Add(result);

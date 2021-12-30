@@ -178,11 +178,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 ProgressBar.DisplayProgressBar("纹理分析工具", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
 
                 // 判断后缀
-                if (paths[index].EndsWith(".png") || paths[index].EndsWith(".tga")) {
-                    DetectTexture(ref counter, in dataList, paths[index], textures[index]);
-                } else {
+                if (paths[index].EndsWith(".png") == false &&
+                    paths[index].EndsWith(".tga") == false) {
                     DebugUtil.Log($"文件后缀非法: {paths[index]}", AssetDatabase.LoadAssetAtPath<Texture>(paths[index]));
                 }
+                
+                // 执行检测
+                DetectTexture(ref counter, in dataList, paths[index], textures[index]);
             }
 
             DebugUtil.Log($"共检测了 {counter} 张贴图");
