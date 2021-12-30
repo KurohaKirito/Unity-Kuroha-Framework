@@ -54,11 +54,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private static void EditorUpdate()
         {
-            if (hierarchyMain == null) {
+            if (hierarchyMain == null)
+            {
                 InitQHierarchy();
             }
             
-            QObjectListManager.Instance().update();
+            QObjectListManager.Instance().OnEditorUpdate();
         }
 
         /// <summary>
@@ -67,7 +68,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <param name="instanceId"></param>
         /// <param name="selectionRect"></param>
         private static void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect) {
-            if (hierarchyMain == null) {
+            if (hierarchyMain == null)
+            {
                 InitQHierarchy();
             }
 
@@ -79,11 +81,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private static void HierarchyWindowChanged()
         {
-            if (hierarchyMain == null) {
+            if (hierarchyMain == null)
+            {
                 InitQHierarchy();
             }
             
-            QObjectListManager.Instance().validate();
+            QObjectListManager.Instance().Validate();
         }
     }
 }

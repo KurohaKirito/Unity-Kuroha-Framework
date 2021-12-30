@@ -4,6 +4,7 @@ using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
 using Kuroha.Tool.QHierarchy.Editor.QData;
+using Object = UnityEngine.Object;
 #if UNITY_5_3_OR_NEWER
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
@@ -13,10 +14,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 {
     public class QObjectListManager
     {
-        // CONST
-        private const string QObjectListName = "QHierarchyObjectList";
-
-        // SINGLETON
+        private const string Q_OBJECT_LIST_NAME = "QHierarchyObjectList";
+        
         private static QObjectListManager instance;
         public static QObjectListManager Instance()
         {
@@ -24,30 +23,30 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         }
 
         // PRIVATE
+        private int lastSelectionCount;
         private bool showObjectList;
         private bool preventSelectionOfLockedObjects;
         private bool preventSelectionOfLockedObjectsDuringPlayMode;
-        private GameObject lastSelectionGameObject = null;
-        private int lastSelectionCount = 0;
+        private GameObject lastSelectionGameObject;
 
         // CONSTRUCTOR
         private QObjectListManager()
         {
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.LockPreventSelectionOfLockedObjects, settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.LockShow              , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.LockShowDuringPlayMode, settingsChanged);
-            settingsChanged();
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList , OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LockPreventSelectionOfLockedObjects, OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LockShow              , OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LockShowDuringPlayMode, OnSettingsChanged);
+            OnSettingsChanged();
         }
 
-        private void settingsChanged()
+        private void OnSettingsChanged()
         {
             showObjectList = QSettings.Instance().Get<bool>(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList);
             preventSelectionOfLockedObjects = QSettings.Instance().Get<bool>(EM_QSetting.LockShow) && QSettings.Instance().Get<bool>(EM_QSetting.LockPreventSelectionOfLockedObjects);
             preventSelectionOfLockedObjectsDuringPlayMode = preventSelectionOfLockedObjects && QSettings.Instance().Get<bool>(EM_QSetting.LockShowDuringPlayMode);
         }
 
-        private bool isSelectionChanged()
+        private bool IsSelectionChanged()
         {
             if (lastSelectionGameObject != Selection.activeGameObject || lastSelectionCount  != Selection.gameObjects.Length)
             {
@@ -58,44 +57,50 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             return false;
         }
 
-        public void validate()
+        public void Validate()
         {
             QObjectList.instances.RemoveAll(item => item == null);
-            foreach (QObjectList objectList in QObjectList.instances)
+            
+            foreach (var objectList in QObjectList.instances)
+            {
                 objectList.CheckIntegrity();
-            #if UNITY_5_3_OR_NEWER
+            }
+            
             objectListDictionary.Clear();
-            foreach (QObjectList objectList in QObjectList.instances)            
+            
+            foreach (var objectList in QObjectList.instances)
+            {
                 objectListDictionary.Add(objectList.gameObject.scene, objectList);
-            #endif
+            }
         }
         
         private Dictionary<Scene, QObjectList> objectListDictionary = new Dictionary<Scene, QObjectList>();
         private Scene lastActiveScene;
-        private int lastSceneCount = 0;
+        private int lastSceneCount;
 
-        public void update()
+        public void OnEditorUpdate()
         {
             try
             {     
-                List<QObjectList> objectListList = QObjectList.instances;
-                int objectListCount = objectListList.Count;
+                var objectListInstance = QObjectList.instances;
+                var objectListCount = objectListInstance.Count;
                 if (objectListCount > 0) 
                 {
-                    for (int i = objectListCount - 1; i >= 0; i--)
+                    for (var i = objectListCount - 1; i >= 0; --i)
                     {
-                        QObjectList objectList = objectListList[i];
-                        Scene objectListScene = objectList.gameObject.scene;
-						
-						if (objectListDictionary.ContainsKey(objectListScene) && objectListDictionary[objectListScene] == null)
+                        var objectList = objectListInstance[i];
+                        var objectListScene = objectList.gameObject.scene;
+
+                        if (objectListDictionary.ContainsKey(objectListScene) && objectListDictionary[objectListScene] == null) {
                             objectListDictionary.Remove(objectListScene);
+                        }
 							
                         if (objectListDictionary.ContainsKey(objectListScene))
                         {
                             if (objectListDictionary[objectListScene] != objectList)
                             {
                                 objectListDictionary[objectListScene].Merge(objectList);
-                                GameObject.DestroyImmediate(objectList.gameObject);
+                                Object.DestroyImmediate(objectList.gameObject);
                             }
                         }
                         else
@@ -104,45 +109,58 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                         }
                     }
 
-                    foreach (KeyValuePair<Scene, QObjectList> objectListKeyValue in objectListDictionary)
+                    foreach (var objectListKeyValue in objectListDictionary)
                     {
-                        QObjectList objectList = objectListKeyValue.Value;
+                        var objectList = objectListKeyValue.Value;
+                        
                         setupObjectList(objectList);
-                        if (( showObjectList && ((objectList.gameObject.hideFlags & HideFlags.HideInHierarchy)  > 0)) ||
-                            (!showObjectList && ((objectList.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0)))
+                        
+                        if (showObjectList && (objectList.gameObject.hideFlags & HideFlags.HideInHierarchy) > 0 ||
+                            !showObjectList && (objectList.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0)
                         {
                             objectList.gameObject.hideFlags ^= HideFlags.HideInHierarchy;      
                             EditorApplication.DirtyHierarchyWindowSorting();
                         }
                     }
                     
-                    if ((!Application.isPlaying && preventSelectionOfLockedObjects) || 
-                        ((Application.isPlaying && preventSelectionOfLockedObjectsDuringPlayMode)) && 
-                        isSelectionChanged())
+                    if (Application.isPlaying == false && preventSelectionOfLockedObjects || 
+                        Application.isPlaying && preventSelectionOfLockedObjectsDuringPlayMode && IsSelectionChanged())
                     {
-                        GameObject[] selections = Selection.gameObjects;
-                        List<GameObject> actual = new List<GameObject>(selections.Length);
-                        bool found = false;
-                        for (int i = selections.Length - 1; i >= 0; i--)
+                        var selections = Selection.gameObjects;
+                        var actual = new List<GameObject>(selections.Length);
+                        var found = false;
+                        for (var i = selections.Length - 1; i >= 0; i--)
                         {
-                            GameObject gameObject = selections[i];
+                            var gameObject = selections[i];
                             
                             if (objectListDictionary.ContainsKey(gameObject.scene))
                             {
-                                bool isLock = objectListDictionary[gameObject.scene].lockedObjects.Contains(selections[i]);
-                                if (!isLock) actual.Add(selections[i]);
-                                else found = true;
+                                var isLock = objectListDictionary[gameObject.scene].lockedObjects.Contains(selections[i]);
+                                if (!isLock) {
+                                    actual.Add(selections[i]);
+                                } else {
+                                    found = true;
+                                }
                             }
                         }
-                        if (found) Selection.objects = actual.ToArray();
+
+                        if (found)
+                        {
+                            var array = actual.ToArray();
+                            if (array is Object[] objArray)
+                            {
+                                Selection.objects = objArray;
+                            }
+                        }
                     }   
 
-                    lastActiveScene = EditorSceneManager.GetActiveScene();
+                    lastActiveScene = SceneManager.GetActiveScene();
                     lastSceneCount = EditorSceneManager.loadedSceneCount;
                 }
             }
-            catch 
+            catch
             {
+                // ignored
             }
         }
 
@@ -171,8 +189,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 
         private QObjectList createObjectList(GameObject gameObject)
         {
-            GameObject gameObjectList = new GameObject();
-            gameObjectList.name = QObjectListName;
+            GameObject gameObjectList = new GameObject(Q_OBJECT_LIST_NAME);
             QObjectList objectList = gameObjectList.AddComponent<QObjectList>();
             setupObjectList(objectList);
             return objectList;
