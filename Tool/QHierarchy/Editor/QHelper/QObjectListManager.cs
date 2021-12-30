@@ -34,18 +34,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         // CONSTRUCTOR
         private QObjectListManager()
         {
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.LockPreventSelectionOfLockedObjects, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.LockShow              , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.LockShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LockPreventSelectionOfLockedObjects, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LockShow              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LockShowDuringPlayMode, settingsChanged);
             settingsChanged();
         }
 
         private void settingsChanged()
         {
-            showObjectList = QSettings.getInstance().get<bool>(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList);
-            preventSelectionOfLockedObjects = QSettings.getInstance().get<bool>(EM_QSetting.LockShow) && QSettings.getInstance().get<bool>(EM_QSetting.LockPreventSelectionOfLockedObjects);
-            preventSelectionOfLockedObjectsDuringPlayMode = preventSelectionOfLockedObjects && QSettings.getInstance().get<bool>(EM_QSetting.LockShowDuringPlayMode);
+            showObjectList = QSettings.Instance().Get<bool>(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList);
+            preventSelectionOfLockedObjects = QSettings.Instance().Get<bool>(EM_QSetting.LockShow) && QSettings.Instance().Get<bool>(EM_QSetting.LockPreventSelectionOfLockedObjects);
+            preventSelectionOfLockedObjectsDuringPlayMode = preventSelectionOfLockedObjects && QSettings.Instance().Get<bool>(EM_QSetting.LockShowDuringPlayMode);
         }
 
         private bool isSelectionChanged()

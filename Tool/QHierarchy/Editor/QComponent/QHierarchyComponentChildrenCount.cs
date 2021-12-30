@@ -28,10 +28,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width = 22;
             rect.height = 16;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountShow, OnSettingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountShowDuringPlayMode, OnSettingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountLabelSize, OnSettingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ChildrenCountLabelColor, OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ChildrenCountShow, OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ChildrenCountShowDuringPlayMode, OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ChildrenCountLabelSize, OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ChildrenCountLabelColor, OnSettingsChanged);
             OnSettingsChanged();
         }
 
@@ -40,10 +40,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         private void OnSettingsChanged()
         {
-            enabled = QSettings.getInstance().get<bool>(EM_QSetting.ChildrenCountShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.ChildrenCountShowDuringPlayMode);
-            QHierarchySize labelSize = (QHierarchySize) QSettings.getInstance().get<int>(EM_QSetting.ChildrenCountLabelSize);
-            labelStyle.normal.textColor = QSettings.getInstance().getColor(EM_QSetting.ChildrenCountLabelColor);
+            enabled = QSettings.Instance().Get<bool>(EM_QSetting.ChildrenCountShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.ChildrenCountShowDuringPlayMode);
+            QHierarchySize labelSize = (QHierarchySize) QSettings.Instance().Get<int>(EM_QSetting.ChildrenCountLabelSize);
+            labelStyle.normal.textColor = QSettings.Instance().getColor(EM_QSetting.ChildrenCountLabelColor);
             labelStyle.fontSize = labelSize == QHierarchySize.Normal ? 8 : 9;
             rect.width = labelSize == QHierarchySize.Normal ? 17 : 22;
         }

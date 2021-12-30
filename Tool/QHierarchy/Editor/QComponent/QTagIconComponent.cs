@@ -21,19 +21,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width  = 14;
             rect.height = 14;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.TagIconShow              , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagIconShowDuringPlayMode, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagIconSize              , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagIconList              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagIconShow              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagIconShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagIconSize              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagIconList              , settingsChanged);
             settingsChanged();
         }
         
         // PRIVATE
         private void settingsChanged()
         {
-            enabled = QSettings.getInstance().get<bool>(EM_QSetting.TagIconShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.TagIconShowDuringPlayMode);
-            QHierarchySizeAll size = (QHierarchySizeAll)QSettings.getInstance().get<int>(EM_QSetting.TagIconSize);
+            enabled = QSettings.Instance().Get<bool>(EM_QSetting.TagIconShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.TagIconShowDuringPlayMode);
+            QHierarchySizeAll size = (QHierarchySizeAll)QSettings.Instance().Get<int>(EM_QSetting.TagIconSize);
             rect.width = rect.height = (size == QHierarchySizeAll.Normal ? 15 : (size == QHierarchySizeAll.Big ? 16 : 13));        
             this.tagTextureList = QTagTexture.loadTagTextureList();
         }

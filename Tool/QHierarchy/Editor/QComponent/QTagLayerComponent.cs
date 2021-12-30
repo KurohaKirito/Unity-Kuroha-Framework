@@ -38,37 +38,37 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             labelStyle.clipping = TextClipping.Clip;  
             labelStyle.alignment = TextAnchor.MiddleLeft;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerSizeShowType       , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerType               , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerSizeValueType      , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerSizeValuePixel     , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerSizeValuePercent   , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerLabelSize          , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerShow               , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerShowDuringPlayMode , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerTagLabelColor      , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerLayerLabelColor    , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerAlignment           , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TagAndLayerLabelAlpha         , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerSizeShowType       , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerType               , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerSizeValueType      , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerSizeValuePixel     , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerSizeValuePercent   , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerLabelSize          , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerShow               , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerShowDuringPlayMode , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerTagLabelColor      , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerLayerLabelColor    , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerAlignment           , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerLabelAlpha         , settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            showAlways  = QSettings.getInstance().get<int>(EM_QSetting.TagAndLayerType) == (int)QHierarchyTagAndLayerType.Always;
-            showType    = (QHierarchyTagAndLayerShowType)QSettings.getInstance().get<int>(EM_QSetting.TagAndLayerSizeShowType);
-            sizeIsPixel = QSettings.getInstance().get<int>(EM_QSetting.TagAndLayerSizeValueType) == (int)QHierarchyTagAndLayerSizeType.Pixel;
-            pixelSize   = QSettings.getInstance().get<int>(EM_QSetting.TagAndLayerSizeValuePixel);
-            percentSize = QSettings.getInstance().get<float>(EM_QSetting.TagAndLayerSizeValuePercent);
-            labelSize   = (QHierarchyTagAndLayerLabelSize)QSettings.getInstance().get<int>(EM_QSetting.TagAndLayerLabelSize);
-            enabled     = QSettings.getInstance().get<bool>(EM_QSetting.TagAndLayerShow);
-            tagColor    = QSettings.getInstance().getColor(EM_QSetting.TagAndLayerTagLabelColor);
-            layerColor  = QSettings.getInstance().getColor(EM_QSetting.TagAndLayerLayerLabelColor);
-            labelAlpha  = QSettings.getInstance().get<float>(EM_QSetting.TagAndLayerLabelAlpha);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.TagAndLayerShowDuringPlayMode);
+            showAlways  = QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerType) == (int)QHierarchyTagAndLayerType.Always;
+            showType    = (QHierarchyTagAndLayerShowType)QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerSizeShowType);
+            sizeIsPixel = QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerSizeValueType) == (int)QHierarchyTagAndLayerSizeType.Pixel;
+            pixelSize   = QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerSizeValuePixel);
+            percentSize = QSettings.Instance().Get<float>(EM_QSetting.TagAndLayerSizeValuePercent);
+            labelSize   = (QHierarchyTagAndLayerLabelSize)QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerLabelSize);
+            enabled     = QSettings.Instance().Get<bool>(EM_QSetting.TagAndLayerShow);
+            tagColor    = QSettings.Instance().getColor(EM_QSetting.TagAndLayerTagLabelColor);
+            layerColor  = QSettings.Instance().getColor(EM_QSetting.TagAndLayerLayerLabelColor);
+            labelAlpha  = QSettings.Instance().Get<float>(EM_QSetting.TagAndLayerLabelAlpha);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.TagAndLayerShowDuringPlayMode);
 
-            QHierarchyTagAndLayerAligment aligment = (QHierarchyTagAndLayerAligment)QSettings.getInstance().get<int>(EM_QSetting.TagAndLayerAlignment);
+            QHierarchyTagAndLayerAligment aligment = (QHierarchyTagAndLayerAligment)QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerAlignment);
             switch (aligment)
             {
                 case QHierarchyTagAndLayerAligment.Left  : labelStyle.alignment = TextAnchor.MiddleLeft;   break;

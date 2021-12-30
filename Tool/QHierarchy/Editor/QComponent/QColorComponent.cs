@@ -17,23 +17,23 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         // CONSTRUCTOR
         public QColorComponent()
         {
-            colorTexture = QResources.getInstance().getTexture(QTexture.QColorButton);
+            colorTexture = QResources.Instance().GetTexture(QTexture.QColorButton);
 
             rect.width = 8;
             rect.height = 16;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.ColorShow, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ColorShowDuringPlayMode, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalInactiveColor, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ColorShow, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ColorShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor, settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            enabled = QSettings.getInstance().get<bool>(EM_QSetting.ColorShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.ColorShowDuringPlayMode);
-            inactiveColor = QSettings.getInstance().getColor(EM_QSetting.AdditionalInactiveColor);
+            enabled = QSettings.Instance().Get<bool>(EM_QSetting.ColorShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.ColorShowDuringPlayMode);
+            inactiveColor = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
         }
 
         // LAYOUT

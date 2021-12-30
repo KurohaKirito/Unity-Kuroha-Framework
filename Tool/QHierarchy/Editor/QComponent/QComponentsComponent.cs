@@ -25,31 +25,31 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         // CONSTRUCTOR
         public QComponentsComponent ()
         {
-            this.backgroundDarkColor = QResources.getInstance().getColor(QColor.BackgroundDark);
-            this.grayColor           = QResources.getInstance().getColor(QColor.Gray);
-            this.componentIcon       = QResources.getInstance().getTexture(QTexture.QComponentUnknownIcon);
+            this.backgroundDarkColor = QResources.Instance().GetColor(QColor.BackgroundDark);
+            this.grayColor           = QResources.Instance().GetColor(QColor.Gray);
+            this.componentIcon       = QResources.Instance().GetTexture(QTexture.QComponentUnknownIcon);
 
             hintLabelStyle = new GUIStyle();
             hintLabelStyle.normal.textColor = grayColor;
             hintLabelStyle.fontSize = 11;
             hintLabelStyle.clipping = TextClipping.Clip;  
 
-            QSettings.getInstance().addEventListener(EM_QSetting.ComponentsShow              , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ComponentsShowDuringPlayMode, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ComponentsIconSize          , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ComponentsIgnore            , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ComponentsShow              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ComponentsShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ComponentsIconSize          , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ComponentsIgnore            , settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            enabled                     = QSettings.getInstance().get<bool>(EM_QSetting.ComponentsShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.ComponentsShowDuringPlayMode);
-            QHierarchySizeAll size = (QHierarchySizeAll)QSettings.getInstance().get<int>(EM_QSetting.ComponentsIconSize);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.ComponentsShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.ComponentsShowDuringPlayMode);
+            QHierarchySizeAll size = (QHierarchySizeAll)QSettings.Instance().Get<int>(EM_QSetting.ComponentsIconSize);
             rect.width = rect.height = (size == QHierarchySizeAll.Normal ? 15 : (size == QHierarchySizeAll.Big ? 16 : 13));       
 
-            string ignoreString = QSettings.getInstance().get<string>(EM_QSetting.ComponentsIgnore);
+            string ignoreString = QSettings.Instance().Get<string>(EM_QSetting.ComponentsIgnore);
             if (ignoreString != "") 
             {
                 ignoreScripts = new List<string>(ignoreString.Split(new char[] { ',', ';', '.', ' ' }));
@@ -178,4 +178,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-

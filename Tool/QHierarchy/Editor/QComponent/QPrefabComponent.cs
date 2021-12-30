@@ -22,22 +22,22 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = 9;
 
-            prefabTexture = QResources.getInstance().getTexture(QTexture.QPrefabIcon);
+            prefabTexture = QResources.Instance().GetTexture(QTexture.QPrefabIcon);
 
-            QSettings.getInstance().addEventListener(EM_QSetting.PrefabShowBrakedPrefabsOnly  , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.PrefabShow                    , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalActiveColor         , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalInactiveColor       , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.PrefabShowBrakedPrefabsOnly  , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.PrefabShow                    , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalActiveColor         , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor       , settingsChanged);
             settingsChanged();
         }
         
         // PRIVATE
         private void settingsChanged()
         {
-            showPrefabConnectedIcon = QSettings.getInstance().get<bool>(EM_QSetting.PrefabShowBrakedPrefabsOnly);
-            enabled                 = QSettings.getInstance().get<bool>(EM_QSetting.PrefabShow);
-            activeColor             = QSettings.getInstance().getColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor           = QSettings.getInstance().getColor(EM_QSetting.AdditionalInactiveColor);
+            showPrefabConnectedIcon = QSettings.Instance().Get<bool>(EM_QSetting.PrefabShowBrakedPrefabsOnly);
+            enabled                 = QSettings.Instance().Get<bool>(EM_QSetting.PrefabShow);
+            activeColor             = QSettings.Instance().getColor(EM_QSetting.AdditionalActiveColor);
+            inactiveColor           = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
         }
 
         // DRAW

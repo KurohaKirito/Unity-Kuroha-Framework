@@ -16,11 +16,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                                     "This object can be hidden if you uncheck \"Show QHierarchy GameObject\" in the settings of the QHierarchy.\n"
                                     , MessageType.Info, true);
 
-            if (QSettings.getInstance().get<bool>(EM_QSetting.AdditionalShowObjectListContent))
+            if (QSettings.Instance().Get<bool>(EM_QSetting.AdditionalShowObjectListContent))
             {
                 if (UnityEngine.GUI.Button(EditorGUILayout.GetControlRect(GUILayout.ExpandWidth(true), GUILayout.Height(20)), "Hide content"))
                 {
-                    QSettings.getInstance().set(EM_QSetting.AdditionalShowObjectListContent, false);
+                    QSettings.Instance().Set(EM_QSetting.AdditionalShowObjectListContent, false);
                 }
                 base.OnInspectorGUI();
             }
@@ -28,7 +28,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             {
                 if (UnityEngine.GUI.Button(EditorGUILayout.GetControlRect(GUILayout.ExpandWidth(true), GUILayout.Height(20)), "Show content"))
                 {
-                    QSettings.getInstance().set(EM_QSetting.AdditionalShowObjectListContent, true);
+                    QSettings.Instance().Set(EM_QSetting.AdditionalShowObjectListContent, true);
                 }
             }
     	}

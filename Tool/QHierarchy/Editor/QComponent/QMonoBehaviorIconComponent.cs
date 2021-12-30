@@ -28,25 +28,25 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width  = 14;
             rect.height = 16;
             
-            monoBehaviourIconTexture = QResources.getInstance().getTexture(QTexture.QMonoBehaviourIcon);
-            monoBehaviourIconObjectTexture  = QResources.getInstance().getTexture(QTexture.QTreeMapObject);
+            monoBehaviourIconTexture = QResources.Instance().GetTexture(QTexture.QMonoBehaviourIcon);
+            monoBehaviourIconObjectTexture  = QResources.Instance().GetTexture(QTexture.QTreeMapObject);
 
-            QSettings.getInstance().addEventListener(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.MonoBehaviourIconShow                     , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.MonoBehaviourIconShowDuringPlayMode       , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.MonoBehaviourIconColor                    , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TreeMapShow                               , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.MonoBehaviourIconShow                     , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.MonoBehaviourIconShowDuringPlayMode       , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.MonoBehaviourIconColor                    , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TreeMapShow                               , settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            ignoreUnityMonobehaviour    = QSettings.getInstance().get<bool>(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour);
-            enabled                     = QSettings.getInstance().get<bool>(EM_QSetting.MonoBehaviourIconShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.MonoBehaviourIconShowDuringPlayMode);
-            iconColor                   = QSettings.getInstance().getColor(EM_QSetting.MonoBehaviourIconColor);
-            showTreeMap                 = QSettings.getInstance().get<bool>(EM_QSetting.TreeMapShow);
+            ignoreUnityMonobehaviour    = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconShowDuringPlayMode);
+            iconColor                   = QSettings.Instance().getColor(EM_QSetting.MonoBehaviourIconColor);
+            showTreeMap                 = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapShow);
             EditorApplication.RepaintHierarchyWindow();  
         }
 

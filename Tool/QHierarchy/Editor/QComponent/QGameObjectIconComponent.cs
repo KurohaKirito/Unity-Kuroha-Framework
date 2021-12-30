@@ -25,18 +25,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             getIconMethodInfo   = typeof(EditorGUIUtility).GetMethod("GetIconForObject", BindingFlags.NonPublic | BindingFlags.Static );
             getIconMethodParams = new object[1];
 
-            QSettings.getInstance().addEventListener(EM_QSetting.GameObjectIconShow                 , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.GameObjectIconShowDuringPlayMode   , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.GameObjectIconSize                          , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.GameObjectIconShow                 , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.GameObjectIconShowDuringPlayMode   , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.GameObjectIconSize                          , settingsChanged);
             settingsChanged();
         }
         
         // PRIVATE
         private void settingsChanged()
         {
-            enabled = QSettings.getInstance().get<bool>(EM_QSetting.GameObjectIconShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.GameObjectIconShowDuringPlayMode);
-            QHierarchySizeAll size = (QHierarchySizeAll)QSettings.getInstance().get<int>(EM_QSetting.GameObjectIconSize);
+            enabled = QSettings.Instance().Get<bool>(EM_QSetting.GameObjectIconShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.GameObjectIconShowDuringPlayMode);
+            QHierarchySizeAll size = (QHierarchySizeAll)QSettings.Instance().Get<int>(EM_QSetting.GameObjectIconSize);
             rect.width = rect.height = (size == QHierarchySizeAll.Normal ? 15 : (size == QHierarchySizeAll.Big ? 16 : 13));     
         }
 

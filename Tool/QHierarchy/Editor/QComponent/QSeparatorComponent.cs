@@ -22,11 +22,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             showComponentDuringPlayMode = true;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.SeparatorShowRowShading   , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.SeparatorShow             , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.SeparatorColor                , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.SeparatorEvenRowShadingColor  , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.SeparatorOddRowShadingColor , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.SeparatorShowRowShading   , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.SeparatorShow             , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.SeparatorColor                , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.SeparatorEvenRowShadingColor  , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.SeparatorOddRowShadingColor , settingsChanged);
 
             settingsChanged();
         }
@@ -34,11 +34,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         // PRIVATE
         private void settingsChanged()
         {
-            showRowShading   = QSettings.getInstance().get<bool>(EM_QSetting.SeparatorShowRowShading);
-            enabled          = QSettings.getInstance().get<bool>(EM_QSetting.SeparatorShow);
-            evenShadingColor = QSettings.getInstance().getColor(EM_QSetting.SeparatorEvenRowShadingColor);
-            oddShadingColor  = QSettings.getInstance().getColor(EM_QSetting.SeparatorOddRowShadingColor);
-            separatorColor   = QSettings.getInstance().getColor(EM_QSetting.SeparatorColor);
+            showRowShading   = QSettings.Instance().Get<bool>(EM_QSetting.SeparatorShowRowShading);
+            enabled          = QSettings.Instance().Get<bool>(EM_QSetting.SeparatorShow);
+            evenShadingColor = QSettings.Instance().getColor(EM_QSetting.SeparatorEvenRowShadingColor);
+            oddShadingColor  = QSettings.Instance().getColor(EM_QSetting.SeparatorOddRowShadingColor);
+            separatorColor   = QSettings.Instance().getColor(EM_QSetting.SeparatorColor);
         }
 
         // DRAW

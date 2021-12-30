@@ -31,36 +31,36 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         public QTreeMapComponent()
         { 
 
-            treeMapLevelTexture   = QResources.getInstance().getTexture(QTexture.QTreeMapLevel);
-            treeMapLevel4Texture  = QResources.getInstance().getTexture(QTexture.QTreeMapLevel4);
-            treeMapCurrentTexture = QResources.getInstance().getTexture(QTexture.QTreeMapCurrent);
+            treeMapLevelTexture   = QResources.Instance().GetTexture(QTexture.QTreeMapLevel);
+            treeMapLevel4Texture  = QResources.Instance().GetTexture(QTexture.QTreeMapLevel4);
+            treeMapCurrentTexture = QResources.Instance().GetTexture(QTexture.QTreeMapCurrent);
             #if UNITY_2018_3_OR_NEWER
-                treeMapObjectTexture = QResources.getInstance().getTexture(QTexture.QTreeMapLine);
+                treeMapObjectTexture = QResources.Instance().GetTexture(QTexture.QTreeMapLine);
             #else
                 treeMapObjectTexture  = QResources.getInstance().getTexture(QTexture.QTreeMapObject);
             #endif
-            treeMapLastTexture    = QResources.getInstance().getTexture(QTexture.QTreeMapLast);
+            treeMapLastTexture    = QResources.Instance().GetTexture(QTexture.QTreeMapLast);
             
             rect.width  = 14;
             rect.height = 16;
             
             showComponentDuringPlayMode = true;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalBackgroundColor, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TreeMapShow           , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TreeMapColor          , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TreeMapEnhanced       , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.TreeMapTransparentBackground, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalBackgroundColor, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TreeMapShow           , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TreeMapColor          , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TreeMapEnhanced       , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.TreeMapTransparentBackground, settingsChanged);
             settingsChanged();
         }
         
         // PRIVATE
         private void settingsChanged() {
-            backgroundColor     = QSettings.getInstance().getColor(EM_QSetting.AdditionalBackgroundColor);
-            enabled             = QSettings.getInstance().get<bool>(EM_QSetting.TreeMapShow);
-            treeMapColor        = QSettings.getInstance().getColor(EM_QSetting.TreeMapColor);
-            enhanced            = QSettings.getInstance().get<bool>(EM_QSetting.TreeMapEnhanced);
-            transparentBackground = QSettings.getInstance().get<bool>(EM_QSetting.TreeMapTransparentBackground);
+            backgroundColor     = QSettings.Instance().getColor(EM_QSetting.AdditionalBackgroundColor);
+            enabled             = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapShow);
+            treeMapColor        = QSettings.Instance().getColor(EM_QSetting.TreeMapColor);
+            enhanced            = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapEnhanced);
+            transparentBackground = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapTransparentBackground);
         }
         
         // DRAW

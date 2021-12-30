@@ -21,19 +21,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width  = 14;
             rect.height = 14;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.LayerIconShow              , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.LayerIconShowDuringPlayMode, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.LayerIconSize              , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.LayerIconList              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LayerIconShow              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LayerIconShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LayerIconSize              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LayerIconList              , settingsChanged);
             settingsChanged();
         }
         
         // PRIVATE
         private void settingsChanged()
         {
-            enabled                     = QSettings.getInstance().get<bool>(EM_QSetting.LayerIconShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.LayerIconShowDuringPlayMode);
-            QHierarchySizeAll size      = (QHierarchySizeAll)QSettings.getInstance().get<int>(EM_QSetting.LayerIconSize);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.LayerIconShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.LayerIconShowDuringPlayMode);
+            QHierarchySizeAll size      = (QHierarchySizeAll)QSettings.Instance().Get<int>(EM_QSetting.LayerIconSize);
             rect.width = rect.height    = (size == QHierarchySizeAll.Normal ? 15 : (size == QHierarchySizeAll.Big ? 16 : 13));        
             this.layerTextureList = QLayerTexture.loadLayerTextureList();
         }

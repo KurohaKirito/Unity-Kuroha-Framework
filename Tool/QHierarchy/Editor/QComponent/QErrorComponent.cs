@@ -39,43 +39,43 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = 7; 
 
-            errorIconTexture = QResources.getInstance().getTexture(QTexture.QErrorIcon);
+            errorIconTexture = QResources.Instance().GetTexture(QTexture.QErrorIcon);
 
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowIconOnParent             , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowReferenceIsNull          , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowReferenceIsMissing       , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowStringIsEmpty            , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowScriptIsMissing          , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowForDisabledComponents    , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowForDisabledGameObjects   , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowMissingEventMethod       , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShow                         , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorShowDuringPlayMode           , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ErrorIgnoreString                 , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalActiveColor             , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalInactiveColor           , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowIconOnParent             , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowReferenceIsNull          , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowReferenceIsMissing       , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowStringIsEmpty            , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowScriptIsMissing          , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowForDisabledComponents    , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowForDisabledGameObjects   , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowMissingEventMethod       , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShow                         , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorShowDuringPlayMode           , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ErrorIgnoreString                 , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalActiveColor             , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor           , settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            showErrorOfChildren             = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowIconOnParent);
-            showErrorTypeReferenceIsNull    = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowReferenceIsNull);
-            showErrorTypeReferenceIsMissing = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowReferenceIsMissing);
-            showErrorTypeStringIsEmpty      = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowStringIsEmpty);
-            showErrorIconScriptIsMissing    = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowScriptIsMissing);
-            showErrorForDisabledComponents  = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowForDisabledComponents);
-            showErrorForDisabledGameObjects = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowForDisabledGameObjects);
-            showErrorIconMissingEventMethod = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowMissingEventMethod);
-            showErrorIconWhenTagIsUndefined = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined);
-            activeColor                     = QSettings.getInstance().getColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor                   = QSettings.getInstance().getColor(EM_QSetting.AdditionalInactiveColor);
-            enabled                         = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShow);
-            showComponentDuringPlayMode     = QSettings.getInstance().get<bool>(EM_QSetting.ErrorShowDuringPlayMode);
+            showErrorOfChildren             = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowIconOnParent);
+            showErrorTypeReferenceIsNull    = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowReferenceIsNull);
+            showErrorTypeReferenceIsMissing = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowReferenceIsMissing);
+            showErrorTypeStringIsEmpty      = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowStringIsEmpty);
+            showErrorIconScriptIsMissing    = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowScriptIsMissing);
+            showErrorForDisabledComponents  = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowForDisabledComponents);
+            showErrorForDisabledGameObjects = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowForDisabledGameObjects);
+            showErrorIconMissingEventMethod = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowMissingEventMethod);
+            showErrorIconWhenTagIsUndefined = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined);
+            activeColor                     = QSettings.Instance().getColor(EM_QSetting.AdditionalActiveColor);
+            inactiveColor                   = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
+            enabled                         = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShow);
+            showComponentDuringPlayMode     = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowDuringPlayMode);
 
-            string ignoreErrorOfMonoBehavioursString = QSettings.getInstance().get<string>(EM_QSetting.ErrorIgnoreString);
+            string ignoreErrorOfMonoBehavioursString = QSettings.Instance().Get<string>(EM_QSetting.ErrorIgnoreString);
             if (ignoreErrorOfMonoBehavioursString != "") 
             {
                 ignoreErrorOfMonoBehaviours = new List<string>(ignoreErrorOfMonoBehavioursString.Split(new char[] { ',', ';', '.', ' ' }));

@@ -24,24 +24,24 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = 12;
 
-            rendererButtonTexture = QResources.getInstance().getTexture(QTexture.QRendererButton);
+            rendererButtonTexture = QResources.Instance().GetTexture(QTexture.QRendererButton);
 
-            QSettings.getInstance().addEventListener(EM_QSetting.RendererShow              , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.RendererShowDuringPlayMode, settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalActiveColor     , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalInactiveColor   , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalSpecialColor    , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.RendererShow              , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.RendererShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalActiveColor     , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor   , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalSpecialColor    , settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            enabled                     = QSettings.getInstance().get<bool>(EM_QSetting.RendererShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.RendererShowDuringPlayMode);
-            activeColor                 = QSettings.getInstance().getColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor               = QSettings.getInstance().getColor(EM_QSetting.AdditionalInactiveColor);
-            specialColor                = QSettings.getInstance().getColor(EM_QSetting.AdditionalSpecialColor);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.RendererShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.RendererShowDuringPlayMode);
+            activeColor                 = QSettings.Instance().getColor(EM_QSetting.AdditionalActiveColor);
+            inactiveColor               = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
+            specialColor                = QSettings.Instance().getColor(EM_QSetting.AdditionalSpecialColor);
         }
 
         // DRAW

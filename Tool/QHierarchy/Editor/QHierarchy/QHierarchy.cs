@@ -50,24 +50,24 @@ namespace qtools.qhierarchy.phierarchy
 
             orderedComponents = new List<QBaseComponent>();
 
-            trimIcon = QResources.getInstance().getTexture(QTexture.QTrimIcon);
+            trimIcon = QResources.Instance().GetTexture(QTexture.QTrimIcon);
 
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalIndentation             , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.ComponentsOrder                  , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalHideIconsIfNotFit      , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalBackgroundColor        , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalInactiveColor          , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalIndentation             , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.ComponentsOrder                  , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalHideIconsIfNotFit      , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalBackgroundColor        , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor          , settingsChanged);
             settingsChanged();
         }
          
         // PRIVATE
         private void settingsChanged()
         {
-            string componentOrder = QSettings.getInstance().get<string>(EM_QSetting.ComponentsOrder);
+            string componentOrder = QSettings.Instance().Get<string>(EM_QSetting.ComponentsOrder);
             string[] componentIds = componentOrder.Split(';');
             if (componentIds.Length != QSettings.DEFAULT_ORDER_COUNT) 
             {
-                QSettings.getInstance().set(EM_QSetting.ComponentsOrder, QSettings.DEFAULT_ORDER, false);
+                QSettings.Instance().Set(EM_QSetting.ComponentsOrder, QSettings.DEFAULT_ORDER, false);
                 componentIds = QSettings.DEFAULT_ORDER.Split(';');
             }
 
@@ -76,10 +76,10 @@ namespace qtools.qhierarchy.phierarchy
                 orderedComponents.Add(componentDictionary[int.Parse(componentIds[i])]);
             orderedComponents.Add(componentDictionary[(int)QHierarchyComponentEnum.ComponentsComponent]);
 
-            indentation                     = QSettings.getInstance().get<int>(EM_QSetting.AdditionalIndentation);
-            hideIconsIfThereIsNoFreeSpace   = QSettings.getInstance().get<bool>(EM_QSetting.AdditionalHideIconsIfNotFit);
-            backgroundColor                 = QSettings.getInstance().getColor(EM_QSetting.AdditionalBackgroundColor);
-            inactiveColor                   = QSettings.getInstance().getColor(EM_QSetting.AdditionalInactiveColor);
+            indentation                     = QSettings.Instance().Get<int>(EM_QSetting.AdditionalIndentation);
+            hideIconsIfThereIsNoFreeSpace   = QSettings.Instance().Get<bool>(EM_QSetting.AdditionalHideIconsIfNotFit);
+            backgroundColor                 = QSettings.Instance().getColor(EM_QSetting.AdditionalBackgroundColor);
+            inactiveColor                   = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
         } 
 
         public void hierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)

@@ -22,10 +22,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width = 11;
             rect.height = 10;
 
-            QSettings.getInstance().addEventListener(EM_QSetting.StaticShow                , SettingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.StaticShowDuringPlayMode  , SettingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalActiveColor     , SettingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalInactiveColor   , SettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.StaticShow                , SettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.StaticShowDuringPlayMode  , SettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalActiveColor     , SettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor   , SettingsChanged);
 
             SettingsChanged();
         }
@@ -33,10 +33,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         // PRIVATE
         private void SettingsChanged()
         {
-            enabled                     = QSettings.getInstance().get<bool>(EM_QSetting.StaticShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.StaticShowDuringPlayMode);
-            activeColor                 = QSettings.getInstance().getColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor               = QSettings.getInstance().getColor(EM_QSetting.AdditionalInactiveColor);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.StaticShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.StaticShowDuringPlayMode);
+            activeColor                 = QSettings.Instance().getColor(EM_QSetting.AdditionalActiveColor);
+            inactiveColor               = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
         }
 
         // DRAW

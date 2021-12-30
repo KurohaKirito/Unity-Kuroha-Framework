@@ -1,10 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
 using System.Collections.Generic;
-using qtools.qhierarchy.phierarchy;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
-using System.Text;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QData
 {
@@ -89,7 +87,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         public static List<QTagTexture> loadTagTextureList()
         {
             List<QTagTexture> tagTextureList = new List<QTagTexture>();
-            string customTagIcon = QSettings.getInstance().get<string>(EM_QSetting.TagIconList);
+            string customTagIcon = QSettings.Instance().Get<string>(EM_QSetting.TagIconList);
             string[] customTagIconArray = customTagIcon.Split(new char[]{';'});
             List<string> tags = new List<string>(UnityEditorInternal.InternalEditorUtility.tags);
             for (int i = 0; i < customTagIconArray.Length - 1; i+=2)
@@ -113,7 +111,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             string result = "";
             for (int i = 0; i < tagTextureList.Count; i++)            
                 result += tagTextureList[i].tag + ";" + AssetDatabase.GetAssetPath(tagTextureList[i].texture.GetInstanceID()) + ";";
-            QSettings.getInstance().set(setting, result);
+            QSettings.Instance().Set(setting, result);
         }
     }
 
@@ -131,7 +129,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         public static List<QLayerTexture> loadLayerTextureList()
         {
             List<QLayerTexture> layerTextureList = new List<QLayerTexture>();
-            string customTagIcon = QSettings.getInstance().get<string>(EM_QSetting.LayerIconList);
+            string customTagIcon = QSettings.Instance().Get<string>(EM_QSetting.LayerIconList);
             string[] customLayerIconArray = customTagIcon.Split(new char[]{';'});
             List<string> layers = new List<string>(UnityEditorInternal.InternalEditorUtility.layers);
             for (int i = 0; i < customLayerIconArray.Length - 1; i+=2)
@@ -155,7 +153,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             string result = "";
             for (int i = 0; i < layerTextureList.Count; i++)            
                 result += layerTextureList[i].layer + ";" + AssetDatabase.GetAssetPath(layerTextureList[i].texture.GetInstanceID()) + ";";
-            QSettings.getInstance().set(setting, result);
+            QSettings.Instance().Set(setting, result);
         }
     }
 
@@ -179,26 +177,25 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 
         // SINGLETON
         private static QSettings instance;
-        public static QSettings getInstance()
+        public static QSettings Instance()
         {
-            if (instance == null) instance = new QSettings();
-            return instance;
+            return instance ??= new QSettings();
         }
 
         // CONSTRUCTOR
 		private QSettings()
 		{ 
-            string[] paths = AssetDatabase.FindAssets(SETTINGS_FILE_NAME); 
-            for (int i = 0; i < paths.Length; i++)
+            var paths = AssetDatabase.FindAssets(SETTINGS_FILE_NAME); 
+            foreach (var path in paths)
             {
-                settingsObject = (QSettingsObject)AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(paths[i]), typeof(QSettingsObject));
+                settingsObject = (QSettingsObject)AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(path), typeof(QSettingsObject));
                 if (settingsObject != null) break;
             }
             if (settingsObject == null) 
             {
                 settingsObject = ScriptableObject.CreateInstance<QSettingsObject>();
-                string path = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(settingsObject));
-                path = path.Substring(0, path.LastIndexOf("/"));
+                var path = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(settingsObject));
+                path = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
                 AssetDatabase.CreateAsset(settingsObject, path + "/" + SETTINGS_FILE_NAME + ".asset");
                 AssetDatabase.SaveAssets();
             }  
@@ -328,30 +325,32 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         }
 
         // PUBLIC
-        public T get<T>(EM_QSetting setting)
+        public T Get<T>(EM_QSetting setting)
         {
-            return (T)settingsObject.get<T>(getSettingName(setting));
+            return (T)settingsObject.Get<T>(getSettingName(setting));
         }
 
         public Color getColor(EM_QSetting setting)
         {
-            string stringColor = (string)settingsObject.get<string>(getSettingName(setting));
+            string stringColor = (string)settingsObject.Get<string>(getSettingName(setting));
             return QColorUtils.fromString(stringColor);
         }
 
         public void setColor(EM_QSetting setting, Color color)
         {
             string stringColor = QColorUtils.toString(color);
-            set(setting, stringColor);
+            Set(setting, stringColor);
         }
 
-        public void set<T>(EM_QSetting setting, T value, bool invokeChanger = true)
+        public void Set<T>(EM_QSetting setting, T value, bool invokeChanger = true)
         {
-            int settingId = (int)setting;
-            settingsObject.set(getSettingName(setting), value);
+            var settingId = (int)setting;
+            settingsObject.Set(getSettingName(setting), value);
 
-            if (invokeChanger && settingChangedHandlerList.ContainsKey(settingId) && settingChangedHandlerList[settingId] != null)            
+            if (invokeChanger && settingChangedHandlerList.ContainsKey(settingId) && settingChangedHandlerList[settingId] != null)
+            {
                 settingChangedHandlerList[settingId].Invoke();
+            }
             
             EditorApplication.RepaintHierarchyWindow();
         }
@@ -379,7 +378,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         
         public void restore(EM_QSetting setting)
         {
-            set(setting, defaultSettings[(int)setting]);
+            Set(setting, defaultSettings[(int)setting]);
         }
 
         // PRIVATE
@@ -393,10 +392,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         {
             string settingName = getSettingName(setting);
             defaultSettings.Add((int)setting, defaultValue);
-            object value = settingsObject.get(settingName, defaultValue);
+            object value = settingsObject.Get(settingName, defaultValue);
             if (value == null || value.GetType() != defaultValue.GetType())
             {
-                settingsObject.set(settingName, defaultValue);
+                settingsObject.Set(settingName, defaultValue);
             }        
         }
 

@@ -25,24 +25,24 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = 18;
 
-            visibilityButtonTexture    = QResources.getInstance().getTexture(QTexture.QVisibilityButton);
-            visibilityOffButtonTexture = QResources.getInstance().getTexture(QTexture.QVisibilityOffButton);
+            visibilityButtonTexture    = QResources.Instance().GetTexture(QTexture.QVisibilityButton);
+            visibilityOffButtonTexture = QResources.Instance().GetTexture(QTexture.QVisibilityOffButton);
 
-            QSettings.getInstance().addEventListener(EM_QSetting.VisibilityShow                , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.VisibilityShowDuringPlayMode  , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalActiveColor         , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalInactiveColor       , settingsChanged);
-            QSettings.getInstance().addEventListener(EM_QSetting.AdditionalSpecialColor        , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.VisibilityShow                , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.VisibilityShowDuringPlayMode  , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalActiveColor         , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor       , settingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalSpecialColor        , settingsChanged);
             settingsChanged();
         }
 
         private void settingsChanged()
         {
-            enabled                     = QSettings.getInstance().get<bool>(EM_QSetting.VisibilityShow);
-            showComponentDuringPlayMode = QSettings.getInstance().get<bool>(EM_QSetting.VisibilityShowDuringPlayMode);
-            activeColor                 = QSettings.getInstance().getColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor               = QSettings.getInstance().getColor(EM_QSetting.AdditionalInactiveColor);
-            specialColor                = QSettings.getInstance().getColor(EM_QSetting.AdditionalSpecialColor);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.VisibilityShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.VisibilityShowDuringPlayMode);
+            activeColor                 = QSettings.Instance().getColor(EM_QSetting.AdditionalActiveColor);
+            inactiveColor               = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
+            specialColor                = QSettings.Instance().getColor(EM_QSetting.AdditionalSpecialColor);
         }
 
         // DRAW
@@ -167,7 +167,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     return;
                 }
                                                             
-                bool showWarning = QSettings.getInstance().get<bool>(EM_QSetting.AdditionalShowModifierWarning);
+                bool showWarning = QSettings.Instance().Get<bool>(EM_QSetting.AdditionalShowModifierWarning);
                 
                 List<GameObject> targetGameObjects = new List<GameObject>();
                 if (currentEvent.control || currentEvent.command) 

@@ -20,8 +20,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         public QComponentsOrderList (EditorWindow window)
         {            
             this.window = window;
-            dragButton = QResources.getInstance().getTexture(QTexture.QDragButton);
-            backgroundColor = QResources.getInstance().getColor(QColor.BackgroundDark);
+            dragButton = QResources.Instance().GetTexture(QTexture.QDragButton);
+            backgroundColor = QResources.Instance().GetColor(QColor.BackgroundDark);
         }
         
         // PUBLIC
@@ -60,7 +60,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                         }
                     }
                     newIconOrder = newIconOrder.TrimEnd(';');
-                    QSettings.getInstance().set(EM_QSetting.ComponentsOrder, newIconOrder);
+                    QSettings.Instance().Set(EM_QSetting.ComponentsOrder, newIconOrder);
                     componentIds = newIconOrder.Split(';');
                 }
             }

@@ -9,34 +9,77 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 {
     public class QHierarchySettingsWindow : EditorWindow
     {
-        #region 常量
-
-        private const float MENU_WIDTH = 240;
-
-        #endregion
-        
         #region 私有变量
 
+        /// <summary>
+        /// 初始化标志
+        /// </summary>
         private bool initFlag;
+        
+        /// <summary>
+        /// 是否为黑色风格
+        /// </summary>
         private bool isProSkin;
 
+        /// <summary>
+        /// 折叠框
+        /// </summary>
         private bool isOpenComponentsSettings;
+        
+        /// <summary>
+        /// 折叠框
+        /// </summary>
         private bool isOpenComponentsOrders;
+        
+        /// <summary>
+        /// 折叠框
+        /// </summary>
         private bool isOpenAdditionalSettings;
         
+        /// <summary>
+        /// 缩进像素数
+        /// </summary>
         private int indentLevel;
 
         /// <summary>
         /// 窗口可绘制界面区域的总宽度
         /// 使用 window.position.width 获取的宽度无法自动适配右侧可能会出现的滑动条, 因此手动控制总宽度
         /// </summary>
-        private float totalWidth;
+        private float paintWidth;
         
-        private Rect lastRect; 
+        /// <summary>
+        /// 记录上次绘制使用的 Rect
+        /// </summary>
+        private Rect lastRect;
+
+        /// <summary>
+        /// 当前可绘制区域的 Y 值
+        /// </summary>
+        private float currentRectY;
+        
+        /// <summary>
+        /// 用于滑动条计算
+        /// </summary>
         private Vector2 scrollPosition;
-        private static QHierarchySettingsWindow window;
         
+        /// <summary>
+        /// 窗口
+        /// </summary>
+        private static QHierarchySettingsWindow window;
+
+        /// <summary>
+        /// 菜单按钮颜色
+        /// </summary>
+        private Color menuButtonColor;
+        
+        /// <summary>
+        /// 黄色区域的颜色
+        /// </summary>
         private Color yellowColor;
+        
+        /// <summary>
+        /// 分隔器的颜色
+        /// </summary>
         private Color separatorColor;
 
         private Texture2D checkBoxChecked;
@@ -68,12 +111,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 initFlag = true;
 
                 isProSkin = EditorGUIUtility.isProSkin;
-                separatorColor = isProSkin ? new Color(0.18f, 0.18f, 0.18f) : new Color(0.59f, 0.59f, 0.59f);
                 yellowColor = isProSkin ? new Color(1.00f, 0.90f, 0.40f) : new Color(0.31f, 0.31f, 0.31f);
+                separatorColor = isProSkin ? new Color(0.18f, 0.18f, 0.18f) : new Color(0.59f, 0.59f, 0.59f);
+                menuButtonColor = isProSkin ? new Color(0.7f, 0.7f, 0.7f) : new Color(0.9f, 0.9f, 0.9f);
 
-                checkBoxChecked = QResources.getInstance().getTexture(QTexture.QCheckBoxChecked);
-                checkBoxUnchecked = QResources.getInstance().getTexture(QTexture.QCheckBoxUnchecked);
-                restoreButtonTexture = QResources.getInstance().getTexture(QTexture.QRestoreButton);
+                checkBoxChecked = QResources.Instance().GetTexture(QTexture.QCheckBoxChecked);
+                checkBoxUnchecked = QResources.Instance().GetTexture(QTexture.QCheckBoxUnchecked);
+                restoreButtonTexture = QResources.Instance().GetTexture(QTexture.QRestoreButton);
                 componentsOrderList = new QComponentsOrderList(this);
             }
         }
@@ -87,7 +131,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             Init();
             
             // 绘制前初始化 indentLevel
-            indentLevel = 8;
+            indentLevel = 10;
             
             // 绘制前初始化 lastRect
             lastRect = new Rect(0, 1, 0, 0);
@@ -96,20 +140,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
             {
                 // 计算前景区域的宽度
-                // EditorGUILayout.GetControlRect 获取到的高度默认是 EditorGUIUtility.singleLineHeight, 即 18, 宽度则为窗口的尽可能宽
+                // EditorGUILayout.GetControlRect 获取到的高度默认是 EditorGUIUtility.singleLineHeight, 即 18
+                // 获取的宽度在 Layout 状态下为 1, 在 Repaint 状态下为当前坐标尽可能延展的宽度 - 6 像素的留白
                 // 这里不需要告诉 Layout 高度, 所以传 0, 如果使用默认值会导致使用了 Layout 系统的滑动条的范围高度多出部分像素
-                totalWidth = EditorGUILayout.GetControlRect(GUILayout.Height(0)).width;
-                
-                // 另外获取的默认宽度会有部分留白, 大概 24 像素, 所以最后再加上部分像素, 覆盖掉留白 (注意需要考虑到左右对称缩进)
-                totalWidth += 24 - indentLevel * 2;
+                paintWidth = EditorGUILayout.GetControlRect(GUILayout.Height(0)).width;
+                if (Event.current.type == EventType.Repaint) { paintWidth += 6; }
 
                 // 绘制菜单框 COMPONENTS SETTINGS
-                DrawMenuBox("COMPONENTS SETTINGS", MENU_WIDTH, ref isOpenComponentsSettings);
-                
-                var sectionStartY = lastRect.y + lastRect.height;
+                DrawMenuBox("COMPONENTS SETTINGS", ref isOpenComponentsSettings);
+                currentRectY = lastRect.y + lastRect.height;
                 if (isOpenComponentsSettings)
                 {
-                    drawTreeMapComponentSettings();
+                    DrawSettingsHierarchyTree();
                     DrawSeparator();
                     drawMonoBehaviourIconComponentSettings();
                     DrawSeparator();
@@ -142,28 +184,28 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     drawVerticesAndTrianglesCountComponentSettings();
                     DrawSeparator();
                     drawComponentsComponentSettings();
-                    DrawLine(sectionStartY, lastRect.y + lastRect.height, separatorColor);
+                    DrawLine(currentRectY, lastRect.y + lastRect.height, separatorColor);
                 }
 
                 // 开始绘制
-                DrawMenuBox("ORDER OF COMPONENTS", MENU_WIDTH, ref isOpenComponentsOrders);
-                sectionStartY = lastRect.y + lastRect.height;
+                DrawMenuBox("ORDER OF COMPONENTS", ref isOpenComponentsOrders);
+                currentRectY = lastRect.y + lastRect.height;
                 if (isOpenComponentsOrders)
                 {
                     drawSpace(6);
                     drawOrderSettings();
                     drawSpace(6);
-                    DrawLine(sectionStartY, lastRect.y + lastRect.height, separatorColor);
+                    DrawLine(currentRectY, lastRect.y + lastRect.height, separatorColor);
                 }
 
                 // 开始绘制
-                DrawMenuBox("ADDITIONAL SETTINGS", MENU_WIDTH, ref isOpenAdditionalSettings);
-                sectionStartY = lastRect.y + lastRect.height;
+                DrawMenuBox("ADDITIONAL SETTINGS", ref isOpenAdditionalSettings);
+                currentRectY = lastRect.y + lastRect.height;
                 if (isOpenAdditionalSettings)
                 {
                     drawSpace(3);
                     drawAdditionalSettings();
-                    DrawLine(sectionStartY, lastRect.y + lastRect.height + 4, separatorColor);
+                    DrawLine(currentRectY, lastRect.y + lastRect.height + 4, separatorColor);
                 }
 
                 indentLevel -= 1;
@@ -187,7 +229,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             EditorGUILayout.GetControlRect(false, rectHeight, GUIStyle.none, GUILayout.ExpandWidth(true));
             
             // Rect Width
-            var rectWidth = width == 0 ? totalWidth - indentLevel - addIndent - remWidth : width;
+            var rectWidth = width == 0 ? paintWidth - indentLevel - addIndent - remWidth : width;
             
             // Position X
             var positionX = indentLevel + addIndent;
@@ -206,62 +248,65 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <summary>
         /// 绘制菜单
         /// </summary>
-        private void DrawMenuBox(string sectionTitle, float buttonWidth, ref bool buttonFlag)
+        private void DrawMenuBox(string sectionTitle, ref bool buttonFlag)
         {
+            // 定义数据
+            const float ICON_WIDTH = 28;
+            const float MENU_HEIGHT = 24;
+            const float MENU_WIDTH = 240;
+            
             // 告诉 Layout 要绘制一个默认宽度, 指定高度的区域
-            var rect = GetNewRect(0, 24);
+            // 默认宽度就是可绘制区域宽度 (比窗口宽度小 24 像素)
+            var rect = GetNewRect(0, MENU_HEIGHT);
             
             // 覆盖右侧留白
             rect.width *= 2;
             
-            // 绘制底色 Box
+            // 绘制底色 Box (最左侧绘制)
             rect.x = 0;
             UnityEngine.GUI.Box(rect, string.Empty);
 
             // 绘制左侧竖线
-            DrawLine(rect.y, rect.y + 24, yellowColor);
-            rect.x += 10;
+            DrawLine(rect.y, rect.y + MENU_HEIGHT, yellowColor, indentLevel);
+            rect.x += indentLevel;
 
             // 绘制折叠图标
+            var oldColor = UnityEngine.GUI.backgroundColor;
+            UnityEngine.GUI.backgroundColor = menuButtonColor;
             var oldAlignment = UnityEngine.GUI.skin.button.alignment;
             UnityEngine.GUI.skin.button.alignment = TextAnchor.MiddleLeft;
             var autoCheckIcon = EditorGUIUtility.IconContent(buttonFlag ? "sv_icon_dot11_pix16_gizmo" : "sv_icon_dot8_pix16_gizmo");
-            if (UnityEngine.GUI.Button(new Rect(rect.x, rect.y, buttonWidth, rect.height), autoCheckIcon))
+            if (UnityEngine.GUI.Button(new Rect(rect.x, rect.y, MENU_WIDTH, rect.height), autoCheckIcon))
             {
                 buttonFlag = !buttonFlag;
             }
+            UnityEngine.GUI.backgroundColor = oldColor;
             UnityEngine.GUI.skin.button.alignment = oldAlignment;
-            rect.x += 28;
+            rect.x += ICON_WIDTH;
 
             // 绘制设置图标
             EditorGUI.LabelField(rect, EditorGUIUtility.IconContent("GameManager Icon"));
-            rect.x += 28;
+            rect.x += ICON_WIDTH;
 
             // 绘制名称
             EditorGUI.LabelField(rect, sectionTitle);
         }
-
+        
         /// <summary>
-        /// 绘制线
+        /// 绘制 HierarchyTree
         /// </summary>
-        private void DrawLine(float fromY, float toY, Color color, float width = 0)
+        private void DrawSettingsHierarchyTree()
         {
-            EditorGUI.DrawRect(new Rect(0, fromY, width == 0 ? indentLevel : width, toY - fromY), color);
-        }
-
-        // COMPONENTS
-        private void drawTreeMapComponentSettings()
-        {
-            if (drawComponentCheckBox("Hierarchy Tree", EM_QSetting.TreeMapShow))
+            if (DrawCheckBox("Hierarchy Tree", EM_QSetting.TreeMapShow))
             {
-                var rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(24))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.TreeMapColor);
-                    QSettings.getInstance().restore(EM_QSetting.TreeMapEnhanced);
-                    QSettings.getInstance().restore(EM_QSetting.TreeMapTransparentBackground);
+                    QSettings.Instance().restore(EM_QSetting.TreeMapColor);
+                    QSettings.Instance().restore(EM_QSetting.TreeMapEnhanced);
+                    QSettings.Instance().restore(EM_QSetting.TreeMapTransparentBackground);
                 }
-
+                
+                var rect = GetNewRect(0, 0);
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + 5);
                 drawSpace(4);
                 drawColorPicker("Tree color", EM_QSetting.TreeMapColor);
@@ -273,14 +318,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawMonoBehaviourIconComponentSettings()
         {
-            if (drawComponentCheckBox("MonoBehaviour Icon", EM_QSetting.MonoBehaviourIconShow))
+            if (DrawCheckBox("MonoBehaviour Icon", EM_QSetting.MonoBehaviourIconShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.MonoBehaviourIconShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.MonoBehaviourIconColor);
-                    QSettings.getInstance().restore(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour);
+                    QSettings.Instance().restore(EM_QSetting.MonoBehaviourIconShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.MonoBehaviourIconColor);
+                    QSettings.Instance().restore(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + 5);
@@ -294,18 +339,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawSeparatorComponentSettings()
         {
-            if (drawComponentCheckBox("Separator", EM_QSetting.SeparatorShow))
+            if (DrawCheckBox("Separator", EM_QSetting.SeparatorShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.SeparatorColor);
-                    QSettings.getInstance().restore(EM_QSetting.SeparatorShowRowShading);
-                    QSettings.getInstance().restore(EM_QSetting.SeparatorOddRowShadingColor);
-                    QSettings.getInstance().restore(EM_QSetting.SeparatorEvenRowShadingColor);
+                    QSettings.Instance().restore(EM_QSetting.SeparatorColor);
+                    QSettings.Instance().restore(EM_QSetting.SeparatorShowRowShading);
+                    QSettings.Instance().restore(EM_QSetting.SeparatorOddRowShadingColor);
+                    QSettings.Instance().restore(EM_QSetting.SeparatorEvenRowShadingColor);
                 }
 
-                bool rowShading = QSettings.getInstance().get<bool>(EM_QSetting.SeparatorShowRowShading);
+                bool rowShading = QSettings.Instance().Get<bool>(EM_QSetting.SeparatorShowRowShading);
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * (rowShading ? 4 : 2) + 5);
                 drawSpace(4);
@@ -323,12 +368,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawVisibilityComponentSettings()
         {
-            if (drawComponentCheckBox("Visibility", EM_QSetting.VisibilityShow))
+            if (DrawCheckBox("Visibility", EM_QSetting.VisibilityShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.VisibilityShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.VisibilityShowDuringPlayMode);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -340,13 +385,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawLockComponentSettings()
         {
-            if (drawComponentCheckBox("Lock", EM_QSetting.LockShow))
+            if (DrawCheckBox("Lock", EM_QSetting.LockShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.LockShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.LockPreventSelectionOfLockedObjects);
+                    QSettings.Instance().restore(EM_QSetting.LockShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.LockPreventSelectionOfLockedObjects);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 2 + 5);
@@ -359,12 +404,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawStaticComponentSettings()
         {
-            if (drawComponentCheckBox("Static", EM_QSetting.StaticShow))
+            if (DrawCheckBox("Static", EM_QSetting.StaticShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.StaticShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.StaticShowDuringPlayMode);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -376,22 +421,22 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawErrorComponentSettings()
         {
-            if (drawComponentCheckBox("Error", EM_QSetting.ErrorShow))
+            if (DrawCheckBox("Error", EM_QSetting.ErrorShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowIconOnParent);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowForDisabledComponents);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowForDisabledGameObjects);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowScriptIsMissing);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowReferenceIsMissing);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowReferenceIsNull);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowStringIsEmpty);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowMissingEventMethod);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined);
-                    QSettings.getInstance().restore(EM_QSetting.ErrorIgnoreString);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowIconOnParent);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowForDisabledComponents);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowForDisabledGameObjects);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowScriptIsMissing);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowReferenceIsMissing);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowReferenceIsNull);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowStringIsEmpty);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowMissingEventMethod);
+                    QSettings.Instance().restore(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined);
+                    QSettings.Instance().restore(EM_QSetting.ErrorIgnoreString);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 12 + 5);
@@ -416,12 +461,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawRendererComponentSettings()
         {
-            if (drawComponentCheckBox("Renderer", EM_QSetting.RendererShow))
+            if (DrawCheckBox("Renderer", EM_QSetting.RendererShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.RendererShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.RendererShowDuringPlayMode);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -433,12 +478,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawPrefabComponentSettings()
         {
-            if (drawComponentCheckBox("Prefab", EM_QSetting.PrefabShow))
+            if (DrawCheckBox("Prefab", EM_QSetting.PrefabShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.PrefabShowBrakedPrefabsOnly);
+                    QSettings.Instance().restore(EM_QSetting.PrefabShowBrakedPrefabsOnly);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -450,22 +495,22 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawTagLayerComponentSettings()
         {
-            if (drawComponentCheckBox("Tag And Layer", EM_QSetting.TagAndLayerShow))
+            if (DrawCheckBox("Tag And Layer", EM_QSetting.TagAndLayerShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerSizeShowType);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerType);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerSizeValueType);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerSizeValuePixel);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerSizeValuePercent);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerAlignment);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerLabelSize);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerLabelAlpha);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerTagLabelColor);
-                    QSettings.getInstance().restore(EM_QSetting.TagAndLayerLayerLabelColor);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerSizeShowType);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerType);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerSizeValueType);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerSizeValuePixel);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerSizeValuePercent);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerAlignment);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerLabelSize);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerLabelAlpha);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerTagLabelColor);
+                    QSettings.Instance().restore(EM_QSetting.TagAndLayerLayerLabelColor);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 10 + 5);
@@ -492,12 +537,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawColorComponentSettings()
         {
-            if (drawComponentCheckBox("Color", EM_QSetting.ColorShow))
+            if (DrawCheckBox("Color", EM_QSetting.ColorShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.ColorShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.ColorShowDuringPlayMode);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -509,13 +554,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawGameObjectIconComponentSettings()
         {
-            if (drawComponentCheckBox("GameObject Icon", EM_QSetting.GameObjectIconShow))
+            if (DrawCheckBox("GameObject Icon", EM_QSetting.GameObjectIconShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.GameObjectIconShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.GameObjectIconSize);
+                    QSettings.Instance().restore(EM_QSetting.GameObjectIconShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.GameObjectIconSize);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 2 + 5);
@@ -528,17 +573,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawTagIconComponentSettings()
         {
-            if (drawComponentCheckBox("Tag Icon", EM_QSetting.TagIconShow))
+            if (DrawCheckBox("Tag Icon", EM_QSetting.TagIconShow))
             {
                 string[] tags = UnityEditorInternal.InternalEditorUtility.tags;
 
-                bool showTagIconList = QSettings.getInstance().get<bool>(EM_QSetting.TagIconListFoldout);
+                bool showTagIconList = QSettings.Instance().Get<bool>(EM_QSetting.TagIconListFoldout);
 
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.TagIconShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.TagIconSize);
+                    QSettings.Instance().restore(EM_QSetting.TagIconShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.TagIconSize);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + (showTagIconList ? 18 * tags.Length : 0) + 4 + 5);
@@ -590,17 +635,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawLayerIconComponentSettings()
         {
-            if (drawComponentCheckBox("Layer Icon", EM_QSetting.LayerIconShow))
+            if (DrawCheckBox("Layer Icon", EM_QSetting.LayerIconShow))
             {
                 string[] layers = UnityEditorInternal.InternalEditorUtility.layers;
 
-                bool showLayerIconList = QSettings.getInstance().get<bool>(EM_QSetting.LayerIconListFoldout);
+                bool showLayerIconList = QSettings.Instance().Get<bool>(EM_QSetting.LayerIconListFoldout);
 
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.LayerIconShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.LayerIconSize);
+                    QSettings.Instance().restore(EM_QSetting.LayerIconShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.LayerIconSize);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + (showLayerIconList ? 18 * layers.Length : 0) + 4 + 5);
@@ -652,14 +697,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawChildrenCountComponentSettings()
         {
-            if (drawComponentCheckBox("Children Count", EM_QSetting.ChildrenCountShow))
+            if (DrawCheckBox("Children Count", EM_QSetting.ChildrenCountShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.ChildrenCountShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.ChildrenCountLabelSize);
-                    QSettings.getInstance().restore(EM_QSetting.ChildrenCountLabelColor);
+                    QSettings.Instance().restore(EM_QSetting.ChildrenCountShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.ChildrenCountLabelSize);
+                    QSettings.Instance().restore(EM_QSetting.ChildrenCountLabelColor);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + 5);
@@ -673,18 +718,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawVerticesAndTrianglesCountComponentSettings()
         {
-            if (drawComponentCheckBox("Vertices And Triangles Count", EM_QSetting.VerticesAndTrianglesShow))
+            if (DrawCheckBox("Vertices And Triangles Count", EM_QSetting.VerticesAndTrianglesShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.VerticesAndTrianglesShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.VerticesAndTrianglesShowVertices);
-                    QSettings.getInstance().restore(EM_QSetting.VerticesAndTrianglesShowTriangles);
-                    QSettings.getInstance().restore(EM_QSetting.VerticesAndTrianglesCalculateTotalCount);
-                    QSettings.getInstance().restore(EM_QSetting.VerticesAndTrianglesLabelSize);
-                    QSettings.getInstance().restore(EM_QSetting.VerticesAndTrianglesVerticesLabelColor);
-                    QSettings.getInstance().restore(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor);
+                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesShowVertices);
+                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesShowTriangles);
+                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesCalculateTotalCount);
+                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesLabelSize);
+                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesVerticesLabelColor);
+                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 7 + 5);
@@ -692,14 +737,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 drawCheckBoxRight("Show component during play mode", EM_QSetting.VerticesAndTrianglesShowDuringPlayMode);
                 if (drawCheckBoxRight("Show vertices count", EM_QSetting.VerticesAndTrianglesShowVertices))
                 {
-                    if (QSettings.getInstance().get<bool>(EM_QSetting.VerticesAndTrianglesShowVertices) == false && QSettings.getInstance().get<bool>(EM_QSetting.VerticesAndTrianglesShowTriangles) == false)
-                        QSettings.getInstance().set(EM_QSetting.VerticesAndTrianglesShowTriangles, true);
+                    if (QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowVertices) == false && QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowTriangles) == false)
+                        QSettings.Instance().Set(EM_QSetting.VerticesAndTrianglesShowTriangles, true);
                 }
 
                 if (drawCheckBoxRight("Show triangles count (very slow)", EM_QSetting.VerticesAndTrianglesShowTriangles))
                 {
-                    if (QSettings.getInstance().get<bool>(EM_QSetting.VerticesAndTrianglesShowVertices) == false && QSettings.getInstance().get<bool>(EM_QSetting.VerticesAndTrianglesShowTriangles) == false)
-                        QSettings.getInstance().set(EM_QSetting.VerticesAndTrianglesShowVertices, true);
+                    if (QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowVertices) == false && QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowTriangles) == false)
+                        QSettings.Instance().Set(EM_QSetting.VerticesAndTrianglesShowVertices, true);
                 }
 
                 drawCheckBoxRight("Calculate the count including children (very slow)", EM_QSetting.VerticesAndTrianglesCalculateTotalCount);
@@ -712,13 +757,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawComponentsComponentSettings()
         {
-            if (drawComponentCheckBox("Components", EM_QSetting.ComponentsShow))
+            if (DrawCheckBox("Components", EM_QSetting.ComponentsShow))
             {
                 Rect rect = GetNewRect(0, 0);
-                if (drawRestore())
+                if (DrawRestore(28))
                 {
-                    QSettings.getInstance().restore(EM_QSetting.ComponentsShowDuringPlayMode);
-                    QSettings.getInstance().restore(EM_QSetting.ComponentsIconSize);
+                    QSettings.Instance().restore(EM_QSetting.ComponentsShowDuringPlayMode);
+                    QSettings.Instance().restore(EM_QSetting.ComponentsIconSize);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + 6);
@@ -733,14 +778,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         // COMPONENTS ORDER
         private void drawOrderSettings()
         {
-            if (drawRestore())
+            if (DrawRestore(24))
             {
-                QSettings.getInstance().restore(EM_QSetting.ComponentsOrder);
+                QSettings.Instance().restore(EM_QSetting.ComponentsOrder);
             }
 
             indentLevel += 4;
 
-            string componentOrder = QSettings.getInstance().get<string>(EM_QSetting.ComponentsOrder);
+            string componentOrder = QSettings.Instance().Get<string>(EM_QSetting.ComponentsOrder);
             string[] componentIds = componentOrder.Split(';');
 
             Rect rect = GetNewRect(position.width, 17 * componentIds.Length + 10, 0, 0);
@@ -754,16 +799,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         // ADDITIONAL SETTINGS
         private void drawAdditionalSettings()
         {
-            if (drawRestore())
+            if (DrawRestore(24))
             {
-                QSettings.getInstance().restore(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList);
-                QSettings.getInstance().restore(EM_QSetting.AdditionalHideIconsIfNotFit);
-                QSettings.getInstance().restore(EM_QSetting.AdditionalIndentation);
-                QSettings.getInstance().restore(EM_QSetting.AdditionalShowModifierWarning);
-                QSettings.getInstance().restore(EM_QSetting.AdditionalBackgroundColor);
-                QSettings.getInstance().restore(EM_QSetting.AdditionalActiveColor);
-                QSettings.getInstance().restore(EM_QSetting.AdditionalInactiveColor);
-                QSettings.getInstance().restore(EM_QSetting.AdditionalSpecialColor);
+                QSettings.Instance().restore(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList);
+                QSettings.Instance().restore(EM_QSetting.AdditionalHideIconsIfNotFit);
+                QSettings.Instance().restore(EM_QSetting.AdditionalIndentation);
+                QSettings.Instance().restore(EM_QSetting.AdditionalShowModifierWarning);
+                QSettings.Instance().restore(EM_QSetting.AdditionalBackgroundColor);
+                QSettings.Instance().restore(EM_QSetting.AdditionalActiveColor);
+                QSettings.Instance().restore(EM_QSetting.AdditionalInactiveColor);
+                QSettings.Instance().restore(EM_QSetting.AdditionalSpecialColor);
             }
 
             drawSpace(4);
@@ -801,42 +846,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
-        private bool drawComponentCheckBox(string label, EM_QSetting setting)
-        {
-            indentLevel += 8;
-
-            Rect rect = GetNewRect(0, 28, 0, 0);
-
-            float rectWidth = rect.width;
-            bool isChecked = QSettings.getInstance().get<bool>(setting);
-
-            rect.x -= 1;
-            rect.y += 7;
-            rect.width = 14;
-            rect.height = 14;
-
-            if (UnityEngine.GUI.Button(rect, isChecked ? checkBoxChecked : checkBoxUnchecked, GUIStyle.none))
-            {
-                QSettings.getInstance().set(setting, !isChecked);
-            }
-
-            rect.x += 14 + 10;
-            rect.width = rectWidth - 14 - 8;
-            rect.y -= (EditorGUIUtility.singleLineHeight - rect.height) * 0.5f;
-            rect.height = EditorGUIUtility.singleLineHeight;
-
-            EditorGUI.LabelField(rect, label);
-
-            indentLevel -= 8;
-
-            return isChecked;
-        }
+        
 
         private bool drawCheckBoxRight(string label, EM_QSetting setting)
         {
             Rect rect = GetNewRect(0, 18, 34, 6);
             bool result = false;
-            bool isChecked = QSettings.getInstance().get<bool>(setting);
+            bool isChecked = QSettings.Instance().Get<bool>(setting);
 
             float tempX = rect.x;
             rect.x += rect.width - 14;
@@ -846,7 +862,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             if (UnityEngine.GUI.Button(rect, isChecked ? checkBoxChecked : checkBoxUnchecked, GUIStyle.none))
             {
-                QSettings.getInstance().set(setting, !isChecked);
+                QSettings.Instance().Set(setting, !isChecked);
                 result = true;
             }
 
@@ -871,18 +887,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         }
 
 
-        private bool drawRestore()
-        {
-            if (UnityEngine.GUI.Button(new Rect(lastRect.x + lastRect.width - 16 - 5, lastRect.y - 20, 16, 16), restoreButtonTexture, GUIStyle.none))
-            {
-                if (EditorUtility.DisplayDialog("Restore", "Restore default settings?", "Ok", "Cancel"))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+        
 
         // GUI COMPONENTS
         private void drawLabel(string label)
@@ -895,10 +900,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void drawTextField(string label, EM_QSetting setting)
         {
-            string currentValue = QSettings.getInstance().get<string>(setting);
+            string currentValue = QSettings.Instance().Get<string>(setting);
             string newValue = EditorGUI.TextField(GetNewRect(0, 16, 34, 6), label, currentValue);
             if (!currentValue.Equals(newValue))
-                QSettings.getInstance().set(setting, newValue);
+                QSettings.Instance().Set(setting, newValue);
             drawSpace(2);
         }
 
@@ -909,29 +914,29 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 #else
                 Rect foldoutRect = getControlRect(0, 16, 22, 6);
 #endif
-            bool foldoutValue = QSettings.getInstance().get<bool>(setting);
+            bool foldoutValue = QSettings.Instance().Get<bool>(setting);
             bool newFoldoutValue = EditorGUI.Foldout(foldoutRect, foldoutValue, label);
             if (foldoutValue != newFoldoutValue)
-                QSettings.getInstance().set(setting, newFoldoutValue);
+                QSettings.Instance().Set(setting, newFoldoutValue);
             drawSpace(2);
             return newFoldoutValue;
         }
 
         private void drawColorPicker(string label, EM_QSetting setting)
         {
-            Color currentColor = QSettings.getInstance().getColor(setting);
+            Color currentColor = QSettings.Instance().getColor(setting);
             Color newColor = EditorGUI.ColorField(GetNewRect(0, 16, 34, 6), label, currentColor);
             if (!currentColor.Equals(newColor))
-                QSettings.getInstance().setColor(setting, newColor);
+                QSettings.Instance().setColor(setting, newColor);
             drawSpace(2);
         }
 
         private Enum drawEnum(string label, EM_QSetting setting, Type enumType)
         {
-            Enum currentEnum = (Enum) Enum.ToObject(enumType, QSettings.getInstance().get<int>(setting));
+            Enum currentEnum = (Enum) Enum.ToObject(enumType, QSettings.Instance().Get<int>(setting));
             Enum newEnumValue;
             if (!(newEnumValue = EditorGUI.EnumPopup(GetNewRect(0, 16, 34, 6), label, currentEnum)).Equals(currentEnum))
-                QSettings.getInstance().set(setting, (int) (object) newEnumValue);
+                QSettings.Instance().Set(setting, (int) (object) newEnumValue);
             drawSpace(2);
             return newEnumValue;
         }
@@ -939,21 +944,105 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         private void drawIntSlider(string label, EM_QSetting setting, int minValue, int maxValue)
         {
             Rect rect = GetNewRect(0, 16, 34, 4);
-            int currentValue = QSettings.getInstance().get<int>(setting);
+            int currentValue = QSettings.Instance().Get<int>(setting);
             int newValue = EditorGUI.IntSlider(rect, label, currentValue, minValue, maxValue);
             if (currentValue != newValue)
-                QSettings.getInstance().set(setting, newValue);
+                QSettings.Instance().Set(setting, newValue);
             drawSpace(2);
         }
 
         private void drawFloatSlider(string label, EM_QSetting setting, float minValue, float maxValue)
         {
             Rect rect = GetNewRect(0, 16, 34, 4);
-            float currentValue = QSettings.getInstance().get<float>(setting);
+            float currentValue = QSettings.Instance().Get<float>(setting);
             float newValue = EditorGUI.Slider(rect, label, currentValue, minValue, maxValue);
             if (currentValue != newValue)
-                QSettings.getInstance().set(setting, newValue);
+                QSettings.Instance().Set(setting, newValue);
             drawSpace(2);
         }
+
+
+        #region 界面组件
+
+        /// <summary>
+        /// 绘制线
+        /// </summary>
+        private void DrawLine(float fromY, float toY, Color color, float width = 0)
+        {
+            var lineWidth = width == 0 ? indentLevel : width;
+            var lineHeight = toY - fromY;
+            EditorGUI.DrawRect(new Rect(0, fromY, lineWidth, lineHeight), color);
+        }
+        
+        /// <summary>
+        /// 绘制单选框
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="setting"></param>
+        /// <returns></returns>
+        private bool DrawCheckBox(string label, EM_QSetting setting)
+        {
+            // 定义
+            const int SECOND_INDENT = 10;
+            const float CHECKED_ICON = 14;
+            
+            // 进行 2 级缩进
+            indentLevel += SECOND_INDENT;
+
+            // 通知 Layout 绘制指定高度的矩形
+            var rect = GetNewRect(0, CHECKED_ICON * 2);
+            
+            // 缓存总宽度
+            var rectTotalWidth = rect.width;
+            
+            // 计算单选框的绘制区域
+            rect.y += CHECKED_ICON * 0.5f;
+            rect.width = CHECKED_ICON;
+            rect.height = CHECKED_ICON;
+            var isChecked = QSettings.Instance().Get<bool>(setting);
+            var icon = isChecked ? checkBoxChecked : checkBoxUnchecked;
+            if (UnityEngine.GUI.Button(rect, icon, GUIStyle.none))
+            {
+                QSettings.Instance().Set(setting, !isChecked);
+            }
+
+            // 计算标题的绘制区域
+            rect.x += CHECKED_ICON + 10;
+            rect.y -= (EditorGUIUtility.singleLineHeight - rect.height) * 0.5f; // Y 坐标上调 (LabelHeight / 2) - (CheckBoxHeight / 2) => (LabelHeight - CheckBoxHeight) / 2
+            rect.width = rectTotalWidth * 2; // 确保覆盖右侧全部留白
+            rect.height = EditorGUIUtility.singleLineHeight; // 默认高度: 18
+            EditorGUI.LabelField(rect, label);
+
+            // 取消 2 级缩进
+            indentLevel -= SECOND_INDENT;
+
+            return isChecked;
+        }
+        
+        /// <summary>
+        /// 绘制重置按钮
+        /// </summary>
+        /// <returns></returns>
+        private bool DrawRestore(float restoreMenuHeight)
+        {
+            const float RIGHT_SPACE = 5;
+            const float RESTORE_ICON_WIDTH_HEIGHT = 16;
+
+            var positionX = lastRect.x + lastRect.width - RESTORE_ICON_WIDTH_HEIGHT - RIGHT_SPACE;
+            var positionY = lastRect.y - (restoreMenuHeight + RESTORE_ICON_WIDTH_HEIGHT) * 0.5f;
+            var rect = new Rect(positionX, positionY, RESTORE_ICON_WIDTH_HEIGHT, RESTORE_ICON_WIDTH_HEIGHT);
+            
+            if (UnityEngine.GUI.Button(rect, restoreButtonTexture, GUIStyle.none))
+            {
+                if (EditorUtility.DisplayDialog("Restore", "Restore default settings?", "Ok", "Cancel"))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
     }
 }
