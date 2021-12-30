@@ -9,14 +9,6 @@ namespace Kuroha.Tool.AssetTool.Editor.AutoCheckTool.CheckItem
     public static class UnusedMaterialDetect
     {
         /// <summary>
-        /// 自动检测使用
-        /// </summary>
-        public static void Detect()
-        {
-            Check("Assets/Art/Effects/Materials", "傅佳亿");
-        }
-
-        /// <summary>
         /// 检测无引用的纹理 (废弃纹理)
         /// </summary>
         /// <param name="path">检测路径</param>

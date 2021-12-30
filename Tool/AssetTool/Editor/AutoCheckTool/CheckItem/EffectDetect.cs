@@ -47,7 +47,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AutoCheckTool.CheckItem
                     {"错误名称", errorTitle},
                     {"资源路径", reportInfo.assetPath},
                     {"错误等级", "Error"},
-                    {"负责人", "傅佳亿"},
+                    {"负责人", "工具查看"},
                     {"备注", "可使用资源检测工具中的特效检测工具查看详细信息" }
                 };
 

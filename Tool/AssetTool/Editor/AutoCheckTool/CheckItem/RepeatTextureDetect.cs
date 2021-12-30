@@ -10,14 +10,6 @@ namespace Kuroha.Tool.AssetTool.Editor.AutoCheckTool.CheckItem
     public static class RepeatTextureDetect
     {
         /// <summary>
-        /// 自动检测使用
-        /// </summary>
-        public static void Detect()
-        {
-            Check("Assets/Art/Effects/Textures", "傅佳亿");
-        }
-    
-        /// <summary>
         /// 执行检测
         /// </summary>
         /// <param name="path">检测路径</param>
@@ -35,12 +27,15 @@ namespace Kuroha.Tool.AssetTool.Editor.AutoCheckTool.CheckItem
             {
                 ProgressBar.DisplayProgressBar("重复纹理检测工具", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
             
-                if (texturePaths[index].EndsWith(".png") || texturePaths[index].EndsWith(".tga"))
-                {
-                    // 重复纹理检测
-                    var isBegin = index == 0;
-                    TextureRepeatChecker.CheckOneTexture(texturePaths[index], isBegin);
+                var isBegin = index == 0;
+                
+                // 判断后缀
+                if (texturePaths[index].EndsWith(".png") == false &&
+                    texturePaths[index].EndsWith(".tga") == false) {
+                    DebugUtil.Log($"文件后缀非法: {texturePaths[index]}");
                 }
+                
+                TextureRepeatChecker.CheckOneTexture(texturePaths[index], isBegin);
             }
         
             // 处理重复纹理的检测结果数据

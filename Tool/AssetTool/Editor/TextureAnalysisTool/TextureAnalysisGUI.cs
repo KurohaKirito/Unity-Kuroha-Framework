@@ -32,7 +32,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// <summary>
         /// 待检测目录
         /// </summary>
-        private static string detectPath = "Art/Effects/Textures";
+        private static string detectPath = "Assets/Art/Effects/Textures";
 
         /// <summary>
         /// 待检测游戏物体
@@ -79,25 +79,23 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                     {
                         case TextureAnalysisData.DetectType.Scene:
                             break;
+                        
                         case TextureAnalysisData.DetectType.Path:
-                        {
                             GUILayout.BeginVertical("Box");
                             {
                                 detectPath = EditorGUILayout.TextField("输入待检查目录: ", detectPath, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                             }
                             GUILayout.EndVertical();
-                        }
                             break;
+                        
                         case TextureAnalysisData.DetectType.GameObject:
-                        {
                             GUILayout.BeginVertical("Box");
                             {
-                                detectGameObject = EditorGUILayout.ObjectField("选择检测的游戏物体: ", detectGameObject,
-                                    typeof(GameObject), true, GUILayout.Width(UI_INPUT_AREA_WIDTH)) as GameObject;
+                                detectGameObject = EditorGUILayout.ObjectField("选择检测的游戏物体: ", detectGameObject, typeof(GameObject), true, GUILayout.Width(UI_INPUT_AREA_WIDTH)) as GameObject;
                             }
                             GUILayout.EndVertical();
-                        }
                             break;
+                        
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -108,7 +106,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                     {
                         if (GUILayout.Button("开始", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                         {
-                            TextureAnalysisTableWindow.Open(detectType, $"Assets/{detectPath}", detectGameObject);
+                            TextureAnalysisTableWindow.Open(detectType, detectPath, detectGameObject);
                         }
                     }
                     GUILayout.EndVertical();

@@ -381,30 +381,33 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
-                    if (renderer.sharedMaterials != null)
+                    if (renderer is ParticleSystemRenderer == false)
                     {
-                        foreach (var material in renderer.sharedMaterials)
+                        if (renderer.sharedMaterials != null)
                         {
-                            if (ReferenceEquals(material, null) == false)
+                            foreach (var material in renderer.sharedMaterials)
                             {
-                                TextureUtil.GetTexturesInMaterial(material, out var textureDataList);
-                                foreach (var textureData in textureDataList)
+                                if (ReferenceEquals(material, null) == false)
                                 {
-                                    var textureWidth = textureData.asset.width;
-                                    var textureHeight = textureData.asset.height;
-                                    if (textureWidth > width || textureHeight > height)
+                                    TextureUtil.GetTexturesInMaterial(material, out var textureDataList);
+                                    foreach (var textureData in textureDataList)
                                     {
-                                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
-                                        var content = $"纹理的尺寸超出限制!\t预制体: {assetPath} 中的子物体 {childPath}, {textureWidth}X{textureHeight} => {width}X{height}";
-                                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                                        var textureWidth = textureData.asset.width;
+                                        var textureHeight = textureData.asset.height;
+                                        if (textureWidth > width || textureHeight > height)
+                                        {
+                                            var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                                            var content = $"纹理的尺寸超出限制!\t预制体: {assetPath} 中的子物体 {childPath}, {textureWidth}X{textureHeight} => {width}X{height}";
+                                            report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                var childPath = PrefabUtil.GetHierarchyPath(transform, false);
-                                var content = $"渲染器引用材质为空!\t预制体: {assetPath} 中的子物体 {childPath} 上引用的 Material 为空!";
-                                report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                                else
+                                {
+                                    var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                                    var content = $"渲染器引用材质为空!\t预制体: {assetPath} 中的子物体 {childPath} 上引用的 Material 为空!";
+                                    report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabTextureSize, content, item));
+                                }
                             }
                         }
                     }
@@ -499,11 +502,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
-                    if (renderer.allowOcclusionWhenDynamic != isOpen)
+                    if (renderer is ParticleSystemRenderer == false)
                     {
-                        var childPath = PrefabUtil.GetHierarchyPath(transform, false);
-                        var content = $"动态遮挡剔除不规范!\t预制体: {assetPath} 子物体: {childPath} : ({!isOpen}) => ({isOpen})!";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion, content, item));
+                        if (renderer.allowOcclusionWhenDynamic != isOpen)
+                        {
+                            var childPath = PrefabUtil.GetHierarchyPath(transform, false);
+                            var content = $"动态遮挡剔除不规范!\t预制体: {assetPath} 子物体: {childPath} : ({!isOpen}) => ({isOpen})!";
+                            report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabDynamicOcclusion, content, item));
+                        }
                     }
                 }
             }
