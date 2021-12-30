@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEditor;
-using qtools.qhierarchy.phierarchy;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 using System.Reflection;

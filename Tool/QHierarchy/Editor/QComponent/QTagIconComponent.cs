@@ -5,7 +5,6 @@ using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
-using qtools.qhierarchy.phierarchy;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 

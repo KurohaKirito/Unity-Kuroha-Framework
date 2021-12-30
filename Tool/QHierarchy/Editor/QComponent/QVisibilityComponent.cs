@@ -4,7 +4,6 @@ using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
-using qtools.qhierarchy.phierarchy;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 
@@ -255,7 +254,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             if (gameObjects.Count == 0) return;
 
-            if (objectList == null && editMode) objectList = QObjectListManager.getInstance().getObjectList(gameObjects[0], true);
+            if (objectList == null && editMode) objectList = QObjectListManager.Instance().getObjectList(gameObjects[0], true);
             if (objectList != null) Undo.RecordObject(objectList, "visibility change");
             
             for (int i = gameObjects.Count - 1; i >= 0; i--)

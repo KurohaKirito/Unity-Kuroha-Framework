@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Events;
-using qtools.qhierarchy.phierarchy;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 using System.Reflection;

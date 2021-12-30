@@ -171,7 +171,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 
         // PRIVATE
         private QSettingsObject settingsObject;
-        private Dictionary<int, object> defaultSettings = new Dictionary<int, object>();
+        private Dictionary<EM_QSetting, object> defaultSettings = new Dictionary<EM_QSetting, object>();
         private HashSet<int> skinDependedSettings = new HashSet<int>();
         private Dictionary<int, QSettingChangedHandler> settingChangedHandlerList = new Dictionary<int, QSettingChangedHandler>();
 
@@ -342,6 +342,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             Set(setting, stringColor);
         }
 
+        /// <summary>
+        /// 设置配置
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <param name="value"></param>
+        /// <param name="invokeChanger"></param>
+        /// <typeparam name="T"></typeparam>
         public void Set<T>(EM_QSetting setting, T value, bool invokeChanger = true)
         {
             var settingId = (int)setting;
@@ -376,9 +383,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
                 settingChangedHandlerList[settingId] -= handler;
         }
         
-        public void restore(EM_QSetting setting)
+        /// <summary>
+        /// 恢复默认设置
+        /// </summary>
+        /// <param name="setting"></param>
+        public void Restore(EM_QSetting setting)
         {
-            Set(setting, defaultSettings[(int)setting]);
+            Set(setting, defaultSettings[setting]);
         }
 
         // PRIVATE
@@ -391,7 +402,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         private void initSetting(EM_QSetting setting, object defaultValue)
         {
             string settingName = getSettingName(setting);
-            defaultSettings.Add((int)setting, defaultValue);
+            defaultSettings.Add(setting, defaultValue);
             object value = settingsObject.Get(settingName, defaultValue);
             if (value == null || value.GetType() != defaultValue.GetType())
             {

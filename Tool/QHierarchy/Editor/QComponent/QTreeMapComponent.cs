@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using Kuroha.Tool.QHierarchy.Editor.QData;
-using qtools.qhierarchy.phierarchy;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
 using System.Collections.Generic;
 using System.Collections;
@@ -37,7 +36,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             #if UNITY_2018_3_OR_NEWER
                 treeMapObjectTexture = QResources.Instance().GetTexture(QTexture.QTreeMapLine);
             #else
-                treeMapObjectTexture  = QResources.getInstance().getTexture(QTexture.QTreeMapObject);
+                treeMapObjectTexture  = QResources.Instance().getTexture(QTexture.QTreeMapObject);
             #endif
             treeMapLastTexture    = QResources.Instance().GetTexture(QTexture.QTreeMapLast);
             

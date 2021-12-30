@@ -93,10 +93,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <summary>
         /// 打开窗口
         /// </summary>
-        [MenuItem("Tools/QHierarchy/Settings")]
+        [MenuItem("Tools/QHierarchyMain/Settings")]
         public static void Open()
         {
-            window = GetWindow<QHierarchySettingsWindow>("QHierarchy");
+            window = GetWindow<QHierarchySettingsWindow>("QHierarchyMain");
             window.minSize = new Vector2(500, 75);
         }
 
@@ -301,9 +301,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             {
                 if (DrawRestore(24))
                 {
-                    QSettings.Instance().restore(EM_QSetting.TreeMapColor);
-                    QSettings.Instance().restore(EM_QSetting.TreeMapEnhanced);
-                    QSettings.Instance().restore(EM_QSetting.TreeMapTransparentBackground);
+                    QSettings.Instance().Restore(EM_QSetting.TreeMapColor);
+                    QSettings.Instance().Restore(EM_QSetting.TreeMapEnhanced);
+                    QSettings.Instance().Restore(EM_QSetting.TreeMapTransparentBackground);
                 }
                 
                 var rect = GetNewRect(0, 0);
@@ -320,12 +320,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         {
             if (DrawCheckBox("MonoBehaviour Icon", EM_QSetting.MonoBehaviourIconShow))
             {
-                Rect rect = GetNewRect(0, 0);
+                var rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.MonoBehaviourIconShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.MonoBehaviourIconColor);
-                    QSettings.Instance().restore(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour);
+                    QSettings.Instance().Restore(EM_QSetting.MonoBehaviourIconShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.MonoBehaviourIconColor);
+                    QSettings.Instance().Restore(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + 5);
@@ -344,10 +344,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.SeparatorColor);
-                    QSettings.Instance().restore(EM_QSetting.SeparatorShowRowShading);
-                    QSettings.Instance().restore(EM_QSetting.SeparatorOddRowShadingColor);
-                    QSettings.Instance().restore(EM_QSetting.SeparatorEvenRowShadingColor);
+                    QSettings.Instance().Restore(EM_QSetting.SeparatorColor);
+                    QSettings.Instance().Restore(EM_QSetting.SeparatorShowRowShading);
+                    QSettings.Instance().Restore(EM_QSetting.SeparatorOddRowShadingColor);
+                    QSettings.Instance().Restore(EM_QSetting.SeparatorEvenRowShadingColor);
                 }
 
                 bool rowShading = QSettings.Instance().Get<bool>(EM_QSetting.SeparatorShowRowShading);
@@ -373,7 +373,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.VisibilityShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.VisibilityShowDuringPlayMode);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -390,8 +390,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.LockShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.LockPreventSelectionOfLockedObjects);
+                    QSettings.Instance().Restore(EM_QSetting.LockShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.LockPreventSelectionOfLockedObjects);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 2 + 5);
@@ -409,7 +409,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.StaticShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.StaticShowDuringPlayMode);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -426,17 +426,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowIconOnParent);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowForDisabledComponents);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowForDisabledGameObjects);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowScriptIsMissing);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowReferenceIsMissing);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowReferenceIsNull);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowStringIsEmpty);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowMissingEventMethod);
-                    QSettings.Instance().restore(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined);
-                    QSettings.Instance().restore(EM_QSetting.ErrorIgnoreString);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowIconOnParent);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowForDisabledComponents);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowForDisabledGameObjects);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowScriptIsMissing);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowReferenceIsMissing);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowReferenceIsNull);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowStringIsEmpty);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowMissingEventMethod);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined);
+                    QSettings.Instance().Restore(EM_QSetting.ErrorIgnoreString);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 12 + 5);
@@ -466,7 +466,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.RendererShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.RendererShowDuringPlayMode);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -483,7 +483,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.PrefabShowBrakedPrefabsOnly);
+                    QSettings.Instance().Restore(EM_QSetting.PrefabShowBrakedPrefabsOnly);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -500,17 +500,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerSizeShowType);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerType);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerSizeValueType);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerSizeValuePixel);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerSizeValuePercent);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerAlignment);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerLabelSize);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerLabelAlpha);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerTagLabelColor);
-                    QSettings.Instance().restore(EM_QSetting.TagAndLayerLayerLabelColor);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerSizeShowType);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerType);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerSizeValueType);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerSizeValuePixel);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerSizeValuePercent);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerAlignment);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerLabelSize);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerLabelAlpha);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerTagLabelColor);
+                    QSettings.Instance().Restore(EM_QSetting.TagAndLayerLayerLabelColor);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 10 + 5);
@@ -542,7 +542,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.ColorShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.ColorShowDuringPlayMode);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 + 5);
@@ -559,8 +559,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.GameObjectIconShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.GameObjectIconSize);
+                    QSettings.Instance().Restore(EM_QSetting.GameObjectIconShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.GameObjectIconSize);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 2 + 5);
@@ -582,8 +582,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.TagIconShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.TagIconSize);
+                    QSettings.Instance().Restore(EM_QSetting.TagIconShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.TagIconSize);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + (showTagIconList ? 18 * tags.Length : 0) + 4 + 5);
@@ -644,8 +644,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.LayerIconShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.LayerIconSize);
+                    QSettings.Instance().Restore(EM_QSetting.LayerIconShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.LayerIconSize);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + (showLayerIconList ? 18 * layers.Length : 0) + 4 + 5);
@@ -702,9 +702,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.ChildrenCountShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.ChildrenCountLabelSize);
-                    QSettings.Instance().restore(EM_QSetting.ChildrenCountLabelColor);
+                    QSettings.Instance().Restore(EM_QSetting.ChildrenCountShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.ChildrenCountLabelSize);
+                    QSettings.Instance().Restore(EM_QSetting.ChildrenCountLabelColor);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + 5);
@@ -723,13 +723,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesShowVertices);
-                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesShowTriangles);
-                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesCalculateTotalCount);
-                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesLabelSize);
-                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesVerticesLabelColor);
-                    QSettings.Instance().restore(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor);
+                    QSettings.Instance().Restore(EM_QSetting.VerticesAndTrianglesShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.VerticesAndTrianglesShowVertices);
+                    QSettings.Instance().Restore(EM_QSetting.VerticesAndTrianglesShowTriangles);
+                    QSettings.Instance().Restore(EM_QSetting.VerticesAndTrianglesCalculateTotalCount);
+                    QSettings.Instance().Restore(EM_QSetting.VerticesAndTrianglesLabelSize);
+                    QSettings.Instance().Restore(EM_QSetting.VerticesAndTrianglesVerticesLabelColor);
+                    QSettings.Instance().Restore(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 7 + 5);
@@ -762,8 +762,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 Rect rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
                 {
-                    QSettings.Instance().restore(EM_QSetting.ComponentsShowDuringPlayMode);
-                    QSettings.Instance().restore(EM_QSetting.ComponentsIconSize);
+                    QSettings.Instance().Restore(EM_QSetting.ComponentsShowDuringPlayMode);
+                    QSettings.Instance().Restore(EM_QSetting.ComponentsIconSize);
                 }
 
                 drawBackground(rect.x, rect.y, rect.width, 18 * 3 + 6);
@@ -780,7 +780,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         {
             if (DrawRestore(24))
             {
-                QSettings.Instance().restore(EM_QSetting.ComponentsOrder);
+                QSettings.Instance().Restore(EM_QSetting.ComponentsOrder);
             }
 
             indentLevel += 4;
@@ -801,14 +801,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         {
             if (DrawRestore(24))
             {
-                QSettings.Instance().restore(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList);
-                QSettings.Instance().restore(EM_QSetting.AdditionalHideIconsIfNotFit);
-                QSettings.Instance().restore(EM_QSetting.AdditionalIndentation);
-                QSettings.Instance().restore(EM_QSetting.AdditionalShowModifierWarning);
-                QSettings.Instance().restore(EM_QSetting.AdditionalBackgroundColor);
-                QSettings.Instance().restore(EM_QSetting.AdditionalActiveColor);
-                QSettings.Instance().restore(EM_QSetting.AdditionalInactiveColor);
-                QSettings.Instance().restore(EM_QSetting.AdditionalSpecialColor);
+                QSettings.Instance().Restore(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList);
+                QSettings.Instance().Restore(EM_QSetting.AdditionalHideIconsIfNotFit);
+                QSettings.Instance().Restore(EM_QSetting.AdditionalIndentation);
+                QSettings.Instance().Restore(EM_QSetting.AdditionalShowModifierWarning);
+                QSettings.Instance().Restore(EM_QSetting.AdditionalBackgroundColor);
+                QSettings.Instance().Restore(EM_QSetting.AdditionalActiveColor);
+                QSettings.Instance().Restore(EM_QSetting.AdditionalInactiveColor);
+                QSettings.Instance().Restore(EM_QSetting.AdditionalSpecialColor);
             }
 
             drawSpace(4);

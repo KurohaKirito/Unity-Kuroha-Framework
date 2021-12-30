@@ -4,7 +4,6 @@ using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
-using qtools.qhierarchy.phierarchy;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
 
@@ -161,7 +160,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         
         public void setWireframeMode(GameObject gameObject, QObjectList objectList, bool targetWireframe)
         {
-            if (objectList == null && targetWireframe) objectList = QObjectListManager.getInstance().getObjectList(gameObject, true);
+            if (objectList == null && targetWireframe) objectList = QObjectListManager.Instance().getObjectList(gameObject, true);
             if (objectList != null)
             {
                 Undo.RecordObject(objectList, "Renderer Visibility Change");
