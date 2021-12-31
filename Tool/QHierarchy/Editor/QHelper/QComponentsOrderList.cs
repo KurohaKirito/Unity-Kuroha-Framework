@@ -71,7 +71,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 
             for (int i = 0; i < componentIds.Length; i++)
             {
-                QHierarchyComponentEnum type = (QHierarchyComponentEnum)int.Parse(componentIds[i]);
+                EM_QHierarchyComponent type = (EM_QHierarchyComponent)int.Parse(componentIds[i]);
                 
                 Rect curRect = new Rect(rect.x, rect.y + 18 * i, rect.width, 16);
                 
@@ -103,12 +103,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             {
                 float curY = currentEvent.mousePosition.y - dragOffset;
                 curY = Mathf.Clamp(curY, rect.y, rect.y + rect.height - 16);
-                drawComponentLabel(new Rect(rect.x, curY, rect.width, rect.height), (QHierarchyComponentEnum)int.Parse(componentIds[originalDragIndex]), true);
+                drawComponentLabel(new Rect(rect.x, curY, rect.width, rect.height), (EM_QHierarchyComponent)int.Parse(componentIds[originalDragIndex]), true);
             }
         }
         
         // PRIVATE
-        private void drawComponentLabel(Rect rect, QHierarchyComponentEnum type, bool withBackground = false)
+        private void drawComponentLabel(Rect rect, EM_QHierarchyComponent type, bool withBackground = false)
         {
             if (withBackground)
             {

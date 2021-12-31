@@ -21,7 +21,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <summary>
         /// 功能组件字典
         /// </summary>
-        private readonly Dictionary<QHierarchyComponentEnum, QBaseComponent> componentDictionary;
+        private readonly Dictionary<EM_QHierarchyComponent, QBaseComponent> componentDictionary;
         private readonly List<QBaseComponent> preComponents;
         private readonly List<QBaseComponent> orderedComponents;
         private readonly Texture2D trimIcon;
@@ -31,39 +31,53 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         private Color inactiveColor;
         private Color backgroundColor;
 
-        // CONSTRUCTOR
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public QHierarchyMain() {
-            componentDictionary = new Dictionary<QHierarchyComponentEnum, QBaseComponent>
+            componentDictionary = new Dictionary<EM_QHierarchyComponent, QBaseComponent>
             {
                 {
-                    QHierarchyComponentEnum.LockComponent, new QLockComponent()
+                    EM_QHierarchyComponent.LockComponent, new QLockComponent()
                 },
                 {
-                    QHierarchyComponentEnum.VisibilityComponent, new QVisibilityComponent()
-                }, {
-                    QHierarchyComponentEnum.StaticComponent, new QStaticComponent()
-                }, {
-                    QHierarchyComponentEnum.RendererComponent, new QRendererComponent()
-                }, {
-                    QHierarchyComponentEnum.TagAndLayerComponent, new QTagLayerComponent()
-                }, {
-                    QHierarchyComponentEnum.GameObjectIconComponent, new QGameObjectIconComponent()
-                }, {
-                    QHierarchyComponentEnum.ErrorComponent, new QErrorComponent()
-                }, {
-                    QHierarchyComponentEnum.TagIconComponent, new QTagIconComponent()
-                }, {
-                    QHierarchyComponentEnum.LayerIconComponent, new QLayerIconComponent()
-                }, {
-                    QHierarchyComponentEnum.ColorComponent, new QColorComponent()
-                }, {
-                    QHierarchyComponentEnum.ComponentsComponent, new QComponentsComponent()
-                }, {
-                    QHierarchyComponentEnum.ChildrenCountComponent, new QHierarchyComponentChildrenCount()
-                }, {
-                    QHierarchyComponentEnum.PrefabComponent, new QPrefabComponent()
-                }, {
-                    QHierarchyComponentEnum.VerticesAndTrianglesCount, new QVerticesAndTrianglesCountComponent()
+                    EM_QHierarchyComponent.VisibilityComponent, new QVisibilityComponent()
+                },
+                {
+                    EM_QHierarchyComponent.StaticComponent, new QStaticComponent()
+                },
+                {
+                    EM_QHierarchyComponent.RendererComponent, new QRendererComponent()
+                },
+                {
+                    EM_QHierarchyComponent.TagAndLayerComponent, new QTagLayerComponent()
+                },
+                {
+                    EM_QHierarchyComponent.GameObjectIconComponent, new QGameObjectIconComponent()
+                },
+                {
+                    EM_QHierarchyComponent.ErrorComponent, new QErrorComponent()
+                },
+                {
+                    EM_QHierarchyComponent.TagIconComponent, new QTagIconComponent()
+                },
+                {
+                    EM_QHierarchyComponent.LayerIconComponent, new QLayerIconComponent()
+                },
+                {
+                    EM_QHierarchyComponent.ColorComponent, new QColorComponent()
+                },
+                {
+                    EM_QHierarchyComponent.ComponentsComponent, new QComponentsComponent()
+                },
+                {
+                    EM_QHierarchyComponent.ChildrenCountComponent, new QHierarchyComponentChildrenCount()
+                },
+                {
+                    EM_QHierarchyComponent.PrefabComponent, new QPrefabComponent()
+                },
+                {
+                    EM_QHierarchyComponent.VerticesAndTrianglesCount, new QVerticesAndTrianglesCountComponent()
                 }
             };
 
@@ -83,7 +97,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             OnSettingsChanged();
         }
-
         
         /// <summary>
         /// 修改设置事件
@@ -104,10 +117,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             foreach (var stringID in componentIds)
             {
-                orderedComponents.Add(componentDictionary[(QHierarchyComponentEnum)Enum.Parse(typeof(QHierarchyComponentEnum), stringID)]);
+                orderedComponents.Add(componentDictionary[(EM_QHierarchyComponent)Enum.Parse(typeof(EM_QHierarchyComponent), stringID)]);
             }
             
-            orderedComponents.Add(componentDictionary[QHierarchyComponentEnum.ComponentsComponent]);
+            orderedComponents.Add(componentDictionary[EM_QHierarchyComponent.ComponentsComponent]);
 
             indentation = QSettings.Instance().Get<int>(EM_QSetting.AdditionalIndentation);
             hideIconsIfThereIsNoFreeSpace = QSettings.Instance().Get<bool>(EM_QSetting.AdditionalHideIconsIfNotFit);
