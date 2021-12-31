@@ -219,6 +219,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
                 case EffectCheckReportInfo.EffectCheckReportType.TextureReadWriteEnable:
                     isCanRepair = true;
                     break;
+                case EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat:
+                    break;
 
                 // 2
                 case EffectCheckReportInfo.EffectCheckReportType.AssetName:

@@ -306,7 +306,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         private static void OnGUI_CheckTexture() {
             var modeType = (CheckTexture.CheckOptions)itemInfo.checkType;
-
+            var oldAlignment = UnityEngine.GUI.skin.label.alignment;
+            
             switch (modeType) {
                 case CheckTexture.CheckOptions.Size:
                     ParameterInt1 = EditorGUILayout.Popup("最大长", ParameterInt1, CheckTexture.sizeOptions);
@@ -324,6 +325,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
 
+                case CheckTexture.CheckOptions.CompressFormat:
+                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+                    GUILayout.Label("描述: Android => ETC2; iOS => PVRTC");
+                    UnityEngine.GUI.skin.label.alignment = oldAlignment;
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

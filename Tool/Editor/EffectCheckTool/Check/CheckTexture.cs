@@ -17,7 +17,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
         /// 贴图资源检查类型
         /// </summary>
         public static readonly string[] checkOptions = {
-            "尺寸大小", "Mip Maps Enable", "Read Write Enable"
+            "尺寸大小", "Mip Maps Enable", "Read Write Enable", "压缩格式"
         };
 
         /// <summary>
@@ -26,7 +26,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
         public enum CheckOptions {
             Size,
             MipMaps,
-            ReadWriteEnable
+            ReadWriteEnable,
+            CompressFormat,
         }
 
         /// <summary>
@@ -85,6 +86,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                                 break;
 
+                            case CheckOptions.CompressFormat:
+                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, files[index], itemData, ref reportInfos) == false) {
+                                    CheckCompressFormat(assetPath, files[index], itemData, ref reportInfos);
+                                }
+                                break;
+                            
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -182,6 +189,58 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                     #endregion
                 }
+            }
+        }
+        
+        /// <summary>
+        /// 检测: 贴图压缩格式
+        /// </summary>
+        private static void CheckCompressFormat(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report) {
+            // 读取导入设置
+            var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+
+            // 压缩格式
+            if (ReferenceEquals(textureImporter, null) == false)
+            {
+                #region Android
+                
+                if (TextureUtil.GetTextureFormatAndroid(textureImporter, out var formatAndroid))
+                {
+                    if (formatAndroid != TextureImporterFormat.ETC2_RGB4 && formatAndroid != TextureImporterFormat.ETC2_RGBA8)
+                    {
+                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                        var content = $"Android: 纹理压缩格式不是 ETC2, 路径为: {assetInfo.FullName}, 当前压缩格式: {formatAndroid}";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                    }
+                }
+                else
+                {
+                    var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                    var content = $"未启用 Android 导入, 资源路径为: {assetInfo.FullName}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                }
+
+                #endregion
+
+                #region iPhone
+
+                if (TextureUtil.GetTextureFormatIPhone(textureImporter, out var formatIOS))
+                {
+                    if (formatIOS != TextureImporterFormat.PVRTC_RGB4 && formatIOS != TextureImporterFormat.PVRTC_RGBA4)
+                    {
+                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                        var content = $"iPhone: 纹理压缩格式不是 PVRTC, 路径为: {assetInfo.FullName}";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                    }
+                }
+                else
+                {
+                    var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                    var content = $"未启用 iPhone 导入, 资源路径为: {assetInfo.FullName}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                }
+
+                #endregion
             }
         }
 

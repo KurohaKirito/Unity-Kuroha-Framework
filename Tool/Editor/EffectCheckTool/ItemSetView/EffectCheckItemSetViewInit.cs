@@ -100,6 +100,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
 
+                case CheckTexture.CheckOptions.CompressFormat:
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

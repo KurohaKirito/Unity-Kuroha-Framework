@@ -45,10 +45,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
             PrefabAnimatorCullingMode,
             PrefabLODGroupRenderers,
 
-            // 3
+            // 4
             TextureSize,
             TextureMipMaps,
             TextureReadWriteEnable,
+            TextureCompressFormat,
 
             // 2
             AssetName,

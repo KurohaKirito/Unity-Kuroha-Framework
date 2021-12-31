@@ -24,6 +24,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
                     RepairReadWrite(effectCheckReportInfo);
                     break;
 
+                case CheckTexture.CheckOptions.CompressFormat:
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

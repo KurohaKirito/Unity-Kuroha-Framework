@@ -47,20 +47,29 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
         private static void SetLOD() {
             // FileUtil.GetProjectRelativePath();
-            foreach (var asset in prefabs) {
-                if (asset != null) {
+            foreach (var asset in prefabs)
+            {
+                if (asset != null)
+                {
                     asset.hideFlags = HideFlags.None;
-                    var rendererArray = asset.GetComponentsInChildren<Renderer>(true);
-                    var oldLod = asset.GetComponent<LODGroup>();
-                    if (oldLod != null) {
+                    var oldLodGroup = asset.GetComponent<LODGroup>();
+
+                    if (oldLodGroup != null) {
                         DebugUtil.LogError($"预制体 {AssetDatabase.GetAssetPath(asset)} 的根物体已经有 LOD Group 了!", asset, "red");
-                        continue;
+                        var lodArray = oldLodGroup.GetLODs();
+                        lodArray[0].screenRelativeTransitionHeight = 0.01f;
+                        oldLodGroup.SetLODs(lodArray);
+                        oldLodGroup.RecalculateBounds();
                     }
-                    var lodGroup = asset.AddComponent<LODGroup>();
-                    var lodArray = new LOD[1];
-                    lodArray[0] = new LOD(0.02f, rendererArray);
-                    lodGroup.SetLODs(lodArray);
-                    lodGroup.RecalculateBounds();
+                    else
+                    {
+                        var lodGroup = asset.AddComponent<LODGroup>();
+                        var lodArray = new LOD[1];
+                        var rendererArray = asset.GetComponentsInChildren<Renderer>(true);
+                        lodArray[0] = new LOD(0.01f, rendererArray);
+                        lodGroup.SetLODs(lodArray);
+                        lodGroup.RecalculateBounds();
+                    }
 
                     EditorUtility.SetDirty(asset);
                     AssetDatabase.SaveAssets();
