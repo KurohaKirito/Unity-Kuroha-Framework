@@ -144,7 +144,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 // 获取的宽度在 Layout 状态下为 1, 在 Repaint 状态下为当前坐标尽可能延展的宽度 - 6 像素的留白
                 // 这里不需要告诉 Layout 高度, 所以传 0, 如果使用默认值会导致使用了 Layout 系统的滑动条的范围高度多出部分像素
                 paintWidth = EditorGUILayout.GetControlRect(GUILayout.Height(0)).width;
-                if (Event.current.type == EventType.Repaint) { paintWidth += 6; }
+                paintWidth += 6;
 
                 // 绘制菜单框 COMPONENTS SETTINGS
                 DrawMenuBox("COMPONENTS SETTINGS", ref isOpenComponentsSettings);
