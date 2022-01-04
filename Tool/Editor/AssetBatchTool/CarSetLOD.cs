@@ -4,43 +4,70 @@ using Script.Effect.Editor.AssetTool.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
-    public class CarSetLOD : UnityEditor.EditorWindow {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
+{
+    public class CarSetLOD : UnityEditor.EditorWindow
+    {
+        private static float lodValue;
+        private static Vector2 scroll;
         private static string path = "Assets/ToBundle/Skin/Cars";
+        private static readonly List<string> paths = new List<string>();
         private static readonly List<GameObject> prefabs = new List<GameObject>();
 
-        public static void Open() {
+        public static void Open()
+        {
             GetWindow<CarSetLOD>();
         }
 
-        private void OnGUI() {
+        private void OnGUI()
+        {
+            EditorGUILayout.IntField("预制体数量", prefabs.Count);
+            lodValue = EditorGUILayout.FloatField("LOD 剔除占比", lodValue);
             path = EditorGUILayout.TextField("检测路径", path);
-
+            
+            scroll = GUILayout.BeginScrollView(scroll);
             for (var i = 0; i < prefabs.Count; i++) {
                 prefabs[i] = EditorGUILayout.ObjectField("车辆预制", prefabs[i], typeof(GameObject), true) as GameObject;
             }
-
+            GUILayout.EndScrollView();
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(10);
             if (GUILayout.Button("搜寻预制")) {
                 SearchPrefab();
             }
-
+            GUILayout.Space(10);
+            if (GUILayout.Button("清空预制")) {
+                paths.Clear();
+                prefabs.Clear();
+            }
+            GUILayout.Space(10);
             if (GUILayout.Button("设置 LOD")) {
                 SetLOD();
             }
+            GUILayout.Space(10);
+            GUILayout.EndHorizontal();
         }
 
-        private static void SearchPrefab() {
+        private static void SearchPrefab()
+        {
             var assetGuids = AssetDatabase.FindAssets("t:Prefab", new[] {
                 path
             });
 
-            for (var index = 0; index < assetGuids.Length; index++) {
+            for (var index = 0; index < assetGuids.Length; index++)
+            {
                 ProgressBar.DisplayProgressBar("特效检测工具", $"Prefab 排查中: {index + 1}/{assetGuids.Length}", index + 1, assetGuids.Length);
 
                 var assetPath = AssetDatabase.GUIDToAssetPath(assetGuids[index]);
                 var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                if (asset != null) {
-                    prefabs.Add(asset);
+                if (asset != null)
+                {
+                    if (paths.Contains(assetPath) == false)
+                    {
+                        prefabs.Add(asset);
+                        paths.Add(assetPath);
+                    }
                 }
             }
         }
@@ -54,26 +81,27 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                     asset.hideFlags = HideFlags.None;
                     var oldLodGroup = asset.GetComponent<LODGroup>();
 
-                    if (oldLodGroup != null) {
-                        DebugUtil.LogError($"预制体 {AssetDatabase.GetAssetPath(asset)} 的根物体已经有 LOD Group 了!", asset, "red");
+                    if (oldLodGroup != null)
+                    {
                         var lodArray = oldLodGroup.GetLODs();
-                        lodArray[0].screenRelativeTransitionHeight = 0.01f;
+                        lodArray[0].screenRelativeTransitionHeight = lodValue;
                         oldLodGroup.SetLODs(lodArray);
                         oldLodGroup.RecalculateBounds();
+                        
+                        EditorUtility.SetDirty(asset);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
                     }
-                    else
-                    {
-                        var lodGroup = asset.AddComponent<LODGroup>();
-                        var lodArray = new LOD[1];
-                        var rendererArray = asset.GetComponentsInChildren<Renderer>(true);
-                        lodArray[0] = new LOD(0.01f, rendererArray);
-                        lodGroup.SetLODs(lodArray);
-                        lodGroup.RecalculateBounds();
-                    }
-
-                    EditorUtility.SetDirty(asset);
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
+                    
+                    // else
+                    // {
+                    //     var lodGroup = asset.AddComponent<LODGroup>();
+                    //     var lodArray = new LOD[1];
+                    //     var rendererArray = asset.GetComponentsInChildren<Renderer>(true);
+                    //     lodArray[0] = new LOD(0.01f, rendererArray);
+                    //     lodGroup.SetLODs(lodArray);
+                    //     lodGroup.RecalculateBounds();
+                    // }
                 }
             }
         }
