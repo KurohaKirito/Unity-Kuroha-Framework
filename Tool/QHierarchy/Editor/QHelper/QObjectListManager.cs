@@ -15,8 +15,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
     public class QObjectListManager
     {
         private const string Q_OBJECT_LIST_NAME = "QHierarchyObjectList";
-        
+
         private static QObjectListManager instance;
+
         public static QObjectListManager Instance()
         {
             return instance ??= new QObjectListManager();
@@ -32,9 +33,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         // CONSTRUCTOR
         private QObjectListManager()
         {
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList , OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList, OnSettingsChanged);
             QSettings.Instance().addEventListener(EM_QSetting.LockPreventSelectionOfLockedObjects, OnSettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.LockShow              , OnSettingsChanged);
+            QSettings.Instance().addEventListener(EM_QSetting.LockShow, OnSettingsChanged);
             QSettings.Instance().addEventListener(EM_QSetting.LockShowDuringPlayMode, OnSettingsChanged);
             OnSettingsChanged();
         }
@@ -48,32 +49,33 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 
         private bool IsSelectionChanged()
         {
-            if (lastSelectionGameObject != Selection.activeGameObject || lastSelectionCount  != Selection.gameObjects.Length)
+            if (lastSelectionGameObject != Selection.activeGameObject || lastSelectionCount != Selection.gameObjects.Length)
             {
                 lastSelectionGameObject = Selection.activeGameObject;
                 lastSelectionCount = Selection.gameObjects.Length;
                 return true;
             }
+
             return false;
         }
 
         public void Validate()
         {
             QObjectList.instances.RemoveAll(item => item == null);
-            
+
             foreach (var objectList in QObjectList.instances)
             {
                 objectList.CheckIntegrity();
             }
-            
+
             objectListDictionary.Clear();
-            
+
             foreach (var objectList in QObjectList.instances)
             {
                 objectListDictionary.Add(objectList.gameObject.scene, objectList);
             }
         }
-        
+
         private Dictionary<Scene, QObjectList> objectListDictionary = new Dictionary<Scene, QObjectList>();
         private Scene lastActiveScene;
         private int lastSceneCount;
@@ -81,20 +83,21 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         public void OnEditorUpdate()
         {
             try
-            {     
+            {
                 var objectListInstance = QObjectList.instances;
                 var objectListCount = objectListInstance.Count;
-                if (objectListCount > 0) 
+                if (objectListCount > 0)
                 {
                     for (var i = objectListCount - 1; i >= 0; --i)
                     {
                         var objectList = objectListInstance[i];
                         var objectListScene = objectList.gameObject.scene;
 
-                        if (objectListDictionary.ContainsKey(objectListScene) && objectListDictionary[objectListScene] == null) {
+                        if (objectListDictionary.ContainsKey(objectListScene) && objectListDictionary[objectListScene] == null)
+                        {
                             objectListDictionary.Remove(objectListScene);
                         }
-							
+
                         if (objectListDictionary.ContainsKey(objectListScene))
                         {
                             if (objectListDictionary[objectListScene] != objectList)
@@ -112,18 +115,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                     foreach (var objectListKeyValue in objectListDictionary)
                     {
                         var objectList = objectListKeyValue.Value;
-                        
+
                         setupObjectList(objectList);
-                        
+
                         if (showObjectList && (objectList.gameObject.hideFlags & HideFlags.HideInHierarchy) > 0 ||
                             !showObjectList && (objectList.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0)
                         {
-                            objectList.gameObject.hideFlags ^= HideFlags.HideInHierarchy;      
+                            objectList.gameObject.hideFlags ^= HideFlags.HideInHierarchy;
                             EditorApplication.DirtyHierarchyWindowSorting();
                         }
                     }
-                    
-                    if (Application.isPlaying == false && preventSelectionOfLockedObjects || 
+
+                    if (Application.isPlaying == false && preventSelectionOfLockedObjects ||
                         Application.isPlaying && preventSelectionOfLockedObjectsDuringPlayMode && IsSelectionChanged())
                     {
                         var selections = Selection.gameObjects;
@@ -132,13 +135,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                         for (var i = selections.Length - 1; i >= 0; i--)
                         {
                             var gameObject = selections[i];
-                            
+
                             if (objectListDictionary.ContainsKey(gameObject.scene))
                             {
                                 var isLock = objectListDictionary[gameObject.scene].lockedObjects.Contains(selections[i]);
-                                if (!isLock) {
+                                if (!isLock)
+                                {
                                     actual.Add(selections[i]);
-                                } else {
+                                }
+                                else
+                                {
                                     found = true;
                                 }
                             }
@@ -152,7 +158,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                                 Selection.objects = objArray;
                             }
                         }
-                    }   
+                    }
 
                     lastActiveScene = SceneManager.GetActiveScene();
                     lastSceneCount = EditorSceneManager.loadedSceneCount;
@@ -165,12 +171,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         }
 
         public QObjectList getObjectList(GameObject gameObject, bool createIfNotExist = true)
-        { 
+        {
             QObjectList objectList = null;
             objectListDictionary.TryGetValue(gameObject.scene, out objectList);
-            
+
             if (objectList == null && createIfNotExist)
-            {         
+            {
                 objectList = createObjectList(gameObject);
                 if (gameObject.scene != objectList.gameObject.scene) EditorSceneManager.MoveGameObjectToScene(objectList.gameObject, gameObject.scene);
                 objectListDictionary.Add(gameObject.scene, objectList);
@@ -183,7 +189,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         {
             if (lastActiveScene != EditorSceneManager.GetActiveScene() || lastSceneCount != EditorSceneManager.loadedSceneCount)
                 return true;
-            else 
+            else
                 return false;
         }
 
@@ -199,9 +205,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         {
             if (objectList.tag == "EditorOnly") objectList.tag = "Untagged";
             MonoScript monoScript = MonoScript.FromMonoBehaviour(objectList);
-            if (MonoImporter.GetExecutionOrder(monoScript) != -10000)                    
+            if (MonoImporter.GetExecutionOrder(monoScript) != -10000)
                 MonoImporter.SetExecutionOrder(monoScript, -10000);
         }
     }
 }
-

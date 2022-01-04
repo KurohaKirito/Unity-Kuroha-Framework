@@ -17,13 +17,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         private Color backgroundColor;
 
         // CONSTRUCTOR
-        public QComponentsOrderList (EditorWindow window)
-        {            
+        public QComponentsOrderList(EditorWindow window)
+        {
             this.window = window;
             dragButton = QResources.Instance().GetTexture(QTexture.QDragButton);
             backgroundColor = QResources.Instance().GetColor(QColor.BackgroundDark);
         }
-        
+
         // PUBLIC
         public void draw(Rect rect, string[] componentIds)
         {
@@ -31,7 +31,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 
             int currentMouseIndex = Mathf.Clamp(Mathf.RoundToInt((currentEvent.mousePosition.y - dragOffset - rect.y) / 18), 0, componentIds.Length - 1);
 
-            if (dragAndDrop && currentEvent.type == EventType.MouseUp)      
+            if (dragAndDrop && currentEvent.type == EventType.MouseUp)
             {
                 dragAndDrop = false;
                 window.Repaint();
@@ -41,7 +41,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                     string newIconOrder = "";
                     for (int j = 0; j < componentIds.Length; j++)
                     {
-                        if (j == currentMouseIndex) 
+                        if (j == currentMouseIndex)
                         {
                             if (j > originalDragIndex)
                             {
@@ -54,11 +54,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                                 newIconOrder += componentIds[j] + ";";
                             }
                         }
-                        else if (j != originalDragIndex) 
+                        else if (j != originalDragIndex)
                         {
                             newIconOrder += componentIds[j] + ";";
                         }
                     }
+
                     newIconOrder = newIconOrder.TrimEnd(';');
                     QSettings.Instance().Set(EM_QSetting.ComponentsOrder, newIconOrder);
                     componentIds = newIconOrder.Split(';');
@@ -71,10 +72,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 
             for (int i = 0; i < componentIds.Length; i++)
             {
-                EM_QHierarchyComponent type = (EM_QHierarchyComponent)int.Parse(componentIds[i]);
-                
+                EM_QHierarchyComponent type = (EM_QHierarchyComponent) int.Parse(componentIds[i]);
+
                 Rect curRect = new Rect(rect.x, rect.y + 18 * i, rect.width, 16);
-                
+
                 if (!dragAndDrop && currentEvent.type == EventType.MouseDown && curRect.Contains(currentEvent.mousePosition))
                 {
                     dragAndDrop = true;
@@ -87,15 +88,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                 {
                     if (originalDragIndex != i)
                     {
-                             if (i < originalDragIndex && currentMouseIndex <= i) curRect.y += 18;
+                        if (i < originalDragIndex && currentMouseIndex <= i) curRect.y += 18;
                         else if (i > originalDragIndex && currentMouseIndex >= i) curRect.y -= 18;
 
-                        drawComponentLabel(curRect, type);                
+                        drawComponentLabel(curRect, type);
                     }
                 }
                 else
                 {
-                    drawComponentLabel(curRect, type);                    
+                    drawComponentLabel(curRect, type);
                 }
             }
 
@@ -103,10 +104,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             {
                 float curY = currentEvent.mousePosition.y - dragOffset;
                 curY = Mathf.Clamp(curY, rect.y, rect.y + rect.height - 16);
-                drawComponentLabel(new Rect(rect.x, curY, rect.width, rect.height), (EM_QHierarchyComponent)int.Parse(componentIds[originalDragIndex]), true);
+                drawComponentLabel(new Rect(rect.x, curY, rect.width, rect.height), (EM_QHierarchyComponent) int.Parse(componentIds[originalDragIndex]), true);
             }
         }
-        
+
         // PRIVATE
         private void drawComponentLabel(Rect rect, EM_QHierarchyComponent type, bool withBackground = false)
         {
@@ -114,25 +115,26 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             {
                 EditorGUI.DrawRect(new Rect(rect.x, rect.y - 2, rect.width, 20), backgroundColor);
             }
+
             UnityEngine.GUI.DrawTexture(new Rect(rect.x, rect.y - 2, 20, 20), dragButton);
             Rect labelRect = new Rect(rect.x + 31, rect.y, rect.width - 20, 16);
             labelRect.y -= (EditorGUIUtility.singleLineHeight - labelRect.height) * 0.5f;
             EditorGUI.LabelField(labelRect, getTextWithSpaces(type.ToString()));
         }
-        
+
         private string getTextWithSpaces(string text)
         {
             StringBuilder newText = new StringBuilder(text.Length * 2);
             newText.Append(text[0]);
             for (int i = 1; i < text.Length; i++)
             {
-                if (char.IsUpper(text[i]) && text[i - 1] != ' ')                
-                    newText.Append(' ');                
-                newText.Append(text[i]);                
+                if (char.IsUpper(text[i]) && text[i - 1] != ' ')
+                    newText.Append(' ');
+                newText.Append(text[i]);
             }
+
             newText.Replace(" Component", "");
             return newText.ToString();
         }
     }
 }
-

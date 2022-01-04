@@ -8,9 +8,10 @@ using Kuroha.Tool.QHierarchy.Editor.QData;
 namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 {
     public delegate void QColorSelectedHandler(GameObject[] gameObjects, Color color);
+
     public delegate void QColorRemovedHandler(GameObject[] gameObjects);
 
-    public class QColorPickerWindow: PopupWindowContent 
+    public class QColorPickerWindow : PopupWindowContent
     {
         private GameObject[] gameObjects;
         private QColorSelectedHandler colorSelectedHandler;
@@ -36,7 +37,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         {
             gameObjects = null;
             colorSelectedHandler = null;
-            colorRemovedHandler = null; 
+            colorRemovedHandler = null;
         }
 
         // GUI
@@ -59,11 +60,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                 }
                 else
                 {
-                    colorSelectedHandler(gameObjects, colorPaletteTexture.GetPixel((int)mousePosition.x, colorPaletteTexture.height - (int)mousePosition.y));
+                    colorSelectedHandler(gameObjects, colorPaletteTexture.GetPixel((int) mousePosition.x, colorPaletteTexture.height - (int) mousePosition.y));
                 }
-                this.editorWindow.Close();
+
+                editorWindow.Close();
             }
         }
     }
 }
-

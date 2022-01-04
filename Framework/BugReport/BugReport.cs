@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Kuroha.Framework.BugReport
 {
@@ -90,8 +89,6 @@ namespace Kuroha.Framework.BugReport
                             {
                                 initSuccess = true;
                                 RegisterLogCollect();
-                                // TODO: 上传的触发
-                                // bugReportButton.onClick.AddListener(ReportError);
                                 DebugUtil.Log("日志上报初始化完成", this, "green");
                             }
                         }
