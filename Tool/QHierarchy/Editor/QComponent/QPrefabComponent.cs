@@ -36,8 +36,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             showPrefabConnectedIcon = QSettings.Instance().Get<bool>(EM_QSetting.PrefabShowBrakedPrefabsOnly);
             enabled                 = QSettings.Instance().Get<bool>(EM_QSetting.PrefabShow);
-            activeColor             = QSettings.Instance().getColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor           = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
+            activeColor             = QSettings.Instance().GetColor(EM_QSetting.AdditionalActiveColor);
+            inactiveColor           = QSettings.Instance().GetColor(EM_QSetting.AdditionalInactiveColor);
         }
 
         // DRAW
@@ -76,13 +76,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     prefabType == PrefabType.DisconnectedPrefabInstance ||
                     prefabType == PrefabType.DisconnectedModelPrefabInstance)
                 {
-                    QColorUtils.setColor(inactiveColor);
+                    QColorUtils.SetColor(inactiveColor);
                     GUI.DrawTexture(rect, prefabTexture);
                     QColorUtils.clearColor();
                 }
                 else if (!showPrefabConnectedIcon && prefabType != PrefabType.None)
                 {
-                    QColorUtils.setColor(activeColor);
+                    QColorUtils.SetColor(activeColor);
                     GUI.DrawTexture(rect, prefabTexture);
                     QColorUtils.clearColor();
                 }

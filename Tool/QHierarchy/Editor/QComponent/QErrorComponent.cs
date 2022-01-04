@@ -69,8 +69,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             showErrorForDisabledGameObjects = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowForDisabledGameObjects);
             showErrorIconMissingEventMethod = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowMissingEventMethod);
             showErrorIconWhenTagIsUndefined = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined);
-            activeColor                     = QSettings.Instance().getColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor                   = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
+            activeColor                     = QSettings.Instance().GetColor(EM_QSetting.AdditionalActiveColor);
+            inactiveColor                   = QSettings.Instance().GetColor(EM_QSetting.AdditionalInactiveColor);
             enabled                         = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShow);
             showComponentDuringPlayMode     = QSettings.Instance().Get<bool>(EM_QSetting.ErrorShowDuringPlayMode);
 

@@ -309,13 +309,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             return (T)settingsObject.Get<T>(getSettingName(setting));
         }
 
-        public Color getColor(EM_QSetting setting)
+        public Color GetColor(EM_QSetting setting)
         {
             string stringColor = (string)settingsObject.Get<string>(getSettingName(setting));
             return QColorUtils.fromString(stringColor);
         }
 
-        public void setColor(EM_QSetting setting, Color color)
+        public void SetColor(EM_QSetting setting, Color color)
         {
             string stringColor = QColorUtils.toString(color);
             Set(setting, stringColor);

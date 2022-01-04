@@ -36,9 +36,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             showRowShading   = QSettings.Instance().Get<bool>(EM_QSetting.SeparatorShowRowShading);
             enabled          = QSettings.Instance().Get<bool>(EM_QSetting.SeparatorShow);
-            evenShadingColor = QSettings.Instance().getColor(EM_QSetting.SeparatorEvenRowShadingColor);
-            oddShadingColor  = QSettings.Instance().getColor(EM_QSetting.SeparatorOddRowShadingColor);
-            separatorColor   = QSettings.Instance().getColor(EM_QSetting.SeparatorColor);
+            evenShadingColor = QSettings.Instance().GetColor(EM_QSetting.SeparatorEvenRowShadingColor);
+            oddShadingColor  = QSettings.Instance().GetColor(EM_QSetting.SeparatorOddRowShadingColor);
+            separatorColor   = QSettings.Instance().GetColor(EM_QSetting.SeparatorColor);
         }
 
         // DRAW

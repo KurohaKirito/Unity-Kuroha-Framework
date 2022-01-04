@@ -63,8 +63,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             percentSize = QSettings.Instance().Get<float>(EM_QSetting.TagAndLayerSizeValuePercent);
             labelSize   = (QHierarchyTagAndLayerLabelSize)QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerLabelSize);
             enabled     = QSettings.Instance().Get<bool>(EM_QSetting.TagAndLayerShow);
-            tagColor    = QSettings.Instance().getColor(EM_QSetting.TagAndLayerTagLabelColor);
-            layerColor  = QSettings.Instance().getColor(EM_QSetting.TagAndLayerLayerLabelColor);
+            tagColor    = QSettings.Instance().GetColor(EM_QSetting.TagAndLayerTagLabelColor);
+            layerColor  = QSettings.Instance().GetColor(EM_QSetting.TagAndLayerLayerLabelColor);
             labelAlpha  = QSettings.Instance().Get<float>(EM_QSetting.TagAndLayerLabelAlpha);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.TagAndLayerShowDuringPlayMode);
 

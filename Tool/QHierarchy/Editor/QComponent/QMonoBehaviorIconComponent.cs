@@ -45,7 +45,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             ignoreUnityMonobehaviour    = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour);
             enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconShowDuringPlayMode);
-            iconColor                   = QSettings.Instance().getColor(EM_QSetting.MonoBehaviourIconColor);
+            iconColor                   = QSettings.Instance().GetColor(EM_QSetting.MonoBehaviourIconColor);
             showTreeMap                 = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapShow);
             EditorApplication.RepaintHierarchyWindow();  
         }

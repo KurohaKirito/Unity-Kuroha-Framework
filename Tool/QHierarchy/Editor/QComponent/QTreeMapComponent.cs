@@ -55,9 +55,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         
         // PRIVATE
         private void settingsChanged() {
-            backgroundColor     = QSettings.Instance().getColor(EM_QSetting.AdditionalBackgroundColor);
+            backgroundColor     = QSettings.Instance().GetColor(EM_QSetting.AdditionalBackgroundColor);
             enabled             = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapShow);
-            treeMapColor        = QSettings.Instance().getColor(EM_QSetting.TreeMapColor);
+            treeMapColor        = QSettings.Instance().GetColor(EM_QSetting.TreeMapColor);
             enhanced            = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapEnhanced);
             transparentBackground = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapTransparentBackground);
         }

@@ -46,8 +46,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             calculateTotalCount         = QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesCalculateTotalCount);
             showTrianglesCount          = QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowTriangles);
             showVerticesCount           = QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowVertices);
-            verticesLabelColor          = QSettings.Instance().getColor(EM_QSetting.VerticesAndTrianglesVerticesLabelColor);
-            trianglesLabelColor         = QSettings.Instance().getColor(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor);
+            verticesLabelColor          = QSettings.Instance().GetColor(EM_QSetting.VerticesAndTrianglesVerticesLabelColor);
+            trianglesLabelColor         = QSettings.Instance().GetColor(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor);
             labelSize                   = (QHierarchySize)QSettings.Instance().Get<int>(EM_QSetting.VerticesAndTrianglesLabelSize);
 
             #if UNITY_2019_1_OR_NEWER

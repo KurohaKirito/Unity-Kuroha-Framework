@@ -124,8 +124,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             indentation = QSettings.Instance().Get<int>(EM_QSetting.AdditionalIndentation);
             hideIconsIfThereIsNoFreeSpace = QSettings.Instance().Get<bool>(EM_QSetting.AdditionalHideIconsIfNotFit);
-            backgroundColor = QSettings.Instance().getColor(EM_QSetting.AdditionalBackgroundColor);
-            inactiveColor = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
+            backgroundColor = QSettings.Instance().GetColor(EM_QSetting.AdditionalBackgroundColor);
+            inactiveColor = QSettings.Instance().GetColor(EM_QSetting.AdditionalInactiveColor);
         }
 
         public void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect) {

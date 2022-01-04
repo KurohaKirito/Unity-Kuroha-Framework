@@ -43,7 +43,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             enabled = QSettings.Instance().Get<bool>(EM_QSetting.ChildrenCountShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.ChildrenCountShowDuringPlayMode);
             QHierarchySize labelSize = (QHierarchySize) QSettings.Instance().Get<int>(EM_QSetting.ChildrenCountLabelSize);
-            labelStyle.normal.textColor = QSettings.Instance().getColor(EM_QSetting.ChildrenCountLabelColor);
+            labelStyle.normal.textColor = QSettings.Instance().GetColor(EM_QSetting.ChildrenCountLabelColor);
             labelStyle.fontSize = labelSize == QHierarchySize.Normal ? 8 : 9;
             rect.width = labelSize == QHierarchySize.Normal ? 17 : 22;
         }

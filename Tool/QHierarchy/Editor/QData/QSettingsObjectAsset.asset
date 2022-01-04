@@ -47,7 +47,7 @@ MonoBehaviour:
   - QTools.QHierarchy_Dark_AdditionalSpecialColor
   settingStringValues:
   - 905D5D5D
-  - A01B6DBB
+  - A05F5F5F
   - 48666666
   - 08000000
   - 00FFFFFF
@@ -65,7 +65,7 @@ MonoBehaviour:
   - CF363636
   - 1E000000
   - FF1D78D5
-  - 39FFFFFF
+  - FF00FF00
   - FF303030
   - 13000000
   - 00000000

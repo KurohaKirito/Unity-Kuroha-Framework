@@ -35,8 +35,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.StaticShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.StaticShowDuringPlayMode);
-            activeColor                 = QSettings.Instance().getColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor               = QSettings.Instance().getColor(EM_QSetting.AdditionalInactiveColor);
+            activeColor                 = QSettings.Instance().GetColor(EM_QSetting.AdditionalActiveColor);
+            inactiveColor               = QSettings.Instance().GetColor(EM_QSetting.AdditionalInactiveColor);
         }
 
         // DRAW
