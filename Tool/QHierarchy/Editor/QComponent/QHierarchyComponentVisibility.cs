@@ -45,7 +45,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // DRAW
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             if (maxWidth < 18)
             {
@@ -60,31 +60,31 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
         }
 
-        public override void DisabledHandler(GameObject gameObject, QObjectList objectList)
+        public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
         {
-            if (objectList != null)
+            if (hierarchyObjectList != null)
             {
-                if (gameObject.activeSelf && objectList.editModeVisibleObjects.Contains(gameObject))
+                if (gameObject.activeSelf && hierarchyObjectList.editModeVisibleObjects.Contains(gameObject))
                 {
-                    objectList.editModeVisibleObjects.Remove(gameObject);
+                    hierarchyObjectList.editModeVisibleObjects.Remove(gameObject);
                     gameObject.SetActive(false);
                     EditorUtility.SetDirty(gameObject);
                 }
-                else if (!gameObject.activeSelf && objectList.editModeInvisibleObjects.Contains(gameObject))
+                else if (!gameObject.activeSelf && hierarchyObjectList.editModeInvisibleObjects.Contains(gameObject))
                 {
-                    objectList.editModeInvisibleObjects.Remove(gameObject);
+                    hierarchyObjectList.editModeInvisibleObjects.Remove(gameObject);
                     gameObject.SetActive(true);
                     EditorUtility.SetDirty(gameObject);
                 }
             }
         }
 
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             int visibility = gameObject.activeSelf ? 1 : 0;
             
-            bool editModeVisibleObjectsContains = isEditModeVisibile(gameObject, objectList);
-            bool editModeInvisibleObjectsContains = isEditModeInvisibile(gameObject, objectList);
+            bool editModeVisibleObjectsContains = isEditModeVisibile(gameObject, hierarchyObjectList);
+            bool editModeInvisibleObjectsContains = isEditModeInvisibile(gameObject, hierarchyObjectList);
             
             if (!EditorApplication.isPlayingOrWillChangePlaymode && ((!gameObject.activeSelf && editModeVisibleObjectsContains) || (gameObject.activeSelf && editModeInvisibleObjectsContains)))
                 gameObject.SetActive(!gameObject.activeSelf);
@@ -105,17 +105,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 if (visibility == 0)
                 {
-                    QColorUtils.SetColor(specialColor);
+                    QHierarchyColorUtils.SetColor(specialColor);
                     UnityEngine.GUI.DrawTexture(rect, visibilityOffButtonTexture);
                 }
                 else if (visibility == 1)
                 {
-                    QColorUtils.SetColor(specialColor);
+                    QHierarchyColorUtils.SetColor(specialColor);
                     UnityEngine.GUI.DrawTexture(rect, visibilityButtonTexture);
                 }
                 else
                 {
-                    QColorUtils.SetColor(specialColor, 1.0f, 0.4f);
+                    QHierarchyColorUtils.SetColor(specialColor, 1.0f, 0.4f);
                     UnityEngine.GUI.DrawTexture(rect, editModeVisibleObjectsContains ? visibilityButtonTexture : visibilityOffButtonTexture);
                 }
             }
@@ -123,32 +123,32 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 if (visibility == 0)
                 {
-                    QColorUtils.SetColor(inactiveColor);
+                    QHierarchyColorUtils.SetColor(inactiveColor);
                     UnityEngine.GUI.DrawTexture(rect, visibilityOffButtonTexture);
                 }
                 else if (visibility == 1)
                 {
-                    QColorUtils.SetColor(activeColor);
+                    QHierarchyColorUtils.SetColor(activeColor);
                     UnityEngine.GUI.DrawTexture(rect, visibilityButtonTexture);
                 }
                 else
                 {
                     if (gameObject.activeSelf)
                     {
-                        QColorUtils.SetColor(activeColor, 0.65f, 0.65f);
+                        QHierarchyColorUtils.SetColor(activeColor, 0.65f, 0.65f);
                         UnityEngine.GUI.DrawTexture(rect, visibilityButtonTexture);                    
                     }
                     else
                     {
-                        QColorUtils.SetColor(inactiveColor, 0.85f, 0.85f);
+                        QHierarchyColorUtils.SetColor(inactiveColor, 0.85f, 0.85f);
                         UnityEngine.GUI.DrawTexture(rect, visibilityOffButtonTexture);                    
                     }
                 }
             }
-            QColorUtils.ClearColor();
+            QHierarchyColorUtils.ClearColor();
         }
 
-        public override void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent)
+        public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
             if (currentEvent.isMouse && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
             {
@@ -234,28 +234,28 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     };
                 }
                 
-                setVisibility(targetGameObjects, objectList, !gameObject.activeSelf, currentEvent.control || currentEvent.command);
+                setVisibility(targetGameObjects, hierarchyObjectList, !gameObject.activeSelf, currentEvent.control || currentEvent.command);
                 currentEvent.Use();  
             } 
         }
 
         // PRIVATE
-        private bool isEditModeVisibile(GameObject gameObject, QObjectList objectList)
+        private bool isEditModeVisibile(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
         {
-            return objectList == null ? false : objectList.editModeVisibleObjects.Contains(gameObject);
+            return hierarchyObjectList == null ? false : hierarchyObjectList.editModeVisibleObjects.Contains(gameObject);
         }
         
-        private bool isEditModeInvisibile(GameObject gameObject, QObjectList objectList)
+        private bool isEditModeInvisibile(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
         {
-            return objectList == null ? false : objectList.editModeInvisibleObjects.Contains(gameObject);
+            return hierarchyObjectList == null ? false : hierarchyObjectList.editModeInvisibleObjects.Contains(gameObject);
         }
         
-        private void setVisibility(List<GameObject> gameObjects, QObjectList objectList, bool targetVisibility, bool editMode)
+        private void setVisibility(List<GameObject> gameObjects, QHierarchyObjectList hierarchyObjectList, bool targetVisibility, bool editMode)
         {
             if (gameObjects.Count == 0) return;
 
-            if (objectList == null && editMode) objectList = QObjectListManager.Instance().getObjectList(gameObjects[0], true);
-            if (objectList != null) Undo.RecordObject(objectList, "visibility change");
+            if (hierarchyObjectList == null && editMode) hierarchyObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[0], true);
+            if (hierarchyObjectList != null) Undo.RecordObject(hierarchyObjectList, "visibility change");
             
             for (int i = gameObjects.Count - 1; i >= 0; i--)
             {        
@@ -266,21 +266,21 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     if (!targetVisibility)
                     {
-                        objectList.editModeVisibleObjects.Remove(curGameObject);        
-                        if (!objectList.editModeInvisibleObjects.Contains(curGameObject))
-                            objectList.editModeInvisibleObjects.Add(curGameObject);
+                        hierarchyObjectList.editModeVisibleObjects.Remove(curGameObject);        
+                        if (!hierarchyObjectList.editModeInvisibleObjects.Contains(curGameObject))
+                            hierarchyObjectList.editModeInvisibleObjects.Add(curGameObject);
                     }
                     else
                     {
-                        objectList.editModeInvisibleObjects.Remove(curGameObject);                            
-                        if (!objectList.editModeVisibleObjects.Contains(curGameObject))
-                            objectList.editModeVisibleObjects.Add(curGameObject);
+                        hierarchyObjectList.editModeInvisibleObjects.Remove(curGameObject);                            
+                        if (!hierarchyObjectList.editModeVisibleObjects.Contains(curGameObject))
+                            hierarchyObjectList.editModeVisibleObjects.Add(curGameObject);
                     }
                 }
-                else if (objectList != null)
+                else if (hierarchyObjectList != null)
                 {
-                    objectList.editModeVisibleObjects.Remove(curGameObject);
-                    objectList.editModeInvisibleObjects.Remove(curGameObject);
+                    hierarchyObjectList.editModeVisibleObjects.Remove(curGameObject);
+                    hierarchyObjectList.editModeInvisibleObjects.Remove(curGameObject);
                 }
                 
                 curGameObject.SetActive(targetVisibility);

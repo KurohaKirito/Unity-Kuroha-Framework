@@ -134,7 +134,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         {
             try
             {
-                QColorUtils.SetDefaultColor(UnityEngine.GUI.color);
+                QHierarchyColorUtils.SetDefaultColor(UnityEngine.GUI.color);
 
                 if (EditorUtility.InstanceIDToObject(instanceId) is GameObject gameObject)
                 {
@@ -146,7 +146,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                     var gameObjectNameWidth = hideIconsIfThereIsNoFreeSpace ? UnityEngine.GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
 
-                    var objectList = QObjectListManager.Instance().getObjectList(gameObject, false);
+                    var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObject, false);
 
                     DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, hideIconsIfThereIsNoFreeSpace ? selectionRect.x + gameObjectNameWidth + 7 : 0);
 
@@ -169,10 +169,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <param name="selectionRect"></param>
         /// <param name="rect"></param>
         /// <param name="gameObject"></param>
-        /// <param name="objectList"></param>
+        /// <param name="hierarchyObjectList"></param>
         /// <param name="drawBackground"></param>
         /// <param name="minX"></param>
-        private void DrawComponents(in List<QBaseComponent> components, Rect selectionRect, ref Rect rect, GameObject gameObject, QObjectList objectList, bool drawBackground = false, float minX = 50)
+        private void DrawComponents(in List<QBaseComponent> components, Rect selectionRect, ref Rect rect, GameObject gameObject, QHierarchyObjectList hierarchyObjectList, bool drawBackground = false, float minX = 50)
         {
             if (Event.current.type == EventType.Repaint)
             {
@@ -186,7 +186,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     var component = components[i];
                     if (component.IsEnabled())
                     {
-                        layoutStatus = component.Layout(gameObject, objectList, selectionRect, ref rect, rect.x - minX);
+                        layoutStatus = component.Layout(gameObject, hierarchyObjectList, selectionRect, ref rect, rect.x - minX);
                         if (layoutStatus != EM_QLayoutStatus.Success)
                         {
                             toComponent = layoutStatus == EM_QLayoutStatus.Failed ? i : i + 1;
@@ -197,7 +197,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     }
                     else
                     {
-                        component.DisabledHandler(gameObject, objectList);
+                        component.DisabledHandler(gameObject, hierarchyObjectList);
                     }
                 }
 
@@ -209,7 +209,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                         EditorGUI.DrawRect(rect, backgroundColor);
                     }
 
-                    DrawComponents(preComponents, selectionRect, ref rect, gameObject, objectList);
+                    DrawComponents(preComponents, selectionRect, ref rect, gameObject, hierarchyObjectList);
                 }
 
                 for (var i = 0; i < toComponent; i++)
@@ -217,16 +217,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     var component = components[i];
                     if (component.IsEnabled())
                     {
-                        component.Draw(gameObject, objectList, selectionRect);
+                        component.Draw(gameObject, hierarchyObjectList, selectionRect);
                     }
                 }
 
                 if (layoutStatus != EM_QLayoutStatus.Success)
                 {
                     rect.width = 7;
-                    QColorUtils.SetColor(inactiveColor);
+                    QHierarchyColorUtils.SetColor(inactiveColor);
                     UnityEngine.GUI.DrawTexture(rect, trimIcon);
-                    QColorUtils.ClearColor();
+                    QHierarchyColorUtils.ClearColor();
                 }
             }
             else if (Event.current.isMouse)
@@ -236,9 +236,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     var component = components[i];
                     if (component.IsEnabled())
                     {
-                        if (component.Layout(gameObject, objectList, selectionRect, ref rect, rect.x - minX) != EM_QLayoutStatus.Failed)
+                        if (component.Layout(gameObject, hierarchyObjectList, selectionRect, ref rect, rect.x - minX) != EM_QLayoutStatus.Failed)
                         {
-                            component.EventHandler(gameObject, objectList, Event.current);
+                            component.EventHandler(gameObject, hierarchyObjectList, Event.current);
                         }
                     }
                 }

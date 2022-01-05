@@ -42,7 +42,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // DRAW
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             rect.y = selectionRect.y;
             rect.width = selectionRect.width + selectionRect.x;

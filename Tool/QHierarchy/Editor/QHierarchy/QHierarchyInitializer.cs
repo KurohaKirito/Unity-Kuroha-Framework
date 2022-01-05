@@ -59,7 +59,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 InitQHierarchy();
             }
             
-            QObjectListManager.Instance().OnEditorUpdate();
+            QHierarchyObjectListManager.Instance().OnEditorUpdate();
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 InitQHierarchy();
             }
             
-            QObjectListManager.Instance().Validate();
+            QHierarchyObjectListManager.Instance().Validate();
         }
     }
 }

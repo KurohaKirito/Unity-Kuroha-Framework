@@ -73,13 +73,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 进行布局
         /// </summary>
-        /// <param name="gameObject"></param>
-        /// <param name="objectList"></param>
-        /// <param name="selectionRect"></param>
-        /// <param name="curRect"></param>
-        /// <param name="maxWidth"></param>
-        /// <returns></returns>
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             const float COMPONENT_SPACE = 2;
             
@@ -100,10 +94,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 进行绘制
         /// </summary>
-        /// <param name="gameObject"></param>
-        /// <param name="objectList"></param>
-        /// <param name="selectionRect"></param>
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             var childrenCount = gameObject.transform.childCount;
             if (childrenCount > 0)

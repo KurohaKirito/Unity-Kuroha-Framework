@@ -41,7 +41,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // DRAW
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             if (maxWidth < 9)
             {
@@ -56,19 +56,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
         }
         
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             #if UNITY_2018_3_OR_NEWER
                 PrefabInstanceStatus prefabStatus = PrefabUtility.GetPrefabInstanceStatus(gameObject);
                 if (prefabStatus == PrefabInstanceStatus.MissingAsset ||
                     prefabStatus == PrefabInstanceStatus.Disconnected) {
-                    QColorUtils.SetColor(inactiveColor);
+                    QHierarchyColorUtils.SetColor(inactiveColor);
                     UnityEngine.GUI.DrawTexture(rect, prefabTexture);
-                    QColorUtils.ClearColor();
+                    QHierarchyColorUtils.ClearColor();
                 } else if (!showPrefabConnectedIcon && prefabStatus != PrefabInstanceStatus.NotAPrefab) {
-                    QColorUtils.SetColor(activeColor);
+                    QHierarchyColorUtils.SetColor(activeColor);
                     UnityEngine.GUI.DrawTexture(rect, prefabTexture);
-                    QColorUtils.ClearColor();
+                    QHierarchyColorUtils.ClearColor();
                 }
             #else
                 PrefabType prefabType = PrefabUtility.GetPrefabType(gameObject);
@@ -76,15 +76,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     prefabType == PrefabType.DisconnectedPrefabInstance ||
                     prefabType == PrefabType.DisconnectedModelPrefabInstance)
                 {
-                    QColorUtils.SetColor(inactiveColor);
+                    QHierarchyColorUtils.SetColor(inactiveColor);
                     GUI.DrawTexture(rect, prefabTexture);
-                    QColorUtils.ClearColor();
+                    QHierarchyColorUtils.ClearColor();
                 }
                 else if (!showPrefabConnectedIcon && prefabType != PrefabType.None)
                 {
-                    QColorUtils.SetColor(activeColor);
+                    QHierarchyColorUtils.SetColor(activeColor);
                     GUI.DrawTexture(rect, prefabTexture);
-                    QColorUtils.ClearColor();
+                    QHierarchyColorUtils.ClearColor();
                 }
             #endif
         }

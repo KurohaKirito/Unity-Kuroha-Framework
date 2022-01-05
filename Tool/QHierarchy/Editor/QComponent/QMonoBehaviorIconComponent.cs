@@ -50,7 +50,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             EditorApplication.RepaintHierarchyWindow();  
         }
 
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             bool foundCustomComponent = false;   
             if (ignoreUnityMonobehaviour)
@@ -87,9 +87,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     rect.x += TREE_STEP_WIDTH;
                 #endif                
 
-                QColorUtils.SetColor(iconColor);
+                QHierarchyColorUtils.SetColor(iconColor);
                 UnityEngine.GUI.DrawTexture(rect, monoBehaviourIconTexture);
-                QColorUtils.ClearColor();
+                QHierarchyColorUtils.ClearColor();
 
                 if (!showTreeMap && gameObject.transform.childCount == 0)
                 {

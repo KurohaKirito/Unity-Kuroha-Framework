@@ -78,7 +78,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // DRAW
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             float textWidth = sizeIsPixel ? pixelSize : percentSize * rect.x;
             rect.width = textWidth + 4;
@@ -120,7 +120,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
         }
 
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             if (needDrawTag ) 
             {
@@ -137,7 +137,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
         }
 
-        public override void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent)
+        public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {                       
             if (Event.current.isMouse && currentEvent.type == EventType.MouseDown && Event.current.button == 0)
             {

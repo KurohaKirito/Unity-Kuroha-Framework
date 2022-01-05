@@ -44,7 +44,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // DRAW
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             if (maxWidth < 12)
             {
@@ -59,51 +59,51 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
         }
 
-        public override void DisabledHandler(GameObject gameObject, QObjectList objectList)
+        public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
         {
-            if (objectList != null && objectList.wireframeHiddenObjects.Contains(gameObject))
+            if (hierarchyObjectList != null && hierarchyObjectList.wireframeHiddenObjects.Contains(gameObject))
             {      
-                objectList.wireframeHiddenObjects.Remove(gameObject);
+                hierarchyObjectList.wireframeHiddenObjects.Remove(gameObject);
                 Renderer renderer = gameObject.GetComponent<Renderer>();
                 if (renderer != null) setSelectedRenderState(renderer, false);
             }
         }
 
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             Renderer renderer = gameObject.GetComponent<Renderer>();
             if (renderer != null)
             {
-                bool wireframeHiddenObjectsContains = isWireframeHidden(gameObject, objectList);
+                bool wireframeHiddenObjectsContains = isWireframeHidden(gameObject, hierarchyObjectList);
                 if (wireframeHiddenObjectsContains)
                 {
-                    QColorUtils.SetColor(specialColor);
+                    QHierarchyColorUtils.SetColor(specialColor);
                     UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QColorUtils.ClearColor();
+                    QHierarchyColorUtils.ClearColor();
                 }
                 else if (renderer.enabled)
                 {
-                    QColorUtils.SetColor(activeColor);
+                    QHierarchyColorUtils.SetColor(activeColor);
                     UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QColorUtils.ClearColor();
+                    QHierarchyColorUtils.ClearColor();
                 }
                 else
                 {
-                    QColorUtils.SetColor(inactiveColor);
+                    QHierarchyColorUtils.SetColor(inactiveColor);
                     UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QColorUtils.ClearColor();
+                    QHierarchyColorUtils.ClearColor();
                 }
             }
         }
 
-        public override void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent)
+        public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
             if (currentEvent.isMouse && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
             {
                 Renderer renderer = gameObject.GetComponent<Renderer>();
                 if (renderer != null)
                 {
-                    bool wireframeHiddenObjectsContains = isWireframeHidden(gameObject, objectList);
+                    bool wireframeHiddenObjectsContains = isWireframeHidden(gameObject, hierarchyObjectList);
                     bool isEnabled = renderer.enabled;
                     
                     if (currentEvent.type == EventType.MouseDown)
@@ -128,7 +128,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         {
                             setSelectedRenderState(renderer, true);
                             SceneView.RepaintAll();
-                            setWireframeMode(gameObject, objectList, true);
+                            setWireframeMode(gameObject, hierarchyObjectList, true);
                         }
                     }
                     else
@@ -137,7 +137,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         {
                             setSelectedRenderState(renderer, false);
                             SceneView.RepaintAll();
-                            setWireframeMode(gameObject, objectList, false);
+                            setWireframeMode(gameObject, hierarchyObjectList, false);
                         }
                         else
                         {
@@ -153,20 +153,20 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // PRIVATE
-        public bool isWireframeHidden(GameObject gameObject, QObjectList objectList)
+        public bool isWireframeHidden(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
         {
-            return objectList == null ? false : objectList.wireframeHiddenObjects.Contains(gameObject);
+            return hierarchyObjectList == null ? false : hierarchyObjectList.wireframeHiddenObjects.Contains(gameObject);
         }
         
-        public void setWireframeMode(GameObject gameObject, QObjectList objectList, bool targetWireframe)
+        public void setWireframeMode(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, bool targetWireframe)
         {
-            if (objectList == null && targetWireframe) objectList = QObjectListManager.Instance().getObjectList(gameObject, true);
-            if (objectList != null)
+            if (hierarchyObjectList == null && targetWireframe) hierarchyObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObject, true);
+            if (hierarchyObjectList != null)
             {
-                Undo.RecordObject(objectList, "Renderer Visibility Change");
-                if (targetWireframe) objectList.wireframeHiddenObjects.Add(gameObject);
-                else objectList.wireframeHiddenObjects.Remove(gameObject);
-                EditorUtility.SetDirty(objectList);
+                Undo.RecordObject(hierarchyObjectList, "Renderer Visibility Change");
+                if (targetWireframe) hierarchyObjectList.wireframeHiddenObjects.Add(gameObject);
+                else hierarchyObjectList.wireframeHiddenObjects.Remove(gameObject);
+                EditorUtility.SetDirty(hierarchyObjectList);
             }
         }
 

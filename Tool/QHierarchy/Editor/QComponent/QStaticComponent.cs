@@ -40,7 +40,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // DRAW
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             if (maxWidth < 13)
             {
@@ -56,7 +56,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
         }
 
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             if (staticButton == null)
             {
@@ -78,7 +78,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             UnityEngine.GUI.DrawTexture(rect, staticButton);
         }
 
-        public override void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent)
+        public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
             if (currentEvent.isMouse && currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
             {

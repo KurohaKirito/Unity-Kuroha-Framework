@@ -262,12 +262,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         public Color GetColor(EM_QHierarchySettings hierarchySettings)
         {
             var stringColor = (string)settingsObject.Get<string>(GetSettingName(hierarchySettings));
-            return QColorUtils.fromString(stringColor);
+            return QHierarchyColorUtils.StringToColor(stringColor);
         }
 
         public void SetColor(EM_QHierarchySettings hierarchySettings, Color color)
         {
-            string stringColor = QColorUtils.toString(color);
+            string stringColor = QHierarchyColorUtils.ColorToString(color);
             Set(hierarchySettings, stringColor);
         }
 

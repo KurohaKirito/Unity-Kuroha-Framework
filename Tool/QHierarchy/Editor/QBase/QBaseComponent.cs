@@ -28,16 +28,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
         {
         }
 
-        public virtual EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public virtual EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             return EM_QLayoutStatus.Success;
         }
 
-        public virtual void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect) { }
+        public virtual void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect) { }
 
-        public virtual void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent) { }
+        public virtual void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent) { }
 
-        public virtual void DisabledHandler(GameObject gameObject, QObjectList objectList) { }
+        public virtual void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList) { }
 
         public bool IsEnabled()
         {

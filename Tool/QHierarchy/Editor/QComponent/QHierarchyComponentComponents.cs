@@ -59,7 +59,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // DRAW
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             Component[] currentComponents = gameObject.GetComponents<Component>();
 
@@ -105,7 +105,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             else return EM_QLayoutStatus.Partly;
         }
 
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             for (int i = components.Count - componentsToDraw, n = components.Count; i < n; i++)
             {
@@ -154,7 +154,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
         }
 
-        public override void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent)
+        public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
             if (currentEvent.isMouse && currentEvent.button == 0 && eventRect.Contains(currentEvent.mousePosition))
             {

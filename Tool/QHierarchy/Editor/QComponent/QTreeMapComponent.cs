@@ -59,7 +59,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
         
         // DRAW
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             rect.y = selectionRect.y;
             
@@ -74,7 +74,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             return EM_QLayoutStatus.Success;
         }
 
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             var childCount = gameObject.transform.childCount;
             var level = Mathf.RoundToInt(selectionRect.x / 14.0f);
@@ -91,7 +91,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         if (childCount == 0) {
                             #if UNITY_2018_3_OR_NEWER
-                                QColorUtils.SetColor(treeMapColor);
+                                QHierarchyColorUtils.SetColor(treeMapColor);
                             #endif
                             UnityEngine.GUI.DrawTexture(rect, treeMapObjectTexture);
                         }
@@ -99,7 +99,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     }
                     else if (i == 1)
                     {
-                        QColorUtils.SetColor(treeMapColor);
+                        QHierarchyColorUtils.SetColor(treeMapColor);
                         if (parentTransform == null) {
                             if (gameObjectTransform.GetSiblingIndex() == gameObject.scene.rootCount - 1) {
                                 UnityEngine.GUI.DrawTexture(rect, treeMapLastTexture);
@@ -128,7 +128,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 					else
                         break;
                 }
-                QColorUtils.ClearColor();
+                QHierarchyColorUtils.ClearColor();
             }
             else
             {
@@ -141,14 +141,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                             continue;
                         else {
                             #if UNITY_2018_3_OR_NEWER
-                                QColorUtils.SetColor(treeMapColor);
+                                QHierarchyColorUtils.SetColor(treeMapColor);
                             #endif
                             UnityEngine.GUI.DrawTexture(rect, treeMapObjectTexture);
                         }
                     }
                     else if (i == 1)
                     {
-                        QColorUtils.SetColor(treeMapColor);
+                        QHierarchyColorUtils.SetColor(treeMapColor);
                         UnityEngine.GUI.DrawTexture(rect, treeMapCurrentTexture);
                     }
                     else
@@ -160,7 +160,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         rect.width = 14;
                     }
                 }
-                QColorUtils.ClearColor();
+                QHierarchyColorUtils.ClearColor();
             }
         }
     }

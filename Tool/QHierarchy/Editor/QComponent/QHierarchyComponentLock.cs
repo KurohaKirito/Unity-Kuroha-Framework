@@ -44,7 +44,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         // DRAW
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             if (maxWidth < 13)
             {
@@ -59,9 +59,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
         }
 
-        public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {  
-            bool isLock = isGameObjectLock(gameObject, objectList);
+            bool isLock = isGameObjectLock(gameObject, hierarchyObjectList);
 
             if (isLock == true && (gameObject.hideFlags & HideFlags.NotEditable) != HideFlags.NotEditable)
             {
@@ -74,16 +74,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 EditorUtility.SetDirty(gameObject);
             }
 
-            QColorUtils.SetColor(isLock ? activeColor : inactiveColor);
+            QHierarchyColorUtils.SetColor(isLock ? activeColor : inactiveColor);
             UnityEngine.GUI.DrawTexture(rect, lockButtonTexture);
-            QColorUtils.ClearColor();
+            QHierarchyColorUtils.ClearColor();
         }
 
-        public override void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent)
+        public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
             if (currentEvent.isMouse && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
             {
-                bool isLock = isGameObjectLock(gameObject, objectList);
+                bool isLock = isGameObjectLock(gameObject, hierarchyObjectList);
 
                 if (currentEvent.type == EventType.MouseDown)
                 {
@@ -135,33 +135,33 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     };
                 }
                 
-                setLock(targetGameObjects, objectList, !isLock);
+                setLock(targetGameObjects, hierarchyObjectList, !isLock);
                 currentEvent.Use();
             }
         } 
 
-        public override void DisabledHandler(GameObject gameObject, QObjectList objectList)
+        public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
         {	
-            if (objectList != null && objectList.lockedObjects.Contains(gameObject))
+            if (hierarchyObjectList != null && hierarchyObjectList.lockedObjects.Contains(gameObject))
             {
-                objectList.lockedObjects.Remove(gameObject);
+                hierarchyObjectList.lockedObjects.Remove(gameObject);
                 gameObject.hideFlags &= ~HideFlags.NotEditable;
                 EditorUtility.SetDirty(gameObject);
             }
         }
 
         // PRIVATE
-        private bool isGameObjectLock(GameObject gameObject, QObjectList objectList)
+        private bool isGameObjectLock(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
         {
-            return objectList == null ? false : objectList.lockedObjects.Contains(gameObject);
+            return hierarchyObjectList == null ? false : hierarchyObjectList.lockedObjects.Contains(gameObject);
         }
         
-        private void setLock(List<GameObject> gameObjects, QObjectList objectList, bool targetLock)
+        private void setLock(List<GameObject> gameObjects, QHierarchyObjectList hierarchyObjectList, bool targetLock)
         {
             if (gameObjects.Count == 0) return;
 
-            if (objectList == null) objectList = QObjectListManager.Instance().getObjectList(gameObjects[0], true);
-            Undo.RecordObject(objectList, targetLock ? "Lock" : "Unlock");   
+            if (hierarchyObjectList == null) hierarchyObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[0], true);
+            Undo.RecordObject(hierarchyObjectList, targetLock ? "Lock" : "Unlock");   
             
             for (int i = gameObjects.Count - 1; i >= 0; i--)
             {     
@@ -171,13 +171,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 if (targetLock)
                 {
                     curGameObject.hideFlags |= HideFlags.NotEditable;
-                    if (!objectList.lockedObjects.Contains(curGameObject))
-                        objectList.lockedObjects.Add(curGameObject);
+                    if (!hierarchyObjectList.lockedObjects.Contains(curGameObject))
+                        hierarchyObjectList.lockedObjects.Add(curGameObject);
                 }
                 else
                 {
                     curGameObject.hideFlags &= ~HideFlags.NotEditable;
-                    objectList.lockedObjects.Remove(curGameObject);
+                    hierarchyObjectList.lockedObjects.Remove(curGameObject);
                 }
                 
                 EditorUtility.SetDirty(curGameObject);
