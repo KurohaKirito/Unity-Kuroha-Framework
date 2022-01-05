@@ -126,7 +126,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             for (var i = gameObjects.Length - 1; i >= 0; i--)
             {
                 var gameObject = gameObjects[i];
-                var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[i], true);
+                var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[i]);
                 Undo.RecordObject(objectList, "Color Changed");
                 if (objectList.gameObjectColor.ContainsKey(gameObject))
                 {
@@ -151,7 +151,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 var gameObject = gameObjects[index];
                 
-                var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[index], true);
+                var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[index]);
                 
                 if (objectList.gameObjectColor.ContainsKey(gameObject))
                 {

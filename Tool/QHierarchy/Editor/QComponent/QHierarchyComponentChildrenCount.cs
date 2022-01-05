@@ -2,7 +2,6 @@ using System;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using Kuroha.Tool.QHierarchy.Editor.QData;
-using UnityEditor;
 using UnityEngine;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
