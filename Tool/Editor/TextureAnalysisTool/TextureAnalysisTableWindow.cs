@@ -11,10 +11,10 @@ using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
     public class TextureAnalysisTableWindow : EditorWindow {
+        /// <summary>
+        /// 表格
+        /// </summary>
         private TextureAnalysisTable table;
-
-        private GUIStyle fontStyleRed;
-        private GUIStyle fontStyleYellow;
 
         /// <summary>
         /// 宽度警告线
@@ -83,25 +83,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 heightError = 1000;
             }
 
-            // 初始化字体风格
-            fontStyleRed = new GUIStyle {
-                alignment = TextAnchor.MiddleLeft,
-                normal = {
-                    textColor = new Color((float)203 / 255, (float)27 / 255, (float)69 / 255)
-                }
-            };
-
-            fontStyleYellow = new GUIStyle {
-                alignment = TextAnchor.MiddleLeft,
-                normal = {
-                    textColor = new Color((float)226 / 255, (float)148 / 255, (float)59 / 255)
-                }
-            };
-
             // 初始化表格
             InitTable();
         }
-        
+
         /// <summary>
         /// 绘制界面
         /// </summary>
@@ -154,14 +139,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     if (columns != null) {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        table = new TextureAnalysisTable(space, min, dataList,
-                            true, true, true, columns,
-                            OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
+                        table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns, OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
                     }
                 }
             }
         }
-        
+
         /// <summary>
         /// 初始化数据
         /// </summary>
@@ -178,11 +161,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 ProgressBar.DisplayProgressBar("纹理分析工具", $"纹理检测中: {index + 1}/{textures.Count}", index + 1, textures.Count);
 
                 // 判断后缀
-                if (paths[index].EndsWith(".png") == false &&
-                    paths[index].EndsWith(".tga") == false) {
+                if (paths[index].EndsWith(".png") == false && paths[index].EndsWith(".tga") == false) {
                     DebugUtil.Log($"文件后缀非法: {paths[index]}", AssetDatabase.LoadAssetAtPath<Texture>(paths[index]));
                 }
-                
+
                 // 执行检测
                 DetectTexture(ref counter, in dataList, paths[index], textures[index]);
             }
@@ -289,7 +271,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private CustomTableColumn<TextureAnalysisData>[] InitColumns() {
+        private static CustomTableColumn<TextureAnalysisData>[] InitColumns() {
             return new[] {
                 new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("ID"),
@@ -346,14 +328,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         iconRect.width = 20f;
                         cellRect.xMin += 20f;
 
+                        var oldColor = UnityEngine.GUI.skin.label.normal.textColor;
                         if (data.width > widthError) {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
-                            EditorGUI.LabelField(cellRect, data.width.ToString(), fontStyleRed);
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.errorIcon.sml"));
+                            EditorGUI.LabelField(cellRect, data.width.ToString());
                         } else if (data.width > widthWarn) {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
-                            EditorGUI.LabelField(cellRect, data.width.ToString(), fontStyleYellow);
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
+                            EditorGUI.LabelField(cellRect, data.width.ToString());
                         } else {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
                             EditorGUI.LabelField(cellRect, data.width.ToString());
                         }
                     }
@@ -376,13 +359,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         cellRect.xMin += 20f;
 
                         if (data.height > heightError) {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
-                            EditorGUI.LabelField(cellRect, data.height.ToString(), fontStyleRed);
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.errorIcon.sml"));
+                            EditorGUI.LabelField(cellRect, data.height.ToString());
                         } else if (data.height > heightWarn) {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
-                            EditorGUI.LabelField(cellRect, data.height.ToString(), fontStyleYellow);
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
+                            EditorGUI.LabelField(cellRect, data.height.ToString());
                         } else {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
                             EditorGUI.LabelField(cellRect, data.height.ToString());
                         }
                     }
@@ -404,8 +387,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         cellRect.xMin += 20f;
 
                         if (data.isSolid) {
-                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("d_FilterSelectedOnly"));
-                            EditorGUI.LabelField(cellRect, "纯色纹理", fontStyleRed);
+                            if (data.width > 32 && data.height > 32) {
+                                EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.errorIcon.sml"));
+                            } else {
+                                EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("d_FilterSelectedOnly"));
+                            }
+                            UnityEngine.GUI.Label(cellRect, "纯色纹理");
                         }
                     }
                 },
@@ -430,7 +417,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 }
             };
         }
-        
+
         /// <summary>
         /// 行选中事件
         /// </summary>
@@ -550,7 +537,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
 
             return isMatched;
         }
-        
+
         /// <summary>
         /// 数据去重事件
         /// </summary>
@@ -561,9 +548,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     newList.Add(data);
                 }
             }
-            
+
             dataList = newList;
-            
+
             // 重新编号
             for (var index = 0; index < dataList.Count; ++index) {
                 dataList[index].id = index + 1;

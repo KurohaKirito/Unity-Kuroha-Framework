@@ -76,8 +76,10 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                     
                     // 根据是否有透明度，选择 RGBA 还是 RGB
                     format = textureImporter.DoesSourceTextureHaveAlpha()
-                        ? TextureImporterFormat.ASTC_RGBA_6x6
-                        : TextureImporterFormat.ASTC_RGB_6x6
+                        // ? TextureImporterFormat.ASTC_RGBA_6x6
+                        // : TextureImporterFormat.ASTC_RGB_6x6
+                        ? TextureImporterFormat.PVRTC_RGBA4
+                        : TextureImporterFormat.PVRTC_RGB4
                 };
                 textureImporter.SetPlatformTextureSettings(settingIphone);
                 
