@@ -1,6 +1,6 @@
 ﻿namespace Kuroha.Tool.QHierarchy.Editor.QData
 {
-    public enum EM_QSetting
+    public enum EM_QHierarchySettings
     {
         TreeMapShow                                 = 0,
         TreeMapColor                                = 77,

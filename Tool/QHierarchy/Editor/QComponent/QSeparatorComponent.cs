@@ -22,11 +22,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             showComponentDuringPlayMode = true;
 
-            QSettings.Instance().addEventListener(EM_QSetting.SeparatorShowRowShading   , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.SeparatorShow             , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.SeparatorColor                , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.SeparatorEvenRowShadingColor  , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.SeparatorOddRowShadingColor , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.SeparatorShowRowShading   , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.SeparatorShow             , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.SeparatorColor                , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.SeparatorEvenRowShadingColor  , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.SeparatorOddRowShadingColor , settingsChanged);
 
             settingsChanged();
         }
@@ -34,11 +34,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         // PRIVATE
         private void settingsChanged()
         {
-            showRowShading   = QSettings.Instance().Get<bool>(EM_QSetting.SeparatorShowRowShading);
-            enabled          = QSettings.Instance().Get<bool>(EM_QSetting.SeparatorShow);
-            evenShadingColor = QSettings.Instance().GetColor(EM_QSetting.SeparatorEvenRowShadingColor);
-            oddShadingColor  = QSettings.Instance().GetColor(EM_QSetting.SeparatorOddRowShadingColor);
-            separatorColor   = QSettings.Instance().GetColor(EM_QSetting.SeparatorColor);
+            showRowShading   = QSettings.Instance().Get<bool>(EM_QHierarchySettings.SeparatorShowRowShading);
+            enabled          = QSettings.Instance().Get<bool>(EM_QHierarchySettings.SeparatorShow);
+            evenShadingColor = QSettings.Instance().GetColor(EM_QHierarchySettings.SeparatorEvenRowShadingColor);
+            oddShadingColor  = QSettings.Instance().GetColor(EM_QHierarchySettings.SeparatorOddRowShadingColor);
+            separatorColor   = QSettings.Instance().GetColor(EM_QHierarchySettings.SeparatorColor);
         }
 
         // DRAW

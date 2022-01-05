@@ -61,7 +61,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                     }
 
                     newIconOrder = newIconOrder.TrimEnd(';');
-                    QSettings.Instance().Set(EM_QSetting.ComponentsOrder, newIconOrder);
+                    QSettings.Instance().Set(EM_QHierarchySettings.ComponentsOrder, newIconOrder);
                     componentIds = newIconOrder.Split(';');
                 }
             }

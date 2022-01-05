@@ -20,20 +20,20 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width  = 14;
             rect.height = 14;
 
-            QSettings.Instance().addEventListener(EM_QSetting.LayerIconShow              , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.LayerIconShowDuringPlayMode, settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.LayerIconSize              , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.LayerIconList              , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.LayerIconShow              , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.LayerIconShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.LayerIconSize              , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.LayerIconList              , settingsChanged);
             settingsChanged();
         }
         
         // PRIVATE
         private void settingsChanged()
         {
-            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.LayerIconShow);
-            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.LayerIconShowDuringPlayMode);
-            QHierarchySizeAll size      = (QHierarchySizeAll)QSettings.Instance().Get<int>(EM_QSetting.LayerIconSize);
-            rect.width = rect.height    = (size == QHierarchySizeAll.Normal ? 15 : (size == QHierarchySizeAll.Big ? 16 : 13));        
+            enabled                     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.LayerIconShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.LayerIconShowDuringPlayMode);
+            EM_QHierarchySizeAll size      = (EM_QHierarchySizeAll)QSettings.Instance().Get<int>(EM_QHierarchySettings.LayerIconSize);
+            rect.width = rect.height    = (size == EM_QHierarchySizeAll.Normal ? 15 : (size == EM_QHierarchySizeAll.Big ? 16 : 13));        
             this.layerTextureList = QLayerTexture.loadLayerTextureList();
         }
 

@@ -22,10 +22,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width = 11;
             rect.height = 10;
 
-            QSettings.Instance().addEventListener(EM_QSetting.StaticShow                , SettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.StaticShowDuringPlayMode  , SettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalActiveColor     , SettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor   , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.StaticShow                , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.StaticShowDuringPlayMode  , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor     , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor   , SettingsChanged);
 
             SettingsChanged();
         }
@@ -33,10 +33,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         // PRIVATE
         private void SettingsChanged()
         {
-            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.StaticShow);
-            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.StaticShowDuringPlayMode);
-            activeColor                 = QSettings.Instance().GetColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor               = QSettings.Instance().GetColor(EM_QSetting.AdditionalInactiveColor);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.StaticShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.StaticShowDuringPlayMode);
+            activeColor                 = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
+            inactiveColor               = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
         }
 
         // DRAW

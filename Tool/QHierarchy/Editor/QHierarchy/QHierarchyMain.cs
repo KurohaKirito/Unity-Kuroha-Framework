@@ -15,8 +15,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
     /// </summary>
     public class QHierarchyMain
     {
-        // PRIVATE
-        private readonly HashSet<int> errorHandled = new HashSet<int>();
+        //private readonly HashSet<int> errorHandled = new HashSet<int>();
 
         /// <summary>
         /// 功能组件字典
@@ -40,10 +39,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             componentDictionary = new Dictionary<EM_QHierarchyComponent, QBaseComponent>
             {
                 {
-                    EM_QHierarchyComponent.LockComponent, new QLockComponent()
+                    EM_QHierarchyComponent.LockComponent, new QHierarchyComponentLock()
                 },
                 {
-                    EM_QHierarchyComponent.VisibilityComponent, new QVisibilityComponent()
+                    EM_QHierarchyComponent.VisibilityComponent, new QHierarchyComponentVisibility()
                 },
                 {
                     EM_QHierarchyComponent.StaticComponent, new QStaticComponent()
@@ -55,10 +54,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     EM_QHierarchyComponent.TagAndLayerComponent, new QTagLayerComponent()
                 },
                 {
-                    EM_QHierarchyComponent.GameObjectIconComponent, new QGameObjectIconComponent()
+                    EM_QHierarchyComponent.GameObjectIconComponent, new QHierarchyComponentGameObjectIcon()
                 },
                 {
-                    EM_QHierarchyComponent.ErrorComponent, new QErrorComponent()
+                    EM_QHierarchyComponent.ErrorComponent, new QHierarchyComponentError()
                 },
                 {
                     EM_QHierarchyComponent.TagIconComponent, new QTagIconComponent()
@@ -67,10 +66,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     EM_QHierarchyComponent.LayerIconComponent, new QLayerIconComponent()
                 },
                 {
-                    EM_QHierarchyComponent.ColorComponent, new QColorComponent()
+                    EM_QHierarchyComponent.ColorComponent, new QHierarchyComponentColor()
                 },
                 {
-                    EM_QHierarchyComponent.ComponentsComponent, new QComponentsComponent()
+                    EM_QHierarchyComponent.ComponentsComponent, new QHierarchyComponentComponents()
                 },
                 {
                     EM_QHierarchyComponent.ChildrenCountComponent, new QHierarchyComponentChildrenCount()
@@ -92,11 +91,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             trimIcon = QResources.Instance().GetTexture(QTexture.QTrimIcon);
 
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalIndentation, OnSettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.ComponentsOrder, OnSettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalHideIconsIfNotFit, OnSettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalBackgroundColor, OnSettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalIndentation, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ComponentsOrder, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalHideIconsIfNotFit, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalBackgroundColor, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor, OnSettingsChanged);
 
             OnSettingsChanged();
         }
@@ -106,13 +105,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private void OnSettingsChanged()
         {
-            var componentOrder = QSettings.Instance().Get<string>(EM_QSetting.ComponentsOrder);
+            var componentOrder = QSettings.Instance().Get<string>(EM_QHierarchySettings.ComponentsOrder);
 
             var componentIds = componentOrder.Split(';');
 
             if (componentIds.Length != QSettings.DEFAULT_ORDER_COUNT)
             {
-                QSettings.Instance().Set(EM_QSetting.ComponentsOrder, QSettings.DEFAULT_ORDER, false);
+                QSettings.Instance().Set(EM_QHierarchySettings.ComponentsOrder, QSettings.DEFAULT_ORDER, false);
                 componentIds = QSettings.DEFAULT_ORDER.Split(';');
             }
 
@@ -125,43 +124,54 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             orderedComponents.Add(componentDictionary[EM_QHierarchyComponent.ComponentsComponent]);
 
-            indentation = QSettings.Instance().Get<int>(EM_QSetting.AdditionalIndentation);
-            hideIconsIfThereIsNoFreeSpace = QSettings.Instance().Get<bool>(EM_QSetting.AdditionalHideIconsIfNotFit);
-            backgroundColor = QSettings.Instance().GetColor(EM_QSetting.AdditionalBackgroundColor);
-            inactiveColor = QSettings.Instance().GetColor(EM_QSetting.AdditionalInactiveColor);
+            indentation = QSettings.Instance().Get<int>(EM_QHierarchySettings.AdditionalIndentation);
+            hideIconsIfThereIsNoFreeSpace = QSettings.Instance().Get<bool>(EM_QHierarchySettings.AdditionalHideIconsIfNotFit);
+            backgroundColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalBackgroundColor);
+            inactiveColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
         }
 
         public void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)
         {
-            try
-            {
-                QColorUtils.setDefaultColor(UnityEngine.GUI.color);
+            //try
+            //{
+                QColorUtils.SetDefaultColor(UnityEngine.GUI.color);
 
-                GameObject gameObject = (GameObject) EditorUtility.InstanceIDToObject(instanceId);
-                if (gameObject == null)
-                    return;
-
-                Rect curRect = new Rect(selectionRect);
-                curRect.width = 16;
-                curRect.x += selectionRect.width - indentation;
-
-                float gameObjectNameWidth = hideIconsIfThereIsNoFreeSpace ? UnityEngine.GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
-
-                QObjectList objectList = QObjectListManager.Instance().getObjectList(gameObject, false);
-
-                DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, hideIconsIfThereIsNoFreeSpace ? selectionRect.x + gameObjectNameWidth + 7 : 0);
-
-                errorHandled.Remove(instanceId);
-            }
-            catch (Exception exception)
-            {
-                if (errorHandled.Add(instanceId))
+                if (EditorUtility.InstanceIDToObject(instanceId) is GameObject gameObject)
                 {
-                    Debug.LogError(exception.ToString());
-                }
-            }
-        }
+                    var curRect = new Rect(selectionRect)
+                    {
+                        width = 16
+                    };
+                    curRect.x += selectionRect.width - indentation;
 
+                    var gameObjectNameWidth = hideIconsIfThereIsNoFreeSpace ? UnityEngine.GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
+
+                    var objectList = QObjectListManager.Instance().getObjectList(gameObject, false);
+
+                    DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, hideIconsIfThereIsNoFreeSpace ? selectionRect.x + gameObjectNameWidth + 7 : 0);
+
+                    // errorHandled.Remove(instanceId);
+                }
+            // }
+            // catch (Exception exception)
+            // {
+            //     if (errorHandled.Add(instanceId))
+            //     {
+            //         Debug.LogError(exception.ToString());
+            //     }
+            // }
+        }
+        
+        /// <summary>
+        /// 绘制功能组件
+        /// </summary>
+        /// <param name="components"></param>
+        /// <param name="selectionRect"></param>
+        /// <param name="rect"></param>
+        /// <param name="gameObject"></param>
+        /// <param name="objectList"></param>
+        /// <param name="drawBackground"></param>
+        /// <param name="minX"></param>
         private void DrawComponents(in List<QBaseComponent> components, Rect selectionRect, ref Rect rect, GameObject gameObject, QObjectList objectList, bool drawBackground = false, float minX = 50)
         {
             if (Event.current.type == EventType.Repaint)
@@ -214,9 +224,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 if (layoutStatus != EM_QLayoutStatus.Success)
                 {
                     rect.width = 7;
-                    QColorUtils.setColor(inactiveColor);
+                    QColorUtils.SetColor(inactiveColor);
                     UnityEngine.GUI.DrawTexture(rect, trimIcon);
-                    QColorUtils.clearColor();
+                    QColorUtils.ClearColor();
                 }
             }
             else if (Event.current.isMouse)

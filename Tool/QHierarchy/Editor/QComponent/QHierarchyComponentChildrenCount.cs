@@ -1,3 +1,4 @@
+using System;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using Kuroha.Tool.QHierarchy.Editor.QData;
@@ -11,6 +12,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
     /// </summary>
     public class QHierarchyComponentChildrenCount : QBaseComponent
     {
+        /// <summary>
+        /// 标签样式
+        /// </summary>
         private readonly GUIStyle labelStyle;
 
         /// <summary>
@@ -20,18 +24,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             labelStyle = new GUIStyle
             {
-                fontSize = 9,
+                fontSize = 8,
                 clipping = TextClipping.Clip,
                 alignment = TextAnchor.MiddleRight
             };
 
-            rect.width = 22;
+            rect.width = 20;
             rect.height = 16;
 
-            QSettings.Instance().addEventListener(EM_QSetting.ChildrenCountShow, OnSettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.ChildrenCountShowDuringPlayMode, OnSettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.ChildrenCountLabelSize, OnSettingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.ChildrenCountLabelColor, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountShow, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountShowDuringPlayMode, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountLabelSize, OnSettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountLabelColor, OnSettingsChanged);
+            
             OnSettingsChanged();
         }
 
@@ -40,36 +45,71 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         private void OnSettingsChanged()
         {
-            enabled = QSettings.Instance().Get<bool>(EM_QSetting.ChildrenCountShow);
-            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.ChildrenCountShowDuringPlayMode);
-            QHierarchySize labelSize = (QHierarchySize) QSettings.Instance().Get<int>(EM_QSetting.ChildrenCountLabelSize);
-            labelStyle.normal.textColor = QSettings.Instance().GetColor(EM_QSetting.ChildrenCountLabelColor);
-            labelStyle.fontSize = labelSize == QHierarchySize.Normal ? 8 : 9;
-            rect.width = labelSize == QHierarchySize.Normal ? 17 : 22;
+            // 取出设置: 是否启用功能
+            enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ChildrenCountShow);
+            
+            // 取出设置: 是否在播放模式下显示
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ChildrenCountShowDuringPlayMode);
+            
+            // 取出设置: 数字标签显示大小
+            var labelSize = (EM_QHierarchySize) QSettings.Instance().Get<int>(EM_QHierarchySettings.ChildrenCountLabelSize);
+            
+            // 取出设置: 数字标签显示颜色
+            labelStyle.normal.textColor = QSettings.Instance().GetColor(EM_QHierarchySettings.ChildrenCountLabelColor);
+
+            labelStyle.fontSize = labelSize switch {
+                EM_QHierarchySize.Normal => 8,
+                EM_QHierarchySize.Big => 11,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            rect.width = labelSize switch {
+                EM_QHierarchySize.Normal => 16,
+                EM_QHierarchySize.Big => 20,
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
-        // DRAW
+        /// <summary>
+        /// 进行布局
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="objectList"></param>
+        /// <param name="selectionRect"></param>
+        /// <param name="curRect"></param>
+        /// <param name="maxWidth"></param>
+        /// <returns></returns>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QObjectList objectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
+            const float COMPONENT_SPACE = 2;
+            
             if (maxWidth < rect.width)
             {
                 return EM_QLayoutStatus.Failed;
             }
-            else
-            {
-                curRect.x -= rect.width + 2;
-                rect.x = curRect.x;
-                rect.y = curRect.y;
-                rect.y += (EditorGUIUtility.singleLineHeight - rect.height) * 0.5f;
-                rect.height = EditorGUIUtility.singleLineHeight;
-                return EM_QLayoutStatus.Success;
-            }
+
+            // 从右向左绘制
+            var totalWidth = rect.width + COMPONENT_SPACE;
+            curRect.x -= totalWidth;
+            rect.x = curRect.x;
+            rect.y = curRect.y;
+            
+            return EM_QLayoutStatus.Success;
         }
 
+        /// <summary>
+        /// 进行绘制
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="objectList"></param>
+        /// <param name="selectionRect"></param>
         public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
         {
-            int childrenCount = gameObject.transform.childCount;
-            if (childrenCount > 0) UnityEngine.GUI.Label(rect, childrenCount.ToString(), labelStyle);
+            var childrenCount = gameObject.transform.childCount;
+            if (childrenCount > 0)
+            {
+                UnityEngine.GUI.Label(rect, childrenCount.ToString(), labelStyle);
+            }
         }
     }
 }

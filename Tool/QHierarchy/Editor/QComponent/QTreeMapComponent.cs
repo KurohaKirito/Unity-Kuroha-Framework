@@ -1,10 +1,7 @@
 using UnityEngine;
 using UnityEditor;
-using System;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
-using System.Collections.Generic;
-using System.Collections;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 
@@ -16,28 +13,23 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private const float TREE_STEP_WIDTH  = 14.0f;
         
         // PRIVATE
-        private Texture2D treeMapLevelTexture;       
-        private Texture2D treeMapLevel4Texture;       
-        private Texture2D treeMapCurrentTexture;   
-        private Texture2D treeMapLastTexture;
-        private Texture2D treeMapObjectTexture;    
         private bool enhanced;
         private bool transparentBackground;
-        private Color backgroundColor;
         private Color treeMapColor;
+        private Color backgroundColor;
+        private readonly Texture2D treeMapLevelTexture;       
+        private readonly Texture2D treeMapLevel4Texture;       
+        private readonly Texture2D treeMapCurrentTexture;   
+        private readonly Texture2D treeMapLastTexture;
+        private readonly Texture2D treeMapObjectTexture;    
         
         // CONSTRUCTOR
         public QTreeMapComponent()
-        { 
-
+        {
             treeMapLevelTexture   = QResources.Instance().GetTexture(QTexture.QTreeMapLevel);
             treeMapLevel4Texture  = QResources.Instance().GetTexture(QTexture.QTreeMapLevel4);
             treeMapCurrentTexture = QResources.Instance().GetTexture(QTexture.QTreeMapCurrent);
-            #if UNITY_2018_3_OR_NEWER
-                treeMapObjectTexture = QResources.Instance().GetTexture(QTexture.QTreeMapLine);
-            #else
-                treeMapObjectTexture  = QResources.Instance().getTexture(QTexture.QTreeMapObject);
-            #endif
+            treeMapObjectTexture  = QResources.Instance().GetTexture(QTexture.QTreeMapLine);
             treeMapLastTexture    = QResources.Instance().GetTexture(QTexture.QTreeMapLast);
             
             rect.width  = 14;
@@ -45,21 +37,25 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             
             showComponentDuringPlayMode = true;
 
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalBackgroundColor, settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TreeMapShow           , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TreeMapColor          , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TreeMapEnhanced       , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TreeMapTransparentBackground, settingsChanged);
-            settingsChanged();
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalBackgroundColor   , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TreeMapShow                 , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TreeMapColor                , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TreeMapEnhanced             , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TreeMapTransparentBackground, SettingsChanged);
+            
+            SettingsChanged();
         }
         
-        // PRIVATE
-        private void settingsChanged() {
-            backgroundColor     = QSettings.Instance().GetColor(EM_QSetting.AdditionalBackgroundColor);
-            enabled             = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapShow);
-            treeMapColor        = QSettings.Instance().GetColor(EM_QSetting.TreeMapColor);
-            enhanced            = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapEnhanced);
-            transparentBackground = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapTransparentBackground);
+        /// <summary>
+        /// 设置更改
+        /// </summary>
+        private void SettingsChanged()
+        {
+            backgroundColor       = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalBackgroundColor);
+            enabled               = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TreeMapShow);
+            treeMapColor          = QSettings.Instance().GetColor(EM_QHierarchySettings.TreeMapColor);
+            enhanced              = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TreeMapEnhanced);
+            transparentBackground = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TreeMapTransparentBackground);
         }
         
         // DRAW
@@ -67,10 +63,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.y = selectionRect.y;
             
-            if (!transparentBackground) 
+            if (transparentBackground == false) 
             {
                 rect.x = 0;
-                
                 rect.width = selectionRect.x - 14;
                 EditorGUI.DrawRect(rect, backgroundColor);
                 rect.width = 14;
@@ -81,12 +76,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
         public override void Draw(GameObject gameObject, QObjectList objectList, Rect selectionRect)
         {
-            int childCount = gameObject.transform.childCount;
-            int level = Mathf.RoundToInt(selectionRect.x / 14.0f);
+            var childCount = gameObject.transform.childCount;
+            var level = Mathf.RoundToInt(selectionRect.x / 14.0f);
 
             if (enhanced)
             {
-                Transform gameObjectTransform = gameObject.transform;
+                var gameObjectTransform = gameObject.transform;
                 Transform parentTransform = null;
 
                 for (int i = 0, j = level - 1; j >= 0; i++, j--)
@@ -96,7 +91,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         if (childCount == 0) {
                             #if UNITY_2018_3_OR_NEWER
-                                QColorUtils.setColor(treeMapColor);
+                                QColorUtils.SetColor(treeMapColor);
                             #endif
                             UnityEngine.GUI.DrawTexture(rect, treeMapObjectTexture);
                         }
@@ -104,7 +99,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     }
                     else if (i == 1)
                     {
-                        QColorUtils.setColor(treeMapColor);
+                        QColorUtils.SetColor(treeMapColor);
                         if (parentTransform == null) {
                             if (gameObjectTransform.GetSiblingIndex() == gameObject.scene.rootCount - 1) {
                                 UnityEngine.GUI.DrawTexture(rect, treeMapLastTexture);
@@ -133,7 +128,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 					else
                         break;
                 }
-                QColorUtils.clearColor();
+                QColorUtils.ClearColor();
             }
             else
             {
@@ -146,14 +141,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                             continue;
                         else {
                             #if UNITY_2018_3_OR_NEWER
-                                QColorUtils.setColor(treeMapColor);
+                                QColorUtils.SetColor(treeMapColor);
                             #endif
                             UnityEngine.GUI.DrawTexture(rect, treeMapObjectTexture);
                         }
                     }
                     else if (i == 1)
                     {
-                        QColorUtils.setColor(treeMapColor);
+                        QColorUtils.SetColor(treeMapColor);
                         UnityEngine.GUI.DrawTexture(rect, treeMapCurrentTexture);
                     }
                     else
@@ -165,7 +160,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         rect.width = 14;
                     }
                 }
-                QColorUtils.clearColor();
+                QColorUtils.ClearColor();
             }
         }
     }

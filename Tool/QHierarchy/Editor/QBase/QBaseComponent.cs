@@ -6,10 +6,24 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
 {
     public class QBaseComponent
     {
+        /// <summary>
+        /// 使能标志
+        /// </summary>
         protected bool enabled;
+        
+        /// <summary>
+        /// 播放模式下启用标志
+        /// </summary>
         protected bool showComponentDuringPlayMode = false;
+        
+        /// <summary>
+        /// 控件绘制矩形
+        /// </summary>
         protected Rect rect = new Rect(0, 0, 16, 16);
 
+        /// <summary>
+        /// 构造方法
+        /// </summary>
         protected QBaseComponent()
         {
         }
@@ -27,12 +41,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
 
         public bool IsEnabled()
         {
+            // 如果功能没有启用, 直接返回 false
             if (enabled == false)
             {
                 return enabled;
             }
-
-            return !Application.isPlaying || showComponentDuringPlayMode;
+            
+            // 如果当前处于编辑状态 或者处于播放状态且播放状态下启用, 则返回 true
+            return Application.isPlaying == false || showComponentDuringPlayMode;
         }
 
         protected static void GetGameObjectListRecursive(GameObject gameObject, ref List<GameObject> result, int maxDepth = int.MaxValue)

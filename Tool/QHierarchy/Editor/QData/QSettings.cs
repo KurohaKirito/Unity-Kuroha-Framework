@@ -6,52 +6,6 @@ using Kuroha.Tool.QHierarchy.Editor.QHelper;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QData
 {
-    public enum QHierarchyTagAndLayerType
-	{
-		Always           = 0,
-		OnlyIfNotDefault = 1
-	}
-
-    public enum QHierarchyTagAndLayerShowType
-    {
-        TagAndLayer = 0,
-        Tag         = 1,
-        Layer       = 2
-    }
-
-    public enum QHierarchyTagAndLayerAligment
-    {
-        Left   = 0,
-        Center = 1,
-        Right  = 2
-    }
-
-    public enum QHierarchyTagAndLayerSizeType
-    {
-        Pixel   = 0,
-        Percent = 1
-    }
-
-    public enum QHierarchyTagAndLayerLabelSize
-    {
-        Normal                          = 0,
-        Big                             = 1,
-        BigIfSpecifiedOnlyTagOrLayer    = 2
-    }
-
-    public enum QHierarchySize
-    {
-        Normal  = 0,
-        Big     = 1
-    }
-        
-    public enum QHierarchySizeAll
-    {
-        Small   = 0,
-        Normal  = 1,
-        Big     = 2
-    }
-
     public class QTagTexture
     {
         public string tag;
@@ -66,7 +20,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         public static List<QTagTexture> loadTagTextureList()
         {
             List<QTagTexture> tagTextureList = new List<QTagTexture>();
-            string customTagIcon = QSettings.Instance().Get<string>(EM_QSetting.TagIconList);
+            string customTagIcon = QSettings.Instance().Get<string>(EM_QHierarchySettings.TagIconList);
             string[] customTagIconArray = customTagIcon.Split(new char[]{';'});
             List<string> tags = new List<string>(UnityEditorInternal.InternalEditorUtility.tags);
             for (int i = 0; i < customTagIconArray.Length - 1; i+=2)
@@ -85,12 +39,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             return tagTextureList;
         }
 
-        public static void saveTagTextureList(EM_QSetting setting, List<QTagTexture> tagTextureList)
+        public static void saveTagTextureList(EM_QHierarchySettings hierarchySettings, List<QTagTexture> tagTextureList)
         { 
             string result = "";
             for (int i = 0; i < tagTextureList.Count; i++)            
                 result += tagTextureList[i].tag + ";" + AssetDatabase.GetAssetPath(tagTextureList[i].texture.GetInstanceID()) + ";";
-            QSettings.Instance().Set(setting, result);
+            QSettings.Instance().Set(hierarchySettings, result);
         }
     }
 
@@ -108,7 +62,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         public static List<QLayerTexture> loadLayerTextureList()
         {
             List<QLayerTexture> layerTextureList = new List<QLayerTexture>();
-            string customTagIcon = QSettings.Instance().Get<string>(EM_QSetting.LayerIconList);
+            string customTagIcon = QSettings.Instance().Get<string>(EM_QHierarchySettings.LayerIconList);
             string[] customLayerIconArray = customTagIcon.Split(new char[]{';'});
             List<string> layers = new List<string>(UnityEditorInternal.InternalEditorUtility.layers);
             for (int i = 0; i < customLayerIconArray.Length - 1; i+=2)
@@ -127,12 +81,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             return layerTextureList;
         }
         
-        public static void saveLayerTextureList(EM_QSetting setting, List<QLayerTexture> layerTextureList)
+        public static void saveLayerTextureList(EM_QHierarchySettings hierarchySettings, List<QLayerTexture> layerTextureList)
         { 
             string result = "";
             for (int i = 0; i < layerTextureList.Count; i++)            
                 result += layerTextureList[i].layer + ";" + AssetDatabase.GetAssetPath(layerTextureList[i].texture.GetInstanceID()) + ";";
-            QSettings.Instance().Set(setting, result);
+            QSettings.Instance().Set(hierarchySettings, result);
         }
     }
 
@@ -150,7 +104,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 
         // PRIVATE
         private QSettingsObject settingsObject;
-        private Dictionary<EM_QSetting, object> defaultSettings = new Dictionary<EM_QSetting, object>();
+        private Dictionary<EM_QHierarchySettings, object> defaultSettings = new Dictionary<EM_QHierarchySettings, object>();
         private HashSet<int> skinDependedSettings = new HashSet<int>();
         private Dictionary<int, QSettingChangedHandler> settingChangedHandlerList = new Dictionary<int, QSettingChangedHandler>();
 
@@ -177,120 +131,116 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
                 path = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
                 AssetDatabase.CreateAsset(settingsObject, path + "/" + SETTINGS_FILE_NAME + ".asset");
                 AssetDatabase.SaveAssets();
-            }  
+            }
 
-            initSetting(EM_QSetting.TreeMapShow                                , true);
-            initSetting(EM_QSetting.TreeMapColor                               , "39FFFFFF", "905D5D5D");
-            initSetting(EM_QSetting.TreeMapEnhanced                            , true);
-            initSetting(EM_QSetting.TreeMapTransparentBackground               , true);
+            initSetting(EM_QHierarchySettings.TreeMapShow                                , true);
+            initSetting(EM_QHierarchySettings.TreeMapColor                               , "39FFFFFF", "905D5D5D");
+            initSetting(EM_QHierarchySettings.TreeMapEnhanced                            , true);
+            initSetting(EM_QHierarchySettings.TreeMapTransparentBackground               , true);
 
-            initSetting(EM_QSetting.MonoBehaviourIconShow                      , true);
-            initSetting(EM_QSetting.MonoBehaviourIconShowDuringPlayMode        , true);
-            initSetting(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour  , true);
-            initSetting(EM_QSetting.MonoBehaviourIconColor                     , "A01B6DBB");
+            initSetting(EM_QHierarchySettings.MonoBehaviourIconShow                      , true);
+            initSetting(EM_QHierarchySettings.MonoBehaviourIconShowDuringPlayMode        , true);
+            initSetting(EM_QHierarchySettings.MonoBehaviourIconIgnoreUnityMonoBehaviour  , true);
+            initSetting(EM_QHierarchySettings.MonoBehaviourIconColor                     , "A01B6DBB");
 
-            initSetting(EM_QSetting.SeparatorShow                              , true);
-            initSetting(EM_QSetting.SeparatorShowRowShading                    , true);
-            initSetting(EM_QSetting.SeparatorColor                             , "FF303030", "48666666");
-            initSetting(EM_QSetting.SeparatorEvenRowShadingColor               , "13000000", "08000000");
-            initSetting(EM_QSetting.SeparatorOddRowShadingColor                , "00000000", "00FFFFFF");
+            initSetting(EM_QHierarchySettings.SeparatorShow                              , true);
+            initSetting(EM_QHierarchySettings.SeparatorShowRowShading                    , true);
+            initSetting(EM_QHierarchySettings.SeparatorColor                             , "FF303030", "48666666");
+            initSetting(EM_QHierarchySettings.SeparatorEvenRowShadingColor               , "13000000", "08000000");
+            initSetting(EM_QHierarchySettings.SeparatorOddRowShadingColor                , "00000000", "00FFFFFF");
 
-            initSetting(EM_QSetting.VisibilityShow                             , true);
-            initSetting(EM_QSetting.VisibilityShowDuringPlayMode               , true);
+            initSetting(EM_QHierarchySettings.VisibilityShow                             , true);
+            initSetting(EM_QHierarchySettings.VisibilityShowDuringPlayMode               , true);
 
-            initSetting(EM_QSetting.LockShow                                   , true);
-            initSetting(EM_QSetting.LockShowDuringPlayMode                     , false);
-            initSetting(EM_QSetting.LockPreventSelectionOfLockedObjects        , false);
+            initSetting(EM_QHierarchySettings.LockShow                                   , true);
+            initSetting(EM_QHierarchySettings.LockShowDuringPlayMode                     , false);
+            initSetting(EM_QHierarchySettings.LockPreventSelectionOfLockedObjects        , false);
 
-            initSetting(EM_QSetting.StaticShow                                 , true); 
-            initSetting(EM_QSetting.StaticShowDuringPlayMode                   , false);
+            initSetting(EM_QHierarchySettings.StaticShow                                 , true); 
+            initSetting(EM_QHierarchySettings.StaticShowDuringPlayMode                   , false);
 
-            initSetting(EM_QSetting.ErrorShow                                  , true);
-            initSetting(EM_QSetting.ErrorShowDuringPlayMode                    , false);
-            initSetting(EM_QSetting.ErrorShowIconOnParent                      , false);
-            initSetting(EM_QSetting.ErrorShowScriptIsMissing                   , true);
-            initSetting(EM_QSetting.ErrorShowReferenceIsNull                   , false);
-            initSetting(EM_QSetting.ErrorShowReferenceIsMissing                , true);
-            initSetting(EM_QSetting.ErrorShowStringIsEmpty                     , false);
-            initSetting(EM_QSetting.ErrorShowMissingEventMethod                , true);
-            initSetting(EM_QSetting.ErrorShowWhenTagOrLayerIsUndefined         , true);
-            initSetting(EM_QSetting.ErrorIgnoreString                          , "");
-            initSetting(EM_QSetting.ErrorShowForDisabledComponents             , true);
-            initSetting(EM_QSetting.ErrorShowForDisabledGameObjects            , true);
+            initSetting(EM_QHierarchySettings.ErrorShow                                  , true);
+            initSetting(EM_QHierarchySettings.ErrorShowDuringPlayMode                    , false);
+            initSetting(EM_QHierarchySettings.ErrorShowIconOnParent                      , false);
+            initSetting(EM_QHierarchySettings.ErrorShowScriptIsMissing                   , true);
+            initSetting(EM_QHierarchySettings.ErrorShowReferenceIsNull                   , false);
+            initSetting(EM_QHierarchySettings.ErrorShowReferenceIsMissing                , true);
+            initSetting(EM_QHierarchySettings.ErrorShowStringIsEmpty                     , false);
+            initSetting(EM_QHierarchySettings.ErrorShowMissingEventMethod                , true);
+            initSetting(EM_QHierarchySettings.ErrorShowWhenTagOrLayerIsUndefined         , true);
+            initSetting(EM_QHierarchySettings.ErrorIgnoreString                          , "");
+            initSetting(EM_QHierarchySettings.ErrorShowForDisabledComponents             , true);
+            initSetting(EM_QHierarchySettings.ErrorShowForDisabledGameObjects            , true);
 
-            initSetting(EM_QSetting.RendererShow                               , false);
-            initSetting(EM_QSetting.RendererShowDuringPlayMode                 , false);
+            initSetting(EM_QHierarchySettings.RendererShow                               , false);
+            initSetting(EM_QHierarchySettings.RendererShowDuringPlayMode                 , false);
 
-            initSetting(EM_QSetting.PrefabShow                                 , false);
-            initSetting(EM_QSetting.PrefabShowBrakedPrefabsOnly               , true);
+            initSetting(EM_QHierarchySettings.PrefabShow                                 , false);
+            initSetting(EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly               , true);
 
-            initSetting(EM_QSetting.TagAndLayerShow                            , true);
-            initSetting(EM_QSetting.TagAndLayerShowDuringPlayMode              , true);
-            initSetting(EM_QSetting.TagAndLayerSizeShowType                    , (int)QHierarchyTagAndLayerShowType.TagAndLayer);
-            initSetting(EM_QSetting.TagAndLayerType                            , (int)QHierarchyTagAndLayerType.OnlyIfNotDefault);
-            initSetting(EM_QSetting.TagAndLayerAlignment                        , (int)QHierarchyTagAndLayerAligment.Left);
-            initSetting(EM_QSetting.TagAndLayerSizeValueType                   , (int)QHierarchyTagAndLayerSizeType.Pixel);
-            initSetting(EM_QSetting.TagAndLayerSizeValuePercent                , 0.25f);
-            initSetting(EM_QSetting.TagAndLayerSizeValuePixel                  , 75);
-            initSetting(EM_QSetting.TagAndLayerLabelSize                       , (int)QHierarchyTagAndLayerLabelSize.Normal);
-            initSetting(EM_QSetting.TagAndLayerTagLabelColor                   , "FFCCCCCC", "FF333333");
-            initSetting(EM_QSetting.TagAndLayerLayerLabelColor                 , "FFCCCCCC", "FF333333");
-            initSetting(EM_QSetting.TagAndLayerLabelAlpha                      , 0.35f);
+            initSetting(EM_QHierarchySettings.TagAndLayerShow                            , true);
+            initSetting(EM_QHierarchySettings.TagAndLayerShowDuringPlayMode              , true);
+            initSetting(EM_QHierarchySettings.TagAndLayerSizeShowType                    , (int)EM_QHierarchyTagAndLayerShowType.TagAndLayer);
+            initSetting(EM_QHierarchySettings.TagAndLayerType                            , (int)EM_QHierarchyTagAndLayerType.OnlyIfNotDefault);
+            initSetting(EM_QHierarchySettings.TagAndLayerAlignment                        , (int)EM_QHierarchyTagAndLayerAlignment.Left);
+            initSetting(EM_QHierarchySettings.TagAndLayerSizeValueType                   , (int)EM_QHierarchyTagAndLayerSizeType.Pixel);
+            initSetting(EM_QHierarchySettings.TagAndLayerSizeValuePercent                , 0.25f);
+            initSetting(EM_QHierarchySettings.TagAndLayerSizeValuePixel                  , 75);
+            initSetting(EM_QHierarchySettings.TagAndLayerLabelSize                       , (int)EM_QHierarchyTagAndLayerLabelSize.Normal);
+            initSetting(EM_QHierarchySettings.TagAndLayerTagLabelColor                   , "FFCCCCCC", "FF333333");
+            initSetting(EM_QHierarchySettings.TagAndLayerLayerLabelColor                 , "FFCCCCCC", "FF333333");
+            initSetting(EM_QHierarchySettings.TagAndLayerLabelAlpha                      , 0.35f);
 
-            initSetting(EM_QSetting.ColorShow                                  , true);
-            initSetting(EM_QSetting.ColorShowDuringPlayMode                    , true);
+            initSetting(EM_QHierarchySettings.ColorShow                                  , true);
+            initSetting(EM_QHierarchySettings.ColorShowDuringPlayMode                    , true);
 
-            initSetting(EM_QSetting.GameObjectIconShow                         , false);
-            initSetting(EM_QSetting.GameObjectIconShowDuringPlayMode           , true);
-            initSetting(EM_QSetting.GameObjectIconSize                         , (int)QHierarchySizeAll.Small);
+            initSetting(EM_QHierarchySettings.GameObjectIconShow                         , false);
+            initSetting(EM_QHierarchySettings.GameObjectIconShowDuringPlayMode           , true);
+            initSetting(EM_QHierarchySettings.GameObjectIconSize                         , (int)EM_QHierarchySizeAll.Small);
 
-            initSetting(EM_QSetting.TagIconShow                                , false);
-            initSetting(EM_QSetting.TagIconShowDuringPlayMode                  , true);
-            initSetting(EM_QSetting.TagIconListFoldout                         , false);
-            initSetting(EM_QSetting.TagIconList                                , "");
-            initSetting(EM_QSetting.TagIconSize                                , (int)QHierarchySizeAll.Small);
+            initSetting(EM_QHierarchySettings.TagIconShow                                , false);
+            initSetting(EM_QHierarchySettings.TagIconShowDuringPlayMode                  , true);
+            initSetting(EM_QHierarchySettings.TagIconListFoldout                         , false);
+            initSetting(EM_QHierarchySettings.TagIconList                                , "");
+            initSetting(EM_QHierarchySettings.TagIconSize                                , (int)EM_QHierarchySizeAll.Small);
 
-            initSetting(EM_QSetting.LayerIconShow                              , false);
-            initSetting(EM_QSetting.LayerIconShowDuringPlayMode                , true);
-            initSetting(EM_QSetting.LayerIconListFoldout                       , false);
-            initSetting(EM_QSetting.LayerIconList                              , "");
-            initSetting(EM_QSetting.LayerIconSize                              , (int)QHierarchySizeAll.Small);
+            initSetting(EM_QHierarchySettings.LayerIconShow                              , false);
+            initSetting(EM_QHierarchySettings.LayerIconShowDuringPlayMode                , true);
+            initSetting(EM_QHierarchySettings.LayerIconListFoldout                       , false);
+            initSetting(EM_QHierarchySettings.LayerIconList                              , "");
+            initSetting(EM_QHierarchySettings.LayerIconSize                              , (int)EM_QHierarchySizeAll.Small);
 
-            initSetting(EM_QSetting.ChildrenCountShow                          , false);     
-            initSetting(EM_QSetting.ChildrenCountShowDuringPlayMode            , true);
-            initSetting(EM_QSetting.ChildrenCountLabelSize                     , (int)QHierarchySize.Normal);
-            initSetting(EM_QSetting.ChildrenCountLabelColor                    , "FFCCCCCC", "FF333333");
+            initSetting(EM_QHierarchySettings.ChildrenCountShow                          , false);     
+            initSetting(EM_QHierarchySettings.ChildrenCountShowDuringPlayMode            , true);
+            initSetting(EM_QHierarchySettings.ChildrenCountLabelSize                     , (int)EM_QHierarchySize.Normal);
+            initSetting(EM_QHierarchySettings.ChildrenCountLabelColor                    , "FFCCCCCC", "FF333333");
 
-            initSetting(EM_QSetting.VerticesAndTrianglesShow                   , false);
-            initSetting(EM_QSetting.VerticesAndTrianglesShowDuringPlayMode     , false);
-            initSetting(EM_QSetting.VerticesAndTrianglesCalculateTotalCount    , false);
-            initSetting(EM_QSetting.VerticesAndTrianglesShowTriangles          , false);
-            initSetting(EM_QSetting.VerticesAndTrianglesShowVertices           , true);
-            initSetting(EM_QSetting.VerticesAndTrianglesLabelSize              , (int)QHierarchySize.Normal);
-            initSetting(EM_QSetting.VerticesAndTrianglesVerticesLabelColor     , "FFCCCCCC", "FF333333");
-            initSetting(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor    , "FFCCCCCC", "FF333333");
+            initSetting(EM_QHierarchySettings.VerticesAndTrianglesShow                   , false);
+            initSetting(EM_QHierarchySettings.VerticesAndTrianglesShowDuringPlayMode     , false);
+            initSetting(EM_QHierarchySettings.VerticesAndTrianglesCalculateTotalCount    , false);
+            initSetting(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles          , false);
+            initSetting(EM_QHierarchySettings.VerticesAndTrianglesShowVertices           , true);
+            initSetting(EM_QHierarchySettings.VerticesAndTrianglesLabelSize              , (int)EM_QHierarchySize.Normal);
+            initSetting(EM_QHierarchySettings.VerticesAndTrianglesVerticesLabelColor     , "FFCCCCCC", "FF333333");
+            initSetting(EM_QHierarchySettings.VerticesAndTrianglesTrianglesLabelColor    , "FFCCCCCC", "FF333333");
 
-            initSetting(EM_QSetting.ComponentsShow                             , false);
-            initSetting(EM_QSetting.ComponentsShowDuringPlayMode               , false);
-            initSetting(EM_QSetting.ComponentsIconSize                         , (int)QHierarchySizeAll.Small);
-            initSetting(EM_QSetting.ComponentsIgnore                           , "");
+            initSetting(EM_QHierarchySettings.ComponentsShow                             , false);
+            initSetting(EM_QHierarchySettings.ComponentsShowDuringPlayMode               , false);
+            initSetting(EM_QHierarchySettings.ComponentsIconSize                         , (int)EM_QHierarchySizeAll.Small);
+            initSetting(EM_QHierarchySettings.ComponentsIgnore                           , "");
 
-            initSetting(EM_QSetting.ComponentsOrder                            , DEFAULT_ORDER);
+            initSetting(EM_QHierarchySettings.ComponentsOrder                            , DEFAULT_ORDER);
 
-            initSetting(EM_QSetting.AdditionalShowObjectListContent            , false);
-            initSetting(EM_QSetting.AdditionalShowHiddenQHierarchyObjectList   , true);
-            initSetting(EM_QSetting.AdditionalHideIconsIfNotFit                , true);
-            initSetting(EM_QSetting.AdditionalIndentation                       , 0);
-            initSetting(EM_QSetting.AdditionalShowModifierWarning              , true);
+            initSetting(EM_QHierarchySettings.AdditionalShowObjectListContent            , false);
+            initSetting(EM_QHierarchySettings.AdditionalShowHiddenQHierarchyObjectList   , true);
+            initSetting(EM_QHierarchySettings.AdditionalHideIconsIfNotFit                , true);
+            initSetting(EM_QHierarchySettings.AdditionalIndentation                       , 0);
+            initSetting(EM_QHierarchySettings.AdditionalShowModifierWarning              , true);
 
-            #if UNITY_2019_1_OR_NEWER
-            initSetting(EM_QSetting.AdditionalBackgroundColor                  , "00383838", "00CFCFCF");
-            #else
-            initSetting(QSetting.AdditionalBackgroundColor                  , "00383838", "00C2C2C2");
-            #endif
-            initSetting(EM_QSetting.AdditionalActiveColor                      , "FFFFFF80", "CF363636");
-            initSetting(EM_QSetting.AdditionalInactiveColor                    , "FF4F4F4F", "1E000000");
-            initSetting(EM_QSetting.AdditionalSpecialColor                     , "FF2CA8CA", "FF1D78D5");
+            initSetting(EM_QHierarchySettings.AdditionalBackgroundColor                  , "00383838", "00CFCFCF");
+            initSetting(EM_QHierarchySettings.AdditionalActiveColor                      , "FFFFFF80", "CF363636");
+            initSetting(EM_QHierarchySettings.AdditionalInactiveColor                    , "FF4F4F4F", "1E000000");
+            initSetting(EM_QHierarchySettings.AdditionalSpecialColor                     , "FF2CA8CA", "FF1D78D5");
 		} 
 
         // DESTRUCTOR
@@ -304,34 +254,34 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         }
 
         // PUBLIC
-        public T Get<T>(EM_QSetting setting)
+        public T Get<T>(EM_QHierarchySettings hierarchySettings)
         {
-            return (T)settingsObject.Get<T>(getSettingName(setting));
+            return (T)settingsObject.Get<T>(GetSettingName(hierarchySettings));
         }
 
-        public Color GetColor(EM_QSetting setting)
+        public Color GetColor(EM_QHierarchySettings hierarchySettings)
         {
-            string stringColor = (string)settingsObject.Get<string>(getSettingName(setting));
+            var stringColor = (string)settingsObject.Get<string>(GetSettingName(hierarchySettings));
             return QColorUtils.fromString(stringColor);
         }
 
-        public void SetColor(EM_QSetting setting, Color color)
+        public void SetColor(EM_QHierarchySettings hierarchySettings, Color color)
         {
             string stringColor = QColorUtils.toString(color);
-            Set(setting, stringColor);
+            Set(hierarchySettings, stringColor);
         }
 
         /// <summary>
         /// 设置配置
         /// </summary>
-        /// <param name="setting"></param>
+        /// <param name="hierarchySettings"></param>
         /// <param name="value"></param>
         /// <param name="invokeChanger"></param>
         /// <typeparam name="T"></typeparam>
-        public void Set<T>(EM_QSetting setting, T value, bool invokeChanger = true)
+        public void Set<T>(EM_QHierarchySettings hierarchySettings, T value, bool invokeChanger = true)
         {
-            var settingId = (int)setting;
-            settingsObject.Set(getSettingName(setting), value);
+            var settingId = (int)hierarchySettings;
+            settingsObject.Set(GetSettingName(hierarchySettings), value);
 
             if (invokeChanger && settingChangedHandlerList.ContainsKey(settingId) && settingChangedHandlerList[settingId] != null)
             {
@@ -341,9 +291,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             EditorApplication.RepaintHierarchyWindow();
         }
 
-        public void addEventListener(EM_QSetting setting, QSettingChangedHandler handler)
+        public void AddEventListener(EM_QHierarchySettings hierarchySettings, QSettingChangedHandler handler)
         {
-            int settingId = (int)setting;
+            int settingId = (int)hierarchySettings;
             
             if (!settingChangedHandlerList.ContainsKey(settingId))          
                 settingChangedHandlerList.Add(settingId, null);
@@ -354,9 +304,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
                 settingChangedHandlerList[settingId] += handler;
         }
         
-        public void removeEventListener(EM_QSetting setting, QSettingChangedHandler handler)
+        public void removeEventListener(EM_QHierarchySettings hierarchySettings, QSettingChangedHandler handler)
         {
-            int settingId = (int)setting;
+            int settingId = (int)hierarchySettings;
             
             if (settingChangedHandlerList.ContainsKey(settingId) && settingChangedHandlerList[settingId] != null)       
                 settingChangedHandlerList[settingId] -= handler;
@@ -365,23 +315,23 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         /// <summary>
         /// 恢复默认设置
         /// </summary>
-        /// <param name="setting"></param>
-        public void Restore(EM_QSetting setting)
+        /// <param name="hierarchySettings"></param>
+        public void Restore(EM_QHierarchySettings hierarchySettings)
         {
-            Set(setting, defaultSettings[setting]);
+            Set(hierarchySettings, defaultSettings[hierarchySettings]);
         }
 
         // PRIVATE
-        private void initSetting(EM_QSetting setting, object defaultValueDark, object defaultValueLight)
+        private void initSetting(EM_QHierarchySettings hierarchySettings, object defaultValueDark, object defaultValueLight)
         {
-            skinDependedSettings.Add((int)setting);
-            initSetting(setting, EditorGUIUtility.isProSkin ? defaultValueDark : defaultValueLight);
+            skinDependedSettings.Add((int)hierarchySettings);
+            initSetting(hierarchySettings, EditorGUIUtility.isProSkin ? defaultValueDark : defaultValueLight);
         }
         
-        private void initSetting(EM_QSetting setting, object defaultValue)
+        private void initSetting(EM_QHierarchySettings hierarchySettings, object defaultValue)
         {
-            string settingName = getSettingName(setting);
-            defaultSettings.Add(setting, defaultValue);
+            string settingName = GetSettingName(hierarchySettings);
+            defaultSettings.Add(hierarchySettings, defaultValue);
             object value = settingsObject.Get(settingName, defaultValue);
             if (value == null || value.GetType() != defaultValue.GetType())
             {
@@ -389,14 +339,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             }        
         }
 
-        private string getSettingName(EM_QSetting setting)
+        private string GetSettingName(EM_QHierarchySettings hierarchySettings)
         {
-            int settingId = (int)setting;
-            string settingName = PREFS_PREFIX;
-            if (skinDependedSettings.Contains(settingId))            
-                settingName += EditorGUIUtility.isProSkin ? PREFS_DARK : PREFS_LIGHT;            
-            settingName += setting.ToString("G");
-            return settingName.ToString();
+            var settingId = (int)hierarchySettings;
+            var settingName = PREFS_PREFIX;
+            if (skinDependedSettings.Contains(settingId))
+            {
+                settingName += EditorGUIUtility.isProSkin ? PREFS_DARK : PREFS_LIGHT;
+            }
+            settingName += hierarchySettings.ToString("G");
+            return settingName;
         }
 	}
 }

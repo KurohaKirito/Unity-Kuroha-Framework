@@ -31,22 +31,22 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             monoBehaviourIconTexture = QResources.Instance().GetTexture(QTexture.QMonoBehaviourIcon);
             monoBehaviourIconObjectTexture  = QResources.Instance().GetTexture(QTexture.QTreeMapObject);
 
-            QSettings.Instance().addEventListener(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.MonoBehaviourIconShow                     , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.MonoBehaviourIconShowDuringPlayMode       , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.MonoBehaviourIconColor                    , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TreeMapShow                               , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconIgnoreUnityMonoBehaviour , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconShow                     , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconShowDuringPlayMode       , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconColor                    , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TreeMapShow                               , settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            ignoreUnityMonobehaviour    = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconIgnoreUnityMonoBehaviour);
-            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconShow);
-            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.MonoBehaviourIconShowDuringPlayMode);
-            iconColor                   = QSettings.Instance().GetColor(EM_QSetting.MonoBehaviourIconColor);
-            showTreeMap                 = QSettings.Instance().Get<bool>(EM_QSetting.TreeMapShow);
+            ignoreUnityMonobehaviour    = QSettings.Instance().Get<bool>(EM_QHierarchySettings.MonoBehaviourIconIgnoreUnityMonoBehaviour);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.MonoBehaviourIconShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.MonoBehaviourIconShowDuringPlayMode);
+            iconColor                   = QSettings.Instance().GetColor(EM_QHierarchySettings.MonoBehaviourIconColor);
+            showTreeMap                 = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TreeMapShow);
             EditorApplication.RepaintHierarchyWindow();  
         }
 
@@ -87,9 +87,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     rect.x += TREE_STEP_WIDTH;
                 #endif                
 
-                QColorUtils.setColor(iconColor);
+                QColorUtils.SetColor(iconColor);
                 UnityEngine.GUI.DrawTexture(rect, monoBehaviourIconTexture);
-                QColorUtils.clearColor();
+                QColorUtils.ClearColor();
 
                 if (!showTreeMap && gameObject.transform.childCount == 0)
                 {

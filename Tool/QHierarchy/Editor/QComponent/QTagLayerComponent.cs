@@ -13,7 +13,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
     {
         // PRIVATE
         private GUIStyle labelStyle;
-        private QHierarchyTagAndLayerShowType showType;
+        private EM_QHierarchyTagAndLayerShowType showType;
         private Color layerColor;
         private Color tagColor;       
         private bool showAlways;
@@ -22,7 +22,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private float percentSize;
         private GameObject[] gameObjects;
         private float labelAlpha;
-        private QHierarchyTagAndLayerLabelSize labelSize;
+        private EM_QHierarchyTagAndLayerLabelSize labelSize;
         private Rect tagRect = new Rect();
         private Rect layerRect = new Rect();
         private bool needDrawTag;
@@ -38,42 +38,42 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             labelStyle.clipping = TextClipping.Clip;  
             labelStyle.alignment = TextAnchor.MiddleLeft;
 
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerSizeShowType       , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerType               , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerSizeValueType      , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerSizeValuePixel     , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerSizeValuePercent   , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerLabelSize          , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerShow               , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerShowDuringPlayMode , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerTagLabelColor      , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerLayerLabelColor    , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerAlignment           , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagAndLayerLabelAlpha         , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerSizeShowType       , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerType               , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerSizeValueType      , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerSizeValuePixel     , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerSizeValuePercent   , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerLabelSize          , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerShow               , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerShowDuringPlayMode , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerTagLabelColor      , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerLayerLabelColor    , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerAlignment           , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerLabelAlpha         , settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            showAlways  = QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerType) == (int)QHierarchyTagAndLayerType.Always;
-            showType    = (QHierarchyTagAndLayerShowType)QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerSizeShowType);
-            sizeIsPixel = QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerSizeValueType) == (int)QHierarchyTagAndLayerSizeType.Pixel;
-            pixelSize   = QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerSizeValuePixel);
-            percentSize = QSettings.Instance().Get<float>(EM_QSetting.TagAndLayerSizeValuePercent);
-            labelSize   = (QHierarchyTagAndLayerLabelSize)QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerLabelSize);
-            enabled     = QSettings.Instance().Get<bool>(EM_QSetting.TagAndLayerShow);
-            tagColor    = QSettings.Instance().GetColor(EM_QSetting.TagAndLayerTagLabelColor);
-            layerColor  = QSettings.Instance().GetColor(EM_QSetting.TagAndLayerLayerLabelColor);
-            labelAlpha  = QSettings.Instance().Get<float>(EM_QSetting.TagAndLayerLabelAlpha);
-            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.TagAndLayerShowDuringPlayMode);
+            showAlways  = QSettings.Instance().Get<int>(EM_QHierarchySettings.TagAndLayerType) == (int)EM_QHierarchyTagAndLayerType.Always;
+            showType    = (EM_QHierarchyTagAndLayerShowType)QSettings.Instance().Get<int>(EM_QHierarchySettings.TagAndLayerSizeShowType);
+            sizeIsPixel = QSettings.Instance().Get<int>(EM_QHierarchySettings.TagAndLayerSizeValueType) == (int)EM_QHierarchyTagAndLayerSizeType.Pixel;
+            pixelSize   = QSettings.Instance().Get<int>(EM_QHierarchySettings.TagAndLayerSizeValuePixel);
+            percentSize = QSettings.Instance().Get<float>(EM_QHierarchySettings.TagAndLayerSizeValuePercent);
+            labelSize   = (EM_QHierarchyTagAndLayerLabelSize)QSettings.Instance().Get<int>(EM_QHierarchySettings.TagAndLayerLabelSize);
+            enabled     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TagAndLayerShow);
+            tagColor    = QSettings.Instance().GetColor(EM_QHierarchySettings.TagAndLayerTagLabelColor);
+            layerColor  = QSettings.Instance().GetColor(EM_QHierarchySettings.TagAndLayerLayerLabelColor);
+            labelAlpha  = QSettings.Instance().Get<float>(EM_QHierarchySettings.TagAndLayerLabelAlpha);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TagAndLayerShowDuringPlayMode);
 
-            QHierarchyTagAndLayerAligment aligment = (QHierarchyTagAndLayerAligment)QSettings.Instance().Get<int>(EM_QSetting.TagAndLayerAlignment);
-            switch (aligment)
+            EM_QHierarchyTagAndLayerAlignment alignment = (EM_QHierarchyTagAndLayerAlignment)QSettings.Instance().Get<int>(EM_QHierarchySettings.TagAndLayerAlignment);
+            switch (alignment)
             {
-                case QHierarchyTagAndLayerAligment.Left  : labelStyle.alignment = TextAnchor.MiddleLeft;   break;
-                case QHierarchyTagAndLayerAligment.Center: labelStyle.alignment = TextAnchor.MiddleCenter; break;
-                case QHierarchyTagAndLayerAligment.Right : labelStyle.alignment = TextAnchor.MiddleRight;  break;
+                case EM_QHierarchyTagAndLayerAlignment.Left  : labelStyle.alignment = TextAnchor.MiddleLeft;   break;
+                case EM_QHierarchyTagAndLayerAlignment.Center: labelStyle.alignment = TextAnchor.MiddleCenter; break;
+                case EM_QHierarchyTagAndLayerAlignment.Right : labelStyle.alignment = TextAnchor.MiddleRight;  break;
             }
         }
 
@@ -98,16 +98,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 layer  = gameObject.layer; 
                 tag = getTagName(gameObject);             
                 
-                needDrawTag   = (showType != QHierarchyTagAndLayerShowType.Layer) && ((showAlways || tag   != "Untagged"));
-                needDrawLayer = (showType != QHierarchyTagAndLayerShowType.Tag  ) && ((showAlways || layer != 0         ));
+                needDrawTag   = (showType != EM_QHierarchyTagAndLayerShowType.Layer) && ((showAlways || tag   != "Untagged"));
+                needDrawLayer = (showType != EM_QHierarchyTagAndLayerShowType.Tag  ) && ((showAlways || layer != 0         ));
 
                 #if UNITY_2019_1_OR_NEWER
-                    if (labelSize == QHierarchyTagAndLayerLabelSize.Big || (labelSize == QHierarchyTagAndLayerLabelSize.BigIfSpecifiedOnlyTagOrLayer && needDrawTag != needDrawLayer)) 
+                    if (labelSize == EM_QHierarchyTagAndLayerLabelSize.Big || (labelSize == EM_QHierarchyTagAndLayerLabelSize.BigIfSpecifiedOnlyTagOrLayer && needDrawTag != needDrawLayer)) 
                         labelStyle.fontSize = 8;
                     else 
                         labelStyle.fontSize = 7;
                 #else
-                    if (labelSize == QHierarchyTagAndLayerLabelSize.Big || (labelSize == QHierarchyTagAndLayerLabelSize.BigIfSpecifiedOnlyTagOrLayer && needDrawTag != needDrawLayer)) 
+                    if (labelSize == EM_QHierarchyTagAndLayerLabelSize.Big || (labelSize == EM_QHierarchyTagAndLayerLabelSize.BigIfSpecifiedOnlyTagOrLayer && needDrawTag != needDrawLayer)) 
                         labelStyle.fontSize = 9;
                     else 
                         labelStyle.fontSize = 8;

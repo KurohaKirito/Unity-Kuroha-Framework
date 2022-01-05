@@ -17,7 +17,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private bool calculateTotalCount;
         private bool showTrianglesCount;
         private bool showVerticesCount;
-        private QHierarchySize labelSize;
+        private EM_QHierarchySize labelSize;
 
         // CONSTRUCTOR
         public QVerticesAndTrianglesCountComponent ()
@@ -26,14 +26,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             labelStyle.clipping = TextClipping.Clip;  
             labelStyle.alignment = TextAnchor.MiddleRight;
 
-            QSettings.Instance().addEventListener(EM_QSetting.VerticesAndTrianglesShow                  , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.VerticesAndTrianglesShowDuringPlayMode    , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.VerticesAndTrianglesCalculateTotalCount   , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.VerticesAndTrianglesShowTriangles         , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.VerticesAndTrianglesShowVertices          , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.VerticesAndTrianglesLabelSize             , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.VerticesAndTrianglesVerticesLabelColor    , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor   , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShow                  , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowDuringPlayMode    , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesCalculateTotalCount   , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles         , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowVertices          , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesLabelSize             , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesVerticesLabelColor    , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesTrianglesLabelColor   , settingsChanged);
 
             settingsChanged();
         }
@@ -41,21 +41,21 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         // PRIVATE
         private void settingsChanged()
         {
-            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShow);
-            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowDuringPlayMode);
-            calculateTotalCount         = QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesCalculateTotalCount);
-            showTrianglesCount          = QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowTriangles);
-            showVerticesCount           = QSettings.Instance().Get<bool>(EM_QSetting.VerticesAndTrianglesShowVertices);
-            verticesLabelColor          = QSettings.Instance().GetColor(EM_QSetting.VerticesAndTrianglesVerticesLabelColor);
-            trianglesLabelColor         = QSettings.Instance().GetColor(EM_QSetting.VerticesAndTrianglesTrianglesLabelColor);
-            labelSize                   = (QHierarchySize)QSettings.Instance().Get<int>(EM_QSetting.VerticesAndTrianglesLabelSize);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowDuringPlayMode);
+            calculateTotalCount         = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesCalculateTotalCount);
+            showTrianglesCount          = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles);
+            showVerticesCount           = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowVertices);
+            verticesLabelColor          = QSettings.Instance().GetColor(EM_QHierarchySettings.VerticesAndTrianglesVerticesLabelColor);
+            trianglesLabelColor         = QSettings.Instance().GetColor(EM_QHierarchySettings.VerticesAndTrianglesTrianglesLabelColor);
+            labelSize                   = (EM_QHierarchySize)QSettings.Instance().Get<int>(EM_QHierarchySettings.VerticesAndTrianglesLabelSize);
 
             #if UNITY_2019_1_OR_NEWER
-                labelStyle.fontSize = labelSize == QHierarchySize.Big ? 7 : 6;
-                rect.width = labelSize == QHierarchySize.Big ? 24 : 22;
+                labelStyle.fontSize = labelSize == EM_QHierarchySize.Big ? 7 : 6;
+                rect.width = labelSize == EM_QHierarchySize.Big ? 24 : 22;
             #else
-                labelStyle.fontSize = labelSize == QHierarchySize.Big ? 9 : 8;
-                rect.width = labelSize == QHierarchySize.Big ? 33 : 25;
+                labelStyle.fontSize = labelSize == EM_QHierarchySize.Big ? 9 : 8;
+                rect.width = labelSize == EM_QHierarchySize.Big ? 33 : 25;
             #endif
         }   
 
@@ -72,7 +72,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 rect.x = curRect.x;
                 rect.y = curRect.y;
                 #if UNITY_2019_1_OR_NEWER                
-                    rect.y += labelSize == QHierarchySize.Big ? 2 : 1;
+                    rect.y += labelSize == EM_QHierarchySize.Big ? 2 : 1;
                 #endif
                 return EM_QLayoutStatus.Success;
             }

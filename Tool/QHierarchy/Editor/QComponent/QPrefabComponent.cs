@@ -24,20 +24,20 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             prefabTexture = QResources.Instance().GetTexture(QTexture.QPrefabIcon);
 
-            QSettings.Instance().addEventListener(EM_QSetting.PrefabShowBrakedPrefabsOnly  , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.PrefabShow                    , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalActiveColor         , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor       , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly  , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.PrefabShow                    , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor         , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor       , settingsChanged);
             settingsChanged();
         }
         
         // PRIVATE
         private void settingsChanged()
         {
-            showPrefabConnectedIcon = QSettings.Instance().Get<bool>(EM_QSetting.PrefabShowBrakedPrefabsOnly);
-            enabled                 = QSettings.Instance().Get<bool>(EM_QSetting.PrefabShow);
-            activeColor             = QSettings.Instance().GetColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor           = QSettings.Instance().GetColor(EM_QSetting.AdditionalInactiveColor);
+            showPrefabConnectedIcon = QSettings.Instance().Get<bool>(EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly);
+            enabled                 = QSettings.Instance().Get<bool>(EM_QHierarchySettings.PrefabShow);
+            activeColor             = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
+            inactiveColor           = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
         }
 
         // DRAW
@@ -62,13 +62,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 PrefabInstanceStatus prefabStatus = PrefabUtility.GetPrefabInstanceStatus(gameObject);
                 if (prefabStatus == PrefabInstanceStatus.MissingAsset ||
                     prefabStatus == PrefabInstanceStatus.Disconnected) {
-                    QColorUtils.setColor(inactiveColor);
+                    QColorUtils.SetColor(inactiveColor);
                     UnityEngine.GUI.DrawTexture(rect, prefabTexture);
-                    QColorUtils.clearColor();
+                    QColorUtils.ClearColor();
                 } else if (!showPrefabConnectedIcon && prefabStatus != PrefabInstanceStatus.NotAPrefab) {
-                    QColorUtils.setColor(activeColor);
+                    QColorUtils.SetColor(activeColor);
                     UnityEngine.GUI.DrawTexture(rect, prefabTexture);
-                    QColorUtils.clearColor();
+                    QColorUtils.ClearColor();
                 }
             #else
                 PrefabType prefabType = PrefabUtility.GetPrefabType(gameObject);
@@ -78,13 +78,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     QColorUtils.SetColor(inactiveColor);
                     GUI.DrawTexture(rect, prefabTexture);
-                    QColorUtils.clearColor();
+                    QColorUtils.ClearColor();
                 }
                 else if (!showPrefabConnectedIcon && prefabType != PrefabType.None)
                 {
                     QColorUtils.SetColor(activeColor);
                     GUI.DrawTexture(rect, prefabTexture);
-                    QColorUtils.clearColor();
+                    QColorUtils.ClearColor();
                 }
             #endif
         }

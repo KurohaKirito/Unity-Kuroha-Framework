@@ -25,22 +25,22 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             rendererButtonTexture = QResources.Instance().GetTexture(QTexture.QRendererButton);
 
-            QSettings.Instance().addEventListener(EM_QSetting.RendererShow              , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.RendererShowDuringPlayMode, settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalActiveColor     , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalInactiveColor   , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.AdditionalSpecialColor    , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.RendererShow              , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.RendererShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor     , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor   , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalSpecialColor    , settingsChanged);
             settingsChanged();
         }
 
         // PRIVATE
         private void settingsChanged()
         {
-            enabled                     = QSettings.Instance().Get<bool>(EM_QSetting.RendererShow);
-            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.RendererShowDuringPlayMode);
-            activeColor                 = QSettings.Instance().GetColor(EM_QSetting.AdditionalActiveColor);
-            inactiveColor               = QSettings.Instance().GetColor(EM_QSetting.AdditionalInactiveColor);
-            specialColor                = QSettings.Instance().GetColor(EM_QSetting.AdditionalSpecialColor);
+            enabled                     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.RendererShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.RendererShowDuringPlayMode);
+            activeColor                 = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
+            inactiveColor               = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
+            specialColor                = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalSpecialColor);
         }
 
         // DRAW
@@ -77,21 +77,21 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 bool wireframeHiddenObjectsContains = isWireframeHidden(gameObject, objectList);
                 if (wireframeHiddenObjectsContains)
                 {
-                    QColorUtils.setColor(specialColor);
+                    QColorUtils.SetColor(specialColor);
                     UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QColorUtils.clearColor();
+                    QColorUtils.ClearColor();
                 }
                 else if (renderer.enabled)
                 {
-                    QColorUtils.setColor(activeColor);
+                    QColorUtils.SetColor(activeColor);
                     UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QColorUtils.clearColor();
+                    QColorUtils.ClearColor();
                 }
                 else
                 {
-                    QColorUtils.setColor(inactiveColor);
+                    QColorUtils.SetColor(inactiveColor);
                     UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QColorUtils.clearColor();
+                    QColorUtils.ClearColor();
                 }
             }
         }

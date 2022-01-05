@@ -12,6 +12,7 @@ namespace Kuroha.Tool.QHierarchy.RunTime
     public class QObjectList : MonoBehaviour, ISerializationCallbackReceiver
     {
         public static readonly List<QObjectList> instances = new List<QObjectList>();
+        
         public readonly Dictionary<GameObject, Color> gameObjectColor = new Dictionary<GameObject, Color>();
 
         [Header("锁定的游戏物体")]

@@ -20,20 +20,20 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width  = 14;
             rect.height = 14;
 
-            QSettings.Instance().addEventListener(EM_QSetting.TagIconShow              , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagIconShowDuringPlayMode, settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagIconSize              , settingsChanged);
-            QSettings.Instance().addEventListener(EM_QSetting.TagIconList              , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagIconShow              , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagIconShowDuringPlayMode, settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagIconSize              , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagIconList              , settingsChanged);
             settingsChanged();
         }
         
         // PRIVATE
         private void settingsChanged()
         {
-            enabled = QSettings.Instance().Get<bool>(EM_QSetting.TagIconShow);
-            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QSetting.TagIconShowDuringPlayMode);
-            QHierarchySizeAll size = (QHierarchySizeAll)QSettings.Instance().Get<int>(EM_QSetting.TagIconSize);
-            rect.width = rect.height = (size == QHierarchySizeAll.Normal ? 15 : (size == QHierarchySizeAll.Big ? 16 : 13));        
+            enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TagIconShow);
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TagIconShowDuringPlayMode);
+            EM_QHierarchySizeAll size = (EM_QHierarchySizeAll)QSettings.Instance().Get<int>(EM_QHierarchySettings.TagIconSize);
+            rect.width = rect.height = (size == EM_QHierarchySizeAll.Normal ? 15 : (size == EM_QHierarchySizeAll.Big ? 16 : 13));        
             this.tagTextureList = QTagTexture.loadTagTextureList();
         }
 

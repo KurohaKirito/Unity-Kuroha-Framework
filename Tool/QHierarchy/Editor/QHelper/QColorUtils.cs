@@ -8,17 +8,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
     {
         private static Color defaultColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-        public static void setDefaultColor(Color defaultColor)
+        public static void SetDefaultColor(Color defaultColor)
         {
             QColorUtils.defaultColor = defaultColor;
         }
 
-        public static void setColor(Color newColor)
+        public static void SetColor(Color newColor)
         {
             UnityEngine.GUI.color = newColor;
         }
 
-        public static void setColor(Color newColor, float multiColor, float multiAlpha)
+        public static void SetColor(Color newColor, float multiColor, float multiAlpha)
         {
             newColor.r *= multiColor;
             newColor.g *= multiColor;
@@ -27,7 +27,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             UnityEngine.GUI.color = newColor;
         }
 
-        public static void clearColor()
+        public static void ClearColor()
         {
             UnityEngine.GUI.color = defaultColor;
         }
