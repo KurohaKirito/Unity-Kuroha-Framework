@@ -15,7 +15,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
     /// </summary>
     public class QHierarchyMain
     {
-        //private readonly HashSet<int> errorHandled = new HashSet<int>();
+        private readonly HashSet<int> errorHandled = new HashSet<int>();
 
         /// <summary>
         /// 功能组件字典
@@ -132,8 +132,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         public void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)
         {
-            //try
-            //{
+            try
+            {
                 QColorUtils.SetDefaultColor(UnityEngine.GUI.color);
 
                 if (EditorUtility.InstanceIDToObject(instanceId) is GameObject gameObject)
@@ -152,14 +152,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                     // errorHandled.Remove(instanceId);
                 }
-            // }
-            // catch (Exception exception)
-            // {
-            //     if (errorHandled.Add(instanceId))
-            //     {
-            //         Debug.LogError(exception.ToString());
-            //     }
-            // }
+            }
+            catch (Exception exception)
+            {
+                if (errorHandled.Add(instanceId))
+                {
+                    Debug.LogError(exception.ToString());
+                }
+            }
         }
         
         /// <summary>

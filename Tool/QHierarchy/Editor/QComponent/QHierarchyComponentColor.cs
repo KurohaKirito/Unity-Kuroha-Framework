@@ -15,8 +15,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
         private const float COLOR_RECT_SPACE = 1;
         private const float COMPONENT_WIDTH = 8;
-        
-        // CONSTRUCTOR
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public QHierarchyComponentColor()
         {
             colorTexture = QResources.Instance().GetTexture(QTexture.QColorButton);
@@ -88,22 +90,31 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             QColorUtils.ClearColor();
         }
 
-        // EVENTS
+        /// <summary>
+        /// 鼠标单击事件
+        /// </summary>
         public override void EventHandler(GameObject gameObject, QObjectList objectList, Event currentEvent)
         {
             if (currentEvent.isMouse && currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
             {
                 if (currentEvent.type == EventType.MouseDown)
                 {
-                    var obj = Selection.Contains(gameObject) ? Selection.gameObjects : new[] { gameObject };
-                    PopupWindow.Show(rect, new QColorPickerWindow(obj, ColorSelectedHandler, ColorRemovedHandler));
+                    try
+                    {
+                        var obj = Selection.Contains(gameObject) ? Selection.gameObjects : new[] { gameObject };
+                        PopupWindow.Show(rect, new QColorPickerWindow(obj, ColorSelectedHandler, ColorRemovedHandler));
+                    }
+                    catch
+                    {
+                        // 忽略 UnityEngine.ExitGUIException 异常
+                        // 按照 Unity 官方的说法, 此异常无毒无害, 可忽略
+                    }
                 }
 
                 currentEvent.Use();
             }
         }
 
-        // PRIVATE
         private static void ColorSelectedHandler(GameObject[] gameObjects, Color color)
         {
             for (var i = gameObjects.Length - 1; i >= 0; i--)
