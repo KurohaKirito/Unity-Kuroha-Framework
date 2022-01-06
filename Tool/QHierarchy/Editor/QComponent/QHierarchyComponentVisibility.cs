@@ -26,6 +26,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             visibilityButtonTexture    = QResources.Instance().GetTexture(QTexture.QVisibilityButton);
             visibilityOffButtonTexture = QResources.Instance().GetTexture(QTexture.QVisibilityOffButton);
+            // visibilityButtonTexture = EditorGUIUtility.IconContent("animationvisibilitytoggleon@2x").image as Texture2D;
+            // visibilityOffButtonTexture = EditorGUIUtility.IconContent("animationvisibilitytoggleoff@2x").image as Texture2D;
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShow                , settingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShowDuringPlayMode  , settingsChanged);
@@ -41,6 +43,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VisibilityShowDuringPlayMode);
             activeColor                 = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
             inactiveColor               = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
+            // activeColor = Color.yellow;
+            // inactiveColor = Color.white;
             specialColor                = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalSpecialColor);
         }
 

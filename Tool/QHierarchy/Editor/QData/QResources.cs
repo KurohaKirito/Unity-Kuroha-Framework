@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QData
@@ -67,11 +66,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             {QTexture.QErrorIcon, "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAQCAYAAADagWXwAAAANklEQVQYGWP8/fs3Ay7AhEsCJE605H+gYhCGA6J1wnXAGAOhkwVmOZBmRGKDmUQ7iLRAIN9OAA9DBxP0TyMiAAAAAElFTkSuQmCC"},
             {
                 QTexture.QLockButton,
-                "iVBORw0KGgoAAAANSUhEUgAAAA0AAAAQCAYAAADNo/U5AAAAtklEQVQoFb2QsQ0CMQxFY6Cgp+EmYA4WgDVYhtuFLViBCagoKY/wXxRHXJDCQcGXvuxvf599sRhj+BaLaqCT3osr8SaexKs4Bpsyd4p38RVo6u5J0UWnBoazuBGXOaKp03dv8OSgImDAa0Q0oF/qs3zsOsfL+Pjg2vup7UOV94PU2l4cxBbo40snmpJB352y8SHfnBswvw2Y2ZZmheIrSWVoyv8N/fwQR/0AL9gCfXwJbPJ8cnwCewTKXVfaQ3EAAAAASUVORK5CYII="
+                "iVBORw0KGgoAAAANSUhEUgAAAA0AAAAQBAMAAAA/jegKAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAACdQTFRFAAAA////////////////////////////////////AAAA////////Uw8KpAAAAA10Uk5TAGh7TvX/yICO/UCK/PopRqIAAABFSURBVHicY2CAA0ZFMMXsGuoMolkSGFJAtCgDA6sAkC4F0gUImmNqaGjoDAYGTiAVGgkUCw1dGhqKm4ap4z4KpE/DLQUA21oT++3FRPAAAAAASUVORK5CYII="
+                //"iVBORw0KGgoAAAANSUhEUgAAAA0AAAAQCAYAAADNo/U5AAAAtklEQVQoFb2QsQ0CMQxFY6Cgp+EmYA4WgDVYhtuFLViBCagoKY/wXxRHXJDCQcGXvuxvf599sRhj+BaLaqCT3osr8SaexKs4Bpsyd4p38RVo6u5J0UWnBoazuBGXOaKp03dv8OSgImDAa0Q0oF/qs3zsOsfL+Pjg2vup7UOV94PU2l4cxBbo40snmpJB352y8SHfnBswvw2Y2ZZmheIrSWVoyv8N/fwQR/0AL9gCfXwJbPJ8cnwCewTKXVfaQ3EAAAAASUVORK5CYII="
             },
             {QTexture.QMonoBehaviourIcon, "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4EWP8//8/AyWABagZZEIhuYYwkasRpm/UAAaG0TAYDQNQfgClgz+wjEEODQAZqgWLOZX9TgAAAABJRU5ErkJggg=="},
             {QTexture.QPrefabIcon, "iVBORw0KGgoAAAANSUhEUgAAAAkAAAAQCAYAAADESFVDAAAAd0lEQVQoFY2RUQqAMAxDV/GeHkU8ijfzHv3QphIJm7AWtpbtkWTM3L3NapkBuC9Ba4D3j5rpGSDU8bbcd5lzLNmVINpBdhMb5sxsvdIZ4BVLMzYqMayqfcKAUjI6LKA0VG83ADgoQSYfzBepWkZhcFwwm0I5l+weLU0O7oJcg0oAAAAASUVORK5CYII="},
-            {QTexture.QRendererButton, "iVBORw0KGgoAAAANSUhEUgAAAAwAAAAQCAYAAAAiYZ4HAAAAdElEQVQoFWP8/v07AwsLCwOxgIlYhTB1JGsAuUUFiGVgJhCgDwCdz3KbgCKYtCOIAXYSKyurIxAzggRwsUFyIIDsBwewCITAxWZg/P37938khfiYICcdGHUSviD68+ePKlD+DihpgCMMn2JkOeSIQxbHyQYAcE0cpIy04qQAAAAASUVORK5CYII="},
+            {
+                QTexture.QRendererButton,
+                "iVBORw0KGgoAAAANSUhEUgAAAAwAAAAQAgMAAABfD3aUAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAlQTFRFAAAA+/v7AAAAkrXw8AAAAAN0Uk5TAP9AH454PAAAABpJREFUeJxjYEACoqEhDBKJLQxSmUvwspEAACf1CWWA2r8AAAAAAElFTkSuQmCC"
+                //"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAQCAYAAAAiYZ4HAAAAdElEQVQoFWP8/v07AwsLCwOxgIlYhTB1JGsAuUUFiGVgJhCgDwCdz3KbgCKYtCOIAXYSKyurIxAzggRwsUFyIIDsBwewCITAxWZg/P37938khfiYICcdGHUSviD68+ePKlD+DihpgCMMn2JkOeSIQxbHyQYAcE0cpIy04qQAAAAASUVORK5CYII="
+            },
             {
                 QTexture.QRestoreButton,
                 "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA3klEQVQ4Ec1RMQ7CMAxMUtj4CSPiATyADzB2QWx8gAlF4geIpTO/YEZIbAz8gxWFuyip3KRR2cDS1fad7dSJttaqkjnnvKS1LpUoU1S+FP53wBobXIFXAGNymfWtwMIdcDfGLAjGgcuGjCC0xlvHjR9AnIFNKyh1C3ENfxJ89gpbihj0DN7X8hmBBvyUh0jIFd6onkEc0wPMB02uUOGU2LRCJ3M/gCfCauQPT4iP/APSVdCiZzoHjsASaICOyT+Igm+Oe4K8hJP3iDsXyIa+AeSlTWSSxukKqT6Y/37AB6sOP8hny1/VAAAAAElFTkSuQmCC"
@@ -121,20 +125,20 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 
         private Dictionary<QColor, Color> colors;
 
-        private Dictionary<QColor, Color> colorsDark = new Dictionary<QColor, Color>()
+        private readonly Dictionary<QColor, Color> colorsDarkSkin = new Dictionary<QColor, Color>()
         {
             {QColor.BackgroundDark, new Color(0.15f, 0.15f, 0.15f)},
             {QColor.Background, new Color(0.22f, 0.22f, 0.22f)},
-            {QColor.Gray, new Color(0.6f, 0.6f, 0.6f)},
+            {QColor.Gray, new Color(0.8f, 0.8f, 0.8f)},
             {QColor.GrayLight, new Color(0.8f, 0.8f, 0.8f)},
             {QColor.GrayDark, new Color(0.4f, 0.4f, 0.4f)},
         };
 
-        private Dictionary<QColor, Color> colorsLight = new Dictionary<QColor, Color>()
+        private readonly Dictionary<QColor, Color> colorsLightSkin = new Dictionary<QColor, Color>()
         {
             {QColor.BackgroundDark, new Color(0.88f, 0.88f, 0.88f)},
             {QColor.Background, new Color(0.761f, 0.761f, 0.761f)},
-            {QColor.Gray, new Color(0.3f, 0.3f, 0.3f)},
+            {QColor.Gray, new Color(0.2f, 0.2f, 0.2f)},
             {QColor.GrayLight, new Color(0.1f, 0.1f, 0.1f)},
             {QColor.GrayDark, new Color(0.55f, 0.55f, 0.55f)},
         };
@@ -163,7 +167,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
                 textures.Add(resourcePair.Key, texture);
             }
 
-            colors = EditorGUIUtility.isProSkin ? colorsDark : colorsLight;
+            colors = EditorGUIUtility.isProSkin ? colorsDarkSkin : colorsLightSkin;
         }
 
         public Texture2D GetTexture(QTexture textureName)
