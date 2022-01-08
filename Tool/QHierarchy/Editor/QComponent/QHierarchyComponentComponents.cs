@@ -13,19 +13,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         #region 变量
 
         /// <summary>
-        /// 单个游戏物体上全部的游戏物体
+        /// 单个游戏物体上全部的 Component
         /// </summary>
         private readonly List<Component> allComponents = new List<Component>();
 
         /// <summary>
-        /// 单个游戏物体上全部的游戏物体 (忽略剔除以后)
+        /// 单个游戏物体上全部的 Component (剔除忽略的组件)
         /// </summary>
         private readonly List<Component> components = new List<Component>();
 
         /// <summary>
-        /// 忽略的组件
+        /// 忽略组件的名称关键字列表
         /// </summary>
-        private List<string> ignoreScripts;
+        private List<string> ignoreComponentNameList;
 
         /// <summary>
         /// 空格
@@ -112,12 +112,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             var ignoreString = QSettings.Instance().Get<string>(EM_QHierarchySettings.ComponentsIgnore);
             if (string.IsNullOrEmpty(ignoreString) == false)
             {
-                ignoreScripts = new List<string>(ignoreString.Split(',', ';', '.', ' '));
-                ignoreScripts.RemoveAll(item => item == string.Empty);
+                ignoreComponentNameList = new List<string>(ignoreString.Split(',', ';', '.', ' '));
+                ignoreComponentNameList.RemoveAll(item => item == string.Empty);
             }
             else
             {
-                ignoreScripts = null;
+                ignoreComponentNameList = null;
             }
         }
 
@@ -133,7 +133,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             #region 筛选掉忽略的组件
 
             components.Clear();
-            if (ignoreScripts != null)
+            if (ignoreComponentNameList != null)
             {
                 foreach (var component in allComponents)
                 {
@@ -141,9 +141,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     if (componentName != null)
                     {
                         var ignore = false;
-                        for (var index = ignoreScripts.Count - 1; index >= 0; index--)
+                        for (var index = ignoreComponentNameList.Count - 1; index >= 0; index--)
                         {
-                            if (componentName.Contains(ignoreScripts[index]))
+                            if (componentName.Contains(ignoreComponentNameList[index]))
                             {
                                 ignore = true;
                                 break;
