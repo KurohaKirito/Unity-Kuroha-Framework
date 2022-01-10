@@ -100,7 +100,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             for (var index = 0; index < guids.Length; index++) {
                 ProgressBar.DisplayProgressBar("批处理工具", $"加载材质: {index + 1}/{guids.Length}", index + 1, guids.Length);
                 var assetPath = AssetDatabase.GUIDToAssetPath(guids[index]);
-                materials.Add(AssetDatabase.LoadAssetAtPath<Material>(assetPath));
+                if (assetPath.EndsWith(".mat")) {
+                    materials.Add(AssetDatabase.LoadAssetAtPath<Material>(assetPath));
+                }
             }
 
             DebugUtil.Log($"Find {materials.Count} Materials!");
