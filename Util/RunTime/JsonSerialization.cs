@@ -87,16 +87,4 @@ namespace Script.Effect.Editor.AssetTool.Util.RunTime {
             return data;
         }
     }
-
-    public static class JsonUtil {
-        /// <summary>
-        /// 生成 Json
-        /// </summary>
-        /// <param name="obj">数据</param>
-        /// <param name="filePathAndName">json 路径以及文件名</param>
-        public static void ToJsonFile(object obj, string filePathAndName) {
-            var json = JsonUtility.ToJson(obj);
-            System.IO.File.WriteAllText(filePathAndName, json);
-        }
-    }
 }

@@ -1,6 +1,7 @@
 ﻿using Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool;
 using Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool;
 using Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.GUI;
+using Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
     public class ToolMenu : MonoBehaviour {
         [MenuItem("GameObject/Scene Batch Tool/LODTool", false, 12)]
         public static void Tool1() {
-            LodBatchWindow.Open();
+            LODBatchWindow.Open();
         }
         
         [MenuItem("Funny/资源检测工具/Asset Check Tool")]

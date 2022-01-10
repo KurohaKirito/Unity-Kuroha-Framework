@@ -5,7 +5,7 @@ using Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report;
 using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
     public class GunSetLOD {
         private static void SetLOD(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos) {
             var fullPath = Application.dataPath + "/" + itemData.path;

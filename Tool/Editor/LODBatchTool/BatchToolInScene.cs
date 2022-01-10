@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool
 {
     public static class BatchToolInScene
     {
