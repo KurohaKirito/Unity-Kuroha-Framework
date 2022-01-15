@@ -22,7 +22,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         {
             "尺寸大小",
             "Mip Maps Enable",
-            "Read Write Enable"
+            "Read Write Enable",
+            "CompressFormat"
         };
 
         /// <summary>
@@ -32,7 +33,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         {
             Size,
             MipMaps,
-            ReadWriteEnable
+            ReadWriteEnable,
+            CompressFormat
         }
 
         /// <summary>
@@ -84,14 +86,15 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                                 continue;
                             }
                         }
-                        
-                        switch ((CheckOptions)itemData.checkType)
+
+                        switch ((CheckOptions) itemData.checkType)
                         {
                             case CheckOptions.Size:
                                 if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureSize, files[index], itemData, ref reportInfos) == false)
                                 {
                                     CheckSize(assetPath, files[index], itemData, ref reportInfos);
                                 }
+
                                 break;
 
                             case CheckOptions.ReadWriteEnable:
@@ -99,6 +102,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                                 {
                                     CheckReadWriteEnable(assetPath, files[index], itemData, ref reportInfos);
                                 }
+
                                 break;
 
                             case CheckOptions.MipMaps:
@@ -106,8 +110,17 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                                 {
                                     CheckMipMaps(assetPath, files[index], itemData, ref reportInfos);
                                 }
+
                                 break;
-                        
+
+                            case CheckOptions.CompressFormat:
+                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, files[index], itemData, ref reportInfos) == false)
+                                {
+                                    CheckCompressFormat(assetPath, files[index], itemData, ref reportInfos);
+                                }
+
+                                break;
+
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -160,7 +173,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             var heightIndex = Convert.ToInt32(parameter[1]);
             var width = Convert.ToInt32(sizeOptions[widthIndex]);
             var height = Convert.ToInt32(sizeOptions[heightIndex]);
-            
+
             // 读取导入设置
             var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
 
@@ -168,11 +181,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             TextureUtil.GetTextureOriginalSize(textureImporter, out var originWidth, out var originHeight);
             if (ReferenceEquals(textureImporter, null) == false)
             {
-                if (textureImporter.textureShape == TextureImporterShape.TextureCube) 
+                if (textureImporter.textureShape == TextureImporterShape.TextureCube)
                 {
                     originWidth /= 2;
                 }
-                
+
                 if (originWidth > width && originHeight > height)
                 {
                     #region Android
@@ -221,7 +234,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         }
                     }
 
-                    #endregion 
+                    #endregion
                 }
             }
         }
@@ -281,6 +294,59 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, content, item));
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// 检测: 贴图压缩格式
+        /// </summary>
+        private static void CheckCompressFormat(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        {
+            // 读取导入设置
+            var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+
+            // 压缩格式
+            if (ReferenceEquals(textureImporter, null) == false)
+            {
+                #region Android
+
+                if (TextureUtil.GetTextureFormatAndroid(textureImporter, out var formatAndroid))
+                {
+                    if (formatAndroid != TextureImporterFormat.ETC2_RGB4 && formatAndroid != TextureImporterFormat.ETC2_RGBA8)
+                    {
+                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                        var content = $"Android: 纹理压缩格式不是 ETC2, 路径为: {assetInfo.FullName}, 当前压缩格式: {formatAndroid}";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                    }
+                }
+                else
+                {
+                    var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                    var content = $"未启用 Android 导入, 资源路径为: {assetInfo.FullName}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                }
+
+                #endregion
+
+                #region iPhone
+
+                if (TextureUtil.GetTextureFormatIPhone(textureImporter, out var formatIOS))
+                {
+                    if (formatIOS != TextureImporterFormat.PVRTC_RGB4 && formatIOS != TextureImporterFormat.PVRTC_RGBA4)
+                    {
+                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                        var content = $"iPhone: 纹理压缩格式不是 PVRTC, 路径为: {assetInfo.FullName}";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                    }
+                }
+                else
+                {
+                    var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
+                    var content = $"未启用 iPhone 导入, 资源路径为: {assetInfo.FullName}";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                }
+
+                #endregion
             }
         }
     }

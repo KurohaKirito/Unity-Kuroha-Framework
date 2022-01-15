@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Kuroha.GUI.Editor;
-using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +7,10 @@ namespace Kuroha.Tool.LODSetTool.Editor
 {
     public class CarSetLOD : UnityEditor.EditorWindow
     {
+        private static float lodValue;
+        private static Vector2 scroll;
         private static string path = "Assets/ToBundle/Skin/Cars";
+        private static readonly List<string> paths = new List<string>();
         private static readonly List<GameObject> prefabs = new List<GameObject>();
 
         public static void Open()
@@ -18,22 +20,40 @@ namespace Kuroha.Tool.LODSetTool.Editor
 
         private void OnGUI()
         {
+            EditorGUILayout.IntField("预制体数量", prefabs.Count);
+            lodValue = EditorGUILayout.FloatField("LOD 剔除占比", lodValue);
             path = EditorGUILayout.TextField("检测路径", path);
 
+            scroll = GUILayout.BeginScrollView(scroll);
             for (var i = 0; i < prefabs.Count; i++)
             {
                 prefabs[i] = EditorGUILayout.ObjectField("车辆预制", prefabs[i], typeof(GameObject), true) as GameObject;
             }
 
+            GUILayout.EndScrollView();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(10);
             if (GUILayout.Button("搜寻预制"))
             {
                 SearchPrefab();
             }
 
+            GUILayout.Space(10);
+            if (GUILayout.Button("清空预制"))
+            {
+                paths.Clear();
+                prefabs.Clear();
+            }
+
+            GUILayout.Space(10);
             if (GUILayout.Button("设置 LOD"))
             {
                 SetLOD();
             }
+
+            GUILayout.Space(10);
+            GUILayout.EndHorizontal();
         }
 
         private static void SearchPrefab()
@@ -51,13 +71,18 @@ namespace Kuroha.Tool.LODSetTool.Editor
                 var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
                 if (asset != null)
                 {
-                    prefabs.Add(asset);
+                    if (paths.Contains(assetPath) == false)
+                    {
+                        prefabs.Add(asset);
+                        paths.Add(assetPath);
+                    }
                 }
             }
         }
 
         private static void SetLOD()
         {
+            // FileUtil.GetProjectRelativePath();
             foreach (var asset in prefabs)
             {
                 if (asset != null)
@@ -67,25 +92,25 @@ namespace Kuroha.Tool.LODSetTool.Editor
 
                     if (oldLodGroup != null)
                     {
-                        DebugUtil.LogError($"预制体 {AssetDatabase.GetAssetPath(asset)} 的根物体已经有 LOD Group 了!", asset, "red");
                         var lodArray = oldLodGroup.GetLODs();
-                        lodArray[0].screenRelativeTransitionHeight = 0.01f;
+                        lodArray[0].screenRelativeTransitionHeight = lodValue;
                         oldLodGroup.SetLODs(lodArray);
                         oldLodGroup.RecalculateBounds();
-                    }
-                    else
-                    {
-                        var lodGroup = asset.AddComponent<LODGroup>();
-                        var lodArray = new LOD[1];
-                        var rendererArray = asset.GetComponentsInChildren<Renderer>(true);
-                        lodArray[0] = new LOD(0.01f, rendererArray);
-                        lodGroup.SetLODs(lodArray);
-                        lodGroup.RecalculateBounds();
+
+                        EditorUtility.SetDirty(asset);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
                     }
 
-                    EditorUtility.SetDirty(asset);
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
+                    // else
+                    // {
+                    //     var lodGroup = asset.AddComponent<LODGroup>();
+                    //     var lodArray = new LOD[1];
+                    //     var rendererArray = asset.GetComponentsInChildren<Renderer>(true);
+                    //     lodArray[0] = new LOD(0.01f, rendererArray);
+                    //     lodGroup.SetLODs(lodArray);
+                    //     lodGroup.RecalculateBounds();
+                    // }
                 }
             }
         }

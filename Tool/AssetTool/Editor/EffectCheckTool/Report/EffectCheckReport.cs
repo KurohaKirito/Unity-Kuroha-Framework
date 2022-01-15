@@ -224,7 +224,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                 case EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers:
                     break;
                 
-                // 3
+                // 4
                 case EffectCheckReportInfo.EffectCheckReportType.TextureSize:
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps:
@@ -232,6 +232,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.TextureReadWriteEnable:
                     isCanRepair = true;
+                    break;
+                case EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat:
                     break;
 
                 // 2

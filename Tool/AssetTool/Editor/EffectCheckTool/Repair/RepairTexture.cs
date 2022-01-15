@@ -28,6 +28,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
                     RepairReadWrite(effectCheckReportInfo);
                     break;
                 
+                case CheckTexture.CheckOptions.CompressFormat:
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

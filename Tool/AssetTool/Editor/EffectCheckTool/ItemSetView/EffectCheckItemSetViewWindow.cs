@@ -321,6 +321,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         private static void OnGUI_CheckTexture()
         {
             var modeType = (CheckTexture.CheckOptions)itemInfo.checkType;
+            var oldAlignment = UnityEngine.GUI.skin.label.alignment;
 
             switch (modeType)
             {
@@ -338,6 +339,12 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                 case CheckTexture.CheckOptions.MipMaps:
                     ParameterBool1 = EditorGUILayout.Toggle("开启 Mip Maps", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+                
+                case CheckTexture.CheckOptions.CompressFormat:
+                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+                    GUILayout.Label("描述: Android => ETC2; iOS => PVRTC");
+                    UnityEngine.GUI.skin.label.alignment = oldAlignment;
                     break;
 
                 default:

@@ -173,10 +173,16 @@ namespace Kuroha.Menu.Editor
             ReferenceSearcher.OpenWindow();
         }
 
-        [MenuItem("GameObject/LODTool", false, 12)]
-        public static void Batch()
+        [MenuItem("GameObject/Scene Tool/LODTool", false, 12)]
+        public static void LODBatch1()
         {
             LODBatchWindow.Open();
+        }
+        
+        [MenuItem("GameObject/Scene Tool/PickAllRendererCollider", false, 12)]
+        public static void PickAllRendererCollider()
+        {
+            BatchToolInScene.PickUpAllCollider();
         }
 
         #endregion

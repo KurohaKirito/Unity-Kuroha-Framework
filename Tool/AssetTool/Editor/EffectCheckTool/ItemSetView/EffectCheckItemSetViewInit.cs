@@ -116,6 +116,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                 case CheckTexture.CheckOptions.MipMaps:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
+                
+                case CheckTexture.CheckOptions.CompressFormat:
+                    break;
 
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -107,7 +107,7 @@ namespace Kuroha.Util.Editor
             while (samplePoints.Count > 0 && sampleCountMax > 0 && iterateMax-- > 0)
             {
                 // 在这些点中随便选一个采样点
-                var next = (int)Mathf.Lerp(0, samplePoints.Count - 1, UnityEngine.Random.value);
+                var next = (int) Mathf.Lerp(0, samplePoints.Count - 1, UnityEngine.Random.value);
                 var sample = samplePoints[next];
 
                 // 定义 "是否找到临近分布点" 标志
@@ -170,6 +170,32 @@ namespace Kuroha.Util.Editor
         }
 
         /// <summary>
+        /// 获取纹理导入设置的图片压缩格式 (Default)
+        /// </summary>
+        public static void GetTextureFormatDefault(TextureImporter textureImporter, out TextureImporterFormat format)
+        {
+            format = textureImporter.GetDefaultPlatformTextureSettings().format;
+        }
+
+        /// <summary>
+        /// 获取纹理导入设置的图片压缩格式 (Android)
+        /// </summary>
+        public static bool GetTextureFormatAndroid(TextureImporter textureImporter, out TextureImporterFormat format)
+        {
+            // 参数名可选: "Standalone", "Web", "iPhone", "Android", "WebGL", "Windows Store Apps", "PS4", "XboxOne", "Nintendo Switch", "tvOS".
+            return textureImporter.GetPlatformTextureSettings("Android", out _, out format);
+        }
+
+        /// <summary>
+        /// 获取纹理导入设置的图片压缩格式 (iPhone)
+        /// </summary>
+        public static bool GetTextureFormatIPhone(TextureImporter textureImporter, out TextureImporterFormat format)
+        {
+            // 参数名可选: "Standalone", "Web", "iPhone", "Android", "WebGL", "Windows Store Apps", "PS4", "XboxOne", "Nintendo Switch", "tvOS".
+            return textureImporter.GetPlatformTextureSettings("iPhone", out _, out format);
+        }
+
+        /// <summary>
         /// 获取 Unity 纹理的原始尺寸
         /// </summary>
         /// <param name="textureImporter"></param>
@@ -184,12 +210,12 @@ namespace Kuroha.Util.Editor
                 return;
             }
 
-            var args = new object[] { 0, 0 };
+            var args = new object[] {0, 0};
             var method = typeof(TextureImporter).GetMethod("GetWidthAndHeight", BindingFlags.NonPublic | BindingFlags.Instance);
             method?.Invoke(textureImporter, args);
 
-            originWidth = (int)args[0];
-            originHeight = (int)args[1];
+            originWidth = (int) args[0];
+            originHeight = (int) args[1];
         }
 
         /// <summary>
@@ -356,7 +382,7 @@ namespace Kuroha.Util.Editor
         public static void GetTexturesInMaterial(Material material, out List<TextureData> textureDataList)
         {
             textureDataList = new List<TextureData>();
-            var depends = EditorUtility.CollectDependencies(new UnityEngine.Object[] { material });
+            var depends = EditorUtility.CollectDependencies(new UnityEngine.Object[] {material});
 
             foreach (var depend in depends)
             {

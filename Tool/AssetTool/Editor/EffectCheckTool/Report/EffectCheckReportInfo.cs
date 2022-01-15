@@ -48,10 +48,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             PrefabAnimatorCullMode,
             PrefabLODGroupRenderers,
             
-            // 3
+            // 4
             TextureSize,
             TextureMipMaps,
             TextureReadWriteEnable,
+            TextureCompressFormat,
             
             // 2
             AssetName,
