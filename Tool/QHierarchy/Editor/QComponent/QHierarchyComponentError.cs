@@ -430,11 +430,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             targetPropertiesNames.Clear();
 
-            if (printError = false)
-            {
-                
-            }
-
             // 反射得到全部的字段
             var fieldArray = monoBehaviour.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 

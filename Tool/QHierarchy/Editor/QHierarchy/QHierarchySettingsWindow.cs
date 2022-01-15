@@ -81,8 +81,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private const int UP_DOWN_SPACE = 4;
         private const int ITEM_SETTING_HEIGHT = 18;
-        private Texture2D checkBoxChecked;
-        private Texture2D checkBoxUnchecked;
+        private Texture2D checkBoxGray;
+        private Texture2D checkBoxGreen;
+        private Texture2D checkBoxOrange;
         private Texture2D restoreButtonTexture;
 
         private QComponentsOrderList componentsOrderList;
@@ -111,10 +112,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 yellowColor = isProSkin ? new Color(1.00f, 0.90f, 0.40f) : new Color(0.31f, 0.31f, 0.31f);
                 separatorColor = isProSkin ? new Color(0.18f, 0.18f, 0.18f) : new Color(0.59f, 0.59f, 0.59f);
                 menuButtonColor = isProSkin ? new Color(0.7f, 0.7f, 0.7f) : new Color(0.9f, 0.9f, 0.9f);
-
-                checkBoxChecked = QResources.Instance().GetTexture(QTexture.QCheckBoxChecked);
-                checkBoxUnchecked = QResources.Instance().GetTexture(QTexture.QCheckBoxUnchecked);
-                restoreButtonTexture = QResources.Instance().GetTexture(QTexture.QRestoreButton);
+                
+                checkBoxGray = EditorGUIUtility.IconContent("d_lightRim").image as Texture2D;
+                checkBoxGreen = EditorGUIUtility.IconContent("d_greenLight").image as Texture2D;
+                checkBoxOrange = EditorGUIUtility.IconContent("d_orangeLight").image as Texture2D;
+                restoreButtonTexture = EditorGUIUtility.IconContent("Refresh@2x").image as Texture2D;
                 componentsOrderList = new QComponentsOrderList(this);
             }
         }
@@ -299,14 +301,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         {
             if (DrawCheckBox("Hierarchy Tree", "在 Hierarchy 面板的左侧绘制树形结构\r\n体现游戏物体的父子级关系", EM_QHierarchySettings.TreeMapShow))
             {
-                if (DrawRestore(24))
+                var rect = GetNewRect(0, 0);
+                
+                if (DrawRestore(28))
                 {
                     QSettings.Instance().Restore(EM_QHierarchySettings.TreeMapColor);
                     QSettings.Instance().Restore(EM_QHierarchySettings.TreeMapEnhanced);
                     QSettings.Instance().Restore(EM_QHierarchySettings.TreeMapTransparentBackground);
                 }
-
-                var rect = GetNewRect(0, 0);
 
                 // 绘制背景色
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT * 3 + UP_DOWN_SPACE * 2);
@@ -432,7 +434,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.LockShowDuringPlayMode);
                 
-                DrawCheckBoxRight("禁止锁定的游戏物体被选中 (无法删除, 无法查看 Inspector)", EM_QHierarchySettings.LockPreventSelectionOfLockedObjects);
+                DrawCheckBoxRight("锁定物体禁止选中 (无法删除, 无法查看 Inspector)", EM_QHierarchySettings.LockPreventSelectionOfLockedObjects);
                 
                 DrawSpace(UP_DOWN_SPACE);
             }
@@ -875,7 +877,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void DrawLabel(string label)
         {
-            Rect rect = GetNewRect(0, 16, 34, 6);
+            var rect = GetNewRect(0, 16, 34, 6);
             rect.y -= (EditorGUIUtility.singleLineHeight - rect.height) * 0.5f;
             EditorGUI.LabelField(rect, label);
             DrawSpace(2);
@@ -974,7 +976,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             rect.width = CHECKED_ICON;
             rect.height = CHECKED_ICON;
             var isChecked = QSettings.Instance().Get<bool>(hierarchySettings);
-            var icon = isChecked ? checkBoxChecked : checkBoxUnchecked;
+            var icon = isChecked ? checkBoxOrange : checkBoxGray;
             if (UnityEngine.GUI.Button(rect, icon, GUIStyle.none))
             {
                 QSettings.Instance().Set(hierarchySettings, !isChecked);
@@ -1002,7 +1004,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <returns></returns>
         private bool DrawRestore(float restoreMenuHeight)
         {
-            const float RIGHT_SPACE = 8;
+            const float RIGHT_SPACE = 10;
             const float RESTORE_ICON_WIDTH_HEIGHT = 16;
 
             var positionX = lastRect.x + lastRect.width - RESTORE_ICON_WIDTH_HEIGHT - RIGHT_SPACE;
@@ -1061,14 +1063,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private bool DrawCheckBoxRight(string label, EM_QHierarchySettings hierarchySettings)
         {
-            const int CHECK_BOX_HEIGHT_WIDTH = 14;
+            const int CHECK_BOX_HEIGHT_WIDTH = 16;
             const int LEFT_INDENT = 10 * 2 + CHECK_BOX_HEIGHT_WIDTH;
             const int RIGHT_INDENT = 10;
             const int SPACE_LABEL_CHECKBOX = 4;
 
             var result = false;
             var isChecked = QSettings.Instance().Get<bool>(hierarchySettings);
-            var isCheckedIcon = isChecked ? checkBoxChecked : checkBoxUnchecked;
+            var isCheckedIcon = isChecked ? checkBoxGreen : checkBoxGray;
             var rect = GetNewRect(0, ITEM_SETTING_HEIGHT, LEFT_INDENT, RIGHT_INDENT);
 
             // 绘制左侧 Label
