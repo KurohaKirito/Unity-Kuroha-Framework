@@ -7,7 +7,7 @@ using Kuroha.Tool.QHierarchy.Editor.QHelper;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QHierarchyComponentColor : QBaseComponent
+    public class QHierarchyComponentColor : QHierarchyBaseComponent
     {
         private Rect colorRect;
         private Color inactiveColor;
@@ -29,7 +29,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ColorShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ColorShowDuringPlayMode, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor, SettingsChanged);
-            
+
             SettingsChanged();
         }
 
@@ -39,9 +39,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private void SettingsChanged()
         {
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ColorShow);
-            
+
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ColorShowDuringPlayMode);
-            
+
             inactiveColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
         }
 
@@ -76,17 +76,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     colorRect.y = rect.y + COLOR_RECT_SPACE * 2;
                     colorRect.width = COMPONENT_WIDTH - COLOR_RECT_SPACE * 2;
                     colorRect.height = rect.height - COLOR_RECT_SPACE * 3f;
-                    
+
                     EditorGUI.DrawRect(colorRect, newColor);
-                    
+
                     return;
                 }
             }
 
             QHierarchyColorUtils.SetColor(inactiveColor);
-            
+
             UnityEngine.GUI.DrawTexture(rect, colorTexture, ScaleMode.StretchToFill, true, 1);
-            
+
             QHierarchyColorUtils.ClearColor();
         }
 
@@ -99,14 +99,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 if (currentEvent.type == EventType.MouseDown)
                 {
-                    try {
-                        var obj = Selection.Contains(gameObject)? Selection.gameObjects : new[] {
-                            gameObject
-                        };
+                    try
+                    {
+                        var obj = Selection.Contains(gameObject)
+                            ? Selection.gameObjects
+                            : new[]
+                            {
+                                gameObject
+                            };
                         var newPopupWindow = new QHierarchyColorPaletteWindow(obj, ColorSelectedHandler, ColorRemovedHandler);
                         PopupWindow.Show(rect, newPopupWindow);
                     }
-                    catch {
+                    catch
+                    {
                         // 忽略 UnityEngine.ExitGUIException 异常
                         // 按照 Unity 官方的说法, 此异常无毒无害, 可忽略
                     }
@@ -150,9 +155,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             for (var index = gameObjects.Length - 1; index >= 0; index--)
             {
                 var gameObject = gameObjects[index];
-                
+
                 var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[index]);
-                
+
                 if (objectList.gameObjectColor.ContainsKey(gameObject))
                 {
                     Undo.RecordObject(objectList, "Color Changed");

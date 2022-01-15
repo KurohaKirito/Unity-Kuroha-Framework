@@ -9,7 +9,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
     /// <summary>
     /// QHierarchyComponent : 显示子物体数量
     /// </summary>
-    public class QHierarchyComponentChildrenCount : QBaseComponent
+    public class QHierarchyComponentChildrenCount : QHierarchyBaseComponent
     {
         /// <summary>
         /// 标签样式
@@ -35,7 +35,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountShowDuringPlayMode, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountLabelSize, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountLabelColor, OnSettingsChanged);
-            
+
             OnSettingsChanged();
         }
 
@@ -46,23 +46,25 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             // 取出设置: 是否启用功能
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ChildrenCountShow);
-            
+
             // 取出设置: 是否在播放模式下显示
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ChildrenCountShowDuringPlayMode);
-            
+
             // 取出设置: 数字标签显示大小
             var labelSize = (EM_QHierarchySize) QSettings.Instance().Get<int>(EM_QHierarchySettings.ChildrenCountLabelSize);
-            
+
             // 取出设置: 数字标签显示颜色
             labelStyle.normal.textColor = QSettings.Instance().GetColor(EM_QHierarchySettings.ChildrenCountLabelColor);
 
-            labelStyle.fontSize = labelSize switch {
+            labelStyle.fontSize = labelSize switch
+            {
                 EM_QHierarchySize.Normal => 8,
                 EM_QHierarchySize.Big => 11,
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            rect.width = labelSize switch {
+            rect.width = labelSize switch
+            {
                 EM_QHierarchySize.Normal => 16,
                 EM_QHierarchySize.Big => 20,
                 _ => throw new ArgumentOutOfRangeException()
@@ -75,7 +77,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             const float COMPONENT_SPACE = 2;
-            
+
             if (maxWidth < rect.width)
             {
                 return EM_QLayoutStatus.Failed;
@@ -86,7 +88,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             curRect.x -= totalWidth;
             rect.x = curRect.x;
             rect.y = curRect.y;
-            
+
             return EM_QLayoutStatus.Success;
         }
 

@@ -10,7 +10,7 @@ using Kuroha.Tool.QHierarchy.Editor.QData;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QTagIconComponent: QBaseComponent
+    public class QTagIconComponent: QHierarchyBaseComponent
     {
         private List<QTagTexture> tagTextureList;
 
@@ -67,4 +67,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-

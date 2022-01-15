@@ -8,7 +8,7 @@ using Kuroha.Tool.QHierarchy.Editor.QData;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QVerticesAndTrianglesCountComponent: QBaseComponent
+    public class QVerticesAndTrianglesCountComponent: QHierarchyBaseComponent
     {
         // PRIVATE
         private GUIStyle labelStyle;
@@ -149,4 +149,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-

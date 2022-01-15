@@ -9,7 +9,7 @@ using Kuroha.Tool.QHierarchy.Editor.QData;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QHierarchyComponentVisibility: QBaseComponent
+    public class QHierarchyComponentVisibility: QHierarchyBaseComponent
     {
         // PRIVATE
         private Color activeColor;

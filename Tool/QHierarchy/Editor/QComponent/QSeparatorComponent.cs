@@ -9,7 +9,7 @@ using Kuroha.Tool.QHierarchy.Editor.QHelper;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QSeparatorComponent: QBaseComponent
+    public class QSeparatorComponent: QHierarchyBaseComponent
     {
         // PRIVATE
         private Color separatorColor;
@@ -62,4 +62,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-

@@ -9,7 +9,7 @@ using Kuroha.Tool.QHierarchy.RunTime;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QHierarchyComponentGameObjectIcon: QBaseComponent
+    public class QHierarchyComponentGameObjectIcon: QHierarchyBaseComponent
     {
         // PRIVATE
         private MethodInfo getIconMethodInfo;
@@ -76,4 +76,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-

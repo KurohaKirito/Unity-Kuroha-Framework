@@ -9,7 +9,7 @@ using Kuroha.Tool.QHierarchy.Editor.QHelper;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QRendererComponent: QBaseComponent
+    public class QRendererComponent: QHierarchyBaseComponent
     {
         // PRIVATE
         private Color activeColor;
@@ -180,4 +180,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-

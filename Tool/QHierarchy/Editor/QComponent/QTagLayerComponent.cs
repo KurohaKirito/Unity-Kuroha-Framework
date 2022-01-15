@@ -9,7 +9,7 @@ using Kuroha.Tool.QHierarchy.RunTime;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QTagLayerComponent: QBaseComponent
+    public class QTagLayerComponent: QHierarchyBaseComponent
     {
         // PRIVATE
         private GUIStyle labelStyle;
@@ -248,4 +248,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-

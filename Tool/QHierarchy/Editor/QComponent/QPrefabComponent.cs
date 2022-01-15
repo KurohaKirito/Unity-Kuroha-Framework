@@ -9,7 +9,7 @@ using Kuroha.Tool.QHierarchy.Editor.QHelper;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QPrefabComponent: QBaseComponent
+    public class QPrefabComponent: QHierarchyBaseComponent
     {
         // PRIVATE
         private Color activeColor;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QBase
 {
-    public class QBaseComponent
+    public class QHierarchyBaseComponent
     {
         /// <summary>
         /// 使能标志
@@ -24,7 +24,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
         /// <summary>
         /// 构造方法
         /// </summary>
-        protected QBaseComponent()
+        protected QHierarchyBaseComponent()
         {
         }
 

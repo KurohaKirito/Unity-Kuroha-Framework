@@ -8,7 +8,7 @@ using Kuroha.Tool.QHierarchy.Editor.QData;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QHierarchyComponentComponents : QBaseComponent
+    public class QHierarchyComponentComponents : QHierarchyBaseComponent
     {
         #region 变量
 
@@ -290,17 +290,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     // 计算单击的是第几个图标
                     var clickIndex = Mathf.FloorToInt((currentEvent.mousePosition.x - eventRect.x) / rect.width) + components.Count - componentsToDraw;
-                    
+
                     // 反射获取组件的 enabled 字段
                     var propertyInfo = components[clickIndex].GetType().GetProperty("enabled");
-                    
+
                     // 反射 Get enabled 字段具体的值
                     var componentEnabled = propertyInfo != null;
                     if (componentEnabled)
                     {
                         componentEnabled = (bool) propertyInfo.GetGetMethod().Invoke(components[clickIndex], null);
                     }
-                    
+
                     // 在撤销栈中记录下操作
                     Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
 

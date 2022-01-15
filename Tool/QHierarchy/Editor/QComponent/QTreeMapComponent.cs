@@ -7,7 +7,7 @@ using Kuroha.Tool.QHierarchy.RunTime;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QTreeMapComponent: QBaseComponent
+    public class QTreeMapComponent: QHierarchyBaseComponent
     {
         // CONST
         private const float TREE_STEP_WIDTH  = 14.0f;
@@ -165,4 +165,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-

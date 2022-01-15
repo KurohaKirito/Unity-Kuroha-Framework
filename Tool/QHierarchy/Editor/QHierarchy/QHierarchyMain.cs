@@ -20,10 +20,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <summary>
         /// 功能组件字典
         /// </summary>
-        private readonly Dictionary<EM_QHierarchyComponent, QBaseComponent> componentDictionary;
+        private readonly Dictionary<EM_QHierarchyComponent, QHierarchyBaseComponent> componentDictionary;
 
-        private readonly List<QBaseComponent> preComponents;
-        private readonly List<QBaseComponent> orderedComponents;
+        private readonly List<QHierarchyBaseComponent> preComponents;
+        private readonly List<QHierarchyBaseComponent> orderedComponents;
         private readonly Texture2D trimIcon;
 
         private int indentation;
@@ -36,7 +36,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         public QHierarchyMain()
         {
-            componentDictionary = new Dictionary<EM_QHierarchyComponent, QBaseComponent>
+            componentDictionary = new Dictionary<EM_QHierarchyComponent, QHierarchyBaseComponent>
             {
                 {
                     EM_QHierarchyComponent.LockComponent, new QHierarchyComponentLock()
@@ -82,12 +82,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 }
             };
 
-            preComponents = new List<QBaseComponent>
+            preComponents = new List<QHierarchyBaseComponent>
             {
                 new QMonoBehaviorIconComponent(), new QTreeMapComponent(), new QSeparatorComponent()
             };
 
-            orderedComponents = new List<QBaseComponent>();
+            orderedComponents = new List<QHierarchyBaseComponent>();
 
             trimIcon = QResources.Instance().GetTexture(QTexture.QTrimIcon);
 
@@ -172,7 +172,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <param name="hierarchyObjectList"></param>
         /// <param name="drawBackground"></param>
         /// <param name="minX"></param>
-        private void DrawComponents(in List<QBaseComponent> components, Rect selectionRect, ref Rect rect, GameObject gameObject, QHierarchyObjectList hierarchyObjectList, bool drawBackground = false, float minX = 50)
+        private void DrawComponents(in List<QHierarchyBaseComponent> components, Rect selectionRect, ref Rect rect, GameObject gameObject, QHierarchyObjectList hierarchyObjectList, bool drawBackground = false, float minX = 50)
         {
             if (Event.current.type == EventType.Repaint)
             {

@@ -9,29 +9,29 @@ using System.Reflection;
 using System.Collections;
 using UnityEditorInternal;
 using System.Text;
+using Kuroha.GUI.Editor;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
-using Object = UnityEngine.Object;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QHierarchyComponentError: QBaseComponent
+    public class QHierarchyComponentError : QHierarchyBaseComponent
     {
         /// <summary>
         /// 有 Error 时图标的颜色
         /// </summary>
         private Color activeColor;
-        
+
         /// <summary>
         /// 无 Error 时图标的颜色
         /// </summary>
         private Color inactiveColor;
-        
+
         /// <summary>
         /// Error 提示的图标
         /// </summary>
         private readonly Texture2D errorIconTexture;
-        
+
         private bool settingsShowErrorOfChildren;
         private bool settingsShowErrorTypeReferenceIsNull;
         private bool settingsShowErrorTypeReferenceIsMissing;
@@ -41,11 +41,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private bool settingsShowErrorForDisabledComponents;
         private bool settingsShowErrorIconMissingEventMethod;
         private bool settingsShowErrorForDisabledGameObjects;
-        
+
         /// <summary>
         /// 忽略错误的关键字列表
         /// </summary>
         private List<string> ignoreErrorOfMonoBehaviours;
+
         private StringBuilder errorStringBuilder;
         private int errorCount;
         private readonly List<string> targetPropertiesNames = new List<string>(10);
@@ -55,25 +56,25 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public QHierarchyComponentError()
         {
-            rect.width = 7; 
+            rect.width = 7;
 
             errorIconTexture = QResources.Instance().GetTexture(QTexture.QErrorIcon);
 
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowIconOnParent             , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowReferenceIsNull          , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowReferenceIsMissing       , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowStringIsEmpty            , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowScriptIsMissing          , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowForDisabledComponents    , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowForDisabledGameObjects   , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowMissingEventMethod       , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowIconOnParent, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowReferenceIsNull, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowReferenceIsMissing, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowStringIsEmpty, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowScriptIsMissing, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowForDisabledComponents, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowForDisabledGameObjects, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowMissingEventMethod, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowWhenTagOrLayerIsUndefined, SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShow                         , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowDuringPlayMode           , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorIgnoreString                 , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor             , SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor           , SettingsChanged);
-            
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShow, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowDuringPlayMode, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorIgnoreString, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor, SettingsChanged);
+
             SettingsChanged();
         }
 
@@ -82,25 +83,25 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         private void SettingsChanged()
         {
-            activeColor                             = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
-            inactiveColor                           = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
-            
-            enabled                                 = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShow);
-            settingsShowErrorOfChildren             = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowIconOnParent);
-            settingsShowErrorTypeReferenceIsNull    = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowReferenceIsNull);
+            activeColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
+            inactiveColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
+
+            enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShow);
+            settingsShowErrorOfChildren = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowIconOnParent);
+            settingsShowErrorTypeReferenceIsNull = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowReferenceIsNull);
             settingsShowErrorTypeReferenceIsMissing = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowReferenceIsMissing);
-            settingsShowErrorTypeStringIsEmpty      = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowStringIsEmpty);
-            settingsShowErrorIconScriptIsMissing    = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowScriptIsMissing);
-            settingsShowErrorForDisabledComponents  = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowForDisabledComponents);
+            settingsShowErrorTypeStringIsEmpty = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowStringIsEmpty);
+            settingsShowErrorIconScriptIsMissing = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowScriptIsMissing);
+            settingsShowErrorForDisabledComponents = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowForDisabledComponents);
             settingsShowErrorForDisabledGameObjects = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowForDisabledGameObjects);
             settingsShowErrorIconMissingEventMethod = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowMissingEventMethod);
             settingsShowErrorIconWhenTagIsUndefined = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowWhenTagOrLayerIsUndefined);
-            showComponentDuringPlayMode             = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowDuringPlayMode);
-            var ignoreErrorOfMonoBehavioursString   = QSettings.Instance().Get<string>(EM_QHierarchySettings.ErrorIgnoreString);
-            
-            if (string.IsNullOrEmpty(ignoreErrorOfMonoBehavioursString) == false) 
+            showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowDuringPlayMode);
+            var ignoreErrorOfMonoBehavioursString = QSettings.Instance().Get<string>(EM_QHierarchySettings.ErrorIgnoreString);
+
+            if (string.IsNullOrEmpty(ignoreErrorOfMonoBehavioursString) == false)
             {
-                ignoreErrorOfMonoBehaviours = new List<string>(ignoreErrorOfMonoBehavioursString.Split(new char[] { ',', ';', '.', ' ' }));
+                ignoreErrorOfMonoBehaviours = new List<string>(ignoreErrorOfMonoBehavioursString.Split(new char[] {',', ';', '.', ' '}));
                 ignoreErrorOfMonoBehaviours.RemoveAll(item => item == "");
             }
             else
@@ -118,8 +119,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <param name="curRect"></param>
         /// <param name="maxWidth"></param>
         /// <returns></returns>
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth) {
-            if (maxWidth < 7) 
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        {
+            if (maxWidth < 7)
             {
                 return EM_QLayoutStatus.Failed;
             }
@@ -174,12 +176,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 errorCount = 0;
                 errorStringBuilder = new StringBuilder();
-                
+
                 FindError(gameObject, gameObject.GetComponents<MonoBehaviour>(), true);
 
                 if (errorCount > 0)
                 {
-                    EditorUtility.DisplayDialog(errorCount + (errorCount == 1 ? " error was found" : " errors were found"), errorStringBuilder.ToString(), "OK");
+                    var title = errorCount + (errorCount == 1 ? " error was found" : " errors were found");
+                    Dialog.Display(title, errorStringBuilder.ToString(), Dialog.DialogType.Error, "OK");
                 }
             }
         }
@@ -196,7 +199,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             if (settingsShowErrorIconWhenTagIsUndefined)
             {
                 #region Tag 未定义
-                
+
                 if (string.IsNullOrEmpty(gameObject.tag))
                 {
                     if (printError)
@@ -213,7 +216,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 #region Layer 未定义
 
-                if (string.IsNullOrEmpty(LayerMask.LayerToName(gameObject.layer))) 
+                if (string.IsNullOrEmpty(LayerMask.LayerToName(gameObject.layer)))
                 {
                     if (printError)
                     {
@@ -250,7 +253,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 }
 
                 #endregion
-                
+
                 else
                 {
                     #region 白名单过滤
@@ -259,28 +262,28 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         for (var index = ignoreErrorOfMonoBehaviours.Count - 1; index >= 0; index--)
                         {
-                            if (monoBehaviour.GetType().FullName.Contains(ignoreErrorOfMonoBehaviours[index]))
+                            if (monoBehaviour.GetType().FullName.IndexOf(ignoreErrorOfMonoBehaviours[index], StringComparison.OrdinalIgnoreCase) >= 0)
                             {
                                 return false;
-                            } 
+                            }
                         }
                     }
 
                     #endregion
-                    
+
                     if (settingsShowErrorIconMissingEventMethod)
                     {
                         if (monoBehaviour.gameObject.activeSelf || settingsShowErrorForDisabledComponents)
                         {
                             //try
                             //{
-                                if (IsUnityEventsNullOrMissing(monoBehaviour, printError))
+                            if (IsUnityEventsNullOrMissing(monoBehaviour, printError))
+                            {
+                                if (printError == false)
                                 {
-                                    if (printError == false)
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
+                            }
                             //}
                             //catch
                             //{
@@ -290,32 +293,36 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                     if (settingsShowErrorTypeReferenceIsNull || settingsShowErrorTypeStringIsEmpty || settingsShowErrorTypeReferenceIsMissing)
                     {
-                        if (!monoBehaviour.enabled && !settingsShowErrorForDisabledComponents) {
+                        if (!monoBehaviour.enabled && !settingsShowErrorForDisabledComponents)
+                        {
                             continue;
                         }
 
-                        if (!monoBehaviour.gameObject.activeSelf && !settingsShowErrorForDisabledGameObjects) {
+                        if (!monoBehaviour.gameObject.activeSelf && !settingsShowErrorForDisabledGameObjects)
+                        {
                             continue;
                         }
 
-						var type = monoBehaviour.GetType();
+                        var type = monoBehaviour.GetType();
 
                         while (type != null)
                         {
                             var bf = BindingFlags.Instance | BindingFlags.Public;
-                            if (!type.FullName.Contains("UnityEngine")) {
+                            if (!type.FullName.Contains("UnityEngine"))
+                            {
                                 bf |= BindingFlags.NonPublic;
                             }
-							var fieldArray = type.GetFields(bf);
 
-							foreach (var field in fieldArray)
+                            var fieldArray = type.GetFields(bf);
+
+                            foreach (var field in fieldArray)
                             {
-                                if (System.Attribute.IsDefined(field, typeof(HideInInspector)) || 
-                                    System.Attribute.IsDefined(field, typeof(QHierarchyNullableAttribute)) ||									
+                                if (System.Attribute.IsDefined(field, typeof(HideInInspector)) ||
+                                    System.Attribute.IsDefined(field, typeof(QHierarchyNullableAttribute)) ||
                                     System.Attribute.IsDefined(field, typeof(NonSerializedAttribute)) ||
-                                    field.IsStatic) continue;     
+                                    field.IsStatic) continue;
 
-                                if (field.IsPrivate || !field.IsPublic) 
+                                if (field.IsPrivate || !field.IsPublic)
                                 {
                                     if (!System.Attribute.IsDefined(field, typeof(SerializeField)))
                                     {
@@ -327,7 +334,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                                 try
                                 {
-                                    if (settingsShowErrorTypeStringIsEmpty && field.FieldType == typeof(string) && value != null && ((string)value).Equals("")) {
+                                    if (settingsShowErrorTypeStringIsEmpty && field.FieldType == typeof(string) && value != null && ((string) value).Equals(""))
+                                    {
                                         if (printError)
                                         {
                                             AppendErrorLine(monoBehaviour.GetType().Name + "." + field.Name + ": String value is empty");
@@ -336,13 +344,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                                         return true;
                                     }
-                                } catch {
+                                }
+                                catch
+                                {
                                     // ignored
                                 }
 
                                 try
                                 {
-                                    if (settingsShowErrorTypeReferenceIsMissing && value is Component component && component == null) {
+                                    if (settingsShowErrorTypeReferenceIsMissing && value is Component component && component == null)
+                                    {
                                         if (printError)
                                         {
                                             AppendErrorLine(monoBehaviour.GetType().Name + "." + field.Name + ": Reference is missing");
@@ -351,13 +362,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                                         return true;
                                     }
-                                } catch {
+                                }
+                                catch
+                                {
                                     // ignored
                                 }
 
                                 try
                                 {
-                                    if (settingsShowErrorTypeReferenceIsNull && (value == null || value.Equals(null))) {
+                                    if (settingsShowErrorTypeReferenceIsNull && (value == null || value.Equals(null)))
+                                    {
                                         if (printError)
                                         {
                                             AppendErrorLine(monoBehaviour.GetType().Name + "." + field.Name + ": Reference is null");
@@ -366,7 +380,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                                         return true;
                                     }
-                                } catch {
+                                }
+                                catch
+                                {
                                     // ignored
                                 }
 
@@ -376,7 +392,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                                     {
                                         foreach (var item in enumerable)
                                         {
-                                            if (item == null || item.Equals(null)) {
+                                            if (item == null || item.Equals(null))
+                                            {
                                                 if (printError)
                                                 {
                                                     AppendErrorLine(monoBehaviour.GetType().Name + "." + field.Name + ": IEnumerable has value with null reference");
@@ -387,55 +404,63 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                                             }
                                         }
                                     }
-                                } catch {
+                                }
+                                catch
+                                {
                                     // ignored
                                 }
                             }
+
                             type = type.BaseType;
-						}
+                        }
                     }
                 }
             }
+
             return false;
         }
-        
+
         /// <summary>
         /// 检测是否有空的 Unity 事件
         /// </summary>
         /// <param name="monoBehaviour"></param>
         /// <param name="printError"></param>
         /// <returns></returns>
-        private bool IsUnityEventsNullOrMissing(Object monoBehaviour, bool printError) 
+        private bool IsUnityEventsNullOrMissing(UnityEngine.Object monoBehaviour, bool printError)
         {
             targetPropertiesNames.Clear();
-            
-            // 反射得到全部的字段
-            var fieldArray = monoBehaviour.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance); 
-   
-            for (var index = fieldArray.Length - 1; index >= 0; index--) 
+
+            if (printError = false)
             {
-                var field = fieldArray[index];                    
-                if (field.FieldType == typeof(UnityEventBase) || field.FieldType.IsSubclassOf(typeof(UnityEventBase))) 
+                
+            }
+
+            // 反射得到全部的字段
+            var fieldArray = monoBehaviour.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            // 筛选出全部的 UnityEventBase 类
+            for (var index = fieldArray.Length - 1; index >= 0; index--)
+            {
+                var field = fieldArray[index];
+                if (field.FieldType == typeof(UnityEventBase) || field.FieldType.IsSubclassOf(typeof(UnityEventBase)))
                 {
                     targetPropertiesNames.Add(field.Name);
                 }
             }
-            
-            if (targetPropertiesNames.Count > 0) 
+
+            if (targetPropertiesNames.Count > 0)
             {
-                var serializedMonoBehaviour = new SerializedObject(monoBehaviour); 
-                for (var i = targetPropertiesNames.Count - 1; i >= 0; i--) 
+                var serializedMonoBehaviour = new SerializedObject(monoBehaviour);
+                for (var i = targetPropertiesNames.Count - 1; i >= 0; i--)
                 {
                     var targetProperty = targetPropertiesNames[i];
-
                     var property = serializedMonoBehaviour.FindProperty(targetProperty);
                     var propertyRelativeArray = property.FindPropertyRelative("m_PersistentCalls.m_Calls");
                     
                     for (var j = propertyRelativeArray.arraySize - 1; j >= 0; j--)
                     {
                         var arrayElementAtIndex = propertyRelativeArray.GetArrayElementAtIndex(j);
-
-                        var propertyTarget       = arrayElementAtIndex.FindPropertyRelative("m_Target");
+                        var propertyTarget = arrayElementAtIndex.FindPropertyRelative("m_Target");
                         if (propertyTarget.objectReferenceValue == null)
                         {
                             if (printError)
@@ -448,8 +473,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                             }
                         }
 
-                        var propertyMethodName   = arrayElementAtIndex.FindPropertyRelative("m_MethodName");
-                        if (string.IsNullOrEmpty(propertyMethodName.stringValue)) 
+                        var propertyMethodName = arrayElementAtIndex.FindPropertyRelative("m_MethodName");
+                        if (string.IsNullOrEmpty(propertyMethodName.stringValue))
                         {
                             if (printError)
                             {
@@ -461,21 +486,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                                 return true;
                             }
                         }
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
+
+
                         var argumentAssemblyTypeName = arrayElementAtIndex.FindPropertyRelative("m_Arguments").FindPropertyRelative("m_ObjectArgumentAssemblyTypeName").stringValue;
-                        
+
                         System.Type argumentAssemblyType;
-                        
+
                         if (!string.IsNullOrEmpty(argumentAssemblyTypeName))
                         {
                             argumentAssemblyType = System.Type.GetType(argumentAssemblyTypeName, false) ?? typeof(UnityEngine.Object);
@@ -503,8 +519,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                         if (dummyEvent != null)
                         {
-                            if (!UnityEventDrawer.IsPersistantListenerValid(dummyEvent, propertyMethodName.stringValue, propertyTarget.objectReferenceValue, (PersistentListenerMode)arrayElementAtIndex.FindPropertyRelative("m_Mode").enumValueIndex, argumentAssemblyType))
-                            { 
+                            if (!UnityEventDrawer.IsPersistantListenerValid(dummyEvent, propertyMethodName.stringValue, propertyTarget.objectReferenceValue, (PersistentListenerMode) arrayElementAtIndex.FindPropertyRelative("m_Mode").enumValueIndex, argumentAssemblyType))
+                            {
                                 if (printError)
                                 {
                                     AppendErrorLine(monoBehaviour.GetType().Name + ": Event handler function is missing");
@@ -516,8 +532,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                             }
                         }
                     }
-                }   
-            }            
+                }
+            }
+
             return false;
         }
 
@@ -534,4 +551,3 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
     }
 }
-
