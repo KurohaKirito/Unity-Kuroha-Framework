@@ -88,7 +88,9 @@ namespace Kuroha.Util.Editor
                     overridden = true,
                     name = "iOS",
                     maxTextureSize = 32,
-                    format = TextureImporterFormat.ASTC_6x6,
+                    
+                    // 根据是否有透明度，选择 RGBA 还是 RGB
+                    format = textureImporter.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.PVRTC_RGBA4 : TextureImporterFormat.PVRTC_RGB4
                 };
                 textureImporter.SetPlatformTextureSettings(settingIphone);
                 

@@ -1,10 +1,8 @@
 ﻿using Kuroha.GUI.Editor;
-using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem;
 using Kuroha.Tool.AssetTool.Editor.AssetCheckTool;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
-using Kuroha.Tool.AssetTool.Editor.LODBatchTool;
 using Kuroha.Tool.AssetViewer.Editor;
 using Kuroha.Tool.LODSetTool.Editor;
 using Kuroha.Util.Editor;
@@ -21,25 +19,25 @@ namespace Kuroha.Menu.Editor
         {
             Kuroha.Util.RunTime.DebugUtil.LogEnable = true;
         }
-        
+
         [MenuItem("Kuroha/日志/开启", true, 0)]
         public static bool OpenDebugLogValidate()
         {
             return Kuroha.Util.RunTime.DebugUtil.LogEnable == false;
         }
-        
+
         [MenuItem("Kuroha/日志/关闭", false, 0)]
         public static void CloseDebugLog()
         {
             Kuroha.Util.RunTime.DebugUtil.LogEnable = false;
         }
-        
+
         [MenuItem("Kuroha/日志/关闭", true, 0)]
         public static bool CloseDebugLogValidate()
         {
             return Kuroha.Util.RunTime.DebugUtil.LogEnable;
         }
-        
+
         [MenuItem("Kuroha/日志/清空", false, 0)]
         public static void ClearDebugLog()
         {
@@ -47,7 +45,7 @@ namespace Kuroha.Menu.Editor
         }
 
         #endregion
-        
+
         #region 调试开关
 
         [MenuItem("Kuroha/调试模式/开启", false, 1)]
@@ -55,19 +53,19 @@ namespace Kuroha.Menu.Editor
         {
             UnityDefineUtil.AddDefine("KUROHA_DEBUG_MODE", BuildTargetGroup.Standalone);
         }
-        
+
         [MenuItem("Kuroha/调试模式/开启", true, 1)]
         public static bool OpenKurohaDebugModeValidate()
         {
             return UnityDefineUtil.IsDefine("KUROHA_DEBUG_MODE", BuildTargetGroup.Standalone, out _) == false;
         }
-        
+
         [MenuItem("Kuroha/调试模式/关闭", false, 1)]
         public static void CloseKurohaDebugMode()
         {
             UnityDefineUtil.RemoveDefine("KUROHA_DEBUG_MODE", BuildTargetGroup.Standalone);
         }
-        
+
         [MenuItem("Kuroha/调试模式/关闭", true, 1)]
         public static bool CloseKurohaDebugModeValidate()
         {
@@ -75,7 +73,7 @@ namespace Kuroha.Menu.Editor
         }
 
         #endregion
-        
+
         #region 图标工具
 
         [MenuItem("Kuroha/UnityIcon/显示所有图标", false, 20)]
@@ -146,19 +144,19 @@ namespace Kuroha.Menu.Editor
         {
             AssetSearchWindow.Open(0);
         }
-        
+
         [MenuItem("Kuroha/Aircraft Check Tool", false, 60)]
         public static void AircraftCheckTool()
         {
             EffectCheckToolGUI.Detect(false, "飞高高产出检测工具");
         }
-        
+
         [MenuItem("Kuroha/PickItem Check Tool", false, 60)]
         public static void PickItemCheckTool()
         {
             EffectCheckToolGUI.Detect(false, "PickItem检测工具");
         }
-        
+
         [MenuItem("Kuroha/Car Set LOD Tool")]
         public static void CarSetLODTool()
         {
@@ -174,11 +172,11 @@ namespace Kuroha.Menu.Editor
         {
             ReferenceSearcher.OpenWindow();
         }
-        
+
         [MenuItem("GameObject/LODTool", false, 12)]
         public static void Batch()
         {
-            LodBatchWindow.Open();
+            LODBatchWindow.Open();
         }
 
         #endregion
