@@ -309,7 +309,7 @@ namespace Kuroha.Tool.LODSetTool.Editor
                     {
                         if (string.IsNullOrEmpty(configName))
                         {
-                            Dialog.Display("填写预设名称", Dialog.DialogType.Message, "OK");
+                            Dialog.Display("消息", "填写预设名称", Dialog.DialogType.Message, "OK");
                         }
                         else
                         {

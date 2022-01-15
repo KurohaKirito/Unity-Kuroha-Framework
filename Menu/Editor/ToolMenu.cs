@@ -102,7 +102,7 @@ namespace Kuroha.Menu.Editor
                 () => { Kuroha.Util.RunTime.DebugUtil.Log("错误: 您点击了确定按钮"); },
                 () => { Kuroha.Util.RunTime.DebugUtil.Log("错误: 您点击了取消按钮"); },
                 () => { Kuroha.Util.RunTime.DebugUtil.Log("错误: 您点击了功能按钮"); });
-            Dialog.Display("这是弹窗的内容", Dialog.DialogType.Error, "确定按钮");
+            Dialog.Display("消息", "这是弹窗的内容", Dialog.DialogType.Error, "确定按钮");
         }
 
         [MenuItem("Kuroha/消息弹窗示例/警告", false, 40)]
@@ -112,7 +112,7 @@ namespace Kuroha.Menu.Editor
                 () => { Kuroha.Util.RunTime.DebugUtil.Log("警告: 您点击了确定按钮"); },
                 () => { Kuroha.Util.RunTime.DebugUtil.Log("警告: 您点击了取消按钮"); },
                 () => { Kuroha.Util.RunTime.DebugUtil.Log("警告: 您点击了功能按钮"); });
-            Dialog.Display(
+            Dialog.Display("警告",
                 "消息内容: 当前一共检测出了 1035 个文件!  " +
                 "消息内容: 当前一共检测出了 1035 个文件!  " +
                 "消息内容: 当前一共检测出了 1035 个文件!  " +
@@ -129,7 +129,7 @@ namespace Kuroha.Menu.Editor
             // 弹窗使用方法:
             // 如果有需要在点击按钮后执行的回调, 则需要事先注册回调事件
             // 如果点击按钮后仅关闭窗口而已, 则不需要注册回调事件
-            Dialog.Display("这是一条消息, 阅读完, 点击确定即可!", Dialog.DialogType.Message, "确定");
+            Dialog.Display("消息", "这是一条消息, 阅读完, 点击确定即可!", Dialog.DialogType.Message, "确定");
         }
 
         #endregion

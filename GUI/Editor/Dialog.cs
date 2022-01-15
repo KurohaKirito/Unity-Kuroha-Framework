@@ -28,6 +28,11 @@ namespace Kuroha.GUI.Editor
         }
 
         /// <summary>
+        /// 消息的滑动框
+        /// </summary>
+        private static Vector2 messageVector2Scroll;
+
+        /// <summary>
         /// 弹窗消息内容
         /// </summary>
         private static string message;
@@ -85,12 +90,13 @@ namespace Kuroha.GUI.Editor
         /// <summary>
         /// 显示弹窗
         /// </summary>
+        /// <param name="titleText">弹窗标题</param>
         /// <param name="info">弹窗中要显示的信息</param>
         /// <param name="type">想要弹出什么类型的弹窗</param>
         /// <param name="buttonOkName">OK 按钮的显示文本</param>
         /// <param name="buttonCancelName">Cancel 按钮的显示文本</param>
         /// <param name="buttonAltName">Alt 按钮的显示文本</param>
-        public static void Display(string info, DialogType type, string buttonOkName, string buttonCancelName = null, string buttonAltName = null)
+        public static void Display(string titleText, string info, DialogType type, string buttonOkName, string buttonCancelName = null, string buttonAltName = null)
         {
             defaultColor = UnityEngine.GUI.backgroundColor;
             message = info;
@@ -103,26 +109,13 @@ namespace Kuroha.GUI.Editor
             window.minSize = new Vector2(400, 150);
             window.maxSize = window.minSize;
 
-            switch (windowType)
+            window.titleContent = windowType switch
             {
-                case DialogType.Message:
-                    window.titleContent = new GUIContent("消息",
-                        EditorGUIUtility.IconContent("console.infoIcon.sml").image as Texture2D, "消息");
-                    break;
-                
-                case DialogType.Warn:
-                    window.titleContent = new GUIContent("警告",
-                        EditorGUIUtility.IconContent("console.warnIcon.sml").image as Texture2D, "警告");
-                    break;
-                
-                case DialogType.Error:
-                    window.titleContent = new GUIContent("错误",
-                        EditorGUIUtility.IconContent("console.errorIcon.sml").image as Texture2D, "错误");
-                    break;
-                
-                default:
-                    throw new Exception();
-            }
+                DialogType.Message => new GUIContent(titleText, EditorGUIUtility.IconContent("console.infoIcon.sml").image as Texture2D, "消息"),
+                DialogType.Warn => new GUIContent(titleText, EditorGUIUtility.IconContent("console.warnIcon.sml").image as Texture2D, "警告"),
+                DialogType.Error => new GUIContent(titleText, EditorGUIUtility.IconContent("console.errorIcon.sml").image as Texture2D, "错误"),
+                _ => throw new Exception()
+            };
         }
 
         /// <summary>
@@ -140,7 +133,7 @@ namespace Kuroha.GUI.Editor
         private void OnGUI()
         {
             GUILayout.BeginVertical();
-            GUILayout.Space(25);
+            GUILayout.Space(15);
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
@@ -160,25 +153,27 @@ namespace Kuroha.GUI.Editor
                 case DialogType.Error:
                     GUILayout.Label(EditorGUIUtility.IconContent("console.errorIcon@2x"));
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
             #endregion
 
-            GUILayout.Space(25);
+            GUILayout.Space(15);
 
             GUILayout.BeginVertical();
+            messageVector2Scroll = GUILayout.BeginScrollView(messageVector2Scroll);
             GUILayout.FlexibleSpace();
             GUILayout.Label(message, "wordWrappedLabel");
             GUILayout.FlexibleSpace();
+            GUILayout.EndScrollView();
             GUILayout.EndVertical();
 
             GUILayout.Space(15);
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(25);
+            GUILayout.Space(15);
             GUILayout.FlexibleSpace();
 
             GUILayout.BeginHorizontal();

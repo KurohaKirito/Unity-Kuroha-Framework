@@ -221,11 +221,11 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
                     var outputPath = $"{Application.dataPath}/Result_Unused_{enumStr}_Asset.txt";
                     System.IO.File.WriteAllLines(outputPath, resultExport);
                     System.Diagnostics.Process.Start(outputPath);
-                    Kuroha.GUI.Editor.Dialog.Display($"检测结果位于: {outputPath} 文件中", Dialog.DialogType.Message, "OK");
+                    Kuroha.GUI.Editor.Dialog.Display("消息", $"检测结果位于: {outputPath} 文件中", Dialog.DialogType.Message, "OK");
                 }
                 else
                 {
-                    Kuroha.GUI.Editor.Dialog.Display("检测结束, 未检测到问题!", Dialog.DialogType.Message, "OK");
+                    Kuroha.GUI.Editor.Dialog.Display("消息", "检测结束, 未检测到问题!", Dialog.DialogType.Message, "OK");
                 }
             }
             

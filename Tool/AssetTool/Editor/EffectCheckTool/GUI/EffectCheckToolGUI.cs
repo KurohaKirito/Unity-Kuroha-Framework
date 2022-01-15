@@ -121,7 +121,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
 
                 if (reportEnumCount != sum)
                 {
-                    Dialog.Display($"代码错误! 报告枚举值的数量 {reportEnumCount} 和各个检查项的枚举值数量 {sum} 不一致, 请检查代码!", Dialog.DialogType.Error, "OK");
+                    Dialog.Display("错误", $"代码错误! 报告枚举值的数量 {reportEnumCount} 和各个检查项的枚举值数量 {sum} 不一致, 请检查代码!", Dialog.DialogType.Error, "OK");
                     isError = true;
                 }
             }
@@ -225,7 +225,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                 }
                 else
                 {
-                    Kuroha.GUI.Editor.Dialog.Display("当前未启用任何检查项, 请先启用检查项!", Dialog.DialogType.Message, "OK");
+                    Kuroha.GUI.Editor.Dialog.Display("消息", "当前未启用任何检查项, 请先启用检查项!", Dialog.DialogType.Message, "OK");
                 }
             }
 

@@ -59,7 +59,7 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
             if (EditorApplication.isPlaying == false)
             {
                 Kuroha.GUI.Editor.Dialog.SetListener(window.ResetToolBarIndex);
-                Kuroha.GUI.Editor.Dialog.Display("请先运行游戏", Dialog.DialogType.Message, "OK");
+                Kuroha.GUI.Editor.Dialog.Display("消息", "请先运行游戏", Dialog.DialogType.Message, "OK");
             }
             else
             {
@@ -82,7 +82,7 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
                 if (players == null)
                 {
                     Kuroha.GUI.Editor.Dialog.SetListener(window.ResetToolBarIndex);
-                    Kuroha.GUI.Editor.Dialog.Display("请先登录进入大厅", Dialog.DialogType.Message, "OK");
+                    Kuroha.GUI.Editor.Dialog.Display("消息", "请先登录进入大厅", Dialog.DialogType.Message, "OK");
                 }
                 else
                 {
