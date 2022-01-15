@@ -107,7 +107,11 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
             {
                 ProgressBar.DisplayProgressBar("批处理工具", $"加载材质: {index + 1}/{guids.Length}", index + 1, guids.Length);
                 var assetPath = AssetDatabase.GUIDToAssetPath(guids[index]);
-                materials.Add(AssetDatabase.LoadAssetAtPath<Material>(assetPath));
+                
+                // 仅检测后缀为 mat 的材质文件, 不检测字体文件和模型文件中内嵌的材质文件
+                if (assetPath.EndsWith(".mat")) {
+                    materials.Add(AssetDatabase.LoadAssetAtPath<Material>(assetPath));
+                }
             }
             DebugUtil.Log($"Find {materials.Count} Materials!");
             
@@ -192,10 +196,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
 
             if (repair)
             {
-                using (var writer = new StreamWriter(materialPathName))
-                {
-                    writer.Write(strBuilder.ToString());
-                }
+                using var writer = new StreamWriter(materialPathName);
+                writer.Write(strBuilder.ToString());
             }
 
             return isError;
