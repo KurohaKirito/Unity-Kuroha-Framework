@@ -26,7 +26,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 初始化
         /// </summary>
-        protected sealed override void Init()
+        protected sealed override void AutoInit()
         {
             cameraShotWidth = Screen.width;
             cameraShotHeight = Screen.height;
