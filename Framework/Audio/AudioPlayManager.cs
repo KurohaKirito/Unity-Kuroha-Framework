@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Kuroha.Framework.Singleton;
+﻿using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
 using UnityEngine;
 
@@ -41,20 +40,20 @@ namespace Kuroha.Framework.Audio
         /// </summary>
         [SerializeField]
         private AudioClipManager audioClipManager;
-
+        
         /// <summary>
-        /// [Async] 初始化
+        /// 初始化
         /// </summary>
-        public sealed override async Task InitAsync()
+        protected override void AutoInit()
         {
             if (audioClipManager == null || audioSourceManager == null)
             {
                 audioSourceManager ??= new AudioSourceManager(gameObject);
                 audioClipManager ??= new AudioClipManager();
-                await audioClipManager.OnInit();
+                audioClipManager.OnInit();
             }
         }
-        
+
         /// <summary>
         /// 播放
         /// </summary>

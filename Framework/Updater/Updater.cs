@@ -32,9 +32,9 @@ namespace Kuroha.Framework.Updater
         /// <summary>
         /// 单例初始化
         /// </summary>
-        protected override void Init()
+        protected override void AutoInit()
         {
-            base.Init();
+            base.AutoInit();
             updateMessage ??= new UpdateMessage(Time.deltaTime);
         }
 

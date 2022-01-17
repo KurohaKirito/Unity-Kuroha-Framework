@@ -6,6 +6,7 @@ using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
 using Kuroha.Tool.AssetViewer.Editor;
 using Kuroha.Tool.LODSetTool.Editor;
 using Kuroha.Util.Editor;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 
 namespace Kuroha.Menu.Editor
@@ -41,7 +42,9 @@ namespace Kuroha.Menu.Editor
         [MenuItem("Kuroha/日志/清空", false, 0)]
         public static void ClearDebugLog()
         {
-            Kuroha.Util.RunTime.DebugUtil.ClearConsole();
+            var dynamicAssembly = new DynamicAssembly(typeof(SceneView));
+            var dynamicClass = dynamicAssembly.GetClass("UnityEditor.LogEntries");
+            dynamicClass.CallMethod_PublicStatic("Clear");
         }
 
         #endregion

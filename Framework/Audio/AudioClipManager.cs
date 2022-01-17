@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Kuroha.Util.RunTime;
-using UnityEditor;
 using UnityEngine;
 
 namespace Kuroha.Framework.Audio
@@ -60,26 +57,14 @@ namespace Kuroha.Framework.Audio
         private readonly Dictionary<string, SingleClip> singleClipDic = new Dictionary<string, SingleClip>();
 
         /// <summary>
-        /// [Async] 初始化, 读取所有的 SingleClip
+        /// 初始化, 读取所有的 SingleClip
         /// </summary>
-        public async Task OnInit()
+        public void OnInit()
         {
-            var guids = AssetDatabase.FindAssets($"t:{nameof(SingleClip)}", new[]
+            var assets = Resources.LoadAll<SingleClip>("DataBase/Audio");
+            foreach (var asset in assets)
             {
-                "Assets/Resources/DataBase/Audio/"
-            });
-            
-            foreach (var guid in guids)
-            {
-                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                assetPath = assetPath.Replace("Assets/Resources/", "").Replace(".asset", "");
-                var singleClipRequest = Resources.LoadAsync<SingleClip>(assetPath);
-                await singleClipRequest;
-
-                if (singleClipRequest.asset is SingleClip singleClip)
-                {
-                    singleClipDic[singleClip.id] = singleClip;
-                }
+                singleClipDic[asset.id] = asset;
             }
         }
 

@@ -55,7 +55,7 @@ namespace Kuroha.Framework.UI.Manager
         /// <summary>
         /// 单例
         /// </summary>
-        protected sealed override void Init()
+        protected sealed override void AutoInit()
         {
             if (MainCamera == null || Panel == null || Window == null)
             {

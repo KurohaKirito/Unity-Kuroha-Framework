@@ -37,7 +37,7 @@ namespace Kuroha.Framework.Singleton
                         script = CreateSingleton();
                     }
 
-                    script.Init();
+                    script.AutoInit();
                 }
 
                 return instanceBase;
@@ -101,16 +101,16 @@ namespace Kuroha.Framework.Singleton
         }
 
         /// <summary>
-        /// 初始化
+        /// 自动初始化
         /// </summary>
-        protected virtual void Init() { }
+        protected virtual void AutoInit() { }
 
         /// <summary>
         /// [Async] 初始化
         /// </summary>
         public virtual Task InitAsync()
         {
-            return null;
+            return Task.CompletedTask;
         }
 
         /// <summary>
