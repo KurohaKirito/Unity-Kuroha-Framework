@@ -30,13 +30,17 @@ namespace Kuroha.Framework.Launcher
             if (launcher == null)
             {
                 await Launcher.Instance.InitAsync();
+                DebugUtil.Log("框架启动完成!", null, "green");
+            }
+            else
+            {
+                DebugUtil.Log("框架启动完成! 无需重复启动!", null, "yellow");
             }
         }
 
         private async void Start()
         {
             await LaunchFramework();
-            DebugUtil.Log("框架启动完成!", this, "green");
             RegisterEvent();
             ExecuteStartEvent();
             SceneStart();
