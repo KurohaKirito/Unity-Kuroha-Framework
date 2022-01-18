@@ -38,6 +38,9 @@ namespace Kuroha.Framework.Launcher
             }
         }
 
+        /// <summary>
+        /// Unity Event
+        /// </summary>
         private async void Start()
         {
             await LaunchFramework();
@@ -45,15 +48,26 @@ namespace Kuroha.Framework.Launcher
             ExecuteStartEvent();
             SceneStart();
         }
+        
+        /// <summary>
+        /// Unity Event
+        /// </summary>
         private void OnDestroy()
         {
             ExecuteDestroyEvent();
         }
+        
+        /// <summary>
+        /// Unity Event
+        /// </summary>
         private void OnApplicationQuit()
         {
             ExecuteApplicationQuitEvent();
         }
         
+        /// <summary>
+        /// 自定义事件
+        /// </summary>
         private void ExecuteStartEvent()
         {
             startEventQueue ??= new Queue<IOnStart>();
@@ -62,6 +76,10 @@ namespace Kuroha.Framework.Launcher
                 startEventQueue.Dequeue().StartEvent();
             }
         }
+        
+        /// <summary>
+        /// 自定义事件
+        /// </summary>
         private void ExecuteDestroyEvent()
         {
             destroyEventQueue ??= new Queue<IOnDestroy>();
@@ -70,6 +88,10 @@ namespace Kuroha.Framework.Launcher
                 destroyEventQueue.Dequeue().DestroyEvent();
             }
         }
+        
+        /// <summary>
+        /// 自定义事件
+        /// </summary>
         private void ExecuteApplicationQuitEvent()
         {
             applicationQuitEventQueue ??= new Queue<IOnApplicationQuit>();
@@ -79,16 +101,27 @@ namespace Kuroha.Framework.Launcher
             }
         }
         
+        /// <summary>
+        /// 注册事件
+        /// </summary>
         protected void RegisterStartEvent(IOnStart func)
         {
             startEventQueue ??= new Queue<IOnStart>();
             startEventQueue.Enqueue(func);
         }
+        
+        /// <summary>
+        /// 注册事件
+        /// </summary>
         protected void RegisterDestroyEvent(IOnDestroy func)
         {
             destroyEventQueue ??= new Queue<IOnDestroy>();
             destroyEventQueue.Enqueue(func);
         }
+        
+        /// <summary>
+        /// 注册事件
+        /// </summary>
         protected void RegisterOnApplicationQuit(IOnApplicationQuit func)
         {
             applicationQuitEventQueue ??= new Queue<IOnApplicationQuit>();

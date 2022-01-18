@@ -36,25 +36,32 @@ namespace Kuroha.Framework.BugReport
         
         public static BugReport Instance => InstanceBase as BugReport;
         
-        [Header("Trello API")] [SerializeField]
+        [Header("Trello API")]
+        [SerializeField]
         private Trello trello;
         
-        [Header("初始化成功标志")] [SerializeField]
+        [Header("初始化成功标志")]
+        [SerializeField]
         private bool initSuccess;
 
-        [Header("用户密钥")] [SerializeField]
+        [Header("用户密钥")]
+        [SerializeField]
         private string trelloUserKey = "ac263348103d7880336bc34541819cfa";
         
-        [Header("用户令牌")] [SerializeField]
+        [Header("用户令牌")]
+        [SerializeField]
         private string trelloUserToken = "be9d7b29f6141bb281afb08ed43a12862ecf26a803198a325d0f0dfe08856b70";
         
-        [Header("看板名称")] [SerializeField]
+        [Header("看板名称")]
+        [SerializeField]
         private string trelloUserTokenBoard = "魔剑镇魂曲";
         
-        [Header("卡片列表 [可自动同步看板列表] [可自动创建新列表到看板]")] [SerializeField]
+        [Header("卡片列表 [可自动同步看板列表] [可自动创建新列表到看板]")]
+        [SerializeField]
         private List<string> userListName;
 
-        [Header("错误上传按钮")] [SerializeField]
+        [Header("错误上传按钮")]
+        [SerializeField]
         private Button bugReportButton;
 
         /// <summary>
@@ -98,9 +105,10 @@ namespace Kuroha.Framework.BugReport
         /// </summary>
         private void SyncList()
         {
-            if (userListName.IsNullOrEmpty())
+            userListName ??= new List<string>();
+            
+            if (userListName.Count <= 0)
             {
-                userListName = new List<string>();
                 foreach (var listName in trello.cachedUserLists.Keys)
                 {
                     userListName.Add(listName);

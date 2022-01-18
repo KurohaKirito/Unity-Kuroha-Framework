@@ -818,7 +818,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     if (lods[0].renderers == null || lods[0].renderers.Length <= 0)
                     {
                         var childPath = PrefabUtil.GetHierarchyPath(transform, false);
-                        if (childPath.IsNullOrEmpty())
+                        if (string.IsNullOrEmpty(childPath))
                         {
                             var content = $"LODGroups设置错误!\t预制体: {assetPath}";
                             report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers, content, item));
@@ -844,7 +844,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         if (isError)
                         {
                             var childPath = PrefabUtil.GetHierarchyPath(transform, false);
-                            if (childPath.IsNullOrEmpty())
+                            if (string.IsNullOrEmpty(childPath))
                             {
                                 var content = $"LOD0存在空物体!\t预制体: {assetPath}";
                                 report.Add(EffectCheckReport.AddReportInfo(asset, childPath, EffectCheckReportInfo.EffectCheckReportType.PrefabLODGroupRenderers, content, item));

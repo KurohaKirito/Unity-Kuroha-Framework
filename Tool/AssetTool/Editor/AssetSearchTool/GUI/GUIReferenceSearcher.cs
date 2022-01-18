@@ -3,7 +3,6 @@ using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
 using UnityEditor;
 using UnityEngine;
-using Kuroha.Util.RunTime;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
 {
@@ -32,7 +31,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
 
             EditorGUILayout.LabelField("请选择需要查找引用的资源文件.");
 
-            if (Selection.assetGUIDs.IsNotNullAndEmpty())
+            if (Selection.assetGUIDs != null)
             {
                 // 每 1 行显示物体的数量
                 var countPerRow = 5;

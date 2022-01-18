@@ -123,7 +123,7 @@ namespace Kuroha.Framework.BugReport
             await request.SendWebRequest();
 
             var downloadText = request.downloadHandler.text;
-            if (downloadText.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(downloadText))
             {
                 isSuccess = false;
                 message = request.error;
@@ -168,7 +168,7 @@ namespace Kuroha.Framework.BugReport
             await request.SendWebRequest();
 
             var downloadText = request.downloadHandler.text;
-            if (downloadText.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(downloadText))
             {
                 isSuccess = false;
                 message = request.error;
@@ -219,7 +219,7 @@ namespace Kuroha.Framework.BugReport
             await request.SendWebRequest();
 
             var downloadText = request.downloadHandler.text;
-            if (downloadText.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(downloadText))
             {
                 isSuccess = false;
                 message = request.error;
@@ -304,7 +304,7 @@ namespace Kuroha.Framework.BugReport
             await request.SendWebRequest();
             
             var downloadText = request.downloadHandler.text;
-            if (downloadText.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(downloadText))
             {
                 isSuccess = false;
                 message = request.error;

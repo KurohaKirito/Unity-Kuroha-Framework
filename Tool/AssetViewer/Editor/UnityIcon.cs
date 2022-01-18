@@ -135,7 +135,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
                 if (ReferenceEquals(bundle, null) == false)
                 {
                     var objects = bundle.LoadAllAssets();
-                    if (objects.IsNotNullAndEmpty())
+                    if (objects != null)
                     {
                         var count = objects.Length;
                         for (var index = 0; index < count; index++)

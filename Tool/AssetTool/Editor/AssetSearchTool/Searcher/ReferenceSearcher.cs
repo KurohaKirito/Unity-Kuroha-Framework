@@ -23,7 +23,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
         /// <param name="guids"></param>
         public static void Find(string[] guids)
         {
-            if (guids.IsNotNullAndEmpty())
+            if (guids != null)
             {
                 // 清空旧的查询结果
                 references.Clear();
@@ -77,7 +77,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
         /// </summary>
         public static void OpenWindow()
         {
-            if (Selection.assetGUIDs.IsNotNullAndEmpty())
+            if (Selection.assetGUIDs != null)
             {
                 AssetSearchWindow.Open(1);
                 Find(Selection.assetGUIDs);

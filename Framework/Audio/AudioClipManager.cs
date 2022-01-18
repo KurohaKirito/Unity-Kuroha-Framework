@@ -22,10 +22,10 @@ namespace Kuroha.Framework.Audio
 
         public void InspectorUpdate()
         {
-            if (singleClipList.IsNullOrEmpty())
+            singleClipList ??= new List<Kuroha.Framework.Audio.SingleClip>();
+            
+            if (singleClipList.Count <= 0)
             {
-                singleClipList = new List<Kuroha.Framework.Audio.SingleClip>();
-
                 foreach (var singleClip in singleClipDic.Values)
                 {
                     singleClipList.Add(singleClip);

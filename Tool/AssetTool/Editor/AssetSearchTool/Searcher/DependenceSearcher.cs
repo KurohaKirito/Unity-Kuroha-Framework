@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Kuroha.Util.RunTime;
 using UnityEditor;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
@@ -20,7 +19,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
         /// <param name="assetGUIDs">Selection.assetGUIDs</param>
         public static void FindSelectionDependencies(string[] assetGUIDs)
         {
-            if (assetGUIDs.IsNotNullAndEmpty())
+            if (assetGUIDs != null)
             {
                 dependencies.Clear();
 

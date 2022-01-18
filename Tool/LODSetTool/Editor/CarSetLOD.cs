@@ -82,7 +82,6 @@ namespace Kuroha.Tool.LODSetTool.Editor
 
         private static void SetLOD()
         {
-            // FileUtil.GetProjectRelativePath();
             foreach (var asset in prefabs)
             {
                 if (asset != null)

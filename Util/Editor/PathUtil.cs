@@ -7,7 +7,7 @@ namespace Kuroha.Util.Editor
     public static class PathUtil
     {
         /// <summary>
-        /// 将 Absolute Path 转换为 AssetPath
+        /// 将 AbsolutePath 转换为 AssetPath
         /// </summary>
         /// <param name="absolutePaths">待转换路径</param>
         /// <returns></returns>
@@ -21,7 +21,7 @@ namespace Kuroha.Util.Editor
         }
 
         /// <summary>
-        /// 将 Absolute Path 转换为 AssetPath
+        /// 将 AbsolutePath 转换为 AssetPath
         /// </summary>
         /// <param name="absolutePath">待转换路径</param>
         /// <returns></returns>
@@ -31,9 +31,25 @@ namespace Kuroha.Util.Editor
 
             if (string.IsNullOrEmpty(absolutePath) == false)
             {
+                // UnityEditor.FileUtil.GetProjectRelativePath(absolutePath) 方法仅对 '/' 生效, 对 '\' 无效
                 var assetsIndex = absolutePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                 var assetPath = absolutePath.Substring(assetsIndex);
                 result = assetPath;
+            }
+
+            return result;
+        }
+        
+        /// <summary>
+        /// 将 AssetPath 转换为 AbsolutePath
+        /// </summary>
+        public static string GetAbsolutePath(string assetPath)
+        {
+            string result = null;
+
+            if (string.IsNullOrEmpty(assetPath) == false)
+            {
+                result = System.IO.Path.GetFullPath(assetPath);
             }
 
             return result;

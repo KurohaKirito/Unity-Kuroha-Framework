@@ -77,7 +77,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public void OnAfterDeserialize()
         {
-            if (keys.IsNullOrEmpty() || values.IsNullOrEmpty())
+            if (keys == null || values == null || keys.Count <= 0 || values.Count <= 0)
             {
                 DebugUtil.LogError("反序列化失败!", null, "red");
             }

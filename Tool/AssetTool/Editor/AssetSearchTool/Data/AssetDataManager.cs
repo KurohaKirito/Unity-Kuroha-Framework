@@ -82,7 +82,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Data
 
             if (isNotFirst)
             {
-                if (assetDataDictionary.IsNotNullAndEmpty())
+                if (assetDataDictionary != null)
                 {
                     AfterSearch();
                 }

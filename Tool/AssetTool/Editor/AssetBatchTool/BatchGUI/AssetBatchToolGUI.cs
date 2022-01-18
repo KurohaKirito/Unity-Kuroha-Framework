@@ -15,6 +15,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI
         /// </summary>
         public enum BatchType
         {
+            AssetCollectTool,
             AssetMoveTool,
             AssetDeleteTool,
             UnusedAssetChecker,
@@ -33,6 +34,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI
         /// </summary>
         public static readonly string[] batches =
         {
+            "资源收集工具",
             "资源批量移动工具",
             "资源批量删除工具",
             "废弃资源检测工具",
@@ -130,6 +132,10 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI
             {
                 switch (currentBatch)
                 {
+                    case BatchType.AssetCollectTool:
+                        AssetCollectTool.OnGUI();
+                        break;
+                    
                     case BatchType.RedundantTextureReferencesCleaner:
                         RedundantTextureReferencesCleaner.OnGUI();
                         break;

@@ -21,7 +21,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher
         /// <param name="keyWords">需要查询的字符串数组</param>
         public static void FindString(string[] keyWords)
         {
-            if (keyWords.IsNotNullAndEmpty())
+            if (keyWords != null)
             {
                 #region 清空旧的查询结果
 

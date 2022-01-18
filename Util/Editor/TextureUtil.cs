@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Kuroha.GUI.Editor;
-using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
@@ -265,7 +264,7 @@ namespace Kuroha.Util.Editor
 
             // 获取全部的 Renderer
             var renderers = UnityEngine.Object.FindObjectsOfType<Renderer>(true);
-            if (renderers.IsNotNullAndEmpty())
+            if (renderers != null)
             {
                 // 遍历 Renderer
                 foreach (var renderer in renderers)
@@ -274,7 +273,7 @@ namespace Kuroha.Util.Editor
                     {
                         // 获取全部的材质
                         var materials = renderer.sharedMaterials;
-                        if (materials.IsNotNullAndEmpty())
+                        if (materials != null)
                         {
                             // 遍历材质
                             foreach (var material in materials)
@@ -314,7 +313,7 @@ namespace Kuroha.Util.Editor
 
             // 获取全部的 Renderer
             var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
-            if (renderers.IsNotNullAndEmpty())
+            if (renderers != null)
             {
                 foreach (var renderer in renderers)
                 {
@@ -322,7 +321,7 @@ namespace Kuroha.Util.Editor
                     {
                         // 获取全部的材质
                         var materials = renderer.sharedMaterials;
-                        if (materials.IsNotNullAndEmpty())
+                        if (materials != null)
                         {
                             foreach (var material in materials)
                             {
@@ -360,7 +359,7 @@ namespace Kuroha.Util.Editor
 
             // 获取路径下全部纹理的 guids
             var guids = AssetDatabase.FindAssets("t:Texture", paths);
-            if (guids.IsNotNullAndEmpty())
+            if (guids != null)
             {
                 for (var i = 0; i < guids.Length; i++)
                 {

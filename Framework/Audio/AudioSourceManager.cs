@@ -10,10 +10,12 @@ namespace Kuroha.Framework.Audio
     [Serializable]
     public class AudioSourceManager
     {
-        [Header("音频播放器对象池")] [SerializeField]
+        [Header("音频播放器对象池")]
+        [SerializeField]
         private List<AudioSource> audioSourcePool;
 
-        [Header("音频播放器挂载者")] [SerializeField]
+        [Header("音频播放器挂载者")]
+        [SerializeField]
         private GameObject audioSourceOwner;
         
         /// <summary>
