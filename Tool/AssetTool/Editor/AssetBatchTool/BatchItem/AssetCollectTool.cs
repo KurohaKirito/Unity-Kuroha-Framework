@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Data.DataStruct.Item;
 using Data.DataStruct.Job;
 using Data.DataStruct.Map;
 using Data.DataStruct.Role;
 using Data.DataStruct.Skill;
+using Kuroha.Framework.AsyncLoad.Asset;
 using Kuroha.Framework.Audio;
 using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 using UnityEditor;
@@ -111,7 +111,6 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
                     if (GUILayout.Button ("Collect", GUILayout.Height (UI_BUTTON_HEIGHT), GUILayout.Width (UI_BUTTON_WIDTH)))
                     {
                         Collect();
-                        AssetDatabase.Refresh();
                     }
                     GUILayout.EndVertical();
                 }
@@ -161,14 +160,14 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
         {
             savePath = assetType switch
             {
-                AssetType.音频 =>    "Assets/Resources/Configs/Assets/Audios.txt",
-                AssetType.物品 =>    "Assets/Resources/Configs/Assets/Item.txt",
-                AssetType.物品特效 => "Assets/Resources/Configs/Assets/ItemBuff.txt",
-                AssetType.物品类型 => "Assets/Resources/Configs/Assets/ItemType.txt",
-                AssetType.职业 =>    "Assets/Resources/Configs/Assets/Job.txt",
-                AssetType.地图 =>    "Assets/Resources/Configs/Assets/Map.txt",
-                AssetType.角色 =>    "Assets/Resources/Configs/Assets/Role.txt",
-                AssetType.技能 =>    "Assets/Resources/Configs/Assets/Skill.txt",
+                AssetType.音频 =>    "Assets/Resources/Configs/Assets/Audios.asset",
+                AssetType.物品 =>    "Assets/Resources/Configs/Assets/Item.asset",
+                AssetType.物品特效 => "Assets/Resources/Configs/Assets/ItemBuff.asset",
+                AssetType.物品类型 => "Assets/Resources/Configs/Assets/ItemType.asset",
+                AssetType.职业 =>    "Assets/Resources/Configs/Assets/Job.asset",
+                AssetType.地图 =>    "Assets/Resources/Configs/Assets/Map.asset",
+                AssetType.角色 =>    "Assets/Resources/Configs/Assets/Role.asset",
+                AssetType.技能 =>    "Assets/Resources/Configs/Assets/Skill.asset",
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -178,7 +177,25 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
         /// </summary>
         private static void Collect()
         {
-            var filterType = assetType switch
+            var paths = new List<string>();
+            var guids = AssetDatabase.FindAssets(GetFilterStr(), new[] {
+                collectPath
+            });
+            paths.AddRange(guids.Select(AssetDatabase.GUIDToAssetPath));
+
+            var config = AssetDatabase.LoadAssetAtPath<DS_Asset>(savePath);
+            config.assetPaths = paths;
+            EditorUtility.SetDirty(config);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// 得到查找条件
+        /// </summary>
+        private static string GetFilterStr()
+        {
+            return assetType switch
             {
                 AssetType.音频 =>    $"t:{nameof(SingleClip)}",
                 AssetType.物品 =>    $"t:{nameof(DS_Item)}",
@@ -190,14 +207,6 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
                 AssetType.技能 =>    $"t:{nameof(DS_Skill)}",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            
-            var paths = new List<string>();
-            var guids = AssetDatabase.FindAssets(filterType, new[] {
-                collectPath
-            });
-            paths.AddRange(guids.Select(AssetDatabase.GUIDToAssetPath));
-            
-            System.IO.File.WriteAllLines(savePath, paths, Encoding.UTF8);
         }
     }
 }

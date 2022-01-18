@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Kuroha.Framework.AsyncLoad;
+using Kuroha.Framework.AsyncLoad.Scene;
 using Kuroha.Framework.Audio;
 using Kuroha.Framework.Singleton;
 

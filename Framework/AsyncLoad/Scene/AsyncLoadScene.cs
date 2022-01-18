@@ -3,7 +3,7 @@ using Kuroha.Framework.Updater;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Kuroha.Framework.AsyncLoad
+namespace Kuroha.Framework.AsyncLoad.Scene
 {
     /// <summary>
     /// 协程实现异步加载场景

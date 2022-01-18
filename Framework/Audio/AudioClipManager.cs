@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Kuroha.Framework.AsyncLoad.Asset;
+using Kuroha.Util.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.Audio
@@ -57,14 +60,27 @@ namespace Kuroha.Framework.Audio
         private readonly Dictionary<string, SingleClip> singleClipDic = new Dictionary<string, SingleClip>();
 
         /// <summary>
-        /// 初始化, 读取所有的 SingleClip
+        /// [Async] 初始化, 读取所有的 SingleClip
         /// </summary>
-        public void OnInit()
+        public async Task InitAsync()
         {
-            var assets = Resources.LoadAll<SingleClip>("DataBase/Audio");
-            foreach (var asset in assets)
+            var request = Resources.LoadAsync<DS_Asset>("Configs/Assets/Audios");
+            await request;
+
+            if (request.asset is DS_Asset asset)
             {
-                singleClipDic[asset.id] = asset;
+                var paths = asset.assetPaths;
+                foreach (var path in paths)
+                {
+                    var assetPath = path.Replace("Assets/Resources/", "").Replace(".asset", "");
+                    var singleClipRequest = Resources.LoadAsync<SingleClip>(assetPath);
+                    await singleClipRequest;
+
+                    if (singleClipRequest.asset is SingleClip singleClip)
+                    {
+                        singleClipDic[singleClip.id] = singleClip;
+                    }
+                }
             }
         }
 
