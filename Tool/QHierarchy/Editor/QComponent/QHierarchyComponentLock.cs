@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
@@ -9,121 +8,174 @@ using Kuroha.Tool.QHierarchy.Editor.QData;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
-    public class QHierarchyComponentLock: QHierarchyBaseComponent
+    public class QHierarchyComponentLock : QHierarchyBaseComponent
     {
-        // PRIVATE
+        private readonly Texture2D lockButtonTexture;
+
         private Color activeColor;
         private Color inactiveColor;
-        private Texture2D lockButtonTexture;
-        private bool showModifierWarning;
-        private int targetLockState = -1;
 
-        // CONSTRUCTOR
+        private bool showModifierWarning;
+
+        private const string WHITE_LIST = "Canvas (Environment)";
+        private const string SHIFT_TIP_LOCK = "要递归锁定此物体吗? (可以在设置中关闭此提示)";
+        private const string SHIFT_TIP_UNLOCK = "要递归解锁此物体吗? (可以在设置中关闭此提示)";
+        private const string ALT_TIP_LOCK = "要同时锁定此物体以及全部同级物体吗? (可以在设置中关闭此提示)";
+        private const string ALT_TIP_UNLOCK = "要同时解锁此物体以及全部同级物体吗? (可以在设置中关闭此提示)";
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public QHierarchyComponentLock()
         {
             rect.width = 13;
 
             lockButtonTexture = QResources.Instance().GetTexture(QTexture.QLockButton);
 
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalShowModifierWarning , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.LockShow                      , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.LockShowDuringPlayMode        , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor         , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor       , settingsChanged);
-            settingsChanged();
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalShowModifierWarning, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.LockShow, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.LockShowDuringPlayMode, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor, SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor, SettingsChanged);
+
+            SettingsChanged();
         }
 
-        // PRIVATE
-        private void settingsChanged()
+        /// <summary>
+        /// 修改设置
+        /// </summary>
+        private void SettingsChanged()
         {
-            showModifierWarning         = QSettings.Instance().Get<bool>(EM_QHierarchySettings.AdditionalShowModifierWarning);
-            enabled                     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.LockShow);
+            showModifierWarning = QSettings.Instance().Get<bool>(EM_QHierarchySettings.AdditionalShowModifierWarning);
+            enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.LockShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.LockShowDuringPlayMode);
-            activeColor                 = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
-            inactiveColor               = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
+            activeColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
+            inactiveColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
         }
 
-        // DRAW
+        /// <summary>
+        /// 计算布局
+        /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             if (maxWidth < 13)
             {
                 return EM_QLayoutStatus.Failed;
             }
-            else
-            {
-                curRect.x -= 13;
-                rect.x = curRect.x;
-                rect.y = curRect.y;
-                return EM_QLayoutStatus.Success;
-            }
+
+            curRect.x -= 13;
+            rect.x = curRect.x;
+            rect.y = curRect.y;
+            return EM_QLayoutStatus.Success;
         }
 
+        /// <summary>
+        /// 判断是否锁定
+        /// </summary>
+        private static bool IsLocked(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
+        {
+            return hierarchyObjectList != null && hierarchyObjectList.lockedObjects.Contains(gameObject);
+        }
+
+        /// <summary>
+        /// 绘制 GUI
+        /// </summary>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
-        {  
-            bool isLock = isGameObjectLock(gameObject, hierarchyObjectList);
-
-            if (isLock == true && (gameObject.hideFlags & HideFlags.NotEditable) != HideFlags.NotEditable)
+        {
+            // 特殊情况: 没有 Canvas 组件的 UGUI 预制体会自动创建一个 Locked 标记的 Canvas
+            if (CheckWhiteList(gameObject))
             {
-                gameObject.hideFlags |= HideFlags.NotEditable;
-                EditorUtility.SetDirty(gameObject);
-            }
-            else if (isLock == false && (gameObject.hideFlags & HideFlags.NotEditable) == HideFlags.NotEditable)
-            {
-                gameObject.hideFlags ^= HideFlags.NotEditable;
-                EditorUtility.SetDirty(gameObject);
+                return;
             }
 
-            QHierarchyColorUtils.SetColor(isLock ? activeColor : inactiveColor);
+            // 在 QHierarchy 工具数据库中当前游戏物体是否被记录为 Locked
+            var isLockedInQHierarchy = IsLocked(gameObject, hierarchyObjectList);
+
+            // 在 Hierarchy 面板中当前游戏物体是否被记录为 Locked
+            var isLockedInHierarchy = (gameObject.hideFlags & HideFlags.NotEditable) == HideFlags.NotEditable;
+
+            // 如果两个记录有冲突
+            if (isLockedInQHierarchy)
+            {
+                if (isLockedInHierarchy == false)
+                {
+                    // 或运算
+                    gameObject.hideFlags |= HideFlags.NotEditable;
+                    EditorUtility.SetDirty(gameObject);
+                }
+            }
+            else
+            {
+                if (isLockedInHierarchy)
+                {
+                    // 异或运算 (不等返回真)
+                    gameObject.hideFlags ^= HideFlags.NotEditable;
+                    EditorUtility.SetDirty(gameObject);
+                }
+            }
+
+            // 图标颜色
+            QHierarchyColorUtils.SetColor(isLockedInQHierarchy? activeColor : inactiveColor);
+
+            // 绘制图标
             UnityEngine.GUI.DrawTexture(rect, lockButtonTexture);
+
             QHierarchyColorUtils.ClearColor();
         }
 
+        /// <summary>
+        /// 白名单检测
+        /// </summary>
+        private static bool CheckWhiteList(UnityEngine.Object obj)
+        {
+            // 特殊情况: 没有 Canvas 组件的 UGUI 预制体会自动创建一个 Locked 标记的 Canvas
+            return WHITE_LIST.Contains(obj.name);
+        }
+
+        /// <summary>
+        /// 点击事件
+        /// </summary>
         public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
-            if (currentEvent.isMouse && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
+            if (CheckWhiteList(gameObject))
             {
-                bool isLock = isGameObjectLock(gameObject, hierarchyObjectList);
+                return;
+            }
 
-                if (currentEvent.type == EventType.MouseDown)
-                {
-                    targetLockState = ((!isLock) == true ? 1 : 0);
-                }
-                else if (currentEvent.type == EventType.MouseDrag && targetLockState != -1)
-                {
-                    if (targetLockState == (isLock == true ? 1 : 0)) return;
-                } 
-                else
-                {
-                    targetLockState = -1;
-                    return;
-                }
+            // 左键点击图标
+            if (currentEvent.isMouse && currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
+            {
+                var isLock = IsLocked(gameObject, hierarchyObjectList);
+                var targetGameObjects = new List<GameObject>();
 
-                List<GameObject> targetGameObjects = new List<GameObject>();
-                if (currentEvent.shift) 
+                if (currentEvent.shift)
                 {
-                    if (!showModifierWarning || EditorUtility.DisplayDialog("Change locking", "Are you sure you want to " + (isLock ? "unlock" : "lock") + " this GameObject and all its children? (You can disable this warning in the settings)", "Yes", "Cancel"))
+                    var tip = isLock? SHIFT_TIP_UNLOCK : SHIFT_TIP_LOCK;
+                    if (showModifierWarning == false || EditorUtility.DisplayDialog("改变锁定状态", tip, "Yes", "Cancel"))
                     {
-                        GetGameObjectListRecursive(gameObject, ref targetGameObjects);           
+                        GetGameObjectListRecursive(gameObject, ref targetGameObjects);
                     }
                 }
                 else if (currentEvent.alt)
                 {
-                    if (gameObject.transform.parent != null)
+                    var parent = gameObject.transform.parent;
+
+                    if (parent != null)
                     {
-                        if (!showModifierWarning || EditorUtility.DisplayDialog("Change locking", "Are you sure you want to " + (isLock ? "unlock" : "lock") + " this GameObject and its siblings? (You can disable this warning in the settings)", "Yes", "Cancel"))
+                        var tip = isLock? ALT_TIP_UNLOCK : ALT_TIP_LOCK;
+                        if (showModifierWarning == false || EditorUtility.DisplayDialog("改变锁定状态", tip, "Yes", "Cancel"))
                         {
-                            GetGameObjectListRecursive(gameObject.transform.parent.gameObject, ref targetGameObjects, 1);
-                            targetGameObjects.Remove(gameObject.transform.parent.gameObject);
+                            GetGameObjectListRecursive(parent.gameObject, ref targetGameObjects, 1);
+                            targetGameObjects.Remove(parent.gameObject);
                         }
                     }
                     else
                     {
-                        Debug.Log("This action for root objects is supported only for Unity3d 5.3.3 and above");
+                        Debug.Log("对根物体的操作仅支持 Unity 5.3.3 以及以上版本");
                         return;
                     }
                 }
-                else 
+                else
                 {
                     if (Selection.Contains(gameObject))
                     {
@@ -132,54 +184,57 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     else
                     {
                         GetGameObjectListRecursive(gameObject, ref targetGameObjects, 0);
-                    };
+                    }
                 }
-                
-                setLock(targetGameObjects, hierarchyObjectList, !isLock);
+
+                SetLock(targetGameObjects, hierarchyObjectList, !isLock);
                 currentEvent.Use();
             }
-        } 
+        }
 
+        /// <summary>
+        /// 隐藏事件
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="hierarchyObjectList"></param>
         public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
-        {	
+        {
             if (hierarchyObjectList != null && hierarchyObjectList.lockedObjects.Contains(gameObject))
             {
+                // 取消锁定
                 hierarchyObjectList.lockedObjects.Remove(gameObject);
+                
+                // 与运算, 关闭 NotEditable
                 gameObject.hideFlags &= ~HideFlags.NotEditable;
+                
                 EditorUtility.SetDirty(gameObject);
             }
         }
 
-        // PRIVATE
-        private bool isGameObjectLock(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
-        {
-            return hierarchyObjectList == null ? false : hierarchyObjectList.lockedObjects.Contains(gameObject);
-        }
-        
-        private void setLock(List<GameObject> gameObjects, QHierarchyObjectList hierarchyObjectList, bool targetLock)
-        {
-            if (gameObjects.Count == 0) return;
+        /// <summary>
+        /// 设置锁定状态
+        /// </summary>
+        private static void SetLock(in List<GameObject> gameObjects, QHierarchyObjectList hierarchyObjectList, bool targetLock) {
+            if (gameObjects.Count == 0)
+                return;
 
-            if (hierarchyObjectList == null) hierarchyObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[0], true);
-            Undo.RecordObject(hierarchyObjectList, targetLock ? "Lock" : "Unlock");   
-            
-            for (int i = gameObjects.Count - 1; i >= 0; i--)
-            {     
-                GameObject curGameObject = gameObjects[i];
-                Undo.RecordObject(curGameObject, targetLock ? "Lock" : "Unlock");
-                
-                if (targetLock)
-                {
+            if (hierarchyObjectList == null)
+                hierarchyObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[0]);
+            Undo.RecordObject(hierarchyObjectList, targetLock? "Lock" : "Unlock");
+
+            for (var i = gameObjects.Count - 1; i >= 0; i--) {
+                var curGameObject = gameObjects[i];
+                Undo.RecordObject(curGameObject, targetLock? "Lock" : "Unlock");
+
+                if (targetLock) {
                     curGameObject.hideFlags |= HideFlags.NotEditable;
                     if (!hierarchyObjectList.lockedObjects.Contains(curGameObject))
                         hierarchyObjectList.lockedObjects.Add(curGameObject);
-                }
-                else
-                {
+                } else {
                     curGameObject.hideFlags &= ~HideFlags.NotEditable;
                     hierarchyObjectList.lockedObjects.Remove(curGameObject);
                 }
-                
+
                 EditorUtility.SetDirty(curGameObject);
             }
         }
