@@ -47,8 +47,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         private List<string> ignoreErrorOfMonoBehaviours;
 
-        private StringBuilder errorStringBuilder;
         private int errorCount;
+        private const int RECT_WIDTH = 7;
+        private StringBuilder errorStringBuilder;
         private readonly List<string> targetPropertiesNames = new List<string>(10);
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public QHierarchyComponentError()
         {
-            rect.width = 7;
+            rect.width = RECT_WIDTH;
 
             errorIconTexture = QResources.Instance().GetTexture(QTexture.QErrorIcon);
 
@@ -121,12 +122,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <returns></returns>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            if (maxWidth < 7)
+            const float COMPONENT_SPACE = 2;
+            
+            if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
             }
 
-            curRect.x -= 7;
+            curRect.x -= rect.width + COMPONENT_SPACE;
             rect.x = curRect.x;
             rect.y = curRect.y;
             return EM_QLayoutStatus.Success;

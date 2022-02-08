@@ -97,8 +97,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             // 获取设置: 是否显示组件
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ComponentsShow);
+            
             // 获取设置: 是否在播放模式下显示
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ComponentsShowDuringPlayMode);
+            
             // 获取设置: 组件图标大小
             var size = (EM_QHierarchySizeAll) QSettings.Instance().Get<int>(EM_QHierarchySettings.ComponentsIconSize);
             rect.width = rect.height = size switch
@@ -126,6 +128,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
+            if (maxWidth < rect.width + SPACE)
+            {
+                return EM_QLayoutStatus.Failed;
+            }
+            
             // 获取物体的全部游戏物体
             allComponents.Clear();
             gameObject.GetComponents(allComponents);

@@ -112,9 +112,9 @@ namespace Kuroha.Util.RunTime
             currentInstance = obj;
         }
 
-        #region 获取字段接口
+        #region 获取各种类型的字段的值
 
-        #region private static
+        #region 类型标签: private static
 
         /// <summary>
         /// 获取类中的 private static 字段的值
@@ -132,14 +132,14 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        public object GetFieldValue_PrivateStatic(string fieldName)
+        private object GetFieldValue_PrivateStatic(string fieldName)
         {
             return GetFiledValue(fieldName, PRIVATE_STATIC_FIELD);
         }
 
         #endregion
 
-        #region Private
+        #region 类型标签: Private
 
         /// <summary>
         /// 获取类中的 private 字段的值
@@ -164,7 +164,7 @@ namespace Kuroha.Util.RunTime
 
         #endregion
 
-        #region Public
+        #region 类型标签: Public
 
         /// <summary>
         /// 获取类中的 public 字段的值
@@ -189,26 +189,9 @@ namespace Kuroha.Util.RunTime
 
         #endregion
 
-        /// <summary>
-        /// 获取类中的字段的值
-        /// </summary>
-        /// <param name="fieldName"></param>
-        /// <param name="flags"></param>
-        /// <returns></returns>
-        private object GetFiledValue(string fieldName, BindingFlags flags)
-        {
-            if (currentClass == null)
-            {
-                return null;
-            }
-
-            var dynamicField = currentClass.GetField(fieldName, flags);
-            return dynamicField == null ? null : dynamicField.GetValue(currentInstance);
-        }
-
         #endregion
 
-        #region 调用函数接口
+        #region 获取何种类型的函数的调用接口
 
         /// <summary>
         /// 调用 public 函数
@@ -240,6 +223,63 @@ namespace Kuroha.Util.RunTime
             return InvokeMethod(methodName, PRIVATE_INSTANCE_METHOD, args);
         }
 
+        #endregion
+
+        /// <summary>
+        /// 从源实例中取出与目标实例 "同名字段" 的值
+        /// </summary>
+        /// <param name="targetInstance">目标实例</param>
+        /// <param name="targetFlags">目标实例中字段值的类型</param>
+        /// <param name="sourceInstance">源实例</param>
+        /// <param name="sourceFlags">源实例中字段值的类型</param>
+        public static void Copy(object targetInstance, BindingFlags targetFlags, object sourceInstance, BindingFlags sourceFlags)
+        {
+            if (targetInstance == null || sourceInstance == null)
+            {
+                return;
+            }
+
+            // 取出两个实例的类型
+            var sourceType = sourceInstance.GetType();
+            var targetType = targetInstance.GetType();
+
+            // 取出目标实例中的字段
+            var targetFields = targetType.GetFields(targetFlags);
+            foreach (var targetFieldInfo in targetFields)
+            {
+                // 得到源实例中的 "相同字段"
+                var sourceFieldInfo = sourceType.GetField(targetFieldInfo.Name, sourceFlags);
+                if (ReferenceEquals(sourceFieldInfo, null) == false)
+                {
+                    if (targetFieldInfo.FieldType == sourceFieldInfo.FieldType)
+                    {
+                        // 取出源字段的值
+                        var value = sourceFieldInfo.GetValue(sourceInstance);
+
+                        // 赋值给目标字段
+                        targetFieldInfo.SetValue(targetInstance, value);
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 获取类中的字段的值
+        /// </summary>
+        /// <param name="fieldName"></param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        private object GetFiledValue(string fieldName, BindingFlags flags)
+        {
+            if (currentClass == null)
+            {
+                return null;
+            }
+
+            var dynamicField = currentClass.GetField(fieldName, flags);
+            return dynamicField == null ? null : dynamicField.GetValue(currentInstance);
+        }
+        
         /// <summary>
         /// 调用类中的函数
         /// </summary>
@@ -260,45 +300,37 @@ namespace Kuroha.Util.RunTime
 
             return null;
         }
-
-        #endregion
-
+        
         /// <summary>
-        /// 从源实例中取出与目标实例 "同名字段" 的值
+        /// 根据参数类型获取方法
         /// </summary>
-        /// <param name="dstInstance">目标实例</param>
-        /// <param name="dstFlags">目标实例中字段值的类型</param>
-        /// <param name="srcInstance">源实例</param>
-        /// <param name="srcFlags">源实例中字段值的类型</param>
-        public static void Copy(object dstInstance, BindingFlags dstFlags, object srcInstance, BindingFlags srcFlags)
+        public MethodInfo GetMethod_Parameter(string methodName, BindingFlags targetFlags, params Type[] parameterTypes)
         {
-            if (dstInstance == null || srcInstance == null)
+            if (ReferenceEquals(currentClass, null) == false)
             {
-                return;
-            }
-
-            // 取出两个实例的类型
-            var srcType = srcInstance.GetType();
-            var dstType = dstInstance.GetType();
-
-            // 取出目标实例中的字段
-            var dstFields = dstType.GetFields(dstFlags);
-            foreach (var dstFieldInfo in dstFields)
-            {
-                // 得到源实例中的 "相同字段"
-                var srcFieldInfo = srcType.GetField(dstFieldInfo.Name, srcFlags);
-                if (ReferenceEquals(srcFieldInfo, null) == false)
+                var method = currentClass.GetMethod(methodName, targetFlags, Type.DefaultBinder, parameterTypes, null);
+                
+                if (ReferenceEquals(method, null) == false)
                 {
-                    if (dstFieldInfo.FieldType == srcFieldInfo.FieldType)
-                    {
-                        // 取出源字段的值
-                        var value = srcFieldInfo.GetValue(srcInstance);
-
-                        // 赋值给目标字段
-                        dstFieldInfo.SetValue(dstInstance, value);
-                    }
+                    return method;
                 }
             }
+
+            return null;
+        }
+        
+        /// <summary>
+        /// 根据参数类型调用方法
+        /// </summary>
+        public object CallMethod_Parameter(MethodInfo method, params object[] args)
+        {
+            if (ReferenceEquals(method, null) == false)
+            {
+                return method.Invoke(currentInstance, args);
+            }
+            
+            DebugUtil.LogError("方法为空", null, "red");
+            return null;
         }
     }
 }

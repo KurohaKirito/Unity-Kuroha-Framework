@@ -78,7 +78,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             const float COMPONENT_SPACE = 2;
 
-            if (maxWidth < rect.width)
+            if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
             }
