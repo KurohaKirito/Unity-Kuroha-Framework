@@ -214,23 +214,37 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 设置锁定状态
         /// </summary>
-        private static void SetLock(in List<GameObject> gameObjects, QHierarchyObjectList hierarchyObjectList, bool targetLock) {
+        private static void SetLock(in List<GameObject> gameObjects, QHierarchyObjectList hierarchyObjectList, bool targetLock)
+        {
             if (gameObjects.Count == 0)
+            {
                 return;
+            }
 
             if (hierarchyObjectList == null)
+            {
                 hierarchyObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[0]);
-            Undo.RecordObject(hierarchyObjectList, targetLock? "Lock" : "Unlock");
+            }
+            
+            Undo.RecordObject(hierarchyObjectList, targetLock ? "Lock" : "Unlock");
 
-            for (var i = gameObjects.Count - 1; i >= 0; i--) {
+            for (var i = gameObjects.Count - 1; i >= 0; i--)
+            {
                 var curGameObject = gameObjects[i];
-                Undo.RecordObject(curGameObject, targetLock? "Lock" : "Unlock");
+                
+                Undo.RecordObject(curGameObject, targetLock ? "Lock" : "Unlock");
 
-                if (targetLock) {
+                if (targetLock)
+                {
                     curGameObject.hideFlags |= HideFlags.NotEditable;
-                    if (!hierarchyObjectList.lockedObjects.Contains(curGameObject))
+                    
+                    if (hierarchyObjectList.lockedObjects.Contains(curGameObject) == false)
+                    {
                         hierarchyObjectList.lockedObjects.Add(curGameObject);
-                } else {
+                    }
+                }
+                else
+                {
                     curGameObject.hideFlags &= ~HideFlags.NotEditable;
                     hierarchyObjectList.lockedObjects.Remove(curGameObject);
                 }

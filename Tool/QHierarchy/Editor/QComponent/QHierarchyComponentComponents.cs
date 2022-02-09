@@ -190,11 +190,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             eventRect.x = rect.x;
             eventRect.y = rect.y;
 
+            // 可显示全部组件, 返回 Success
             if (maxComponentsCount >= components.Count - 1)
             {
                 return EM_QLayoutStatus.Success;
             }
 
+            // 当前宽度仅可显示部分组件图标, 返回 Partly
+            // 当前宽度无法显示任何图标, 返回 Failed
             return maxComponentsCount == 0 ? EM_QLayoutStatus.Failed : EM_QLayoutStatus.Partly;
         }
 

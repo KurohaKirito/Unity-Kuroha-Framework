@@ -278,8 +278,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         if (monoBehaviour.gameObject.activeSelf || settingsShowErrorForDisabledComponents)
                         {
-                            //try
-                            //{
                             if (IsUnityEventsNullOrMissing(monoBehaviour, printError))
                             {
                                 if (printError == false)
@@ -287,10 +285,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                                     return true;
                                 }
                             }
-                            //}
-                            //catch
-                            //{
-                            //}
                         }
                     }
 

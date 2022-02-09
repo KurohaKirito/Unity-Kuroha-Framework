@@ -102,12 +102,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     try
                     {
-                        var obj = Selection.Contains(gameObject)
-                            ? Selection.gameObjects
-                            : new[]
-                            {
-                                gameObject
-                            };
+                        var obj = Selection.Contains(gameObject) ? Selection.gameObjects : new[] { gameObject };
                         var newPopupWindow = new QHierarchyColorPaletteWindow(obj, ColorSelectedHandler, ColorRemovedHandler);
                         PopupWindow.Show(rect, newPopupWindow);
                     }

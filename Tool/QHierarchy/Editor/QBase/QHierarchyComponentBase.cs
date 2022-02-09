@@ -28,17 +28,47 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
         {
         }
 
+        /// <summary>
+        /// 计算布局
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="hierarchyObjectList"></param>
+        /// <param name="selectionRect"></param>
+        /// <param name="curRect"></param>
+        /// <param name="maxWidth"></param>
+        /// <returns></returns>
         public virtual EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             return EM_QLayoutStatus.Success;
         }
 
+        /// <summary>
+        /// 绘制 GUI
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="hierarchyObjectList"></param>
+        /// <param name="selectionRect"></param>
         public virtual void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect) { }
 
+        /// <summary>
+        /// 点击事件
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="hierarchyObjectList"></param>
+        /// <param name="currentEvent"></param>
         public virtual void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent) { }
 
+        /// <summary>
+        /// 隐藏事件
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="hierarchyObjectList"></param>
         public virtual void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList) { }
 
+        /// <summary>
+        /// 判断当前功能是否启用
+        /// </summary>
+        /// <returns></returns>
         public bool IsEnabled()
         {
             // 如果功能没有启用, 直接返回 false
@@ -47,10 +77,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
                 return enabled;
             }
             
-            // 如果当前处于编辑状态 或者处于播放状态且播放状态下启用, 则返回 true
+            // 编辑器处于编辑状态, 直接返回 true
+            // 编辑器处于编辑状态, 且设置了播放状态下启用, 则返回 true
             return Application.isPlaying == false || showComponentDuringPlayMode;
         }
 
+        /// <summary>
+        /// 递归获取全部游戏物体
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="result"></param>
+        /// <param name="maxDepth"></param>
         protected static void GetGameObjectListRecursive(GameObject gameObject, ref List<GameObject> result, int maxDepth = int.MaxValue)
         {
             result.Add(gameObject);
