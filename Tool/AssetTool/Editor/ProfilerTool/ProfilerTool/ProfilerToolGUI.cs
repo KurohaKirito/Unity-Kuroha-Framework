@@ -54,17 +54,11 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.ProfilerTool
         /// <param name="window"></param>
         public static void OnGUI(in EditorWindow window)
         {
-            if (splitter == null)
-            {
-                splitter = new VerticalSplitter(window, 210, 210, false);
-            }
+            splitter ??= new VerticalSplitter(window, 210, 210, false);
             
             splitter.OnGUI(window.position, MainRect, SubRect);
             
-            if (buttonStyle == null)
-            {
-                buttonStyle = new GUIStyle("Button");
-            }
+            buttonStyle ??= new GUIStyle("Button");
             
             buttonStyle.alignment = TextAnchor.MiddleLeft;
             buttonStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Kuroha.Util.RunTime;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.Profiling;
 
 namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
@@ -12,7 +15,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
         private static bool stage1;
         private static bool stage2;
         private static bool stage3;
-        private static List<DynamicClass> profilerWindows;
+        private static IList profilerWindows;
 
         /// <summary>
         /// 获取到 ProfilerWindow 类
@@ -23,30 +26,66 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
         {
             if (profilerWindows == null)
             {
-                // 获取到 UnityEditor 程序集
-                var dynamicAssembly = new DynamicAssembly(typeof(EditorWindow));
+                var assemblyInfo = ReflectionUtil.GetAssembly(typeof(EditorWindow));
 
-                // 获取到 ProfilerWindow 类
-                var dynamicClass = dynamicAssembly.GetClass("UnityEditor.ProfilerWindow");
+                var classInfo = ReflectionUtil.GetClass(assemblyInfo, "UnityEditor.ProfilerWindow");
 
-                // 获取到 m_ProfilerWindows 变量, 其类型为: List<ProfilerWindow>
-                var list = dynamicClass.GetFieldValue_PrivateStatic<IList>("m_ProfilerWindows");
+                // private static List<ProfilerWindow> s_ProfilerWindows = new List<ProfilerWindow>();
+                var fieldInfo = ReflectionUtil.GetField(classInfo, "s_ProfilerWindows", BindingFlags.NonPublic | BindingFlags.Static);
 
-                profilerWindows = new List<DynamicClass>();
-                foreach (var window in list)
-                {
-                    profilerWindows.Add(new DynamicClass(window));
-                }
+                profilerWindows = ReflectionUtil.GetFieldValue(fieldInfo) as IList;
             }
 
             if (profilerWindows != null)
             {
-                foreach (var dynamicClass in profilerWindows)
+                foreach (var profilerWindowInstance in profilerWindows)
                 {
-                    var currentArea = (ProfilerArea)dynamicClass.GetFieldValue_Private("m_CurrentArea");
-                    if (currentArea == targetArea)
+                    var assemblyInfo = ReflectionUtil.GetAssembly(typeof(EditorWindow));
+                    var classInfo = ReflectionUtil.GetClass(assemblyInfo, "UnityEditor.ProfilerWindow");
+
+                    
+                    
+                    
+                    
+                    
+                    // private List<ProfilerModuleBase> m_Modules;
+                    var fieldInfo = ReflectionUtil.GetField(classInfo, "m_Modules", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var result2 = ReflectionUtil.GetFieldValue(fieldInfo, profilerWindowInstance) as IList;
+                    Debug.Log($"当前 Modules 一共有 {result2.Count} 个");
+                    
+                    
+                    // public string selectedModuleName
+                    // var propertyInfo = classInfo.GetProperty("selectedModule");
+                    var propertyInfo = ReflectionUtil.GetProperty(classInfo, "selectedModuleName", BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
+                    var result3 = ReflectionUtil.GetPropertyValue(propertyInfo, profilerWindowInstance);
+                    Debug.Log($"当前选中的 Modules 名称 {result3}");
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    // GetProfilerModule 方法的泛型类型参数
+                    var typeGetProfilerModulePara = assemblyInfo.GetType("UnityEditorInternal.Profiling.MemoryProfilerModule");
+                    
+                    var methodInfo = classInfo.GetMethod("GetProfilerModule", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                    if (methodInfo != null)
                     {
-                        return dynamicClass;
+                        var methodInfo2 = methodInfo.MakeGenericMethod(typeGetProfilerModulePara);
+                        var result = ReflectionUtil.CallMethod(methodInfo2, profilerWindowInstance, new object[] { targetArea });
+                        if (result != null)
+                        {
+                            return null;
+                        }
                     }
                 }
             }

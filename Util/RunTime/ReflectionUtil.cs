@@ -117,7 +117,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 获取字段的值
         /// </summary>
-        public static object GetValue(FieldInfo field, object classInstance)
+        public static object GetFieldValue(FieldInfo field, object classInstance)
         {
             if (ReferenceEquals(field, null) == false)
             {
@@ -131,7 +131,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 获取字段的值
         /// </summary>
-        public static object GetValue(FieldInfo field)
+        public static object GetFieldValue(FieldInfo field)
         {
             if (ReferenceEquals(field, null) == false)
             {
@@ -141,7 +141,49 @@ namespace Kuroha.Util.RunTime
             DebugUtil.LogError("字段为空, 无法获得字段的值", null, "red");
             return null;
         }
+
+        /// <summary>
+        /// 获取属性
+        /// </summary>
+        public static PropertyInfo GetProperty(Type currentClass, string propertyName, BindingFlags targetFlags)
+        {
+            if (ReferenceEquals(currentClass, null) == false)
+            {
+                return currentClass.GetProperty(propertyName, targetFlags);
+            }
+            
+            DebugUtil.LogError("类为空, 无法获得类中的属性", null, "red");
+            return null;
+        }
         
+        /// <summary>
+        /// 获取属性的值
+        /// </summary>
+        public static object GetPropertyValue(PropertyInfo property, object classInstance)
+        {
+            if (ReferenceEquals(property, null) == false)
+            {
+                return property.GetValue(classInstance);
+            }
+            
+            DebugUtil.LogError("属性为空, 无法获得属性的值", null, "red");
+            return null;
+        }
+        
+        /// <summary>
+        /// 获取属性的值
+        /// </summary>
+        public static object GetPropertyValue(PropertyInfo property)
+        {
+            if (ReferenceEquals(property, null) == false)
+            {
+                return property.GetValue(null);
+            }
+            
+            DebugUtil.LogError("属性为空, 无法获得属性的值", null, "red");
+            return null;
+        }
+
         /// <summary>
         /// 从源实例中取出与目标实例 "同名字段" 的值
         /// </summary>

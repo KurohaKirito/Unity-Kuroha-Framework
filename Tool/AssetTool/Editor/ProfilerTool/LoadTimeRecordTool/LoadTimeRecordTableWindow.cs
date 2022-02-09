@@ -74,14 +74,16 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.LoadTimeRecordTool
                 var startTime = allData[1].Substring(11, 8);
                 var endTime = allData[2].Substring(11, 8);
                 var useTime = float.Parse(allData[3].Substring(8)) * 1000;
-
+                var stackInfo = string.Empty;
+                
                 results.Add(new LoadTimeRecordData
                 {
                     id = counter++,
                     bundlePath = bundlePath,
                     startTime = startTime,
                     endTime = endTime,
-                    useTime = useTime
+                    useTime = useTime,
+                    stackInfo = stackInfo
                 });
             }
             

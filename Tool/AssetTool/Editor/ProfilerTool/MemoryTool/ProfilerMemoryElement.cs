@@ -11,7 +11,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
         private int depth;
         public readonly List<ProfilerMemoryElement> children = new List<ProfilerMemoryElement>();
 
-        #region 下列字段使用了反射, 需要保持 "字段名称" 与 DLL 中一致
+        #region 下列字段使用了反射, 需要保持 "字段名称" 与 DLL 中完全一致
         #pragma warning disable 649
         private string name;
         private long totalMemory;
