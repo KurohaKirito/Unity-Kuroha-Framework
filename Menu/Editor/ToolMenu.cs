@@ -1,4 +1,5 @@
-﻿using Kuroha.GUI.Editor;
+﻿using System.Reflection;
+using Kuroha.GUI.Editor;
 using Kuroha.Tool.AssetTool.Editor.AssetCheckTool;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.AssetSearchTool.Searcher;
@@ -42,9 +43,12 @@ namespace Kuroha.Menu.Editor
         [MenuItem("Kuroha/日志/清空", false, 0)]
         public static void ClearDebugLog()
         {
-            var dynamicAssembly = new DynamicAssembly(typeof(SceneView));
-            var dynamicClass = dynamicAssembly.GetClass("UnityEditor.LogEntries");
-            dynamicClass.CallMethod_PublicStatic("Clear");
+            var dynamicAssembly = ReflectionUtil.GetAssembly(typeof(SceneView));
+            var dynamicClass = ReflectionUtil.GetClass(dynamicAssembly, "UnityEditor.LogEntries");
+
+            // public static extern void Clear();
+            var dynamicMethod = ReflectionUtil.GetMethod(dynamicClass, "Clear", BindingFlags.Public | BindingFlags.Static);
+            ReflectionUtil.CallMethod(dynamicMethod, null);
         }
 
         #endregion

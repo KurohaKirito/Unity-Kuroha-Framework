@@ -17,6 +17,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
         private bool showModifierWarning;
 
+        private const int RECT_WIDTH = 13;
         private const string WHITE_LIST = "Canvas (Environment)";
         private const string SHIFT_TIP_LOCK = "要递归锁定此物体吗? (可以在设置中关闭此提示)";
         private const string SHIFT_TIP_UNLOCK = "要递归解锁此物体吗? (可以在设置中关闭此提示)";
@@ -28,7 +29,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public QHierarchyComponentLock()
         {
-            rect.width = 13;
+            rect.width = RECT_WIDTH;
 
             lockButtonTexture = QResources.Instance().GetTexture(QTexture.QLockButton);
 
@@ -58,12 +59,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            if (maxWidth < 13)
+            const float COMPONENT_SPACE = 2;
+            
+            if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
             }
 
-            curRect.x -= 13;
+            curRect.x -= rect.width + COMPONENT_SPACE;
             rect.x = curRect.x;
             rect.y = curRect.y;
             return EM_QLayoutStatus.Success;

@@ -182,7 +182,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        public object GetFieldValue_Public(string fieldName)
+        private object GetFieldValue_Public(string fieldName)
         {
             return GetFiledValue(fieldName, PUBLIC_INSTANCE_FIELD);
         }

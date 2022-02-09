@@ -51,8 +51,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            const float COMPONENT_SPACE = 2;
-            
             if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;

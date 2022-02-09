@@ -26,12 +26,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// 忽略组件的名称关键字列表
         /// </summary>
         private List<string> ignoreComponentNameList;
-
-        /// <summary>
-        /// 空格
-        /// </summary>
-        private const int SPACE = 2;
-
+        
         /// <summary>
         /// 图标高度
         /// </summary>
@@ -128,7 +123,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            if (maxWidth < rect.width + SPACE)
+            if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
             }
@@ -172,11 +167,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             #endregion
 
             // 计算可以显示的组件数量
-            var maxComponentsCount = Mathf.FloorToInt((maxWidth - SPACE) / rect.width);
+            var maxComponentsCount = Mathf.FloorToInt((maxWidth - COMPONENT_SPACE) / rect.width);
             componentsToDraw = Math.Min(maxComponentsCount, components.Count - 1);
 
             // 计算总宽度
-            var totalWidth = SPACE + rect.width * componentsToDraw;
+            var totalWidth = COMPONENT_SPACE + rect.width * componentsToDraw;
 
             // X 左翼总宽度
             curRect.x -= totalWidth;

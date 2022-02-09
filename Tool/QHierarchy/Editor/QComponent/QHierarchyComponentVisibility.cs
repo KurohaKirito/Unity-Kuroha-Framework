@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using Kuroha.Tool.QHierarchy.Editor.QBase;
-using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
-using Kuroha.Tool.QHierarchy.Editor.QHelper;
+using System.Collections.Generic;
+using Kuroha.Tool.QHierarchy.RunTime;
+using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.Editor.QData;
+using Kuroha.Tool.QHierarchy.Editor.QHelper;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
@@ -15,43 +14,57 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private Color activeColor;
         private Color inactiveColor;
         private Color specialColor;
-        private Texture2D visibilityButtonTexture;
-        private Texture2D visibilityOffButtonTexture;
         private int targetVisibilityState = -1;
+        private readonly Texture2D visibilityButtonTexture;
+        private readonly Texture2D visibilityOffButtonTexture;
+        private const int RECT_WIDTH = 18;
 
         // CONSTRUCTOR
         public QHierarchyComponentVisibility()
         {
-            rect.width = 18;
+            rect.width = RECT_WIDTH;
 
             visibilityButtonTexture    = QResources.Instance().GetTexture(QTexture.QVisibilityButton);
             visibilityOffButtonTexture = QResources.Instance().GetTexture(QTexture.QVisibilityOffButton);
             // visibilityButtonTexture = EditorGUIUtility.IconContent("animationvisibilitytoggleon@2x").image as Texture2D;
             // visibilityOffButtonTexture = EditorGUIUtility.IconContent("animationvisibilitytoggleoff@2x").image as Texture2D;
-
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShow                , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShowDuringPlayMode  , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor         , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor       , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalSpecialColor        , settingsChanged);
-            settingsChanged();
+            
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShow                , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShowDuringPlayMode  , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor         , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor       , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalSpecialColor        , SettingsChanged);
+            
+            SettingsChanged();
         }
 
-        private void settingsChanged()
+        /// <summary>
+        /// 修改设置
+        /// </summary>
+        private void SettingsChanged()
         {
             enabled                     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VisibilityShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VisibilityShowDuringPlayMode);
+            
             activeColor                 = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
             inactiveColor               = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
-            // activeColor = Color.yellow;
-            // inactiveColor = Color.white;
             specialColor                = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalSpecialColor);
         }
 
-        // DRAW
+        /// <summary>
+        /// 计算布局
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="hierarchyObjectList"></param>
+        /// <param name="selectionRect"></param>
+        /// <param name="curRect"></param>
+        /// <param name="maxWidth"></param>
+        /// <returns></returns>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            if (maxWidth < 18)
+            const float COMPONENT_SPACE = 2;
+            
+            if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
             }

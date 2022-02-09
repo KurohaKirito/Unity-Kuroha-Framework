@@ -52,8 +52,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            const float COMPONENT_SPACE = 2;
-            
             if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
@@ -93,17 +91,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 currentEvent.Use();
                 
-                // 获取到 UnityEditor 程序集
-                var dynamicAssembly = new DynamicAssembly(typeof(EditorWindow));
-
-                // 获取到 IconSelector 类
-                var dynamicClass = dynamicAssembly.GetClass("UnityEditor.IconSelector");
+                var dynamicAssembly = ReflectionUtil.GetAssembly(typeof(EditorWindow));
+                var dynamicClass = ReflectionUtil.GetClass(dynamicAssembly, "UnityEditor.IconSelector");
                 
-                // 获取 ShowAtPosition 方法
-                var dynamicMethod = dynamicClass.GetMethod_Parameter("ShowAtPosition", BindingFlags.Static | BindingFlags.NonPublic, typeof(Object), typeof(Rect), typeof(bool));
+                // 由于目标方法重载, 需要使用参数类型进行区分
+                // private internal static bool ShowAtPosition(Object   targetObj, Rect activatorRect, bool showLabelIcons)
+                // private internal static bool ShowAtPosition(Object[] targetObj, Rect activatorRect, bool showLabelIcons)
+                var paramsTypeArray = new[] { typeof(Object), typeof(Rect), typeof(bool) };
+                var dynamicMethod = ReflectionUtil.GetMethod(dynamicClass, "ShowAtPosition", BindingFlags.Static | BindingFlags.NonPublic, paramsTypeArray);
                 
-                // 调用 ShowAtPosition 方法
-                dynamicClass.CallMethod_Parameter(dynamicMethod, gameObject, rect, true);
+                
+                // 调用
+                var paramsArray = new object[] { gameObject, rect, true };
+                ReflectionUtil.CallMethod(dynamicMethod, paramsArray);
             }
         }
     }

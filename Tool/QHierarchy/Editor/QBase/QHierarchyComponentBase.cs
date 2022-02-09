@@ -17,6 +17,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
         protected bool showComponentDuringPlayMode = false;
         
         /// <summary>
+        /// 图标间隔
+        /// </summary>
+        protected const float COMPONENT_SPACE = 2;
+        
+        /// <summary>
         /// 控件绘制矩形
         /// </summary>
         protected Rect rect = new Rect(0, 0, 16, 16);

@@ -43,8 +43,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
             // 赋值
             const BindingFlags DST_FLAGS = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField;
             const BindingFlags SRC_FLAGS = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField;
-            DynamicClass.Copy(dstMemoryElement, DST_FLAGS,
-                srcMemoryElement.GetInstance(), SRC_FLAGS);
+            ReflectionUtil.Copy(dstMemoryElement, DST_FLAGS, srcMemoryElement.GetInstance(), SRC_FLAGS);
 
             // 得到源实例中的 children 字段值
             var srcChildren = srcMemoryElement.GetFieldValue_Public<IList>("children");
