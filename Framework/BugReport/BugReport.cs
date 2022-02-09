@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Kuroha.Framework.Singleton;
 using Kuroha.Util.RunTime;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Kuroha.Framework.BugReport
 {
