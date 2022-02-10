@@ -89,7 +89,13 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static object CallMethod(MethodInfo method, object classInstance, object[] args)
         {
-            return method.Invoke(classInstance, args);
+            if (ReferenceEquals(method, null) == false)
+            {
+                return method.Invoke(classInstance, args);
+            }
+
+            DebugUtil.LogError("方法为空, 无法执行方法", null, "red");
+            return null;
         }
         
         /// <summary>
@@ -97,7 +103,13 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static object CallMethod(MethodInfo method, object[] args)
         {
-            return method.Invoke(null, args);
+            if (ReferenceEquals(method, null) == false)
+            {
+                return method.Invoke(null, args);
+            }
+
+            DebugUtil.LogError("方法为空, 无法执行方法", null, "red");
+            return null;
         }
 
         /// <summary>
@@ -186,12 +198,13 @@ namespace Kuroha.Util.RunTime
 
         /// <summary>
         /// 从源实例中取出与目标实例 "同名字段" 的值
+        /// 可以实现一次性快速地从反射出的实例中取出大量基础类型的值
         /// </summary>
         /// <param name="targetInstance">目标实例</param>
         /// <param name="targetFlags">目标实例中字段值的类型</param>
         /// <param name="sourceInstance">源实例</param>
         /// <param name="sourceFlags">源实例中字段值的类型</param>
-        public static void Copy(object targetInstance, BindingFlags targetFlags, object sourceInstance, BindingFlags sourceFlags)
+        public static void GetAllValuesOfSameName(object targetInstance, BindingFlags targetFlags, object sourceInstance, BindingFlags sourceFlags)
         {
             if (targetInstance == null || sourceInstance == null)
             {

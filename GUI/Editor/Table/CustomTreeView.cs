@@ -93,10 +93,10 @@ namespace Kuroha.GUI.Editor.Table {
         }
         
         private void FilterGUI(Rect rect, string[] displayedOptions) {
-            const float FILTER_TYPE_WIDTH = 80;
-            const float FILTER_TYPE_OFFSET = 1;
+            const float FILTER_TYPE_WIDTH = 90;
+            const float FILTER_TYPE_OFFSET = -1;
             const float FILTER_TYPE_SPACE = 5;
-            const float FILTER_NONE_BUTTON_WIDTH = 16;
+            const float FILTER_NONE_BUTTON_WIDTH = 12;
 
             // Filter Type
             rect.x -= FILTER_TYPE_WIDTH;

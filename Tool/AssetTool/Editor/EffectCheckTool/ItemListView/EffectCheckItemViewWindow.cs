@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
@@ -46,6 +48,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         /// 滑动条位置
         /// </summary>
         private static Vector2 vector2ScrollView;
+
+        private static Rect searchTypeRect;
+        private static string[] searchTypeArray;
+        private static int searchTypeIndex;
+        
+        private static Rect searchFieldRect;
+        private static SearchField searchField;
+        private static string searchFieldString;
         
         /// <summary>
         /// 打开窗口
@@ -61,6 +71,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         /// </summary>
         private void OnEnable()
         {
+            searchField ??= new SearchField();
+            searchTypeArray ??= new[] { "标题", "资源类型" };
+            searchTypeRect = new Rect(10, 16, 80, EditorGUIUtility.singleLineHeight);
+            searchFieldRect = new Rect(100, 17, 180, EditorGUIUtility.singleLineHeight);
+            
             isRefresh = true;
             
             itemIdGUIStyle = new GUIStyle
@@ -99,7 +114,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         /// </summary>
         private void OnGUI()
         {
-            GUILayout.Space(UI_DEFAULT_MARGIN);
+            GUILayout.Space(UI_DEFAULT_MARGIN * 2);
 
             if (isRefresh)
             {
@@ -107,8 +122,12 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
             }
 
             GUILayout.Label("检查项列表", titleStyle);
+            
             GUILayout.Space(UI_DEFAULT_MARGIN);
 
+            searchTypeIndex = EditorGUI.Popup(searchTypeRect, searchTypeIndex, searchTypeArray);
+            searchFieldString = searchField.OnGUI(searchFieldRect, searchFieldString);
+            
             #region 列表
 
             GUILayout.BeginVertical("Box");
@@ -118,7 +137,24 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
             vector2ScrollView = GUILayout.BeginScrollView(vector2ScrollView);
             foreach (var checkItem in EffectCheckItemView.CheckItemInfoList)
             {
-                OnGUI_ShowItem(checkItem);
+                if (string.IsNullOrEmpty(searchFieldString))
+                {
+                    OnGUI_ShowItem(checkItem);
+                }
+                else
+                {
+                    var srcString = searchTypeIndex switch
+                    {
+                        0 => checkItem.title,
+                        1 => checkItem.assetsType.ToString(),
+                        _ => string.Empty
+                    };
+                    
+                    if (srcString.IndexOf(searchFieldString, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        OnGUI_ShowItem(checkItem);
+                    }
+                }
             }
 
             GUILayout.EndScrollView();
@@ -137,12 +173,16 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         {
             GUILayout.BeginHorizontal("Box");
             GUILayout.Label("序号", itemIdGUIStyle);
-            GUILayout.Space(24);
+            GUILayout.Space(22);
             GUILayout.Label("CICD", checkItemGUIStyle);
             GUILayout.Space(24);
             GUILayout.Label("Effect", checkItemGUIStyle);
-            GUILayout.Space(140);
+            GUILayout.Space(200);
             GUILayout.Label("标题", checkItemGUIStyle);
+            GUILayout.Space(260);
+            GUILayout.Label("编辑", checkItemGUIStyle);
+            GUILayout.Space(30);
+            GUILayout.Label("删除", checkItemGUIStyle);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
@@ -161,9 +201,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
 
             #region Auto Check Icon
 
-            var autoCheckIcon = EditorGUIUtility.IconContent(info.cicdEnable
-                ? "sv_icon_dot11_pix16_gizmo"
-                : "sv_icon_dot8_pix16_gizmo");
+            var autoCheckIcon = EditorGUIUtility.IconContent(info.cicdEnable? "sv_icon_dot11_pix16_gizmo" : "sv_icon_dot8_pix16_gizmo");
             if (GUILayout.Button(autoCheckIcon, GUILayout.Width(32), GUILayout.Height(32)))
             {
                 info.cicdEnable = !info.cicdEnable;
@@ -175,10 +213,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
 
             #region Effect Check Icon
 
-            var effectCheckIcon =
-                EditorGUIUtility.IconContent(info.effectEnable
-                    ? "sv_icon_dot3_pix16_gizmo"
-                    : "sv_icon_dot0_pix16_gizmo");
+            var effectCheckIcon = EditorGUIUtility.IconContent(info.effectEnable? "sv_icon_dot3_pix16_gizmo" : "sv_icon_dot0_pix16_gizmo");
             if (GUILayout.Button(effectCheckIcon, GUILayout.Width(32), GUILayout.Height(32)))
             {
                 info.effectEnable = !info.effectEnable;
