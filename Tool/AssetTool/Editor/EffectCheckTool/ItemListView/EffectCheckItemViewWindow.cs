@@ -301,6 +301,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
 
             #endregion
             
+            GUILayout.FlexibleSpace();
+            
             GUILayout.EndHorizontal();
 
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
