@@ -11,7 +11,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
         private int depth;
         public readonly List<ProfilerMemoryElement> children = new List<ProfilerMemoryElement>();
 
-        #region 下列字段使用了反射, 需要保持 "字段名称" 与 DLL 中完全一致
+        #region 下列字段使用了反射, 需要保持 "字段名称" 与 DLL 中完全一致, 位于 MemoryElement 类中
         #pragma warning disable 649
         private string name;
         private long totalMemory;
@@ -21,15 +21,10 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
         /// <summary>
         /// 创建一个 Memory Element
         /// </summary>
-        /// <param name="srcMemoryElement"></param>
-        /// <param name="depth"></param>
-        /// <param name="filterDepth"></param>
-        /// <param name="filterSize"></param>
-        /// <returns></returns>
-        public static ProfilerMemoryElement Create(DynamicClass srcMemoryElement, int depth, int filterDepth, float filterSize)
+        public static ProfilerMemoryElement Create(object sourceInstance, int depth, int filterDepth, float filterSize)
         {
             // src = source 源
-            if (srcMemoryElement == null)
+            if (sourceInstance == null)
             {
                 return null;
             }
@@ -39,19 +34,23 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
             {
                 depth = depth
             };
+            
+            // Type: MemoryElement
+            var classInfo = sourceInstance.GetType();
 
             // 赋值
             const BindingFlags DST_FLAGS = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField;
             const BindingFlags SRC_FLAGS = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField;
-            ReflectionUtil.Copy(dstMemoryElement, DST_FLAGS, srcMemoryElement.GetInstance(), SRC_FLAGS);
-
-            // 得到源实例中的 children 字段值
-            var srcChildren = srcMemoryElement.GetFieldValue_Public<IList>("children");
-            if (srcChildren != null)
+            ReflectionUtil.Copy(dstMemoryElement, DST_FLAGS, sourceInstance, SRC_FLAGS);
+            
+            // public List<MemoryElement> children
+            var fieldInfo = ReflectionUtil.GetField(classInfo, "children", BindingFlags.Public | BindingFlags.Instance);
+            var srcChildrenValue = ReflectionUtil.GetValueField(fieldInfo, sourceInstance);
+            if (srcChildrenValue is IList srcChildren)
             {
                 foreach (var srcChild in srcChildren)
                 {
-                    var memoryElement = Create(new DynamicClass(srcChild), depth + 1, filterDepth, filterSize);
+                    var memoryElement = Create(srcChild, depth + 1, filterDepth, filterSize);
                     if (memoryElement != null)
                     {
                         if (depth > filterDepth)

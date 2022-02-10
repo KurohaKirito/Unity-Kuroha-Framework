@@ -117,7 +117,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 获取字段的值
         /// </summary>
-        public static object GetFieldValue(FieldInfo field, object classInstance)
+        public static object GetValueField(FieldInfo field, object classInstance)
         {
             if (ReferenceEquals(field, null) == false)
             {
@@ -131,7 +131,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 获取字段的值
         /// </summary>
-        public static object GetFieldValue(FieldInfo field)
+        public static object GetValueField(FieldInfo field)
         {
             if (ReferenceEquals(field, null) == false)
             {
@@ -159,7 +159,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 获取属性的值
         /// </summary>
-        public static object GetPropertyValue(PropertyInfo property, object classInstance)
+        public static object GetValueProperty(PropertyInfo property, object classInstance)
         {
             if (ReferenceEquals(property, null) == false)
             {
@@ -173,7 +173,7 @@ namespace Kuroha.Util.RunTime
         /// <summary>
         /// 获取属性的值
         /// </summary>
-        public static object GetPropertyValue(PropertyInfo property)
+        public static object GetValueProperty(PropertyInfo property)
         {
             if (ReferenceEquals(property, null) == false)
             {

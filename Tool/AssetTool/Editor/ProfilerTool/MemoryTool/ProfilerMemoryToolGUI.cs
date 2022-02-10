@@ -27,7 +27,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
         /// <summary>
         /// 筛选条件: 资源名称
         /// </summary>
-        private static string memoryName = "jeep";
+        private static string memoryName = "role";
         
         /// <summary>
         /// 全局默认 margin
@@ -112,12 +112,12 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
                     
                     EditorGUI.indentLevel++;
                     EditorGUILayout.LabelField("2. 按照内存占用大小筛选");
-                    memorySize = EditorGUILayout.FloatField("Memory Size(B) >= ", memorySize, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    memorySize = EditorGUILayout.FloatField("Memory Size (KB) >= ", memorySize, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     EditorGUI.indentLevel--;
                     
                     EditorGUI.indentLevel++;
                     EditorGUILayout.LabelField("3. 按照资源树深度筛选");
-                    memoryDepth = EditorGUILayout.IntField("Memory Depth(>=1) ", memoryDepth, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    memoryDepth = EditorGUILayout.IntField("Memory Depth (>=1) ", memoryDepth, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     EditorGUI.indentLevel--;
 
                     GUILayout.Space(2 * UI_DEFAULT_MARGIN);
@@ -133,7 +133,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
                             }
 
                             // 导出内存数据
-                            ExtractMemory(memoryName, memorySize, memoryDepth - 1);
+                            ExtractMemory(memoryName, memorySize * 1024f, memoryDepth - 1);
                         }
                     }
                     GUILayout.EndHorizontal();
@@ -162,7 +162,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
             if (profilerMemoryElementRoot != null)
             {
                 var memoryConnect = ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler);
-                texts.Add($"Memory Size: >= {memorySize}B)");
+                texts.Add($"Memory Size: >= {memorySize} KB)");
                 texts.Add($"Memory Depth: {memoryDepth}");
                 texts.Add($"Current Target: {memoryConnect}");
                 texts.Add("****************************************************************************************");

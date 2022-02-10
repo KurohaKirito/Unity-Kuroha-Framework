@@ -1,6 +1,4 @@
-﻿using UnityEditor;
-
-namespace Kuroha.Util.RunTime
+﻿namespace Kuroha.Util.RunTime
 {
     public static class DebugUtil
     {
