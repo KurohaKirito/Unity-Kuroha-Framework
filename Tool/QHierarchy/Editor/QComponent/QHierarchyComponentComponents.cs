@@ -5,6 +5,7 @@ using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
 using Kuroha.Tool.QHierarchy.Editor.QData;
+using Kuroha.Util.RunTime;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
@@ -213,16 +214,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 }
 
                 // 获取组件的图标
-                var content = EditorGUIUtility.ObjectContent(component, null);
-
+                var content = component == null
+                    ? EditorGUIUtility.IconContent("console.warnIcon.sml")
+                    : EditorGUIUtility.ObjectContent(component, null);
+                
                 // 反射获取组件的激活标志
                 var objectEnabled = true;
-                var propertyInfo = component.GetType().GetProperty("enabled");
-                if (propertyInfo != null)
-                {
-                    objectEnabled = (bool) propertyInfo.GetGetMethod().Invoke(component, null);
+                if (component != null) {
+                    var classInfo = component.GetType();
+                    var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
+                    objectEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo);
                 }
-
+                
                 // 确定颜色
                 var color = UnityEngine.GUI.color;
                 color.a = objectEnabled ? 1f : 0.2f;
@@ -240,7 +243,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 if (rect.Contains(Event.current.mousePosition))
                 {
                     // 确定组件名称
-                    var componentName = "Missing script";
+                    var componentName = "Missing Script";
                     if (component != null)
                     {
                         componentName = component.GetType().Name;
@@ -293,33 +296,37 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 // 左键单击
                 if (currentEvent.type == EventType.MouseDown)
                 {
+                    currentEvent.Use();
+                    
                     // 计算单击的是第几个图标
                     var clickIndex = Mathf.FloorToInt((currentEvent.mousePosition.x - eventRect.x) / rect.width) + components.Count - componentsToDraw;
 
                     // 反射获取组件的 enabled 字段
-                    var propertyInfo = components[clickIndex].GetType().GetProperty("enabled");
-
-                    // 反射 Get enabled 字段具体的值
-                    var componentEnabled = propertyInfo != null;
-                    if (componentEnabled)
+                    var component = components[clickIndex];
+                    if (component != null)
                     {
-                        componentEnabled = (bool) propertyInfo.GetGetMethod().Invoke(components[clickIndex], null);
+                        var propertyInfo = components[clickIndex].GetType().GetProperty("enabled");
+
+                        // 反射 Get enabled 字段具体的值
+                        var componentEnabled = propertyInfo != null;
+                        if (componentEnabled)
+                        {
+                            componentEnabled = (bool) propertyInfo.GetGetMethod().Invoke(components[clickIndex], null);
+                        }
+
+                        // 在撤销栈中记录下操作
+                        Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
+
+                        // 反射 Set enabled 字段具体的值
+                        if (propertyInfo != null)
+                        {
+                            componentEnabled = !componentEnabled;
+                            propertyInfo.GetSetMethod().Invoke(components[clickIndex], new object[] {componentEnabled});
+                        }
+
+                        EditorUtility.SetDirty(gameObject);
                     }
-
-                    // 在撤销栈中记录下操作
-                    Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
-
-                    // 反射 Set enabled 字段具体的值
-                    if (propertyInfo != null)
-                    {
-                        componentEnabled = !componentEnabled;
-                        propertyInfo.GetSetMethod().Invoke(components[clickIndex], new object[] {componentEnabled});
-                    }
-
-                    EditorUtility.SetDirty(gameObject);
                 }
-
-                currentEvent.Use();
             }
         }
     }

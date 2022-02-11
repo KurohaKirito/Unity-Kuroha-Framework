@@ -116,7 +116,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                     {
                         var objectList = objectListKeyValue.Value;
 
-                        setupObjectList(objectList);
+                        SetupObjectList(objectList);
 
                         if (showObjectList && (objectList.gameObject.hideFlags & HideFlags.HideInHierarchy) > 0 ||
                             !showObjectList && (objectList.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0)
@@ -172,41 +172,37 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 
         public QHierarchyObjectList GetObjectList(GameObject gameObject, bool createIfNotExist = true)
         {
-            QHierarchyObjectList hierarchyObjectList = null;
-            objectListDictionary.TryGetValue(gameObject.scene, out hierarchyObjectList);
+            objectListDictionary.TryGetValue(gameObject.scene, out var hierarchyObjectList);
 
             if (hierarchyObjectList == null && createIfNotExist)
             {
-                hierarchyObjectList = createObjectList(gameObject);
-                if (gameObject.scene != hierarchyObjectList.gameObject.scene) EditorSceneManager.MoveGameObjectToScene(hierarchyObjectList.gameObject, gameObject.scene);
+                hierarchyObjectList = CreateObjectList(gameObject);
+                if (gameObject.scene != hierarchyObjectList.gameObject.scene) SceneManager.MoveGameObjectToScene(hierarchyObjectList.gameObject, gameObject.scene);
                 objectListDictionary.Add(gameObject.scene, hierarchyObjectList);
             }
 
             return hierarchyObjectList;
         }
 
-        public bool isSceneChanged()
-        {
-            if (lastActiveScene != EditorSceneManager.GetActiveScene() || lastSceneCount != EditorSceneManager.loadedSceneCount)
-                return true;
-            else
-                return false;
+        public bool IsSceneChanged() {
+            return lastActiveScene != SceneManager.GetActiveScene() || lastSceneCount != EditorSceneManager.loadedSceneCount;
         }
 
-        private QHierarchyObjectList createObjectList(GameObject gameObject)
+        private QHierarchyObjectList CreateObjectList(GameObject gameObject)
         {
             GameObject gameObjectList = new GameObject(Q_OBJECT_LIST_NAME);
             QHierarchyObjectList hierarchyObjectList = gameObjectList.AddComponent<QHierarchyObjectList>();
-            setupObjectList(hierarchyObjectList);
+            SetupObjectList(hierarchyObjectList);
             return hierarchyObjectList;
         }
 
-        private void setupObjectList(QHierarchyObjectList hierarchyObjectList)
+        private static void SetupObjectList(MonoBehaviour hierarchyObjectList)
         {
-            if (hierarchyObjectList.tag == "EditorOnly") hierarchyObjectList.tag = "Untagged";
-            MonoScript monoScript = MonoScript.FromMonoBehaviour(hierarchyObjectList);
-            if (MonoImporter.GetExecutionOrder(monoScript) != -10000)
+            if (hierarchyObjectList.CompareTag("EditorOnly")) hierarchyObjectList.tag = "Untagged";
+            var monoScript = MonoScript.FromMonoBehaviour(hierarchyObjectList);
+            if (MonoImporter.GetExecutionOrder(monoScript) != -10000) {
                 MonoImporter.SetExecutionOrder(monoScript, -10000);
+            }
         }
     }
 }

@@ -106,7 +106,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         private void OnSettingsChanged()
         {
             var componentOrder = QSettings.Instance().Get<string>(EM_QHierarchySettings.ComponentsOrder);
-
             var componentIds = componentOrder.Split(';');
 
             if (componentIds.Length != QSettings.DEFAULT_ORDER_COUNT)
@@ -116,12 +115,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
 
             orderedComponents.Clear();
-
             foreach (var stringID in componentIds)
             {
                 orderedComponents.Add(componentDictionary[(EM_QHierarchyComponent) Enum.Parse(typeof(EM_QHierarchyComponent), stringID)]);
             }
-
             orderedComponents.Add(componentDictionary[EM_QHierarchyComponent.ComponentsComponent]);
 
             indentation = QSettings.Instance().Get<int>(EM_QHierarchySettings.AdditionalIndentation);
@@ -132,32 +129,29 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         public void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)
         {
+            QHierarchyColorUtils.SetDefaultColor(UnityEngine.GUI.color);
+            var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
+            
             try
             {
-                QHierarchyColorUtils.SetDefaultColor(UnityEngine.GUI.color);
-
-                if (EditorUtility.InstanceIDToObject(instanceId) is GameObject gameObject)
+                if (gameObject != null)
                 {
-                    var curRect = new Rect(selectionRect)
-                    {
-                        width = 16
-                    };
+                    var curRect = new Rect(selectionRect) { width = 16 };
                     curRect.x += selectionRect.width - indentation;
 
                     var gameObjectNameWidth = hideIconsIfThereIsNoFreeSpace ? UnityEngine.GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
-
                     var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObject, false);
+                    var minX = hideIconsIfThereIsNoFreeSpace? selectionRect.x + gameObjectNameWidth + 7 : 0;
 
-                    DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, hideIconsIfThereIsNoFreeSpace ? selectionRect.x + gameObjectNameWidth + 7 : 0);
-
-                    // errorHandled.Remove(instanceId);
+                    DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, minX);
+                    errorHandled.Remove(instanceId);
                 }
             }
             catch (Exception exception)
             {
                 if (errorHandled.Add(instanceId))
                 {
-                    Debug.LogError(exception.ToString());
+                    Debug.LogError(exception.ToString(), gameObject);
                 }
             }
         }
@@ -177,9 +171,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             if (Event.current.type == EventType.Repaint)
             {
                 var toComponent = components.Count;
-
                 var layoutStatus = EM_QLayoutStatus.Success;
-
                 var componentCount = toComponent;
                 for (var i = 0; i < componentCount; i++)
                 {
@@ -191,7 +183,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                         {
                             toComponent = layoutStatus == EM_QLayoutStatus.Failed ? i : i + 1;
                             rect.x -= 7;
-
                             break;
                         }
                     }
@@ -200,7 +191,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                         component.DisabledHandler(gameObject, hierarchyObjectList);
                     }
                 }
-
+                
                 if (drawBackground)
                 {
                     if (backgroundColor.a != 0)
