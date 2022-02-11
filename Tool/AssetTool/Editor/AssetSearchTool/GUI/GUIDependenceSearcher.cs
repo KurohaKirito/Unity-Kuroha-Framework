@@ -21,7 +21,12 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
         /// <summary>
         /// 公共依赖名称过滤
         /// </summary>
-        private static string publicDependenceFilter = string.Empty;
+        private static string publicDependenceFilterName = "^@";
+        
+        /// <summary>
+        /// 公共依赖数量过滤
+        /// </summary>
+        private static string publicDependenceFilterCount = ">1";
 
         /// <summary>
         /// 滑动条
@@ -103,8 +108,17 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
             
             EditorGUILayout.BeginHorizontal();
             {
-                GUILayout.Label("筛选搜索物体", GUILayout.Width(100));
-                publicDependenceFilter = EditorGUILayout.TextField(publicDependenceFilter);
+                GUILayout.Label("筛选物体-名称", GUILayout.Width(100));
+                publicDependenceFilterName = EditorGUILayout.TextField(publicDependenceFilterName);
+            }
+            EditorGUILayout.EndHorizontal();
+            
+            GUILayout.Space(UI_DEFAULT_MARGIN / 2);
+            
+            EditorGUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("筛选物体-数量", GUILayout.Width(100));
+                publicDependenceFilterCount = EditorGUILayout.TextField(publicDependenceFilterCount);
             }
             EditorGUILayout.EndHorizontal();
 
@@ -130,11 +144,11 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
                     var path = AssetDatabase.GUIDToAssetPath(key);
                     var keyAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
                     
-                    if (string.IsNullOrEmpty(publicDependenceFilter) == false)
+                    if (string.IsNullOrEmpty(publicDependenceFilterName) == false)
                     {
-                        if (publicDependenceFilter.StartsWith("^"))
+                        if (publicDependenceFilterName.StartsWith("^"))
                         {
-                            var filter = publicDependenceFilter.Substring(1);
+                            var filter = publicDependenceFilterName.Substring(1);
                             if (string.IsNullOrEmpty(filter) == false && keyAsset.name.Contains(filter))
                             {
                                 continue;
@@ -142,7 +156,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
                         }
                         else
                         {
-                            if (keyAsset.name.Contains(publicDependenceFilter) == false)
+                            if (keyAsset.name.Contains(publicDependenceFilterName) == false)
                             {
                                 continue;
                             }
@@ -223,11 +237,11 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
             {
                 foreach (var keyAsset in DependenceSearcher.publicDependencies.Keys)
                 {
-                    if (string.IsNullOrEmpty(publicDependenceFilter) == false)
+                    if (string.IsNullOrEmpty(publicDependenceFilterName) == false)
                     {
-                        if (publicDependenceFilter.StartsWith("^"))
+                        if (publicDependenceFilterName.StartsWith("^"))
                         {
-                            var filter = publicDependenceFilter.Substring(1);
+                            var filter = publicDependenceFilterName.Substring(1);
                             if (string.IsNullOrEmpty(filter) == false && keyAsset.name.Contains(filter))
                             {
                                 continue;
@@ -235,9 +249,45 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
                         }
                         else
                         {
-                            if (keyAsset.name.Contains(publicDependenceFilter) == false)
+                            if (keyAsset.name.Contains(publicDependenceFilterName) == false)
                             {
                                 continue;
+                            }
+                        }
+                    }
+                    
+                    if (string.IsNullOrEmpty(publicDependenceFilterCount) == false)
+                    {
+                        if (publicDependenceFilterCount.StartsWith(">"))
+                        {
+                            var filter = publicDependenceFilterCount.Substring(1);
+                            if (int.TryParse(filter, out var result))
+                            {
+                                if (DependenceSearcher.publicDependencies[keyAsset].Count <= result)
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                        else if (publicDependenceFilterCount.StartsWith("<"))
+                        {
+                            var filter = publicDependenceFilterCount.Substring(1);
+                            if (int.TryParse(filter, out var result))
+                            {
+                                if (DependenceSearcher.publicDependencies[keyAsset].Count >= result)
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (int.TryParse(publicDependenceFilterCount, out var result))
+                            {
+                                if (DependenceSearcher.publicDependencies[keyAsset].Count != result)
+                                {
+                                    continue;
+                                }
                             }
                         }
                     }

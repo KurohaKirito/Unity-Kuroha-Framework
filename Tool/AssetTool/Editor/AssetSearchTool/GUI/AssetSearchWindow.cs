@@ -34,8 +34,8 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
         {
             findTypeIndex = type;
             var window = GetWindow<AssetSearchWindow>("资源查找");
-            window.minSize = new Vector2(450, 820);
-            window.maxSize = new Vector2(450, 820);
+            window.minSize = new Vector2(450, 1220);
+            window.maxSize = new Vector2(450, 1220);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
         private void OnEnable()
         {
             toolBarNames = new[] { "String", "Reference", "Dependence" };
-            toolbarData = new Kuroha.GUI.Editor.Toolbar.ToolbarData(800, 300, toolBarNames);
+            toolbarData = new Kuroha.GUI.Editor.Toolbar.ToolbarData(1200, 300, toolBarNames);
         }
 
         /// <summary>
@@ -56,10 +56,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
             windowCurrentRect = position;
 
             // 标签页
-            findTypeIndex = Kuroha.GUI.Editor.Toolbar.ToolbarAnime(ref toolbarData, this, ref findTypeIndex,
-                GUIStringSearcher.OnGUI,
-                GUIReferenceSearcher.OnGUI,
-                GUIDependenceSearcher.OnGUI);
+            findTypeIndex = Kuroha.GUI.Editor.Toolbar.ToolbarAnime(ref toolbarData, this, ref findTypeIndex, GUIStringSearcher.OnGUI, GUIReferenceSearcher.OnGUI, GUIDependenceSearcher.OnGUI);
 
             // 实现动画
             if (toolbarData.playAnime)
