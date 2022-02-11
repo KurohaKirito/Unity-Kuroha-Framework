@@ -67,6 +67,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Searcher {
             if (Selection.assetGUIDs.IsNotNullAndEmpty()) {
                 AssetSearchWindow.Open(1);
                 Find(Selection.assetGUIDs);
+            } else {
+                AssetSearchWindow.Open(2);
             }
         }
     }

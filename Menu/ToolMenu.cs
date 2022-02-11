@@ -1,5 +1,5 @@
-﻿using Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool;
-using Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool;
+﻿using Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool;
+using Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Searcher;
 using Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.GUI;
 using Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool;
 using UnityEditor;
@@ -35,6 +35,12 @@ namespace Script.Effect.Editor.AssetTool.Menu {
         [MenuItem("Funny/资源检测工具/Car LOD 检测工具")]
         public static void Tool6() {
             CarSetLOD.Open();
+        }
+        
+        [MenuItem("Funny/资源检测工具/依赖分析工具")]
+        public static void FindAssetReference()
+        {
+            ReferenceSearcher.OpenWindow();
         }
     }
 }

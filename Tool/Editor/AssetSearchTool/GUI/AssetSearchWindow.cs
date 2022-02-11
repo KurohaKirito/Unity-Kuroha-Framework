@@ -33,7 +33,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.GUI {
             findTypeIndex = type;
             var window = GetWindow<AssetSearchWindow>("资源查找");
             window.minSize = new Vector2(450, 820);
-            window.maxSize = new Vector2(450, 820);
+            window.maxSize = new Vector2(450, 4000);
         }
 
         /// <summary>
