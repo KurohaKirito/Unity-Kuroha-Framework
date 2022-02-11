@@ -75,8 +75,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
             EditorGUILayout.BeginHorizontal();
             {
                 GUILayout.Label("过滤器", GUILayout.Width(100));
-                referenceAssetFilter =
-                    EditorGUILayout.MaskField(referenceAssetFilter, Enum.GetNames(typeof(AssetType)));
+                referenceAssetFilter = EditorGUILayout.MaskField(referenceAssetFilter, Enum.GetNames(typeof(AssetType)));
 
                 GUILayout.FlexibleSpace();
 
@@ -116,7 +115,19 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetSearchTool.GUI
                     #region 显示 数量 以及 排序按钮
 
                     EditorGUILayout.BeginHorizontal();
-                    GUILayout.Label($"引用对象:  共 {referenceAssets.Count} 个");
+                    
+                    if (referenceAssets.Count <= 0)
+                    {
+                        var oldColor = UnityEngine.GUI.color;
+                        UnityEngine.GUI.color = Color.red;
+                        GUILayout.Label($"引用对象:  共 {referenceAssets.Count} 个");
+                        UnityEngine.GUI.color = oldColor;
+                    }
+                    else
+                    {
+                        GUILayout.Label($"引用对象:  共 {referenceAssets.Count} 个");
+                    }
+                    
                     GUILayout.FlexibleSpace();
 
                     if (GUILayout.Button("按名称排序", GUILayout.Width(100)))
