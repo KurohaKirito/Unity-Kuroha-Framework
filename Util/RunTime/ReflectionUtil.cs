@@ -83,6 +83,30 @@ namespace Kuroha.Util.RunTime
 
             return null;
         }
+        
+        /// <summary>
+        /// 获取方法
+        /// </summary>
+        public static MethodInfo GetMethod(Type currentClass, string methodName)
+        {
+            if (ReferenceEquals(currentClass, null) == false)
+            {
+                var method = currentClass.GetMethod(methodName);
+                
+                if (ReferenceEquals(method, null) == false)
+                {
+                    return method;
+                }
+                
+                DebugUtil.LogError($"{methodName} 方法获取失败, 请检查 '名称', '访问权限' 是否正确", null, "red");
+            }
+            else
+            {
+                DebugUtil.LogError("类为空, 无法获得类中的方法", null, "red");
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// 调用方法
@@ -127,6 +151,20 @@ namespace Kuroha.Util.RunTime
         }
         
         /// <summary>
+        /// 获取字段
+        /// </summary>
+        public static FieldInfo GetField(Type currentClass, string fieldName)
+        {
+            if (ReferenceEquals(currentClass, null) == false)
+            {
+                return currentClass.GetField(fieldName);
+            }
+
+            DebugUtil.LogError("类为空, 无法获得类中的字段", null, "red");
+            return null;
+        }
+        
+        /// <summary>
         /// 获取字段的值
         /// </summary>
         public static object GetValueField(FieldInfo field, object classInstance)
@@ -162,6 +200,20 @@ namespace Kuroha.Util.RunTime
             if (ReferenceEquals(currentClass, null) == false)
             {
                 return currentClass.GetProperty(propertyName, targetFlags);
+            }
+            
+            DebugUtil.LogError("类为空, 无法获得类中的属性", null, "red");
+            return null;
+        }
+        
+        /// <summary>
+        /// 获取属性
+        /// </summary>
+        public static PropertyInfo GetProperty(Type currentClass, string propertyName)
+        {
+            if (ReferenceEquals(currentClass, null) == false)
+            {
+                return currentClass.GetProperty(propertyName);
             }
             
             DebugUtil.LogError("类为空, 无法获得类中的属性", null, "red");

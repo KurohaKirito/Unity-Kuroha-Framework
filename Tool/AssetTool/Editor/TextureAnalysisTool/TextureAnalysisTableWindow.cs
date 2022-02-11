@@ -340,7 +340,6 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                         iconRect.width = 20f;
                         cellRect.xMin += 20f;
 
-                        // EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("RawImage Icon"));
                         EditorGUI.LabelField(iconRect, new GUIContent(AssetDatabase.GetCachedIcon(data.texturePath)));
                         EditorGUI.LabelField(cellRect, data.textureName.Contains("/")
                             ? data.textureName.Split('/').Last()

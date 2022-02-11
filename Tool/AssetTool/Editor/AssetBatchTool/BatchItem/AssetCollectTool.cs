@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Data.DataStruct.Item;
-using Data.DataStruct.Job;
-using Data.DataStruct.Map;
-using Data.DataStruct.Role;
-using Data.DataStruct.Skill;
-using Kuroha.Framework.AsyncLoad.Asset;
-using Kuroha.Framework.Audio;
-using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 using UnityEditor;
 using UnityEngine;
+using Kuroha.Framework.AsyncLoad.Asset;
+using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
 {
@@ -21,14 +15,14 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
         /// </summary>
         private enum AssetType
         {
-            音频,
-            物品,
+            音频片段,
+            物品数据,
             物品特效,
             物品类型,
-            职业,
-            地图,
-            角色,
-            技能
+            职业数据,
+            地图数据,
+            角色数据,
+            技能数据
         }
 
         /// <summary>
@@ -44,7 +38,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
         /// <summary>
         /// 收集类型
         /// </summary>
-        private static AssetType assetType = AssetType.音频;
+        private static AssetType assetType = AssetType.音频片段;
         
         /// <summary>
         /// 折叠框
@@ -141,14 +135,14 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
         {
             collectPath = assetType switch
             {
-                AssetType.音频 =>    "Assets/Resources/DataBase/Audio",
-                AssetType.物品 =>    "Assets/Resources/DataBase/Item",
+                AssetType.音频片段 =>    "Assets/Resources/DataBase/Audio",
+                AssetType.物品数据 =>    "Assets/Resources/DataBase/Item",
                 AssetType.物品特效 => "Assets/Resources/DataBase/ItemBuff",
                 AssetType.物品类型 => "Assets/Resources/DataBase/ItemType",
-                AssetType.职业 =>    "Assets/Resources/DataBase/Job",
-                AssetType.地图 =>    "Assets/Resources/DataBase/Map",
-                AssetType.角色 =>    "Assets/Resources/DataBase/Role",
-                AssetType.技能 =>    "Assets/Resources/DataBase/Skill",
+                AssetType.职业数据 =>    "Assets/Resources/DataBase/Job",
+                AssetType.地图数据 =>    "Assets/Resources/DataBase/Map",
+                AssetType.角色数据 =>    "Assets/Resources/DataBase/Role",
+                AssetType.技能数据 =>    "Assets/Resources/DataBase/Skill",
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -160,14 +154,14 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
         {
             savePath = assetType switch
             {
-                AssetType.音频 =>    "Assets/Resources/Configs/Assets/Audios.asset",
-                AssetType.物品 =>    "Assets/Resources/Configs/Assets/Item.asset",
+                AssetType.音频片段 =>    "Assets/Resources/Configs/Assets/Audios.asset",
+                AssetType.物品数据 =>    "Assets/Resources/Configs/Assets/Item.asset",
                 AssetType.物品特效 => "Assets/Resources/Configs/Assets/ItemBuff.asset",
                 AssetType.物品类型 => "Assets/Resources/Configs/Assets/ItemType.asset",
-                AssetType.职业 =>    "Assets/Resources/Configs/Assets/Job.asset",
-                AssetType.地图 =>    "Assets/Resources/Configs/Assets/Map.asset",
-                AssetType.角色 =>    "Assets/Resources/Configs/Assets/Role.asset",
-                AssetType.技能 =>    "Assets/Resources/Configs/Assets/Skill.asset",
+                AssetType.职业数据 =>    "Assets/Resources/Configs/Assets/Job.asset",
+                AssetType.地图数据 =>    "Assets/Resources/Configs/Assets/Map.asset",
+                AssetType.角色数据 =>    "Assets/Resources/Configs/Assets/Role.asset",
+                AssetType.技能数据 =>    "Assets/Resources/Configs/Assets/Skill.asset",
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -197,14 +191,14 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
         {
             return assetType switch
             {
-                AssetType.音频 =>    $"t:{nameof(SingleClip)}",
-                AssetType.物品 =>    $"t:{nameof(DS_Item)}",
-                AssetType.物品特效 => $"t:{nameof(DS_ItemBuff)}",
-                AssetType.物品类型 => $"t:{nameof(DS_ItemType)}",
-                AssetType.职业 =>    $"t:{nameof(DS_Job)}",
-                AssetType.地图 =>    $"t:{nameof(DS_Map)}",
-                AssetType.角色 =>    $"t:{nameof(DS_Role)}",
-                AssetType.技能 =>    $"t:{nameof(DS_Skill)}",
+                AssetType.音频片段 => "t:SingleClip",
+                AssetType.物品数据 => "t:DS_Item",
+                AssetType.物品特效 => "t:DS_ItemBuff",
+                AssetType.物品类型 => "t:DS_ItemType",
+                AssetType.职业数据 => "t:DS_Job",
+                AssetType.地图数据 => "t:DS_Map",
+                AssetType.角色数据 => "t:DS_Role",
+                AssetType.技能数据 => "t:DS_Skill",
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
