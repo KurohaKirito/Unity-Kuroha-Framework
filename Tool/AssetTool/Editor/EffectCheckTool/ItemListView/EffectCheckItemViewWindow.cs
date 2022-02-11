@@ -96,7 +96,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
                 Refresh();
             }
 
-            GUILayout.Label("检查项列表", titleStyle);
+            GUILayout.Label("Check Item List", titleStyle);
             
             GUILayout.Space(UI_DEFAULT_MARGIN);
 

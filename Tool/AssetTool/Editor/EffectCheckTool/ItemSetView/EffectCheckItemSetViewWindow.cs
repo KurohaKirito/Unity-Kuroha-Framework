@@ -96,8 +96,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             itemInfo = info;
             isEditMode = info != null;
             EffectCheckItemViewWindow.isRefresh = true;
-            var window = GetWindow<EffectCheckItemSetViewWindow>("特效检查项设置");
-            window.minSize = new Vector2(500, 470);
+            var window = GetWindow<EffectCheckItemSetViewWindow>("检查项设置");
+            window.minSize = new Vector2(500, 490);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            GUILayout.Label("检查项设置", titleStyle);
+            GUILayout.Label("Check Item Set", titleStyle);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 

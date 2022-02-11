@@ -31,12 +31,12 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
         /// <summary>
         /// 全局按钮的宽度
         /// </summary>
-        private const float UI_BUTTON_WIDTH = 80;
+        private const float UI_BUTTON_WIDTH = 100;
 
         /// <summary>
         /// 全局按钮的高度
         /// </summary>
-        private const float UI_BUTTON_HEIGHT = 20;
+        private const float UI_BUTTON_HEIGHT = 25;
 
         /// <summary>
         /// [GUI] 分页管理器: 当前页
@@ -70,7 +70,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
         public static void Open(List<EffectCheckReportInfo> results)
         {
             EffectCheckReport.reportInfos = results;
-            var window = GetWindow<EffectCheckReportWindow>("特效检测结果");
+            var window = GetWindow<EffectCheckReportWindow>("资源检查结果");
             window.minSize = new Vector2(1200, 685);
         }
         
@@ -107,7 +107,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             UnityEngine.GUI.skin.label.fontSize = 24;
             UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleCenter;
             UnityEngine.GUI.skin.label.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-            GUILayout.Label($"待修复问题: {EffectCheckReport.reportInfos.Count} 个");
+            GUILayout.Label($"Check Result Count : {EffectCheckReport.reportInfos.Count}");
             UnityEngine.GUI.skin.label.fontSize = size;
             UnityEngine.GUI.skin.label.alignment = alignment;
             
@@ -117,8 +117,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
 
             var selectAllStr = isSelectAll ? "全不选" : "全选";
             UnityEngine.GUI.enabled = EffectCheckReport.reportInfos.Count > 0;
-            if (GUILayout.Button(selectAllStr, GUILayout.Width(UI_BUTTON_WIDTH),
-                GUILayout.Height(UI_BUTTON_HEIGHT)))
+            if (GUILayout.Button(selectAllStr, GUILayout.Width(UI_BUTTON_WIDTH), GUILayout.Height(UI_BUTTON_HEIGHT)))
             {
                 isSelectAll = !isSelectAll;
                 foreach (var reportInfo in EffectCheckReport.reportInfos)
