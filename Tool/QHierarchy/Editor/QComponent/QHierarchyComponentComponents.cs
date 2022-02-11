@@ -223,7 +223,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 if (component != null) {
                     var classInfo = component.GetType();
                     var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
-                    objectEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo);
+                    objectEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
                 }
                 
                 // 确定颜色
@@ -305,15 +305,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     var component = components[clickIndex];
                     if (component != null)
                     {
-                        var propertyInfo = components[clickIndex].GetType().GetProperty("enabled");
-
-                        // 反射 Get enabled 字段具体的值
-                        var componentEnabled = propertyInfo != null;
-                        if (componentEnabled)
-                        {
-                            componentEnabled = (bool) propertyInfo.GetGetMethod().Invoke(components[clickIndex], null);
-                        }
-
+                        var classInfo = component.GetType();
+                        var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
+                        var componentEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
+                        
                         // 在撤销栈中记录下操作
                         Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
 

@@ -15,8 +15,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
     /// </summary>
     public class QHierarchyMain
     {
-        private readonly HashSet<int> errorHandled = new HashSet<int>();
-
         /// <summary>
         /// 功能组件字典
         /// </summary>
@@ -131,28 +129,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         {
             QHierarchyColorUtils.SetDefaultColor(UnityEngine.GUI.color);
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
-            
-            try
+            if (gameObject != null)
             {
-                if (gameObject != null)
-                {
-                    var curRect = new Rect(selectionRect) { width = 16 };
-                    curRect.x += selectionRect.width - indentation;
+                var curRect = new Rect(selectionRect) { width = 16 };
+                curRect.x += selectionRect.width - indentation;
 
-                    var gameObjectNameWidth = hideIconsIfThereIsNoFreeSpace ? UnityEngine.GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
-                    var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObject, false);
-                    var minX = hideIconsIfThereIsNoFreeSpace? selectionRect.x + gameObjectNameWidth + 7 : 0;
+                var gameObjectNameWidth = hideIconsIfThereIsNoFreeSpace ? UnityEngine.GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
+                var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObject, false);
+                var minX = hideIconsIfThereIsNoFreeSpace? selectionRect.x + gameObjectNameWidth + 7 : 0;
 
-                    DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, minX);
-                    errorHandled.Remove(instanceId);
-                }
-            }
-            catch (Exception exception)
-            {
-                if (errorHandled.Add(instanceId))
-                {
-                    Debug.LogError(exception.ToString(), gameObject);
-                }
+                DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, minX);
             }
         }
         
