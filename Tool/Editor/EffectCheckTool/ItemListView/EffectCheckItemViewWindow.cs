@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemSetView;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListView {
@@ -10,25 +12,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
         /// </summary>
         public static bool isRefresh = true;
 
-        /// <summary>
-        /// 全局默认 margin
-        /// </summary>
         private const float UI_DEFAULT_MARGIN = 5;
-
-        /// <summary>
-        /// 全局按钮的宽度
-        /// </summary>
         private const float UI_BUTTON_WIDTH = 120;
-
-        /// <summary>
-        /// 全局按钮的高度
-        /// </summary>
         private const float UI_BUTTON_HEIGHT = 25;
-
-        /// <summary>
-        /// GUID 检查项序号风格
-        /// </summary>
-        private static GUIStyle itemIdGUIStyle;
+        private const float UI_ROW_HEIGHT = 18;
 
         /// <summary>
         /// 检查项 GUI 风格
@@ -44,6 +31,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
         /// 滑动条位置
         /// </summary>
         private static Vector2 vector2ScrollView;
+        
+        private static Rect searchTypeRect;
+        private static string[] searchTypeArray;
+        private static int searchTypeIndex;
+        
+        private static Rect searchFieldRect;
+        private static SearchField searchField;
+        private static string searchFieldString;
 
         /// <summary>
         /// 打开窗口
@@ -58,17 +53,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
         /// </summary>
         private void OnEnable() {
             isRefresh = true;
-
-            itemIdGUIStyle = new GUIStyle {
-                fontSize = 16,
-                alignment = TextAnchor.MiddleRight,
-                normal = new GUIStyleState {
-                    textColor = EditorGUIUtility.isProSkin? Color.white : Color.black
-                }
-            };
+            
+            searchField = new SearchField();
+            searchTypeArray = new[] { "标题", "资源类型" };
+            searchTypeRect = new Rect(10, 16, 80, EditorGUIUtility.singleLineHeight);
+            searchFieldRect = new Rect(100, 17, 180, EditorGUIUtility.singleLineHeight);
 
             checkItemGUIStyle = new GUIStyle {
-                fontSize = 16,
+                fontSize = 14,
                 alignment = TextAnchor.MiddleLeft,
                 normal = new GUIStyleState {
                     textColor = EditorGUIUtility.isProSkin? Color.white : Color.black
@@ -88,7 +80,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
         /// 绘制界面
         /// </summary>
         private void OnGUI() {
-            GUILayout.Space(UI_DEFAULT_MARGIN);
+            GUILayout.Space(UI_DEFAULT_MARGIN * 2);
 
             if (isRefresh) {
                 Refresh();
@@ -96,8 +88,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
 
             GUILayout.Label("检查项列表", titleStyle);
             GUILayout.Space(UI_DEFAULT_MARGIN);
-
-            #region 列表
+            
+            searchTypeIndex = EditorGUI.Popup(searchTypeRect, searchTypeIndex, searchTypeArray);
+            searchFieldString = searchField.OnGUI(searchFieldRect, searchFieldString);
 
             GUILayout.BeginVertical("Box");
 
@@ -105,14 +98,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
 
             vector2ScrollView = GUILayout.BeginScrollView(vector2ScrollView);
             foreach (var checkItem in EffectCheckItemView.CheckItemInfoList) {
-                OnGUI_ShowItem(checkItem);
+                if (string.IsNullOrEmpty(searchFieldString)) {
+                    OnGUI_ShowItem(checkItem);
+                } else {
+                    var srcString = searchTypeIndex == 0 ? checkItem.title : checkItem.assetsType.ToString();
+                    if (srcString.IndexOf(searchFieldString, StringComparison.OrdinalIgnoreCase) >= 0) {
+                        OnGUI_ShowItem(checkItem);
+                    }
+                }
             }
-
             GUILayout.EndScrollView();
-
             GUILayout.EndVertical();
-
-            #endregion
 
             OnGUI_Buttons(EffectCheckItemView.CheckItemInfoList);
         }
@@ -122,12 +118,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
         /// </summary>
         private static void OnGUI_ShowTitle() {
             GUILayout.BeginHorizontal("Box");
-            GUILayout.Label("序号", itemIdGUIStyle);
-            GUILayout.Space(24);
+            GUILayout.Label("序号", checkItemGUIStyle);
+            GUILayout.Space(22);
             GUILayout.Label("CICD", checkItemGUIStyle);
-            GUILayout.Space(24);
+            GUILayout.Space(14);
             GUILayout.Label("Effect", checkItemGUIStyle);
-            GUILayout.Space(140);
+            GUILayout.Space(200);
             GUILayout.Label("标题", checkItemGUIStyle);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -141,13 +137,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
             GUILayout.BeginHorizontal("Box");
 
             // GUID
-            GUILayout.Label(info.guid, itemIdGUIStyle, GUILayout.Width(36), GUILayout.Height(UI_BUTTON_HEIGHT));
-            GUILayout.Space(15);
+            GUILayout.Label(info.guid, checkItemGUIStyle, GUILayout.Width(36), GUILayout.Height(UI_ROW_HEIGHT));
+            GUILayout.Space(21);
 
             #region Auto Check Icon
 
             var autoCheckIcon = EditorGUIUtility.IconContent(info.cicdEnable? "sv_icon_dot11_pix16_gizmo" : "sv_icon_dot8_pix16_gizmo");
-            if (GUILayout.Button(autoCheckIcon, GUILayout.Width(32), GUILayout.Height(32))) {
+            if (GUILayout.Button(autoCheckIcon, GUIStyle.none, GUILayout.Width(UI_ROW_HEIGHT), GUILayout.Height(UI_ROW_HEIGHT))) {
                 info.cicdEnable = !info.cicdEnable;
             }
 
@@ -158,7 +154,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
             #region Effect Check Icon
 
             var effectCheckIcon = EditorGUIUtility.IconContent(info.effectEnable? "sv_icon_dot3_pix16_gizmo" : "sv_icon_dot0_pix16_gizmo");
-            if (GUILayout.Button(effectCheckIcon, GUILayout.Width(32), GUILayout.Height(32))) {
+            if (GUILayout.Button(effectCheckIcon, GUIStyle.none, GUILayout.Width(UI_ROW_HEIGHT), GUILayout.Height(UI_ROW_HEIGHT))) {
                 info.effectEnable = !info.effectEnable;
             }
 
@@ -167,16 +163,16 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
             GUILayout.Space(30);
 
             // 标题
-            EditorGUILayout.LabelField($"{info.title}", checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT));
+            EditorGUILayout.LabelField($"{info.title}", checkItemGUIStyle, GUILayout.Height(UI_ROW_HEIGHT));
             GUILayout.FlexibleSpace();
 
             // 编辑按钮
-            if (GUILayout.Button("Edit", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
+            if (GUILayout.Button("Edit", GUILayout.Height(UI_ROW_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
                 EffectCheckItemSetViewWindow.Open(info);
             }
 
             // 删除按钮
-            if (GUILayout.Button("Delete", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
+            if (GUILayout.Button("Delete", GUILayout.Height(UI_ROW_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
                 if (EditorUtility.DisplayDialog("标题", $"是否删除检查项:\n\n{info.title}", "确认", "取消")) {
                     EffectCheckItemView.Remove(info);
                 }
@@ -267,6 +263,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListVie
 
             #endregion
 
+            GUILayout.FlexibleSpace();
+            
             GUILayout.EndHorizontal();
 
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
