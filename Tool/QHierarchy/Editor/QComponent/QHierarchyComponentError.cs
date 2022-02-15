@@ -50,7 +50,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private int errorCount;
         private const int RECT_WIDTH = 7;
         private StringBuilder errorStringBuilder;
-        private readonly List<string> targetPropertiesNames = new List<string>(10);
+        private readonly List<string> targetFieldNames = new List<string>(10);
 
         /// <summary>
         /// 构造函数初始化
@@ -98,12 +98,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             settingsShowErrorIconMissingEventMethod = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowMissingEventMethod);
             settingsShowErrorIconWhenTagIsUndefined = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowWhenTagOrLayerIsUndefined);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowDuringPlayMode);
+            
             var ignoreErrorOfMonoBehavioursString = QSettings.Instance().Get<string>(EM_QHierarchySettings.ErrorIgnoreString);
-
             if (string.IsNullOrEmpty(ignoreErrorOfMonoBehavioursString) == false)
             {
                 ignoreErrorOfMonoBehaviours = new List<string>(ignoreErrorOfMonoBehavioursString.Split(new char[] {',', ';', '.', ' '}));
-                ignoreErrorOfMonoBehaviours.RemoveAll(item => item == "");
+                ignoreErrorOfMonoBehaviours.RemoveAll(string.IsNullOrEmpty);
             }
             else
             {
@@ -205,7 +205,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     if (printError)
                     {
-                        AppendErrorLine("Tag is undefined");
+                        AppendErrorLine("tag is undefined");
                     }
                     else
                     {
@@ -221,7 +221,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     if (printError)
                     {
-                        AppendErrorLine("Layer is undefined");
+                        AppendErrorLine("layer is undefined");
                     }
                     else
                     {
@@ -236,7 +236,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 var monoBehaviour = components[i];
 
-                #region Component Missing
+                #region 组件丢失
 
                 if (monoBehaviour == null)
                 {
@@ -244,7 +244,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         if (printError)
                         {
-                            AppendErrorLine("Component #" + i + "# is missing");
+                            AppendErrorLine("component <" + i + "> is missing");
                         }
                         else
                         {
@@ -272,6 +272,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                     #endregion
 
+                    #region 事件方法丢失
+
                     if (settingsShowErrorIconMissingEventMethod)
                     {
                         if (monoBehaviour.gameObject.activeSelf || settingsShowErrorForDisabledComponents)
@@ -286,6 +288,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         }
                     }
 
+                    #endregion
+                    
                     if (settingsShowErrorTypeReferenceIsNull || settingsShowErrorTypeStringIsEmpty || settingsShowErrorTypeReferenceIsMissing)
                     {
                         if (!monoBehaviour.enabled && !settingsShowErrorForDisabledComponents)
@@ -423,39 +427,39 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <returns></returns>
         private bool IsUnityEventsNullOrMissing(UnityEngine.Object monoBehaviour, bool printError)
         {
-            targetPropertiesNames.Clear();
+            targetFieldNames.Clear();
 
             // 反射得到全部的字段
             var fieldArray = monoBehaviour.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             // 筛选出全部的 UnityEventBase 类
-            for (var index = fieldArray.Length - 1; index >= 0; index--)
-            {
-                var field = fieldArray[index];
-                if (field.FieldType == typeof(UnityEventBase) || field.FieldType.IsSubclassOf(typeof(UnityEventBase)))
+            foreach (var fieldInfo in fieldArray) {
+                if (fieldInfo.FieldType == typeof(UnityEventBase) || fieldInfo.FieldType.IsSubclassOf(typeof(UnityEventBase)))
                 {
-                    targetPropertiesNames.Add(field.Name);
+                    targetFieldNames.Add(fieldInfo.Name);
                 }
             }
 
-            if (targetPropertiesNames.Count > 0)
+            if (targetFieldNames.Count > 0)
             {
                 var serializedMonoBehaviour = new SerializedObject(monoBehaviour);
-                for (var i = targetPropertiesNames.Count - 1; i >= 0; i--)
+                foreach (var fieldName in targetFieldNames)
                 {
-                    var targetProperty = targetPropertiesNames[i];
-                    var property = serializedMonoBehaviour.FindProperty(targetProperty);
+                    var property = serializedMonoBehaviour.FindProperty(fieldName);
                     var propertyRelativeArray = property.FindPropertyRelative("m_PersistentCalls.m_Calls");
                     
-                    for (var j = propertyRelativeArray.arraySize - 1; j >= 0; j--)
+                    for (var index = 0; index < propertyRelativeArray.arraySize; index++)
                     {
-                        var arrayElementAtIndex = propertyRelativeArray.GetArrayElementAtIndex(j);
-                        var propertyTarget = arrayElementAtIndex.FindPropertyRelative("m_Target");
+                        var propertyRelative = propertyRelativeArray.GetArrayElementAtIndex(index);
+
+                        #region 检查事件物体引用
+
+                        var propertyTarget = propertyRelative.FindPropertyRelative("m_Target");
                         if (propertyTarget.objectReferenceValue == null)
                         {
                             if (printError)
                             {
-                                AppendErrorLine(monoBehaviour.GetType().Name + ": Event object reference is null");
+                                AppendErrorLine(monoBehaviour.GetType().Name + ": 事件物体引用为空!");
                             }
                             else
                             {
@@ -463,64 +467,52 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                             }
                         }
 
-                        var propertyMethodName = arrayElementAtIndex.FindPropertyRelative("m_MethodName");
+                        #endregion
+
+                        #region 检查监听事件
+
+                        var propertyMethodName = propertyRelative.FindPropertyRelative("m_MethodName");
                         if (string.IsNullOrEmpty(propertyMethodName.stringValue))
                         {
                             if (printError)
                             {
-                                AppendErrorLine(monoBehaviour.GetType().Name + ": Event handler function is not selected");
+                                AppendErrorLine(monoBehaviour.GetType().Name + ": 监听事件为空!");
                                 continue;
                             }
-                            else
-                            {
-                                return true;
-                            }
+                            
+                            return true;
                         }
 
+                        #endregion
 
-                        var argumentAssemblyTypeName = arrayElementAtIndex.FindPropertyRelative("m_Arguments").FindPropertyRelative("m_ObjectArgumentAssemblyTypeName").stringValue;
+                        #region 监听事件
 
-                        System.Type argumentAssemblyType;
-
-                        if (!string.IsNullOrEmpty(argumentAssemblyTypeName))
-                        {
-                            argumentAssemblyType = System.Type.GetType(argumentAssemblyTypeName, false) ?? typeof(UnityEngine.Object);
-                        }
-                        else
-                        {
-                            argumentAssemblyType = typeof(UnityEngine.Object);
-                        }
-
-                        UnityEventBase dummyEvent = null;
-
+                        var argumentAssemblyName = propertyRelative.FindPropertyRelative("m_Arguments").FindPropertyRelative("m_ObjectArgumentAssemblyTypeName").stringValue;
+                        var argumentAssemblyType = string.IsNullOrEmpty(argumentAssemblyName) ? typeof(UnityEngine.Object) : System.Type.GetType(argumentAssemblyName, false) ?? typeof(UnityEngine.Object);
                         var typeName = property.FindPropertyRelative("m_TypeName");
                         if (typeName != null)
                         {
                             var propertyTypeName = System.Type.GetType(typeName.stringValue, false);
-                            if (propertyTypeName == null)
+                            var dummyEvent = propertyTypeName == null ? new UnityEvent() : Activator.CreateInstance(propertyTypeName) as UnityEventBase;
+                            if (dummyEvent != null)
                             {
-                                dummyEvent = new UnityEvent();
-                            }
-                            else
-                            {
-                                dummyEvent = Activator.CreateInstance(propertyTypeName) as UnityEventBase;
-                            }
-                        }
-
-                        if (dummyEvent != null)
-                        {
-                            if (!UnityEventDrawer.IsPersistantListenerValid(dummyEvent, propertyMethodName.stringValue, propertyTarget.objectReferenceValue, (PersistentListenerMode) arrayElementAtIndex.FindPropertyRelative("m_Mode").enumValueIndex, argumentAssemblyType))
-                            {
-                                if (printError)
+                                var persistentListenerMode = (PersistentListenerMode) propertyRelative.FindPropertyRelative("m_Mode").enumValueIndex;
+                                if (UnityEventDrawer.IsPersistantListenerValid(dummyEvent, propertyMethodName.stringValue, propertyTarget.objectReferenceValue, persistentListenerMode, argumentAssemblyType) == false)
                                 {
-                                    AppendErrorLine(monoBehaviour.GetType().Name + ": Event handler function is missing");
-                                }
-                                else
-                                {
-                                    return true;
+                                    if (printError)
+                                    {
+                                        AppendErrorLine(monoBehaviour.GetType().Name + ": Event handler function is missing");
+                                    }
+                                    else
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
+                            
                         }
+                        
+                        #endregion
                     }
                 }
             }
