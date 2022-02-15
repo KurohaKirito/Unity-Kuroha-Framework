@@ -62,19 +62,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <returns></returns>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            const float COMPONENT_SPACE = 2;
-            
             if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
             }
-            else
-            {
-                curRect.x -= 18;
-                rect.x = curRect.x;
-                rect.y = curRect.y;
-                return EM_QLayoutStatus.Success;
-            }
+            
+            curRect.x -= rect.width + COMPONENT_SPACE;
+            rect.x = curRect.x;
+            rect.y = curRect.y;
+            return EM_QLayoutStatus.Success;
         }
 
         public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)

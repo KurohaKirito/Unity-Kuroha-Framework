@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
@@ -5,6 +6,7 @@ using Kuroha.Tool.QHierarchy.Editor.QData;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using Kuroha.Util.RunTime;
+using Object = UnityEngine.Object;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
@@ -18,15 +20,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public QHierarchyComponentGameObjectIcon()
         {
-            rect.width = 14;
-            rect.height = 14;
-
             getIconMethodInfo = typeof(EditorGUIUtility).GetMethod("GetIconForObject", BindingFlags.NonPublic | BindingFlags.Static);
             getIconMethodParams = new object[1];
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.GameObjectIconShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.GameObjectIconShowDuringPlayMode, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.GameObjectIconSize, SettingsChanged);
+            
             SettingsChanged();
         }
 
@@ -38,12 +38,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.GameObjectIconShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.GameObjectIconShowDuringPlayMode);
             var size = (EM_QHierarchySizeAll) QSettings.Instance().Get<int>(EM_QHierarchySettings.GameObjectIconSize);
-
             rect.width = rect.height = size switch
             {
+                EM_QHierarchySizeAll.Small => 14,
                 EM_QHierarchySizeAll.Normal => 15,
                 EM_QHierarchySizeAll.Big => 16,
-                _ => 13
+                _ => 14
             };
         }
 

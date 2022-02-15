@@ -124,16 +124,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
+            // 1 个 Component 都显示不了
             if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
             }
             
-            // 获取物体的全部游戏物体
+            // 获取物体的全部组件
             allComponents.Clear();
             gameObject.GetComponents(allComponents);
 
-            #region 筛选掉忽略的组件
+            #region 筛选掉白名单中的组件
 
             components.Clear();
             if (ignoreComponentNameList != null)
@@ -174,7 +175,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             // 计算总宽度
             var totalWidth = COMPONENT_SPACE + rect.width * componentsToDraw;
 
-            // X 左翼总宽度
+            // 向左移动: 总宽度
             curRect.x -= totalWidth;
 
             // 计算整个功能的显示矩形, Y 需要居中
@@ -223,7 +224,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 if (component != null) {
                     var classInfo = component.GetType();
                     var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
-                    objectEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
+                    if (propertyInfo != null) {
+                        objectEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
+                    }
                 }
                 
                 // 确定颜色
@@ -307,19 +310,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         var classInfo = component.GetType();
                         var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
-                        var componentEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
-                        
-                        // 在撤销栈中记录下操作
-                        Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
-
-                        // 反射 Set enabled 字段具体的值
                         if (propertyInfo != null)
                         {
+                            var componentEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
+                        
+                            // 在撤销栈中记录下操作
+                            Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
+
+                            // 反射 Set enabled 字段具体的值
                             componentEnabled = !componentEnabled;
                             propertyInfo.GetSetMethod().Invoke(components[clickIndex], new object[] {componentEnabled});
-                        }
 
-                        EditorUtility.SetDirty(gameObject);
+                            EditorUtility.SetDirty(gameObject);
+                        }
                     }
                 }
             }

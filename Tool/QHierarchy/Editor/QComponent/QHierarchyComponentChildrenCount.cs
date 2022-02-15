@@ -58,15 +58,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             labelStyle.fontSize = labelSize switch
             {
-                EM_QHierarchySize.Normal => 8,
-                EM_QHierarchySize.Big => 11,
+                EM_QHierarchySize.Normal => 11,
+                EM_QHierarchySize.Big => 13,
                 _ => throw new ArgumentOutOfRangeException()
             };
 
             rect.width = labelSize switch
             {
-                EM_QHierarchySize.Normal => 16,
-                EM_QHierarchySize.Big => 20,
+                EM_QHierarchySize.Normal => 20,
+                EM_QHierarchySize.Big => 24,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -82,8 +82,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
 
             // 从右向左绘制
-            var totalWidth = rect.width + COMPONENT_SPACE;
-            curRect.x -= totalWidth;
+            curRect.x -= rect.width + COMPONENT_SPACE;
             rect.x = curRect.x;
             rect.y = curRect.y;
 
@@ -98,7 +97,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             var childrenCount = gameObject.transform.childCount;
             if (childrenCount > 0)
             {
-                UnityEngine.GUI.Label(rect, childrenCount.ToString(), labelStyle);
+                UnityEngine.GUI.Label(rect, childrenCount.ToString("000"), labelStyle);
             }
         }
     }
