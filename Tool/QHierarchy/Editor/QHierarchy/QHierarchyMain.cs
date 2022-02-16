@@ -58,10 +58,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     EM_QHierarchyComponent.ErrorComponent, new QHierarchyComponentError()
                 },
                 {
-                    EM_QHierarchyComponent.TagIconComponent, new QTagIconComponent()
+                    EM_QHierarchyComponent.TagIconComponent, new QHierarchyComponentTagIcon()
                 },
                 {
-                    EM_QHierarchyComponent.LayerIconComponent, new QLayerIconComponent()
+                    EM_QHierarchyComponent.LayerIconComponent, new QHierarchyComponentLayerIcon()
                 },
                 {
                     EM_QHierarchyComponent.ColorComponent, new QHierarchyComponentColor()

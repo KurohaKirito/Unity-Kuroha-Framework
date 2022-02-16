@@ -417,9 +417,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Lock
+        /// </summary>
         private void DrawSettingsLock()
         {
-            if (DrawCheckBox("Lock", "锁定游戏物体, 锁定后的游戏物体各项数值无法被修改", EM_QHierarchySettings.LockShow))
+            if (DrawCheckBox("Lock", "锁定游戏物体, 锁定后的游戏物体各项数值变为只读", EM_QHierarchySettings.LockShow))
             {
                 var rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
@@ -440,9 +443,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Static Info
+        /// </summary>
         private void DrawSettingsStaticInfo()
         {
-            if (DrawCheckBox("Static Info", "显示游戏物体的静态选项情况", EM_QHierarchySettings.StaticShow))
+            if (DrawCheckBox("Static Info", "显示游戏物体的静态选项信息", EM_QHierarchySettings.StaticShow))
             {
                 var rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
@@ -460,6 +466,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Error 显示
+        /// </summary>
         private void DrawSettingsError()
         {
             if (DrawCheckBox("Error", "", EM_QHierarchySettings.ErrorShow))
@@ -484,26 +493,29 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 DrawSpace(UP_DOWN_SPACE);
 
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.ErrorShowDuringPlayMode);
-                DrawCheckBoxRight("Show error icon up of hierarchy (very slow)", EM_QHierarchySettings.ErrorShowIconOnParent);
-                DrawCheckBoxRight("Show error icon for disabled components", EM_QHierarchySettings.ErrorShowForDisabledComponents);
-                DrawCheckBoxRight("Show error icon for disabled GameObjects", EM_QHierarchySettings.ErrorShowForDisabledGameObjects);
+                DrawCheckBoxRight("是否在错误物体的父级也显示错误标志", EM_QHierarchySettings.ErrorShowIconOnParent);
+                DrawCheckBoxRight("是否检查未激活的组件", EM_QHierarchySettings.ErrorShowForDisabledComponents);
+                DrawCheckBoxRight("是否检查未激活的游戏物体", EM_QHierarchySettings.ErrorShowForDisabledGameObjects);
                 
                 DrawLabel("检测以下错误:");
                 indentLevel += 16;
-                DrawCheckBoxRight("-- 脚本丢失 missing", EM_QHierarchySettings.ErrorShowScriptIsMissing);
-                DrawCheckBoxRight("-- 引用丢失 missing", EM_QHierarchySettings.ErrorShowReferenceIsMissing);
-                DrawCheckBoxRight("-- 引用空 null", EM_QHierarchySettings.ErrorShowReferenceIsNull);
-                DrawCheckBoxRight("-- 字符串空 null", EM_QHierarchySettings.ErrorShowStringIsEmpty);
-                DrawCheckBoxRight("-- callback of event is missing (very slow)", EM_QHierarchySettings.ErrorShowMissingEventMethod);
-                DrawCheckBoxRight("-- \"标签\" 或 \"层级\" 未定义", EM_QHierarchySettings.ErrorShowWhenTagOrLayerIsUndefined);
+                DrawCheckBoxRight("-- Component Is Missing", EM_QHierarchySettings.ErrorShowScriptIsMissing);
+                DrawCheckBoxRight("-- Reference Is Missing", EM_QHierarchySettings.ErrorShowReferenceIsMissing);
+                DrawCheckBoxRight("-- Reference Is Null", EM_QHierarchySettings.ErrorShowReferenceIsNull);
+                DrawCheckBoxRight("-- String Is Empty", EM_QHierarchySettings.ErrorShowStringIsEmpty);
+                DrawCheckBoxRight("-- Event Is Missing (性能消耗较大)", EM_QHierarchySettings.ErrorShowMissingEventMethod);
+                DrawCheckBoxRight("-- Tag | Layer Is Undefined", EM_QHierarchySettings.ErrorShowWhenTagOrLayerIsUndefined);
                 indentLevel -= 16;
 
-                DrawTextField("白名单: 包名/类名", EM_QHierarchySettings.ErrorIgnoreString);
+                DrawTextField("类名白名单", EM_QHierarchySettings.ErrorIgnoreString);
 
                 DrawSpace(UP_DOWN_SPACE);
             }
         }
 
+        /// <summary>
+        /// 绘制 Renderer
+        /// </summary>
         private void DrawSettingsRenderer()
         {
             if (DrawCheckBox("Renderer", "显示 Renderer 组件图标", EM_QHierarchySettings.RendererShow))
@@ -808,6 +820,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Components
+        /// </summary>
         private void DrawComponentsComponentSettings()
         {
             if (DrawCheckBox("Components", "", EM_QHierarchySettings.ComponentsShow))
@@ -822,8 +837,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT * 3 + UP_DOWN_SPACE * 2);
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.ComponentsShowDuringPlayMode);
-                DrawEnum("Icon size", EM_QHierarchySettings.ComponentsIconSize, typeof(EM_QHierarchySizeAll));
-                DrawTextField("Ignore packages/classes", EM_QHierarchySettings.ComponentsIgnore);
+                DrawEnum("图标大小", EM_QHierarchySettings.ComponentsIconSize, typeof(EM_QHierarchySizeAll));
+                DrawTextField("类名白名单", EM_QHierarchySettings.ComponentsIgnore);
                 DrawSpace(UP_DOWN_SPACE);
             }
         }

@@ -49,7 +49,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
         private int errorCount;
         private const int RECT_WIDTH = 7;
-        private StringBuilder errorStringBuilder;
+        private readonly StringBuilder errorMessageStringBuilder = new StringBuilder();
         private readonly List<string> targetFieldNames = new List<string>(10);
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             settingsShowErrorIconMissingEventMethod = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowMissingEventMethod);
             settingsShowErrorIconWhenTagIsUndefined = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowWhenTagOrLayerIsUndefined);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ErrorShowDuringPlayMode);
-            
+
             var ignoreErrorOfMonoBehavioursString = QSettings.Instance().Get<string>(EM_QHierarchySettings.ErrorIgnoreString);
             if (string.IsNullOrEmpty(ignoreErrorOfMonoBehavioursString) == false)
             {
@@ -141,9 +141,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <param name="selectionRect"></param>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            var errorFound = FindError(gameObject, gameObject.GetComponents<MonoBehaviour>());
-
-            if (errorFound)
+            var components = gameObject.GetComponents<MonoBehaviour>();
+            if (FindError(gameObject, components, false))
             {
                 QHierarchyColorUtils.SetColor(activeColor);
                 UnityEngine.GUI.DrawTexture(rect, errorIconTexture);
@@ -152,8 +151,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             else if (settingsShowErrorOfChildren)
             {
                 var children = gameObject.GetComponentsInChildren<MonoBehaviour>(true);
-                errorFound = FindError(gameObject, children);
-                if (errorFound)
+                if (FindError(gameObject, children, false))
                 {
                     QHierarchyColorUtils.SetColor(inactiveColor);
                     UnityEngine.GUI.DrawTexture(rect, errorIconTexture);
@@ -176,14 +174,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 currentEvent.Use();
 
                 errorCount = 0;
-                errorStringBuilder = new StringBuilder();
+                errorMessageStringBuilder.Clear();
 
                 FindError(gameObject, gameObject.GetComponents<MonoBehaviour>(), true);
 
                 if (errorCount > 0)
                 {
                     var title = errorCount + (errorCount == 1 ? " error was found" : " errors were found");
-                    Dialog.Display(title, errorStringBuilder.ToString(), Dialog.DialogType.Error, "OK");
+                    Dialog.Display(title, errorMessageStringBuilder.ToString(), Dialog.DialogType.Error, "OK");
                 }
             }
         }
@@ -193,9 +191,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="components"></param>
-        /// <param name="printError"></param>
+        /// <param name="isFoundAllError"></param>
         /// <returns></returns>
-        private bool FindError(GameObject gameObject, in MonoBehaviour[] components, bool printError = false)
+        private bool FindError(GameObject gameObject, in MonoBehaviour[] components, bool isFoundAllError)
         {
             if (settingsShowErrorIconWhenTagIsUndefined)
             {
@@ -203,14 +201,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 if (string.IsNullOrEmpty(gameObject.tag))
                 {
-                    if (printError)
-                    {
-                        AppendErrorLine("tag is undefined");
-                    }
-                    else
+                    // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                    if (isFoundAllError == false)
                     {
                         return true;
                     }
+
+                    AppendErrorLine("tag is undefined");
                 }
 
                 #endregion
@@ -219,14 +216,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 if (string.IsNullOrEmpty(LayerMask.LayerToName(gameObject.layer)))
                 {
-                    if (printError)
-                    {
-                        AppendErrorLine("layer is undefined");
-                    }
-                    else
+                    // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                    if (isFoundAllError == false)
                     {
                         return true;
                     }
+
+                    AppendErrorLine("layer is undefined");
                 }
 
                 #endregion
@@ -242,14 +238,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     if (settingsShowErrorIconScriptIsMissing)
                     {
-                        if (printError)
-                        {
-                            AppendErrorLine("component <" + i + "> is missing");
-                        }
-                        else
+                        // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                        if (isFoundAllError == false)
                         {
                             return true;
                         }
+
+                        AppendErrorLine("component <" + i + "> is missing");
                     }
                 }
 
@@ -263,7 +258,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         for (var index = ignoreErrorOfMonoBehaviours.Count - 1; index >= 0; index--)
                         {
-                            if (monoBehaviour.GetType().FullName.IndexOf(ignoreErrorOfMonoBehaviours[index], StringComparison.OrdinalIgnoreCase) >= 0)
+                            var classFullName = monoBehaviour.GetType().FullName;
+                            if (classFullName != null && classFullName.IndexOf(ignoreErrorOfMonoBehaviours[index], StringComparison.OrdinalIgnoreCase) >= 0)
                             {
                                 return false;
                             }
@@ -271,16 +267,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     }
 
                     #endregion
-
-                    #region 事件方法丢失
+                    
+                    #region 检查事件方法丢失
 
                     if (settingsShowErrorIconMissingEventMethod)
                     {
                         if (monoBehaviour.gameObject.activeSelf || settingsShowErrorForDisabledComponents)
                         {
-                            if (IsUnityEventsNullOrMissing(monoBehaviour, printError))
+                            if (IsUnityEventsNullOrMissing(monoBehaviour, isFoundAllError))
                             {
-                                if (printError == false)
+                                if (isFoundAllError == false)
                                 {
                                     return true;
                                 }
@@ -289,128 +285,135 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     }
 
                     #endregion
-                    
+
                     if (settingsShowErrorTypeReferenceIsNull || settingsShowErrorTypeStringIsEmpty || settingsShowErrorTypeReferenceIsMissing)
                     {
-                        if (!monoBehaviour.enabled && !settingsShowErrorForDisabledComponents)
+                        // 组件未激活 && 不显示隐藏组件的错误
+                        if (monoBehaviour.enabled == false && settingsShowErrorForDisabledComponents == false)
                         {
                             continue;
                         }
 
-                        if (!monoBehaviour.gameObject.activeSelf && !settingsShowErrorForDisabledGameObjects)
+                        // 物体未激活 && 不显示隐藏物体的错误
+                        if (monoBehaviour.gameObject.activeSelf == false && settingsShowErrorForDisabledGameObjects == false)
                         {
                             continue;
                         }
 
-                        var type = monoBehaviour.GetType();
-
-                        while (type != null)
+                        // 得到组件的类型
+                        var classInfo = monoBehaviour.GetType();
+                        while (classInfo != null)
                         {
-                            var bf = BindingFlags.Instance | BindingFlags.Public;
-                            if (!type.FullName.Contains("UnityEngine"))
+                            // 如果是 Unity 的组件类, 获取全部的公有非静态字段
+                            var bindingFlags = BindingFlags.Instance | BindingFlags.Public;
+                            
+                            // 如果是自己定义的组件类, 那么也获取私有字段
+                            if (classInfo.FullName.Contains("UnityEngine") == false)
                             {
-                                bf |= BindingFlags.NonPublic;
+                                bindingFlags |= BindingFlags.NonPublic;
                             }
 
-                            var fieldArray = type.GetFields(bf);
-
-                            foreach (var field in fieldArray)
+                            var fieldInfoArray = classInfo.GetFields(bindingFlags);
+                            foreach (var fieldInfo in fieldInfoArray)
                             {
-                                if (System.Attribute.IsDefined(field, typeof(HideInInspector)) ||
-                                    System.Attribute.IsDefined(field, typeof(QHierarchyNullableAttribute)) ||
-                                    System.Attribute.IsDefined(field, typeof(NonSerializedAttribute)) ||
-                                    field.IsStatic) continue;
+                                #region 不检查在 Inspector 面板不显示的字段
 
-                                if (field.IsPrivate || !field.IsPublic)
+                                if (System.Attribute.IsDefined(fieldInfo, typeof(HideInInspector)) || System.Attribute.IsDefined(fieldInfo, typeof(NonSerializedAttribute)) ||
+                                    System.Attribute.IsDefined(fieldInfo, typeof(QHierarchyNullableAttribute)) || fieldInfo.IsStatic)
                                 {
-                                    if (!System.Attribute.IsDefined(field, typeof(SerializeField)))
+                                    continue;
+                                }
+
+                                if ((fieldInfo.IsPrivate || fieldInfo.IsPublic == false) &&
+                                    System.Attribute.IsDefined(fieldInfo, typeof(SerializeField)) == false)
+                                {
+                                    continue;
+                                }
+
+                                #endregion
+
+                                var fieldValue = fieldInfo.GetValue(monoBehaviour);
+
+                                #region 检查字符串类型变量是否为空
+
+                                if (settingsShowErrorTypeStringIsEmpty)
+                                {
+                                    if (fieldInfo != null && fieldInfo.FieldType == typeof(string) && string.IsNullOrEmpty(fieldValue as string))
                                     {
+                                        // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                                        if (isFoundAllError == false)
+                                        {
+                                            return true;
+                                        }
+
+                                        AppendErrorLine(monoBehaviour.GetType().Name + "." + fieldInfo.Name + ": String value is empty");
                                         continue;
                                     }
                                 }
 
-                                var value = field.GetValue(monoBehaviour);
+                                #endregion
 
-                                try
+                                #region 检查组件引用是否丢失
+
+                                if (settingsShowErrorTypeReferenceIsMissing)
                                 {
-                                    if (settingsShowErrorTypeStringIsEmpty && field.FieldType == typeof(string) && value != null && ((string) value).Equals(""))
+                                    if (fieldValue is Component component && component == null)
                                     {
-                                        if (printError)
+                                        // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                                        if (isFoundAllError == false)
                                         {
-                                            AppendErrorLine(monoBehaviour.GetType().Name + "." + field.Name + ": String value is empty");
-                                            continue;
+                                            return true;
                                         }
 
-                                        return true;
+                                        AppendErrorLine(monoBehaviour.GetType().Name + "." + fieldInfo.Name + ": Reference is missing");
+                                        continue;
                                     }
                                 }
-                                catch
-                                {
-                                    // ignored
-                                }
 
-                                try
+                                #endregion
+
+                                #region 检查字段的值是否为空
+
+                                if (settingsShowErrorTypeReferenceIsNull)
                                 {
-                                    if (settingsShowErrorTypeReferenceIsMissing && value is Component component && component == null)
+                                    if (fieldValue == null || fieldValue.Equals(null))
                                     {
-                                        if (printError)
+                                        // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                                        if (isFoundAllError == false)
                                         {
-                                            AppendErrorLine(monoBehaviour.GetType().Name + "." + field.Name + ": Reference is missing");
-                                            continue;
+                                            return true;
                                         }
 
-                                        return true;
+                                        AppendErrorLine(monoBehaviour.GetType().Name + "." + fieldInfo.Name + ": Reference is null");
+                                        continue;
                                     }
                                 }
-                                catch
-                                {
-                                    // ignored
-                                }
 
-                                try
+                                #endregion
+
+                                #region 检查可遍历字段的元素值是否为空
+
+                                if (settingsShowErrorTypeReferenceIsNull && fieldValue is IEnumerable enumerable)
                                 {
-                                    if (settingsShowErrorTypeReferenceIsNull && (value == null || value.Equals(null)))
+                                    foreach (var item in enumerable)
                                     {
-                                        if (printError)
+                                        if (item == null || item.Equals(null))
                                         {
-                                            AppendErrorLine(monoBehaviour.GetType().Name + "." + field.Name + ": Reference is null");
-                                            continue;
-                                        }
-
-                                        return true;
-                                    }
-                                }
-                                catch
-                                {
-                                    // ignored
-                                }
-
-                                try
-                                {
-                                    if (settingsShowErrorTypeReferenceIsNull && value is IEnumerable enumerable)
-                                    {
-                                        foreach (var item in enumerable)
-                                        {
-                                            if (item == null || item.Equals(null))
+                                            // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                                            if (isFoundAllError == false)
                                             {
-                                                if (printError)
-                                                {
-                                                    AppendErrorLine(monoBehaviour.GetType().Name + "." + field.Name + ": IEnumerable has value with null reference");
-                                                    continue;
-                                                }
-
                                                 return true;
                                             }
+
+                                            AppendErrorLine(monoBehaviour.GetType().Name + "." + fieldInfo.Name + ": IEnumerable has value with null reference");
                                         }
                                     }
                                 }
-                                catch
-                                {
-                                    // ignored
-                                }
+
+                                #endregion
                             }
 
-                            type = type.BaseType;
+                            classInfo = classInfo.BaseType;
                         }
                     }
                 }
@@ -422,10 +425,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 检测是否有空的 Unity 事件
         /// </summary>
-        /// <param name="monoBehaviour"></param>
-        /// <param name="printError"></param>
-        /// <returns></returns>
-        private bool IsUnityEventsNullOrMissing(UnityEngine.Object monoBehaviour, bool printError)
+        private bool IsUnityEventsNullOrMissing(UnityEngine.Object monoBehaviour, bool isFoundAllError)
         {
             targetFieldNames.Clear();
 
@@ -433,7 +433,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             var fieldArray = monoBehaviour.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             // 筛选出全部的 UnityEventBase 类
-            foreach (var fieldInfo in fieldArray) {
+            foreach (var fieldInfo in fieldArray)
+            {
                 if (fieldInfo.FieldType == typeof(UnityEventBase) || fieldInfo.FieldType.IsSubclassOf(typeof(UnityEventBase)))
                 {
                     targetFieldNames.Add(fieldInfo.Name);
@@ -447,7 +448,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     var property = serializedMonoBehaviour.FindProperty(fieldName);
                     var propertyRelativeArray = property.FindPropertyRelative("m_PersistentCalls.m_Calls");
-                    
+
                     for (var index = 0; index < propertyRelativeArray.arraySize; index++)
                     {
                         var propertyRelative = propertyRelativeArray.GetArrayElementAtIndex(index);
@@ -457,14 +458,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         var propertyTarget = propertyRelative.FindPropertyRelative("m_Target");
                         if (propertyTarget.objectReferenceValue == null)
                         {
-                            if (printError)
-                            {
-                                AppendErrorLine(monoBehaviour.GetType().Name + ": 事件物体引用为空!");
-                            }
-                            else
+                            // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                            if (isFoundAllError == false)
                             {
                                 return true;
                             }
+
+                            AppendErrorLine(monoBehaviour.GetType().Name + ": 事件物体引用为空!");
                         }
 
                         #endregion
@@ -474,13 +474,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         var propertyMethodName = propertyRelative.FindPropertyRelative("m_MethodName");
                         if (string.IsNullOrEmpty(propertyMethodName.stringValue))
                         {
-                            if (printError)
+                            // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                            if (isFoundAllError == false)
                             {
-                                AppendErrorLine(monoBehaviour.GetType().Name + ": 监听事件为空!");
-                                continue;
+                                return true;
                             }
-                            
-                            return true;
+
+                            AppendErrorLine(monoBehaviour.GetType().Name + ": 监听事件为空!");
                         }
 
                         #endregion
@@ -499,19 +499,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                                 var persistentListenerMode = (PersistentListenerMode) propertyRelative.FindPropertyRelative("m_Mode").enumValueIndex;
                                 if (UnityEventDrawer.IsPersistantListenerValid(dummyEvent, propertyMethodName.stringValue, propertyTarget.objectReferenceValue, persistentListenerMode, argumentAssemblyType) == false)
                                 {
-                                    if (printError)
-                                    {
-                                        AppendErrorLine(monoBehaviour.GetType().Name + ": Event handler function is missing");
-                                    }
-                                    else
+                                    // 如果仅仅是为了检查是否有 Error, 而不是打印全部 Error 信息, 可以立刻返回
+                                    if (isFoundAllError == false)
                                     {
                                         return true;
                                     }
+
+                                    AppendErrorLine(monoBehaviour.GetType().Name + ": Event handler function is missing");
                                 }
                             }
-                            
                         }
-                        
+
                         #endregion
                     }
                 }
@@ -527,9 +525,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private void AppendErrorLine(string error)
         {
             errorCount++;
-            errorStringBuilder.Append(errorCount.ToString());
-            errorStringBuilder.Append(": ");
-            errorStringBuilder.AppendLine(error);
+            errorMessageStringBuilder.Append(errorCount.ToString());
+            errorMessageStringBuilder.Append(": ");
+            errorMessageStringBuilder.AppendLine(error);
         }
     }
 }
