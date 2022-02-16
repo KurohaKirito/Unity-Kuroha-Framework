@@ -25,9 +25,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             prefabTexture = QResources.Instance().GetTexture(QTexture.QPrefabIcon);
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly  , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.PrefabShow                    , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor         , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor       , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.PrefabShow                   , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor        , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor      , settingsChanged);
             settingsChanged();
         }
         

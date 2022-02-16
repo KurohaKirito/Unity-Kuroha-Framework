@@ -170,11 +170,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                             targetGameObjects.Remove(parent.gameObject);
                         }
                     }
-                    else
-                    {
-                        Debug.Log("对根物体的操作仅支持 Unity 5.3.3 以及以上版本");
-                        return;
-                    }
                 }
                 else
                 {
