@@ -82,7 +82,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             preComponents = new List<QHierarchyBaseComponent>
             {
-                new QMonoBehaviorIconComponent(), new QTreeMapComponent(), new QSeparatorComponent()
+                new QHierarchyComponentMonoBehavior(), new QTreeMapComponent(), new QSeparatorComponent()
             };
 
             orderedComponents = new List<QHierarchyBaseComponent>();

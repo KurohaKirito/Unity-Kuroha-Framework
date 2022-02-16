@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
@@ -11,7 +9,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
     public class QVerticesAndTrianglesCountComponent: QHierarchyBaseComponent
     {
         // PRIVATE
-        private GUIStyle labelStyle;
+        private readonly GUIStyle labelStyle;
         private Color verticesLabelColor;
         private Color trianglesLabelColor;
         private bool calculateTotalCount;
@@ -22,24 +20,25 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         // CONSTRUCTOR
         public QVerticesAndTrianglesCountComponent ()
         {
-            labelStyle = new GUIStyle();            
-            labelStyle.clipping = TextClipping.Clip;  
-            labelStyle.alignment = TextAnchor.MiddleRight;
+            labelStyle = new GUIStyle {
+                clipping = TextClipping.Clip,
+                alignment = TextAnchor.MiddleRight
+            };
 
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShow                  , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowDuringPlayMode    , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesCalculateTotalCount   , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles         , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowVertices          , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesLabelSize             , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesVerticesLabelColor    , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesTrianglesLabelColor   , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShow                  , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowDuringPlayMode    , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesCalculateTotalCount   , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles         , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesShowVertices          , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesLabelSize             , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesVerticesLabelColor    , SettingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.VerticesAndTrianglesTrianglesLabelColor   , SettingsChanged);
 
-            settingsChanged();
+            SettingsChanged();
         }
 
         // PRIVATE
-        private void settingsChanged()
+        private void SettingsChanged()
         {
             enabled                     = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowDuringPlayMode);
@@ -80,13 +79,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {  
-            int vertexCount = 0;
-            int triangleCount = 0;
+            var vertexCount = 0;
+            var triangleCount = 0;
 
-            MeshFilter[] meshFilterArray = calculateTotalCount ? gameObject.GetComponentsInChildren<MeshFilter>(true) : gameObject.GetComponents<MeshFilter>();
-            for (int i = 0; i < meshFilterArray.Length; i++)
-            {
-                Mesh sharedMesh = meshFilterArray[i].sharedMesh;
+            var meshFilterArray = calculateTotalCount ? gameObject.GetComponentsInChildren<MeshFilter>(true) : gameObject.GetComponents<MeshFilter>();
+            foreach (var meshFilter in meshFilterArray) {
+                var sharedMesh = meshFilter.sharedMesh;
                 if (sharedMesh != null)
                 {
                     if (showVerticesCount) vertexCount += sharedMesh.vertexCount;
@@ -94,10 +92,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 }
             }
 
-            SkinnedMeshRenderer[] skinnedMeshRendererArray = calculateTotalCount ? gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true) : gameObject.GetComponents<SkinnedMeshRenderer>();
-            for (int i = 0; i < skinnedMeshRendererArray.Length; i++)
-            {
-                Mesh sharedMesh = skinnedMeshRendererArray[i].sharedMesh;
+            var skinnedMeshRendererArray = calculateTotalCount ? gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true) : gameObject.GetComponents<SkinnedMeshRenderer>();
+            
+            foreach (var skinnedMeshRenderer in skinnedMeshRendererArray) {
+                var sharedMesh = skinnedMeshRenderer.sharedMesh;
                 if (sharedMesh != null)
                 {   
                     if (showVerticesCount) vertexCount += sharedMesh.vertexCount;
@@ -113,39 +111,42 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     rect.y -= 4;
                     labelStyle.normal.textColor = verticesLabelColor;
-                    EditorGUI.LabelField(rect, getCountString(vertexCount), labelStyle);
+                    EditorGUI.LabelField(rect, GetCountString(vertexCount), labelStyle);
 
                     rect.y += 8;
                     labelStyle.normal.textColor = trianglesLabelColor;
-                    EditorGUI.LabelField(rect, getCountString(triangleCount), labelStyle);
+                    EditorGUI.LabelField(rect, GetCountString(triangleCount), labelStyle);
                 }
                 else if (showVerticesCount)
                 {
                     labelStyle.normal.textColor = verticesLabelColor;
-                    EditorGUI.LabelField(rect, getCountString(vertexCount), labelStyle);
+                    EditorGUI.LabelField(rect, GetCountString(vertexCount), labelStyle);
                 }
                 else
                 {
                     labelStyle.normal.textColor = trianglesLabelColor;
-                    EditorGUI.LabelField(rect, getCountString(triangleCount), labelStyle);
+                    EditorGUI.LabelField(rect, GetCountString(triangleCount), labelStyle);
                 }
             }
         }
 
         // PRIVATE
-        private string getCountString(int count)
-        {
-            if (count < 1000) return count.ToString();
-            else if (count < 1000000) 
-            {
-                if (count > 100000) return (count / 1000.0f).ToString("0") + "k";
-                else return (count / 1000.0f).ToString("0.0") + "k";
+        private static string GetCountString(int count) {
+            if (count < 1000) {
+                return count.ToString();
             }
-            else 
-            {
-                if (count > 10000000) return (count / 1000.0f).ToString("0") + "M";
-                else return (count / 1000000.0f).ToString("0.0") + "M";
+            
+            if (count < 1000000) {
+                return (count > 100000) switch {
+                    true => (count / 1000.0f).ToString("0") + "k",
+                    _ => (count / 1000.0f).ToString("0.0") + "k"
+                };
             }
+
+            if (count > 10000000) {
+                return (count / 1000.0f).ToString("0") + "M";
+            }
+            return (count / 1000000.0f).ToString("0.0") + "M";
         }
     }
 }

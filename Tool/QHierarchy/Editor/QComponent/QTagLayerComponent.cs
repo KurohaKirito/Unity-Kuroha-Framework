@@ -48,7 +48,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerShowDuringPlayMode , settingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerTagLabelColor      , settingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerLayerLabelColor    , settingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerAlignment           , settingsChanged);
+            QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerAlignment          , settingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.TagAndLayerLabelAlpha         , settingsChanged);
             settingsChanged();
         }
