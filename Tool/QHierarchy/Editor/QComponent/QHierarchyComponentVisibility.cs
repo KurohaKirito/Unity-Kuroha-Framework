@@ -16,14 +16,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private readonly Texture2D visibilityButtonTexture;
         private readonly Texture2D visibilityOffButtonTexture;
         private const int RECT_WIDTH = 18;
-        
+
         private const string TIP_TITLE = "变更编辑时物体可见性";
-        
+
         private const string CTRL_SHIFT_TIP_ON = "要仅在编辑器模式下递归激活此物体吗? (可以在设置中关闭此提示)";
         private const string CTRL_SHIFT_TIP_OFF = "要仅在编辑器模式下递归取消激活此物体吗? (可以在设置中关闭此提示)";
         private const string CTRL_ALT_TIP_ON = "要仅在编辑器模式下同时激活此物体以及全部同级物体吗? (可以在设置中关闭此提示)";
         private const string CTRL_ALT_TIP_OFF = "要仅在编辑器模式下同时取消激活此物体以及全部同级物体吗? (可以在设置中关闭此提示)";
-        
+
         private const string SHIFT_TIP_ON = "要递归激活此物体吗? (可以在设置中关闭此提示)";
         private const string SHIFT_TIP_OFF = "要递归取消激活此物体吗? (可以在设置中关闭此提示)";
         private const string ALT_TIP_ON = "要同时激活此物体以及全部同级物体吗? (可以在设置中关闭此提示)";
@@ -32,13 +32,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 构造函数
         /// </summary>
-        public QHierarchyComponentVisibility() {
+        public QHierarchyComponentVisibility()
+        {
             rect.width = RECT_WIDTH;
 
             visibilityButtonTexture = QResources.Instance().GetTexture(QTexture.QVisibilityButton);
             visibilityOffButtonTexture = QResources.Instance().GetTexture(QTexture.QVisibilityOffButton);
-            // visibilityButtonTexture = EditorGUIUtility.IconContent("animationvisibilitytoggleon@2x").image as Texture2D;
-            // visibilityOffButtonTexture = EditorGUIUtility.IconContent("animationvisibilitytoggleoff@2x").image as Texture2D;
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShowDuringPlayMode, SettingsChanged);
@@ -52,7 +51,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 修改设置
         /// </summary>
-        private void SettingsChanged() {
+        private void SettingsChanged()
+        {
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VisibilityShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VisibilityShowDuringPlayMode);
 
@@ -73,8 +73,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <param name="curRect"></param>
         /// <param name="maxWidth"></param>
         /// <returns></returns>
-        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth) {
-            if (maxWidth < rect.width + COMPONENT_SPACE) {
+        public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
+        {
+            if (maxWidth < rect.width + COMPONENT_SPACE)
+            {
                 return EM_QLayoutStatus.Failed;
             }
 
@@ -87,9 +89,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 当直接在引擎中切换激活状态时
         /// </summary>
-        public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList) {
-            if (hierarchyObjectList != null) {
-                switch (gameObject.activeSelf) {
+        public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
+        {
+            if (hierarchyObjectList != null)
+            {
+                switch (gameObject.activeSelf)
+                {
                     case true when hierarchyObjectList.editModeVisibleObjects.Contains(gameObject):
                         hierarchyObjectList.editModeVisibleObjects.Remove(gameObject);
                         gameObject.SetActive(false);
@@ -108,15 +113,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect) {
-            var visibility = gameObject.activeSelf? 1 : 0;
+        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        {
+            var visibility = gameObject.activeSelf ? 1 : 0;
 
             var editModeVisibleObjectsContains = IsEditModeVisible(gameObject, hierarchyObjectList);
             var editModeInvisibleObjectsContains = IsEditModeInvisible(gameObject, hierarchyObjectList);
 
             // 检查列表和可见性是否不一致
-            if (EditorApplication.isPlayingOrWillChangePlaymode == false) {
-                switch (gameObject.activeSelf) {
+            if (EditorApplication.isPlayingOrWillChangePlaymode == false)
+            {
+                switch (gameObject.activeSelf)
+                {
                     case false when editModeVisibleObjectsContains:
                     case true when editModeInvisibleObjectsContains:
                         gameObject.SetActive(!gameObject.activeSelf);
@@ -126,16 +134,20 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             // 检查情况是否为: "自身激活 父级未激活"
             var transform = gameObject.transform;
-            while (transform.parent != null) {
+            while (transform.parent != null)
+            {
                 transform = transform.parent;
-                if (transform.gameObject.activeSelf == false) {
+                if (transform.gameObject.activeSelf == false)
+                {
                     visibility = 2;
                     break;
                 }
             }
 
-            if (EditorApplication.isPlayingOrWillChangePlaymode == false && (editModeVisibleObjectsContains || editModeInvisibleObjectsContains)) {
-                switch (visibility) {
+            if (EditorApplication.isPlayingOrWillChangePlaymode == false && (editModeVisibleObjectsContains || editModeInvisibleObjectsContains))
+            {
+                switch (visibility)
+                {
                     case 0:
                         QHierarchyColorUtils.SetColor(specialColor);
                         UnityEngine.GUI.DrawTexture(rect, visibilityOffButtonTexture);
@@ -146,11 +158,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         break;
                     default:
                         QHierarchyColorUtils.SetColor(specialColor, 1.0f, 0.4f);
-                        UnityEngine.GUI.DrawTexture(rect, editModeVisibleObjectsContains? visibilityButtonTexture : visibilityOffButtonTexture);
+                        UnityEngine.GUI.DrawTexture(rect, editModeVisibleObjectsContains ? visibilityButtonTexture : visibilityOffButtonTexture);
                         break;
                 }
-            } else {
-                switch (visibility) {
+            }
+            else
+            {
+                switch (visibility)
+                {
                     case 0:
                         QHierarchyColorUtils.SetColor(inactiveColor);
                         UnityEngine.GUI.DrawTexture(rect, visibilityOffButtonTexture);
@@ -159,11 +174,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         QHierarchyColorUtils.SetColor(activeColor);
                         UnityEngine.GUI.DrawTexture(rect, visibilityButtonTexture);
                         break;
-                    default: {
-                        if (gameObject.activeSelf) {
+                    default:
+                    {
+                        if (gameObject.activeSelf)
+                        {
                             QHierarchyColorUtils.SetColor(activeColor, 0.65f, 0.65f);
                             UnityEngine.GUI.DrawTexture(rect, visibilityButtonTexture);
-                        } else {
+                        }
+                        else
+                        {
                             QHierarchyColorUtils.SetColor(inactiveColor, 0.85f, 0.85f);
                             UnityEngine.GUI.DrawTexture(rect, visibilityOffButtonTexture);
                         }
@@ -186,21 +205,22 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 var showWarning = QSettings.Instance().Get<bool>(EM_QHierarchySettings.AdditionalShowModifierWarning);
 
                 var targetGameObjects = new List<GameObject>();
-                
+
                 // Shift
                 if (currentEvent.shift)
                 {
                     var message = gameObject.activeSelf ? SHIFT_TIP_OFF : SHIFT_TIP_ON;
-                    if (currentEvent.control || currentEvent.command) {
+                    if (currentEvent.control || currentEvent.command)
+                    {
                         message = gameObject.activeSelf ? CTRL_SHIFT_TIP_OFF : CTRL_SHIFT_TIP_ON;
                     }
-                    
+
                     if (showWarning == false || EditorUtility.DisplayDialog(TIP_TITLE, message, "Yes", "Cancel"))
                     {
                         GetGameObjectListRecursive(gameObject, ref targetGameObjects);
                     }
                 }
-                
+
                 // Alt
                 else if (currentEvent.alt)
                 {
@@ -208,10 +228,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     if (parent != null)
                     {
                         var message = gameObject.activeSelf ? ALT_TIP_OFF : ALT_TIP_ON;
-                        if (currentEvent.control || currentEvent.command) {
+                        if (currentEvent.control || currentEvent.command)
+                        {
                             message = gameObject.activeSelf ? CTRL_ALT_TIP_OFF : CTRL_ALT_TIP_ON;
                         }
-                        
+
                         if (showWarning == false || EditorUtility.DisplayDialog(TIP_TITLE, message, "Yes", "Cancel"))
                         {
                             GetGameObjectListRecursive(parent.gameObject, ref targetGameObjects, 1);
@@ -240,14 +261,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 判断是否编辑器模式下可见
         /// </summary>
-        private static bool IsEditModeVisible(GameObject gameObject, QHierarchyObjectList hierarchyObjectList) {
+        private static bool IsEditModeVisible(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
+        {
             return hierarchyObjectList != null && hierarchyObjectList.editModeVisibleObjects.Contains(gameObject);
         }
 
         /// <summary>
         /// 判断是否编辑器模式下不可见
         /// </summary>
-        private static bool IsEditModeInvisible(GameObject gameObject, QHierarchyObjectList hierarchyObjectList) {
+        private static bool IsEditModeInvisible(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
+        {
             return hierarchyObjectList != null && hierarchyObjectList.editModeInvisibleObjects.Contains(gameObject);
         }
 

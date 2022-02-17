@@ -536,6 +536,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Prefab
+        /// </summary>
         private void DrawPrefabComponentSettings()
         {
             if (DrawCheckBox("Prefab", "", EM_QHierarchySettings.PrefabShow))
@@ -549,7 +552,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT + UP_DOWN_SPACE * 2);
                 DrawSpace(UP_DOWN_SPACE);
-                DrawCheckBoxRight("Show icon for broken prefabs only", EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly);
+                DrawCheckBoxRight("仅显示 Broken 状态的预制体", EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly);
                 DrawSpace(UP_DOWN_SPACE);
             }
         }
@@ -617,6 +620,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 GameObject Icon
+        /// </summary>
         private void DrawGameObjectIconComponentSettings()
         {
             if (DrawCheckBox("GameObject Icon", "", EM_QHierarchySettings.GameObjectIconShow))
@@ -631,7 +637,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT * 2 + UP_DOWN_SPACE * 2);
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.GameObjectIconShowDuringPlayMode);
-                DrawEnum("Icon size", EM_QHierarchySettings.GameObjectIconSize, typeof(EM_QHierarchySizeAll));
+                DrawEnum("图标尺寸大小", EM_QHierarchySettings.GameObjectIconSize, typeof(EM_QHierarchySizeAll));
                 DrawSpace(UP_DOWN_SPACE);
             }
         }
@@ -655,8 +661,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.TagIconShowDuringPlayMode);
-                DrawEnum("Icon size", EM_QHierarchySettings.TagIconSize, typeof(EM_QHierarchySizeAll));
-                if (DrawFoldout("Tag icon list", EM_QHierarchySettings.TagIconListFoldout))
+                DrawEnum("图标尺寸大小", EM_QHierarchySettings.TagIconSize, typeof(EM_QHierarchySizeAll));
+                if (DrawFoldout("标签图标列表", EM_QHierarchySettings.TagIconListFoldout))
                 {
                     var tagTextureList = QTagTexture.loadTagTextureList();
 
@@ -803,13 +809,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 if (DrawCheckBoxRight("Show vertices count", EM_QHierarchySettings.VerticesAndTrianglesShowVertices))
                 {
                     if (QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowVertices) == false && QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles) == false)
+                    {
                         QSettings.Instance().Set(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles, true);
+                    }
                 }
 
                 if (DrawCheckBoxRight("Show triangles count (very slow)", EM_QHierarchySettings.VerticesAndTrianglesShowTriangles))
                 {
                     if (QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowVertices) == false && QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles) == false)
+                    {
                         QSettings.Instance().Set(EM_QHierarchySettings.VerticesAndTrianglesShowVertices, true);
+                    }
                 }
 
                 DrawCheckBoxRight("Calculate the count including children (very slow)", EM_QHierarchySettings.VerticesAndTrianglesCalculateTotalCount);
@@ -859,7 +869,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             var rect = GetNewRect(position.width, 17 * componentIds.Length + 10);
             componentsOrderList ??= new QComponentsOrderList(this);
-            componentsOrderList.draw(rect, componentIds);
+            componentsOrderList.Draw(rect, componentIds);
 
             indentLevel -= 4;
         }
@@ -900,24 +910,24 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void DrawTextField(string label, EM_QHierarchySettings hierarchySettings)
         {
-            string currentValue = QSettings.Instance().Get<string>(hierarchySettings);
-            string newValue = EditorGUI.TextField(GetNewRect(0, 16, 34, 6), label, currentValue);
+            var currentValue = QSettings.Instance().Get<string>(hierarchySettings);
+            var newValue = EditorGUI.TextField(GetNewRect(0, 16, 34, 6), label, currentValue);
             if (!currentValue.Equals(newValue))
+            {
                 QSettings.Instance().Set(hierarchySettings, newValue);
+            }
             DrawSpace(2);
         }
 
         private bool DrawFoldout(string label, EM_QHierarchySettings hierarchySettings)
         {
-#if UNITY_2019_1_OR_NEWER
-            Rect foldoutRect = GetNewRect(0, 16, 19, 6);
-#else
-                Rect foldoutRect = getControlRect(0, 16, 22, 6);
-#endif
-            bool foldoutValue = QSettings.Instance().Get<bool>(hierarchySettings);
-            bool newFoldoutValue = EditorGUI.Foldout(foldoutRect, foldoutValue, label);
+            var foldoutRect = GetNewRect(0, 16, 19, 6);
+            var foldoutValue = QSettings.Instance().Get<bool>(hierarchySettings);
+            var newFoldoutValue = EditorGUI.Foldout(foldoutRect, foldoutValue, label);
             if (foldoutValue != newFoldoutValue)
+            {
                 QSettings.Instance().Set(hierarchySettings, newFoldoutValue);
+            }
             DrawSpace(2);
             return newFoldoutValue;
         }
@@ -936,11 +946,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
         private void DrawIntSlider(string label, EM_QHierarchySettings hierarchySettings, int minValue, int maxValue)
         {
-            Rect rect = GetNewRect(0, 16, 34, 4);
-            int currentValue = QSettings.Instance().Get<int>(hierarchySettings);
-            int newValue = EditorGUI.IntSlider(rect, label, currentValue, minValue, maxValue);
+            var rect = GetNewRect(0, 16, 34, 4);
+            var currentValue = QSettings.Instance().Get<int>(hierarchySettings);
+            var newValue = EditorGUI.IntSlider(rect, label, currentValue, minValue, maxValue);
             if (currentValue != newValue)
+            {
                 QSettings.Instance().Set(hierarchySettings, newValue);
+            }
             DrawSpace(2);
         }
 

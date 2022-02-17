@@ -34,7 +34,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconShowDuringPlayMode, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconColor, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.TreeMapShow, SettingsChanged);
-            
+
             SettingsChanged();
         }
 
@@ -48,7 +48,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.MonoBehaviourIconShowDuringPlayMode);
             iconColor = QSettings.Instance().GetColor(EM_QHierarchySettings.MonoBehaviourIconColor);
             showTreeMap = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TreeMapShow);
-            
+
             EditorApplication.RepaintHierarchyWindow();
         }
 
@@ -58,7 +58,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             var isCustomComponent = false;
-            
+
             if (ignoreUnityMonoBehaviour)
             {
                 var monoBehaviours = gameObject.GetComponents<MonoBehaviour>();
@@ -67,7 +67,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     if (monoBehaviour != null)
                     {
                         var fullName = monoBehaviour.GetType().FullName;
-                        if (fullName != null && fullName.Contains("UnityEngine") == false) {
+                        if (fullName != null && fullName.Contains("UnityEngine") == false)
+                        {
                             isCustomComponent = true;
                             break;
                         }
@@ -89,7 +90,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 rect.x += TREE_STEP_WIDTH + 1;
                 rect.width += 1;
-                
+
                 QHierarchyColorUtils.SetColor(iconColor);
                 UnityEngine.GUI.DrawTexture(rect, monoBehaviourIconTexture);
                 QHierarchyColorUtils.ClearColor();

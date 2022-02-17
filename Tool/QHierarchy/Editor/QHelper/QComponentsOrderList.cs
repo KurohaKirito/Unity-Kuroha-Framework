@@ -25,11 +25,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         }
 
         // PUBLIC
-        public void draw(Rect rect, string[] componentIds)
+        public void Draw(Rect rect, string[] componentIds)
         {
-            Event currentEvent = Event.current;
+            var currentEvent = Event.current;
 
-            int currentMouseIndex = Mathf.Clamp(Mathf.RoundToInt((currentEvent.mousePosition.y - dragOffset - rect.y) / 18), 0, componentIds.Length - 1);
+            var currentMouseIndex = Mathf.Clamp(Mathf.RoundToInt((currentEvent.mousePosition.y - dragOffset - rect.y) / 18), 0, componentIds.Length - 1);
 
             if (dragAndDrop && currentEvent.type == EventType.MouseUp)
             {
@@ -38,8 +38,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 
                 if (currentMouseIndex != originalDragIndex)
                 {
-                    string newIconOrder = "";
-                    for (int j = 0; j < componentIds.Length; j++)
+                    var newIconOrder = "";
+                    for (var j = 0; j < componentIds.Length; j++)
                     {
                         if (j == currentMouseIndex)
                         {

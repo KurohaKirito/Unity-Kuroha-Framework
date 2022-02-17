@@ -781,7 +781,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         }
         
         /// <summary>
-        /// 检测: LOD渲染层级设置
+        /// 检测: LOD 渲染层级设置
         /// </summary>
         private static void CheckLODGroupRenderers(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {

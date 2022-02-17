@@ -73,7 +73,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     EM_QHierarchyComponent.ChildrenCountComponent, new QHierarchyComponentChildrenCount()
                 },
                 {
-                    EM_QHierarchyComponent.PrefabComponent, new QPrefabComponent()
+                    EM_QHierarchyComponent.PrefabComponent, new QHierarchyComponentPrefab()
                 },
                 {
                     EM_QHierarchyComponent.VerticesAndTrianglesCount, new QVerticesAndTrianglesCountComponent()
@@ -88,13 +88,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             orderedComponents = new List<QHierarchyBaseComponent>();
 
             trimIcon = QResources.Instance().GetTexture(QTexture.QTrimIcon);
-
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalIndentation, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ComponentsOrder, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalHideIconsIfNotFit, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalBackgroundColor, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor, OnSettingsChanged);
-
             OnSettingsChanged();
         }
 
@@ -117,6 +115,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             {
                 orderedComponents.Add(componentDictionary[(EM_QHierarchyComponent) Enum.Parse(typeof(EM_QHierarchyComponent), stringID)]);
             }
+
             orderedComponents.Add(componentDictionary[EM_QHierarchyComponent.ComponentsComponent]);
 
             indentation = QSettings.Instance().Get<int>(EM_QHierarchySettings.AdditionalIndentation);
@@ -125,23 +124,27 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             inactiveColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
         }
 
+        /// <summary>
+        /// Hierarchy 单物体的 GUI 方法
+        /// </summary>
+        /// <param name="instanceId"></param>
+        /// <param name="selectionRect"></param>
         public void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)
         {
             QHierarchyColorUtils.SetDefaultColor(UnityEngine.GUI.color);
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject != null)
             {
-                var curRect = new Rect(selectionRect) { width = 16 };
+                var curRect = new Rect(selectionRect) {width = 16};
                 curRect.x += selectionRect.width - indentation;
 
                 var gameObjectNameWidth = hideIconsIfThereIsNoFreeSpace ? UnityEngine.GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
                 var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObject, false);
-                var minX = hideIconsIfThereIsNoFreeSpace? selectionRect.x + gameObjectNameWidth + 7 : 0;
-
+                var minX = hideIconsIfThereIsNoFreeSpace ? selectionRect.x + gameObjectNameWidth + 7 : 0;
                 DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, minX);
             }
         }
-        
+
         /// <summary>
         /// 绘制功能组件
         /// </summary>
@@ -177,7 +180,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                         component.DisabledHandler(gameObject, hierarchyObjectList);
                     }
                 }
-                
+
                 if (drawBackground)
                 {
                     if (backgroundColor.a != 0)
