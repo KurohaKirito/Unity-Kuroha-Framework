@@ -46,7 +46,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     EM_QHierarchyComponent.StaticComponent, new QStaticComponent()
                 },
                 {
-                    EM_QHierarchyComponent.RendererComponent, new QRendererComponent()
+                    EM_QHierarchyComponent.RendererComponent, new QHierarchyComponentRenderer()
                 },
                 {
                     EM_QHierarchyComponent.TagAndLayerComponent, new QTagLayerComponent()
