@@ -75,14 +75,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <returns></returns>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            if (maxWidth < rect.width + COMPONENT_SPACE)
+            if (maxWidth < rect.width - 1)
             {
                 return EM_QLayoutStatus.Failed;
             }
 
-            curRect.x -= rect.width + COMPONENT_SPACE;
+            curRect.x -= rect.width - 1;
             rect.x = curRect.x;
-            rect.y = curRect.y;
+            rect.y = curRect.y - 1;
             return EM_QLayoutStatus.Success;
         }
 

@@ -1,9 +1,11 @@
+using System.Reflection;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
+using Kuroha.Util.RunTime;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
@@ -11,8 +13,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
     {
         private Color activeColor;
         private Color inactiveColor;
-        private Color specialColor;
-        private int targetRendererMode = -1;
+        
         private const int RECT_WIDTH = 12;
         private readonly Texture2D rendererButtonTexture;
 
@@ -24,24 +25,29 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width = RECT_WIDTH;
 
             rendererButtonTexture = QResources.Instance().GetTexture(QTexture.QRendererButton);
+            
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.RendererShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.RendererShowDuringPlayMode, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalActiveColor, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalInactiveColor, SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalSpecialColor, SettingsChanged);
             
             SettingsChanged();
         }
 
+        /// <summary>
+        /// 修改设置
+        /// </summary>
         private void SettingsChanged()
         {
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.RendererShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.RendererShowDuringPlayMode);
             activeColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalActiveColor);
             inactiveColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
-            specialColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalSpecialColor);
         }
 
+        /// <summary>
+        /// 计算布局
+        /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             if (maxWidth < rect.width + COMPONENT_SPACE)
@@ -54,125 +60,66 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.y = curRect.y;
             return EM_QLayoutStatus.Success;
         }
-
-        public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
-        {
-            if (hierarchyObjectList != null && hierarchyObjectList.wireframeHiddenObjects.Contains(gameObject))
-            {
-                hierarchyObjectList.wireframeHiddenObjects.Remove(gameObject);
-                Renderer renderer = gameObject.GetComponent<Renderer>();
-                if (renderer != null) SetSelectedRenderState(renderer, false);
-            }
-        }
-
+        
+        /// <summary>
+        /// 绘制
+        /// </summary>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            Renderer renderer = gameObject.GetComponent<Renderer>();
+            var renderer = gameObject.GetComponent<Renderer>();
             if (renderer != null)
             {
-                bool wireframeHiddenObjectsContains = IsWireframeHidden(gameObject, hierarchyObjectList);
-                if (wireframeHiddenObjectsContains)
-                {
-                    QHierarchyColorUtils.SetColor(specialColor);
-                    UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QHierarchyColorUtils.ClearColor();
-                }
-                else if (renderer.enabled)
-                {
-                    QHierarchyColorUtils.SetColor(activeColor);
-                    UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QHierarchyColorUtils.ClearColor();
-                }
-                else
-                {
-                    QHierarchyColorUtils.SetColor(inactiveColor);
-                    UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                    QHierarchyColorUtils.ClearColor();
-                }
+                QHierarchyColorUtils.SetColor(renderer.enabled ? activeColor : inactiveColor);
+                UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
+                QHierarchyColorUtils.ClearColor();
             }
         }
 
+        /// <summary>
+        /// 左键单击事件
+        /// </summary>
         public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
-            if (currentEvent.isMouse && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
+            if (currentEvent.isMouse && currentEvent.button == 0 && currentEvent.type == EventType.MouseDown)
             {
-                Renderer renderer = gameObject.GetComponent<Renderer>();
+                var assembly = ReflectionUtil.GetAssembly(typeof(EditorWindow));
+                
+                
+                // "s_LastInteractedHierarchy"
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                // var typeInfo = ReflectionUtil.GetClass(assembly, "UnityEditor.SceneHierarchyWindow");
+                // var methodInfo = ReflectionUtil.GetMethod(typeInfo, "Repaint", BindingFlags.Public | BindingFlags.Instance);
+                // ReflectionUtil.CallMethod(methodInfo, null);
+            }
+            
+            if (currentEvent.isMouse && currentEvent.button == 0 && currentEvent.type == EventType.MouseDown && rect.Contains(currentEvent.mousePosition))
+            {
+                var renderer = gameObject.GetComponent<Renderer>();
                 if (renderer != null)
                 {
-                    bool wireframeHiddenObjectsContains = IsWireframeHidden(gameObject, hierarchyObjectList);
-                    bool isEnabled = renderer.enabled;
-
-                    if (currentEvent.type == EventType.MouseDown)
-                    {
-                        targetRendererMode = ((!isEnabled) == true ? 1 : 0);
-                    }
-                    else if (currentEvent.type == EventType.MouseDrag && targetRendererMode != -1)
-                    {
-                        if (targetRendererMode == (isEnabled == true ? 1 : 0)) return;
-                    }
-                    else
-                    {
-                        targetRendererMode = -1;
-                        return;
-                    }
-
-                    Undo.RecordObject(renderer, "renderer visibility change");
-
-                    if (currentEvent.control || currentEvent.command)
-                    {
-                        if (!wireframeHiddenObjectsContains)
-                        {
-                            SetSelectedRenderState(renderer, true);
-                            SceneView.RepaintAll();
-                            SetWireframeMode(gameObject, hierarchyObjectList, true);
-                        }
-                    }
-                    else
-                    {
-                        if (wireframeHiddenObjectsContains)
-                        {
-                            SetSelectedRenderState(renderer, false);
-                            SceneView.RepaintAll();
-                            SetWireframeMode(gameObject, hierarchyObjectList, false);
-                        }
-                        else
-                        {
-                            Undo.RecordObject(renderer, isEnabled ? "Disable Component" : "Enable Component");
-                            renderer.enabled = !isEnabled;
-                        }
-                    }
+                    currentEvent.Use();
+                    
+                    var isEnabled = renderer.enabled;
+                    
+                    Undo.RecordObject(renderer, isEnabled ? "Disable Component" : "Enable Component");
+                    renderer.enabled = !isEnabled;
+                    SceneView.RepaintAll();
 
                     EditorUtility.SetDirty(gameObject);
                 }
-
-                currentEvent.Use();
             }
-        }
-
-        private static bool IsWireframeHidden(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
-        {
-            return hierarchyObjectList == null ? false : hierarchyObjectList.wireframeHiddenObjects.Contains(gameObject);
-        }
-
-        private static void SetWireframeMode(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, bool targetWireframe)
-        {
-            if (hierarchyObjectList == null && targetWireframe) hierarchyObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObject, true);
-            if (hierarchyObjectList != null)
-            {
-                Undo.RecordObject(hierarchyObjectList, "Renderer Visibility Change");
-                if (targetWireframe) hierarchyObjectList.wireframeHiddenObjects.Add(gameObject);
-                else hierarchyObjectList.wireframeHiddenObjects.Remove(gameObject);
-                EditorUtility.SetDirty(hierarchyObjectList);
-            }
-        }
-
-        private static void SetSelectedRenderState(Renderer renderer, bool visible)
-        {
-#if UNITY_5_5_OR_NEWER
-            EditorUtility.SetSelectedRenderState(renderer, visible ? EditorSelectedRenderState.Wireframe : EditorSelectedRenderState.Hidden);
-#else
-            EditorUtility.SetSelectedWireframeHidden(renderer, visible);
-#endif
         }
     }
 }

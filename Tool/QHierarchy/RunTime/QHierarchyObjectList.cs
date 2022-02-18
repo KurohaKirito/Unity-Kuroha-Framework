@@ -20,8 +20,6 @@ namespace Kuroha.Tool.QHierarchy.RunTime
         public List<GameObject> editModeVisibleObjects = new List<GameObject>();
         [Header("编辑器下不可见的物体")]
         public List<GameObject> editModeInvisibleObjects = new List<GameObject>();
-        [Header("线框隐藏物体")]
-        public List<GameObject> wireframeHiddenObjects = new List<GameObject>();
         [Header("标记颜色的游戏物体")]
         public List<GameObject> gameObjectColorKeys = new List<GameObject>();
         [Header("游戏物体标记的颜色")]
@@ -54,18 +52,10 @@ namespace Kuroha.Tool.QHierarchy.RunTime
 
         public void OnEnable()
         {
-            if (!instances.Contains(this)) instances.Add(this);
-
-#if UNITY_EDITOR
-            foreach (var wireframeGameObject in wireframeHiddenObjects)
+            if (instances.Contains(this) == false)
             {
-                var rendererComponent = wireframeGameObject.GetComponent<Renderer>();
-                if (rendererComponent != null)
-                {
-                    EditorUtility.SetSelectedRenderState(rendererComponent, EditorSelectedRenderState.Hidden);
-                }
+                instances.Add(this);
             }
-#endif
         }
 
         public void OnDestroy()
@@ -113,12 +103,6 @@ namespace Kuroha.Tool.QHierarchy.RunTime
                     editModeInvisibleObjects.Add(anotherInstance.editModeInvisibleObjects[index]);
             }
 
-            for (var index = anotherInstance.wireframeHiddenObjects.Count - 1; index >= 0; index--)
-            {
-                if (!wireframeHiddenObjects.Contains(anotherInstance.wireframeHiddenObjects[index]))
-                    wireframeHiddenObjects.Add(anotherInstance.wireframeHiddenObjects[index]);
-            }
-
             for (var index = anotherInstance.gameObjectColorKeys.Count - 1; index >= 0; index--)
             {
                 if (!gameObjectColorKeys.Contains(anotherInstance.gameObjectColorKeys[index]))
@@ -135,7 +119,6 @@ namespace Kuroha.Tool.QHierarchy.RunTime
             lockedObjects.RemoveAll(item => item == null);
             editModeVisibleObjects.RemoveAll(item => item == null);
             editModeInvisibleObjects.RemoveAll(item => item == null);
-            wireframeHiddenObjects.RemoveAll(item => item == null);
 
             for (var index = gameObjectColorKeys.Count - 1; index >= 0; index--)
             {

@@ -132,6 +132,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         public void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)
         {
             QHierarchyColorUtils.SetDefaultColor(UnityEngine.GUI.color);
+            
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject != null)
             {
@@ -139,8 +140,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 curRect.x += selectionRect.width - indentation;
 
                 var gameObjectNameWidth = hideIconsIfThereIsNoFreeSpace ? UnityEngine.GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
+                
                 var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObject, false);
                 var minX = hideIconsIfThereIsNoFreeSpace ? selectionRect.x + gameObjectNameWidth + 7 : 0;
+                
                 DrawComponents(orderedComponents, selectionRect, ref curRect, gameObject, objectList, true, minX);
             }
         }

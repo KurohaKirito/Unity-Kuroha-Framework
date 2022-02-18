@@ -189,18 +189,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         /// <summary>
-        /// 隐藏事件
+        /// Lock 功能关闭事件
         /// </summary>
-        /// <param name="gameObject"></param>
-        /// <param name="hierarchyObjectList"></param>
         public override void DisabledHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList)
         {
             if (hierarchyObjectList != null && hierarchyObjectList.lockedObjects.Contains(gameObject))
             {
-                // 取消锁定
+                // 清空锁定物体缓存
                 hierarchyObjectList.lockedObjects.Remove(gameObject);
                 
-                // 与运算, 关闭 NotEditable
+                // 与运算关闭 NotEditable
                 gameObject.hideFlags &= ~HideFlags.NotEditable;
                 
                 EditorUtility.SetDirty(gameObject);
