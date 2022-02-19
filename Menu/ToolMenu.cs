@@ -37,6 +37,11 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             CarSetLOD.Open();
         }
         
+        [MenuItem("Assets/Scene Batch Tool/Pick Mesh Collider Supernova", false, 12)]
+        public static void Tool7() {
+            BatchToolInScene.DetachLbpRendererAndRenderer();
+        }
+        
         [MenuItem("Funny/资源检测工具/依赖分析工具")]
         public static void FindAssetReference()
         {
