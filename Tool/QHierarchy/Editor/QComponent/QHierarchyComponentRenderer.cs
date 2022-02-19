@@ -1,11 +1,9 @@
-using System.Reflection;
-using Kuroha.Tool.QHierarchy.Editor.QBase;
-using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
+using Kuroha.Tool.QHierarchy.Editor.QBase;
+using Kuroha.Tool.QHierarchy.RunTime;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
-using Kuroha.Util.RunTime;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
@@ -80,30 +78,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
-            if (currentEvent.isMouse && currentEvent.button == 0 && currentEvent.type == EventType.MouseDown)
-            {
-                var assembly = ReflectionUtil.GetAssembly(typeof(EditorWindow));
-                
-                
-                // "s_LastInteractedHierarchy"
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                // var typeInfo = ReflectionUtil.GetClass(assembly, "UnityEditor.SceneHierarchyWindow");
-                // var methodInfo = ReflectionUtil.GetMethod(typeInfo, "Repaint", BindingFlags.Public | BindingFlags.Instance);
-                // ReflectionUtil.CallMethod(methodInfo, null);
-            }
-            
             if (currentEvent.isMouse && currentEvent.button == 0 && currentEvent.type == EventType.MouseDown && rect.Contains(currentEvent.mousePosition))
             {
                 var renderer = gameObject.GetComponent<Renderer>();

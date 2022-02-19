@@ -43,13 +43,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     EM_QHierarchyComponent.VisibilityComponent, new QHierarchyComponentVisibility()
                 },
                 {
-                    EM_QHierarchyComponent.StaticComponent, new QStaticComponent()
+                    EM_QHierarchyComponent.StaticComponent, new QHierarchyComponentStatic()
                 },
                 {
                     EM_QHierarchyComponent.RendererComponent, new QHierarchyComponentRenderer()
                 },
                 {
-                    EM_QHierarchyComponent.TagAndLayerComponent, new QTagLayerComponent()
+                    EM_QHierarchyComponent.TagAndLayerComponent, new QHierarchyComponentTagLayerName()
                 },
                 {
                     EM_QHierarchyComponent.GameObjectIconComponent, new QHierarchyComponentGameObjectIcon()
@@ -76,13 +76,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     EM_QHierarchyComponent.PrefabComponent, new QHierarchyComponentPrefab()
                 },
                 {
-                    EM_QHierarchyComponent.VerticesAndTrianglesCount, new QVerticesAndTrianglesCountComponent()
+                    EM_QHierarchyComponent.VerticesAndTrianglesCount, new QHierarchyComponentVerticesAndTrianglesCount()
                 }
             };
 
             preComponents = new List<QHierarchyBaseComponent>
             {
-                new QHierarchyComponentMonoBehavior(), new QTreeMapComponent(), new QSeparatorComponent()
+                new QHierarchyComponentMonoBehavior(), new QHierarchyComponentTreeMap(), new QHierarchyComponentSeparator()
             };
 
             orderedComponents = new List<QHierarchyBaseComponent>();

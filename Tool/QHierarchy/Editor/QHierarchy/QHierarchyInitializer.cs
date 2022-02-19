@@ -42,7 +42,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         }
 
         /// <summary>
-        /// 初始化 QHierarchyMain 工具
+        /// 初始化 QHierarchy 工具
         /// </summary>
         private static void InitQHierarchy()
         {       
