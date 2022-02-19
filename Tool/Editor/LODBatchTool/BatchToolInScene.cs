@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool
@@ -11,7 +13,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool
             var rootGameObject = Selection.activeGameObject;
             
             // 创建到场景中
-            var root = Object.Instantiate(rootGameObject).transform;
+            var root = UnityEngine.Object.Instantiate(rootGameObject).transform;
             
             // ----------------------------------- 创建所有渲染器的父物体 ----------------------------------------------
             var parent = new GameObject("Mesh Renderer Parent").transform;
