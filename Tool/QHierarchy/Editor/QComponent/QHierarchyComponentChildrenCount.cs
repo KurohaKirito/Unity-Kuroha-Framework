@@ -23,12 +23,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             labelStyle = new GUIStyle
             {
-                fontSize = 8,
                 clipping = TextClipping.Clip,
                 alignment = TextAnchor.MiddleRight
             };
 
-            rect.width = 20;
             rect.height = 16;
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountShow, OnSettingsChanged);
@@ -60,14 +58,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 EM_QHierarchySize.Normal => 11,
                 EM_QHierarchySize.Big => 13,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => 11
             };
 
             rect.width = labelSize switch
             {
-                EM_QHierarchySize.Normal => 20,
+                EM_QHierarchySize.Normal => 22,
                 EM_QHierarchySize.Big => 24,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => 22
             };
         }
 

@@ -13,7 +13,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private const float TREE_STEP_HEIGHT = 16.0f;
 
         private readonly Texture2D monoBehaviourIconTexture;
-        private readonly Texture2D monoBehaviourIconObjectTexture;
         private bool ignoreUnityMonoBehaviour;
         private Color iconColor;
         private bool showTreeMap;
@@ -27,7 +26,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.height = TREE_STEP_HEIGHT;
 
             monoBehaviourIconTexture = QResources.Instance().GetTexture(QTexture.QMonoBehaviourIcon);
-            monoBehaviourIconObjectTexture = QResources.Instance().GetTexture(QTexture.QTreeMapObject);
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconIgnoreUnityMonoBehaviour, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconShow, SettingsChanged);
@@ -94,12 +92,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 QHierarchyColorUtils.SetColor(iconColor);
                 UnityEngine.GUI.DrawTexture(rect, monoBehaviourIconTexture);
                 QHierarchyColorUtils.ClearColor();
-
-                if (showTreeMap == false && gameObject.transform.childCount == 0)
-                {
-                    rect.width = 14;
-                    UnityEngine.GUI.DrawTexture(rect, monoBehaviourIconObjectTexture);
-                }
             }
         }
     }

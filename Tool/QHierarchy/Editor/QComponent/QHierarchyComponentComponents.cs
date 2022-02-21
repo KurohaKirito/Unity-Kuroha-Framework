@@ -27,7 +27,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// 忽略组件的名称关键字列表
         /// </summary>
         private List<string> ignoreComponentNameList;
-        
+
         /// <summary>
         /// 图标高度
         /// </summary>
@@ -93,10 +93,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             // 获取设置: 是否显示组件
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ComponentsShow);
-            
+
             // 获取设置: 是否在播放模式下显示
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ComponentsShowDuringPlayMode);
-            
+
             // 获取设置: 组件图标大小
             var size = (EM_QHierarchySizeAll) QSettings.Instance().Get<int>(EM_QHierarchySettings.ComponentsIconSize);
             rect.width = rect.height = size switch
@@ -129,7 +129,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 return EM_QLayoutStatus.Failed;
             }
-            
+
             // 获取物体的全部组件
             allComponents.Clear();
             gameObject.GetComponents(allComponents);
@@ -218,17 +218,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 var content = component == null
                     ? EditorGUIUtility.IconContent("console.warnIcon.sml")
                     : EditorGUIUtility.ObjectContent(component, null);
-                
+
                 // 反射获取组件的激活标志
                 var objectEnabled = true;
-                if (component != null) {
+                if (component != null)
+                {
                     var classInfo = component.GetType();
                     var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
-                    if (propertyInfo != null) {
+                    if (propertyInfo != null)
+                    {
                         objectEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
                     }
                 }
-                
+
                 // 确定颜色
                 var color = UnityEngine.GUI.color;
                 color.a = objectEnabled ? 1f : 0.2f;
@@ -294,35 +296,31 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
-            if (currentEvent.isMouse && currentEvent.button == 0 && eventRect.Contains(currentEvent.mousePosition))
+            if (currentEvent.isMouse && currentEvent.button == 0 && currentEvent.type == EventType.MouseDown && eventRect.Contains(currentEvent.mousePosition))
             {
-                // 左键单击
-                if (currentEvent.type == EventType.MouseDown)
+                currentEvent.Use();
+
+                // 计算单击的是第几个图标
+                var clickIndex = Mathf.FloorToInt((currentEvent.mousePosition.x - eventRect.x) / rect.width) + components.Count - componentsToDraw;
+
+                // 反射获取组件的 enabled 字段
+                var component = components[clickIndex];
+                if (component != null)
                 {
-                    currentEvent.Use();
-                    
-                    // 计算单击的是第几个图标
-                    var clickIndex = Mathf.FloorToInt((currentEvent.mousePosition.x - eventRect.x) / rect.width) + components.Count - componentsToDraw;
-
-                    // 反射获取组件的 enabled 字段
-                    var component = components[clickIndex];
-                    if (component != null)
+                    var classInfo = component.GetType();
+                    var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
+                    if (propertyInfo != null)
                     {
-                        var classInfo = component.GetType();
-                        var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
-                        if (propertyInfo != null)
-                        {
-                            var componentEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
-                        
-                            // 在撤销栈中记录下操作
-                            Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
+                        var componentEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
 
-                            // 反射 Set enabled 字段具体的值
-                            componentEnabled = !componentEnabled;
-                            propertyInfo.GetSetMethod().Invoke(components[clickIndex], new object[] {componentEnabled});
+                        // 在撤销栈中记录下操作
+                        Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
 
-                            EditorUtility.SetDirty(gameObject);
-                        }
+                        // 反射 Set enabled 字段具体的值
+                        componentEnabled = !componentEnabled;
+                        propertyInfo.GetSetMethod().Invoke(components[clickIndex], new object[] {componentEnabled});
+
+                        EditorUtility.SetDirty(gameObject);
                     }
                 }
             }

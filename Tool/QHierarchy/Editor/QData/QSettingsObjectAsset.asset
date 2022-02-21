@@ -69,8 +69,8 @@ MonoBehaviour:
   - FF303030
   - 13000000
   - 00000000
-  - FFCCCCCC
-  - FFCCCCCC
+  - FFFF0000
+  - FF00FF1F
   - FF00FCFF
   - FFCCCCCC
   - FFCCCCCC
@@ -82,8 +82,8 @@ MonoBehaviour:
   - QTools.QHierarchy_TagAndLayerSizeValuePercent
   - QTools.QHierarchy_TagAndLayerLabelAlpha
   settingFloatValues:
-  - 0.25
-  - 0.35
+  - 0.151
+  - 0.694
   settingIntNames:
   - QTools.QHierarchy_TagAndLayerSizeShowType
   - QTools.QHierarchy_TagAndLayerType
@@ -100,7 +100,7 @@ MonoBehaviour:
   - QTools.QHierarchy_AdditionalIdentation
   - QTools.QHierarchy_TagAndLayerAlignment
   - QTools.QHierarchy_AdditionalIndentation
-  settingIntValues: 000000000100000000000000000000003d00000000000000020000000200000002000000000000000000000000000000000000000000000000000000
+  settingIntValues: 000000000100000000000000000000006400000001000000020000000200000002000000000000000000000000000000000000000000000000000000
   settingBoolNames:
   - QTools.QHierarchy_TreeMapShow
   - QTools.QHierarchy_TreeMapEnhanced
@@ -159,4 +159,4 @@ MonoBehaviour:
   - QTools.QHierarchy_AdditionalShowModifierWarning
   - QTools.QHierarchy_MonoBehaviourIconIgnoreUnityMonoBehaviour
   - QTools.QHierarchy_PrefabShowBrakedPrefabsOnly
-  settingBoolValues: 010101010101010101000101010101010101010101010101010101010101000101010101010101010101010100000101010101010000010100
+  settingBoolValues: 010101010101010101000101010101010101010101010101010101010101010101010101010101010101010100000101010101010000010100

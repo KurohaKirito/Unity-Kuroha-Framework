@@ -116,7 +116,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
 
             // 图标颜色
-            QHierarchyColorUtils.SetColor(isLockedInQHierarchy? activeColor : inactiveColor);
+            QHierarchyColorUtils.SetColor(isLockedInQHierarchy ? activeColor : inactiveColor);
 
             // 绘制图标
             UnityEngine.GUI.DrawTexture(rect, lockButtonTexture);
@@ -151,7 +151,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 if (currentEvent.shift)
                 {
-                    var tip = isLock? SHIFT_TIP_UNLOCK : SHIFT_TIP_LOCK;
+                    var tip = isLock ? SHIFT_TIP_UNLOCK : SHIFT_TIP_LOCK;
                     if (showModifierWarning == false || EditorUtility.DisplayDialog("改变锁定状态", tip, "Yes", "Cancel"))
                     {
                         GetGameObjectListRecursive(gameObject, ref targetGameObjects);
@@ -163,7 +163,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                     if (parent != null)
                     {
-                        var tip = isLock? ALT_TIP_UNLOCK : ALT_TIP_LOCK;
+                        var tip = isLock ? ALT_TIP_UNLOCK : ALT_TIP_LOCK;
                         if (showModifierWarning == false || EditorUtility.DisplayDialog("改变锁定状态", tip, "Yes", "Cancel"))
                         {
                             GetGameObjectListRecursive(parent.gameObject, ref targetGameObjects, 1);
@@ -197,10 +197,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 // 清空锁定物体缓存
                 hierarchyObjectList.lockedObjects.Remove(gameObject);
-                
+
                 // 与运算关闭 NotEditable
                 gameObject.hideFlags &= ~HideFlags.NotEditable;
-                
+
                 EditorUtility.SetDirty(gameObject);
             }
         }
@@ -219,19 +219,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 hierarchyObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[0]);
             }
-            
+
             Undo.RecordObject(hierarchyObjectList, targetLock ? "Lock" : "Unlock");
 
             for (var i = gameObjects.Count - 1; i >= 0; i--)
             {
                 var curGameObject = gameObjects[i];
-                
+
                 Undo.RecordObject(curGameObject, targetLock ? "Lock" : "Unlock");
 
                 if (targetLock)
                 {
                     curGameObject.hideFlags |= HideFlags.NotEditable;
-                    
+
                     if (hierarchyObjectList.lockedObjects.Contains(curGameObject) == false)
                     {
                         hierarchyObjectList.lockedObjects.Add(curGameObject);

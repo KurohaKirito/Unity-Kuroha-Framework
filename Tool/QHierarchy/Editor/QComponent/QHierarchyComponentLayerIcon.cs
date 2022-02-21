@@ -19,7 +19,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.LayerIconShowDuringPlayMode, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.LayerIconSize, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.LayerIconList, SettingsChanged);
-            
+
             SettingsChanged();
         }
 
@@ -31,7 +31,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.LayerIconShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.LayerIconShowDuringPlayMode);
             var size = (EM_QHierarchySizeAll) QSettings.Instance().Get<int>(EM_QHierarchySettings.LayerIconSize);
-            
+
             rect.width = rect.height = size switch
             {
                 EM_QHierarchySizeAll.Small => 14,
@@ -39,7 +39,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 EM_QHierarchySizeAll.Big => 16,
                 _ => 14
             };
-            
+
             layerTextureList = QLayerTexture.loadLayerTextureList();
         }
 
@@ -52,7 +52,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 return EM_QLayoutStatus.Failed;
             }
-            
+
             curRect.x -= rect.width + COMPONENT_SPACE;
             rect.x = curRect.x;
             rect.y = curRect.y - (rect.height - 16) / 2;

@@ -40,9 +40,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private void SettingsChanged()
         {
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ColorShow);
-
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ColorShowDuringPlayMode);
-
             inactiveColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalInactiveColor);
         }
 
@@ -55,9 +53,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 return EM_QLayoutStatus.Failed;
             }
-            
+
             curRect.x -= rect.width + COMPONENT_SPACE;
-            
+
             rect.x = curRect.x;
             rect.y = curRect.y;
             return EM_QLayoutStatus.Success;
@@ -101,7 +99,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     try
                     {
-                        var obj = Selection.Contains(gameObject) ? Selection.gameObjects : new[] { gameObject };
+                        var obj = Selection.Contains(gameObject) ? Selection.gameObjects : new[] {gameObject};
                         var newPopupWindow = new QHierarchyColorPaletteWindow(obj, ColorSelectedHandler, ColorRemovedHandler);
                         PopupWindow.Show(rect, newPopupWindow);
                     }

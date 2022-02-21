@@ -1,8 +1,9 @@
-﻿namespace Kuroha.Tool.QHierarchy.Editor.QData {
+﻿namespace Kuroha.Tool.QHierarchy.Editor.QData
+{
     public enum EM_QHierarchyTagAndLayerShowType
     {
-        TagAndLayer = 0,
-        Tag         = 1,
-        Layer       = 2
+        标签和层级都显示 = 0,
+        仅显示标签 = 1,
+        仅显示层级 = 2
     }
 }

@@ -168,7 +168,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     DrawSeparator();
                     DrawPrefabComponentSettings();
                     DrawSeparator();
-                    DrawTagLayerComponentSettings();
+                    DrawTagLayerNameComponentSettings();
                     DrawSeparator();
                     DrawColorComponentSettings();
                     DrawSeparator();
@@ -557,9 +557,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
-        private void DrawTagLayerComponentSettings()
+        /// <summary>
+        /// 绘制 TagLayerName
+        /// </summary>
+        private void DrawTagLayerNameComponentSettings()
         {
-            if (DrawCheckBox("Tag And Layer", "", EM_QHierarchySettings.TagAndLayerShow))
+            if (DrawCheckBox("Tag And Layer", "显示 Tag 和 Layer 的名称", EM_QHierarchySettings.TagAndLayerShow))
             {
                 var rect = GetNewRect(0, 0);
                 if (DrawRestore(28))
@@ -580,25 +583,24 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT * 10 + UP_DOWN_SPACE * 2);
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.TagAndLayerShowDuringPlayMode);
-                DrawEnum("Show", EM_QHierarchySettings.TagAndLayerSizeShowType, typeof(EM_QHierarchyTagAndLayerShowType));
-                DrawEnum("Show tag and layer", EM_QHierarchySettings.TagAndLayerType, typeof(EM_QHierarchyTagAndLayerType));
+                DrawEnum("显示内容", EM_QHierarchySettings.TagAndLayerSizeShowType, typeof(EM_QHierarchyTagAndLayerShowType));
+                DrawEnum("显示模式", EM_QHierarchySettings.TagAndLayerType, typeof(EM_QHierarchyTagAndLayerType));
 
-                var newTagAndLayerSizeValueType = (EM_QHierarchyTagAndLayerSizeType) DrawEnum("Unit of width", EM_QHierarchySettings.TagAndLayerSizeValueType, typeof(EM_QHierarchyTagAndLayerSizeType));
-
-                if (newTagAndLayerSizeValueType == EM_QHierarchyTagAndLayerSizeType.Pixel)
+                var newTagAndLayerSizeValueType = (EM_QHierarchyTagAndLayerSizeType) DrawEnum("显示区域宽度", EM_QHierarchySettings.TagAndLayerSizeValueType, typeof(EM_QHierarchyTagAndLayerSizeType));
+                if (newTagAndLayerSizeValueType == EM_QHierarchyTagAndLayerSizeType.像素值)
                 {
-                    DrawIntSlider("Width in pixels", EM_QHierarchySettings.TagAndLayerSizeValuePixel, 5, 250);
+                    DrawIntSlider("像素值", EM_QHierarchySettings.TagAndLayerSizeValuePixel, 5, 300);
                 }
                 else
                 {
-                    DrawFloatSlider("Percentage width", EM_QHierarchySettings.TagAndLayerSizeValuePercent, 0, 0.5f);
+                    DrawFloatSlider("百分比", EM_QHierarchySettings.TagAndLayerSizeValuePercent, 0, 0.5f);
                 }
 
-                DrawEnum("Alignment", EM_QHierarchySettings.TagAndLayerAlignment, typeof(EM_QHierarchyTagAndLayerAlignment));
-                DrawEnum("Label size", EM_QHierarchySettings.TagAndLayerLabelSize, typeof(EM_QHierarchyTagAndLayerLabelSize));
-                DrawFloatSlider("Label alpha if default", EM_QHierarchySettings.TagAndLayerLabelAlpha, 0, 1.0f);
-                DrawColorPicker("Tag label color", EM_QHierarchySettings.TagAndLayerTagLabelColor);
-                DrawColorPicker("Layer label color", EM_QHierarchySettings.TagAndLayerLayerLabelColor);
+                DrawEnum("对齐方式", EM_QHierarchySettings.TagAndLayerAlignment, typeof(EM_QHierarchyTagAndLayerAlignment));
+                DrawEnum("字体大小", EM_QHierarchySettings.TagAndLayerLabelSize, typeof(EM_QHierarchyTagAndLayerLabelSize));
+                DrawFloatSlider("默认名称的透明度", EM_QHierarchySettings.TagAndLayerLabelAlpha, 0, 1.0f);
+                DrawColorPicker("标签文本颜色", EM_QHierarchySettings.TagAndLayerTagLabelColor);
+                DrawColorPicker("层级文本颜色", EM_QHierarchySettings.TagAndLayerLayerLabelColor);
                 DrawSpace(UP_DOWN_SPACE);
             }
         }

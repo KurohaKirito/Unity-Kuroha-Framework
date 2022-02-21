@@ -1,7 +1,8 @@
-﻿namespace Kuroha.Tool.QHierarchy.Editor.QData {
+﻿namespace Kuroha.Tool.QHierarchy.Editor.QData
+{
     public enum EM_QHierarchyTagAndLayerSizeType
     {
-        Pixel   = 0,
-        Percent = 1
+        像素值 = 0,
+        百分比 = 1
     }
 }

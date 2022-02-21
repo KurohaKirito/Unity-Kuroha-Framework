@@ -180,10 +180,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 
             initSetting(EM_QHierarchySettings.TagAndLayerShow                            , true);
             initSetting(EM_QHierarchySettings.TagAndLayerShowDuringPlayMode              , true);
-            initSetting(EM_QHierarchySettings.TagAndLayerSizeShowType                    , (int)EM_QHierarchyTagAndLayerShowType.TagAndLayer);
-            initSetting(EM_QHierarchySettings.TagAndLayerType                            , (int)EM_QHierarchyTagAndLayerType.OnlyIfNotDefault);
+            initSetting(EM_QHierarchySettings.TagAndLayerSizeShowType                    , (int)EM_QHierarchyTagAndLayerShowType.标签和层级都显示);
+            initSetting(EM_QHierarchySettings.TagAndLayerType                            , (int)EM_QHierarchyTagAndLayerType.仅显示非默认名称);
             initSetting(EM_QHierarchySettings.TagAndLayerAlignment                        , (int)EM_QHierarchyTagAndLayerAlignment.Left);
-            initSetting(EM_QHierarchySettings.TagAndLayerSizeValueType                   , (int)EM_QHierarchyTagAndLayerSizeType.Pixel);
+            initSetting(EM_QHierarchySettings.TagAndLayerSizeValueType                   , (int)EM_QHierarchyTagAndLayerSizeType.像素值);
             initSetting(EM_QHierarchySettings.TagAndLayerSizeValuePercent                , 0.25f);
             initSetting(EM_QHierarchySettings.TagAndLayerSizeValuePixel                  , 75);
             initSetting(EM_QHierarchySettings.TagAndLayerLabelSize                       , (int)EM_QHierarchyTagAndLayerLabelSize.Normal);

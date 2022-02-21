@@ -267,7 +267,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     }
 
                     #endregion
-                    
+
                     #region 检查事件方法丢失
 
                     if (settingsShowErrorIconMissingEventMethod)
@@ -306,7 +306,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         {
                             // 如果是 Unity 的组件类, 获取全部的公有非静态字段
                             var bindingFlags = BindingFlags.Instance | BindingFlags.Public;
-                            
+
                             // 如果是自己定义的组件类, 那么也获取私有字段
                             if (classInfo.FullName.Contains("UnityEngine") == false)
                             {

@@ -10,16 +10,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
     {
         private Color activeColor;
         private Color inactiveColor;
-        
+
         private GameObject[] gameObjects;
-        
+
         private Texture2D staticButton;
         private Color32[] staticButtonColors;
         private StaticEditorFlags staticFlags;
-        
+
         private const int ICON_WIDTH = 11;
         private const int ICON_HEIGHT = 10;
-        
+
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -56,13 +56,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 return EM_QLayoutStatus.Failed;
             }
-            
+
             curRect.x -= ICON_WIDTH + COMPONENT_SPACE;
-            
+
             rect.x = curRect.x;
             rect.y = curRect.y + (16 - ICON_HEIGHT) / 2f;
             staticFlags = GameObjectUtility.GetStaticEditorFlags(gameObject);
-            
+
             return EM_QLayoutStatus.Success;
         }
 
@@ -87,7 +87,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             staticButton.SetPixels32(staticButtonColors);
             staticButton.Apply();
-            
+
             UnityEngine.GUI.DrawTexture(rect, staticButton);
         }
 
@@ -100,21 +100,20 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 currentEvent.Use();
 
-                var intStaticFlags = (int)staticFlags;
-                gameObjects = Selection.Contains(gameObject)? Selection.gameObjects : new [] { gameObject };
+                var intStaticFlags = (int) staticFlags;
+                gameObjects = Selection.Contains(gameObject) ? Selection.gameObjects : new[] {gameObject};
 
                 var menu = new GenericMenu();
                 menu.AddItem(new GUIContent("Nothing"), intStaticFlags == 0, StaticChangeHandler, 0);
                 menu.AddItem(new GUIContent("Everything"), intStaticFlags == -1, StaticChangeHandler, -1);
-                // menu.AddItem(new GUIContent("Lightmap Static"           ), (intStaticFlags & (int)StaticEditorFlags.LightmapStatic) > 0, StaticChangeHandler, (int)StaticEditorFlags.LightmapStatic);
-                menu.AddItem(new GUIContent("Lightmap Static"), (intStaticFlags & (int)StaticEditorFlags.ContributeGI) > 0, StaticChangeHandler, (int)StaticEditorFlags.ContributeGI);
-                menu.AddItem(new GUIContent("Occluder Static"), (intStaticFlags & (int)StaticEditorFlags.OccluderStatic) > 0, StaticChangeHandler, (int)StaticEditorFlags.OccluderStatic);
-                menu.AddItem(new GUIContent("Batching Static"), (intStaticFlags & (int)StaticEditorFlags.BatchingStatic) > 0, StaticChangeHandler, (int)StaticEditorFlags.BatchingStatic);
-                menu.AddItem(new GUIContent("Navigation Static"), (intStaticFlags & (int)StaticEditorFlags.NavigationStatic) > 0, StaticChangeHandler, (int)StaticEditorFlags.NavigationStatic);
-                menu.AddItem(new GUIContent("Occludee Static"), (intStaticFlags & (int)StaticEditorFlags.OccludeeStatic) > 0, StaticChangeHandler, (int)StaticEditorFlags.OccludeeStatic);
-                menu.AddItem(new GUIContent("Off Mesh Link Generation"), (intStaticFlags & (int)StaticEditorFlags.OffMeshLinkGeneration) > 0, StaticChangeHandler, (int)StaticEditorFlags.OffMeshLinkGeneration);
-                menu.AddItem(new GUIContent("Reflection Probe Static"), (intStaticFlags & (int)StaticEditorFlags.ReflectionProbeStatic) > 0, StaticChangeHandler, (int)StaticEditorFlags.ReflectionProbeStatic);
-                
+                menu.AddItem(new GUIContent("Lightmap Static"), (intStaticFlags & (int) StaticEditorFlags.ContributeGI) > 0, StaticChangeHandler, (int) StaticEditorFlags.ContributeGI);
+                menu.AddItem(new GUIContent("Occluder Static"), (intStaticFlags & (int) StaticEditorFlags.OccluderStatic) > 0, StaticChangeHandler, (int) StaticEditorFlags.OccluderStatic);
+                menu.AddItem(new GUIContent("Batching Static"), (intStaticFlags & (int) StaticEditorFlags.BatchingStatic) > 0, StaticChangeHandler, (int) StaticEditorFlags.BatchingStatic);
+                menu.AddItem(new GUIContent("Navigation Static"), (intStaticFlags & (int) StaticEditorFlags.NavigationStatic) > 0, StaticChangeHandler, (int) StaticEditorFlags.NavigationStatic);
+                menu.AddItem(new GUIContent("Occludee Static"), (intStaticFlags & (int) StaticEditorFlags.OccludeeStatic) > 0, StaticChangeHandler, (int) StaticEditorFlags.OccludeeStatic);
+                menu.AddItem(new GUIContent("Off Mesh Link Generation"), (intStaticFlags & (int) StaticEditorFlags.OffMeshLinkGeneration) > 0, StaticChangeHandler, (int) StaticEditorFlags.OffMeshLinkGeneration);
+                menu.AddItem(new GUIContent("Reflection Probe Static"), (intStaticFlags & (int) StaticEditorFlags.ReflectionProbeStatic) > 0, StaticChangeHandler, (int) StaticEditorFlags.ReflectionProbeStatic);
+
                 menu.ShowAsContext();
             }
         }
@@ -122,14 +121,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 静态标志更改
         /// </summary>
-        private void StaticChangeHandler(object result) {
-            var intResult = (int)result;
-            var resultStaticFlags = (StaticEditorFlags)result;
-            if (intResult != 0 && intResult != -1) {
+        private void StaticChangeHandler(object result)
+        {
+            var intResult = (int) result;
+            var resultStaticFlags = (StaticEditorFlags) result;
+            if (intResult != 0 && intResult != -1)
+            {
                 resultStaticFlags = staticFlags ^ resultStaticFlags;
             }
 
-            for (var i = gameObjects.Length - 1; i >= 0; i--) {
+            for (var i = gameObjects.Length - 1; i >= 0; i--)
+            {
                 var gameObject = gameObjects[i];
                 Undo.RecordObject(gameObject, "Change Static Flags");
                 GameObjectUtility.SetStaticEditorFlags(gameObject, resultStaticFlags);
@@ -142,14 +144,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         private void DrawQuad(int startPosition, int width, int height, bool isActiveColor)
         {
-            var color = (Color32)(isActiveColor? activeColor : inactiveColor);
-            
-            for (var iy = 0; iy < height; iy++)
+            var color = (Color32) (isActiveColor ? activeColor : inactiveColor);
+
+            for (var heightCounter = 0; heightCounter < height; heightCounter++)
             {
-                for (var ix = 0; ix < width; ix++)
+                for (var widthCounter = 0; widthCounter < width; widthCounter++)
                 {
-                    var pos = startPosition + ix + iy * 11;
-                    
+                    var pos = startPosition + widthCounter + heightCounter * 11;
+
                     staticButtonColors[pos].r = color.r;
                     staticButtonColors[pos].g = color.g;
                     staticButtonColors[pos].b = color.b;

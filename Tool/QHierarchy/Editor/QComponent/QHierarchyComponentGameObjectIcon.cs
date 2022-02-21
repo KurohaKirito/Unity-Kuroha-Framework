@@ -26,7 +26,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.GameObjectIconShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.GameObjectIconShowDuringPlayMode, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.GameObjectIconSize, SettingsChanged);
-            
+
             SettingsChanged();
         }
 
@@ -60,7 +60,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             curRect.x -= rect.width + COMPONENT_SPACE;
             rect.x = curRect.x;
             rect.y = curRect.y - (rect.height - 16) / 2;
-            
+
             return EM_QLayoutStatus.Success;
         }
 
@@ -73,7 +73,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             getIconMethodParams[0] = gameObject;
-            
+
             var icon = (Texture2D) getIconMethodInfo.Invoke(null, getIconMethodParams);
             if (icon != null)
             {
@@ -90,19 +90,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             if (currentEvent.isMouse && currentEvent.type == EventType.MouseDown && currentEvent.button == 0 && rect.Contains(currentEvent.mousePosition))
             {
                 currentEvent.Use();
-                
+
                 var dynamicAssembly = ReflectionUtil.GetAssembly(typeof(EditorWindow));
                 var dynamicClass = ReflectionUtil.GetClass(dynamicAssembly, "UnityEditor.IconSelector");
-                
+
                 // 由于目标方法重载, 需要使用参数类型进行区分
                 // private internal static bool ShowAtPosition(Object   targetObj, Rect activatorRect, bool showLabelIcons)
                 // private internal static bool ShowAtPosition(Object[] targetObj, Rect activatorRect, bool showLabelIcons)
-                var paramsTypeArray = new[] { typeof(Object), typeof(Rect), typeof(bool) };
+                var paramsTypeArray = new[] {typeof(Object), typeof(Rect), typeof(bool)};
                 var dynamicMethod = ReflectionUtil.GetMethod(dynamicClass, "ShowAtPosition", BindingFlags.Static | BindingFlags.NonPublic, paramsTypeArray);
-                
-                
+
+
                 // 调用
-                var paramsArray = new object[] { gameObject, rect, true };
+                var paramsArray = new object[] {gameObject, rect, true};
                 ReflectionUtil.CallMethod(dynamicMethod, paramsArray);
             }
         }

@@ -59,7 +59,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 selectionRect.x = 0;
                 selectionRect.height -= 1;
                 selectionRect.y += 1;
-                EditorGUI.DrawRect(selectionRect, Mathf.FloorToInt((selectionRect.y - 4) / 16 % 2) == 0 ? evenShadingColor : oddShadingColor);
+
+                var allHeight = selectionRect.y - 4;
+                var objectIndex = allHeight / 16;
+                var oddAndEven = Mathf.FloorToInt(objectIndex % 2);
+                EditorGUI.DrawRect(selectionRect, oddAndEven == 0 ? evenShadingColor : oddShadingColor);
             }
         }
     }
