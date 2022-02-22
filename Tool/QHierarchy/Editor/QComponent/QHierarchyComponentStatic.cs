@@ -107,7 +107,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 currentEvent.Use();
 
-                var intStaticFlags = (int)staticFlags;
+                var intStaticFlags = (int) staticFlags;
                 gameObjects = Selection.Contains(gameObject) ? Selection.gameObjects : new [] { gameObject };
 
                 var menu = new GenericMenu();
@@ -167,7 +167,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             var color = (Color32) (isActiveColor ? activeColor : inactiveColor);
             
-            for (var iy = 0; iy < height; iy++)
+            for (var heightCounter = 0; heightCounter < height; heightCounter++)
             {
                 for (var widthCounter = 0; widthCounter < width; widthCounter++)
                 {
