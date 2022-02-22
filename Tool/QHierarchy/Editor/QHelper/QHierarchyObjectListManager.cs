@@ -76,7 +76,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             }
         }
 
-        private Dictionary<Scene, QHierarchyObjectList> objectListDictionary = new Dictionary<Scene, QHierarchyObjectList>();
+        private readonly Dictionary<Scene, QHierarchyObjectList> objectListDictionary = new Dictionary<Scene, QHierarchyObjectList>();
         private Scene lastActiveScene;
         private int lastSceneCount;
 
@@ -188,10 +188,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             return lastActiveScene != SceneManager.GetActiveScene() || lastSceneCount != EditorSceneManager.loadedSceneCount;
         }
 
-        private QHierarchyObjectList CreateObjectList(GameObject gameObject)
+        private static QHierarchyObjectList CreateObjectList(GameObject gameObject)
         {
-            GameObject gameObjectList = new GameObject(Q_OBJECT_LIST_NAME);
-            QHierarchyObjectList hierarchyObjectList = gameObjectList.AddComponent<QHierarchyObjectList>();
+            var gameObjectList = new GameObject(Q_OBJECT_LIST_NAME);
+            var hierarchyObjectList = gameObjectList.AddComponent<QHierarchyObjectList>();
             SetupObjectList(hierarchyObjectList);
             return hierarchyObjectList;
         }

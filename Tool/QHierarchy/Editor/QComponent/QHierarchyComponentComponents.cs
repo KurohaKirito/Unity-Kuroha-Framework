@@ -14,19 +14,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         #region 变量
 
         /// <summary>
-        /// 单个游戏物体上全部的 Component
-        /// </summary>
-        private readonly List<Component> allComponents = new List<Component>();
-
-        /// <summary>
-        /// 单个游戏物体上全部的 Component (剔除忽略的组件)
+        /// 单个游戏物体上全部的 Component (剔除忽略组件后剩余的组件)
         /// </summary>
         private readonly List<Component> components = new List<Component>();
 
         /// <summary>
         /// 忽略组件的名称关键字列表
         /// </summary>
-        private List<string> ignoreComponentNameList;
+        private List<string> ignoreKeyList;
 
         /// <summary>
         /// 鼠标悬浮提示样式
@@ -51,7 +46,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制的组件图标数量
         /// </summary>
-        private int componentsToDraw;
+        private int countToDraw;
 
         #endregion
 
@@ -105,12 +100,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             var ignoreString = QSettings.Instance().Get<string>(EM_QHierarchySettings.ComponentsIgnore);
             if (string.IsNullOrEmpty(ignoreString) == false)
             {
-                ignoreComponentNameList = new List<string>(ignoreString.Split(',', ';', '.', ' '));
-                ignoreComponentNameList.RemoveAll(item => item == string.Empty);
+                ignoreKeyList = new List<string>(ignoreString.Split(',', ';', '.', ' '));
+                ignoreKeyList.RemoveAll(item => item == string.Empty);
             }
             else
             {
-                ignoreComponentNameList = null;
+                ignoreKeyList = null;
             }
         }
 
@@ -125,50 +120,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 return EM_QLayoutStatus.Failed;
             }
 
-            // 获取物体的全部组件
-            allComponents.Clear();
-            gameObject.GetComponents(allComponents);
-
-            #region 筛选掉白名单中的组件
-
-            components.Clear();
-            if (ignoreComponentNameList != null)
-            {
-                foreach (var component in allComponents)
-                {
-                    var componentName = component.GetType().FullName;
-                    if (componentName != null)
-                    {
-                        var ignore = false;
-                        for (var index = ignoreComponentNameList.Count - 1; index >= 0; index--)
-                        {
-                            if (componentName.Contains(ignoreComponentNameList[index]))
-                            {
-                                ignore = true;
-                                break;
-                            }
-                        }
-
-                        if (ignore == false)
-                        {
-                            components.Add(component);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                components.AddRange(allComponents);
-            }
-
-            #endregion
+            // 获取组件
+            GetAllComponentWithoutWhiteList(gameObject);
 
             // 计算可以显示的组件数量
             var maxComponentsCount = Mathf.FloorToInt((maxWidth - COMPONENT_SPACE) / rect.width);
-            componentsToDraw = Math.Min(maxComponentsCount, components.Count - 1);
+            countToDraw = Math.Min(maxComponentsCount, components.Count - 1);
 
             // 计算总宽度
-            var totalWidth = COMPONENT_SPACE + rect.width * componentsToDraw;
+            var totalWidth = COMPONENT_SPACE + rect.width * countToDraw;
 
             // 向左移动: 总宽度
             curRect.x -= totalWidth;
@@ -194,14 +154,57 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         }
 
         /// <summary>
+        /// 获取物体的全部组件, 并筛选掉白名单中的组件
+        /// </summary>
+        private void GetAllComponentWithoutWhiteList(GameObject gameObject)
+        {
+            var allComponents = gameObject.transform.GetComponents<Component>();
+
+            components.Clear();
+            
+            if (ignoreKeyList != null)
+            {
+                foreach (var component in allComponents)
+                {
+                    var componentName = component.GetType().FullName;
+                    
+                    if (componentName != null)
+                    {
+                        var ignore = false;
+                        
+                        foreach (var keyWorld in ignoreKeyList)
+                        {
+                            if (componentName.Contains(keyWorld))
+                            {
+                                ignore = true;
+                                break;
+                            }
+                        }
+
+                        if (ignore == false)
+                        {
+                            components.Add(component);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                components.AddRange(allComponents);
+            }
+        }
+
+        /// <summary>
         /// 绘制组件图标
         /// </summary>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
+            GetAllComponentWithoutWhiteList(gameObject);
+            
             // 仅绘制能显示的最大数量的组件
             // 比如物体挂载了 10 个组件, 但是只能显示 5 个, 则只显示最后 5 个
             var allCount = components.Count;
-            for (var index = components.Count - componentsToDraw; index < allCount; index++)
+            for (var index = components.Count - countToDraw; index < allCount; index++)
             {
                 var component = components[index];
                 if (component is Transform)
@@ -210,9 +213,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 }
 
                 // 获取组件的图标
-                var content = component == null
-                    ? EditorGUIUtility.IconContent("console.warnIcon.sml")
-                    : EditorGUIUtility.ObjectContent(component, null);
+                var content = component == null ? EditorGUIUtility.IconContent("console.warnIcon.sml") : EditorGUIUtility.ObjectContent(component, null);
 
                 // 反射获取组件的激活标志
                 var objectEnabled = true;
@@ -295,8 +296,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 currentEvent.Use();
 
+                GetAllComponentWithoutWhiteList(gameObject);
+                
                 // 计算单击的是第几个图标
-                var clickIndex = Mathf.FloorToInt((currentEvent.mousePosition.x - eventRect.x) / rect.width) + components.Count - componentsToDraw;
+                var clickIndex = Mathf.FloorToInt((currentEvent.mousePosition.x - eventRect.x) / rect.width) + components.Count - countToDraw;
 
                 // 反射获取组件的 enabled 字段
                 var component = components[clickIndex];

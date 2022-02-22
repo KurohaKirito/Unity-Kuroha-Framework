@@ -67,7 +67,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         /// <param name="instanceId"></param>
         /// <param name="selectionRect"></param>
-        private static void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect) {
+        private static void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)
+        {
             if (hierarchyMain == null)
             {
                 InitQHierarchy();

@@ -61,9 +61,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             rect.x = curRect.x;
             rect.y = curRect.y + (GAME_OBJECT_HEIGHT - ICON_HEIGHT) / 2f;
-            
-            staticFlags = GameObjectUtility.GetStaticEditorFlags(gameObject);
-            
+
             return EM_QLayoutStatus.Success;
         }
 
@@ -78,20 +76,21 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 staticButtonColors = new Color32[11 * 10];
             }
 
+            var selfFlag = GameObjectUtility.GetStaticEditorFlags(gameObject);
             var state = StaticEditorFlags.ContributeGI;      // 0000001
-            DrawQuad(37, 3, 4, (staticFlags & state) > 0);
+            DrawQuad(37, 3, 4, (selfFlag & state) > 0);
             state = StaticEditorFlags.OccluderStatic;        // 0000010
-            DrawQuad(6,  5, 2, (staticFlags & state) > 0);
+            DrawQuad(6,  5, 2, (selfFlag & state) > 0);
             state = StaticEditorFlags.BatchingStatic;        // 0000100
-            DrawQuad(33, 3, 4, (staticFlags & state) > 0);
+            DrawQuad(33, 3, 4, (selfFlag & state) > 0);
             state = StaticEditorFlags.NavigationStatic;      // 0001000
-            DrawQuad(88, 5, 2, (staticFlags & state) > 0);
+            DrawQuad(88, 5, 2, (selfFlag & state) > 0);
             state = StaticEditorFlags.OccludeeStatic;        // 0010000
-            DrawQuad(0,  5, 2, (staticFlags & state) > 0);
+            DrawQuad(0,  5, 2, (selfFlag & state) > 0);
             state = StaticEditorFlags.OffMeshLinkGeneration; // 0100000
-            DrawQuad(94, 5, 2, (staticFlags & state) > 0);
+            DrawQuad(94, 5, 2, (selfFlag & state) > 0);
             state = StaticEditorFlags.ReflectionProbeStatic; // 1000000
-            DrawQuad(41, 3, 4, (staticFlags & state) > 0);
+            DrawQuad(41, 3, 4, (selfFlag & state) > 0);
 
             staticButton.SetPixels32(staticButtonColors);
             staticButton.Apply();
@@ -152,7 +151,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 flagResult = staticFlags ^ flagResult;
             }
-
+            
             foreach (var gameObject in gameObjects)
             {
                 Undo.RecordObject(gameObject, "Change Static Flags");

@@ -165,6 +165,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 var toComponent = components.Count;
                 var layoutStatus = EM_QLayoutStatus.Success;
                 var componentCount = toComponent;
+                
                 for (var i = 0; i < componentCount; i++)
                 {
                     var component = components[i];
@@ -188,7 +189,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 {
                     if (backgroundColor.a != 0)
                     {
-                        rect.width = selectionRect.x + selectionRect.width - rect.x /*- indentation*/;
+                        rect.width = selectionRect.x + selectionRect.width - rect.x;
                         EditorGUI.DrawRect(rect, backgroundColor);
                     }
 
