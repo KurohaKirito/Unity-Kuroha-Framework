@@ -55,7 +55,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             
             curRect.x -= rect.width + COMPONENT_SPACE;
             rect.x = curRect.x;
-            rect.y = curRect.y - (rect.height - 16) / 2;
+            rect.y = curRect.y - (rect.height - GAME_OBJECT_HEIGHT) / 2;
             
             return EM_QLayoutStatus.Success;
         }

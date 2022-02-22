@@ -87,7 +87,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 // 第 1 行的 Y 值为 16
                 // 第 2 行的 Y 值为 32
                 var y = (int) selectionRect.y;
-                var isOdd = y / 16 % 2 == 1;
+                var isOdd = y / GAME_OBJECT_HEIGHT % 2 == 1;
                 EditorGUI.DrawRect(rowRect, isOdd ? evenShadingColor : oddShadingColor);
             }
         }

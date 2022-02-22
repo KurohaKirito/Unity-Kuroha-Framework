@@ -29,11 +29,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private List<string> ignoreComponentNameList;
 
         /// <summary>
-        /// 图标高度
-        /// </summary>
-        private const int ICON_HEIGHT = 16;
-
-        /// <summary>
         /// 鼠标悬浮提示样式
         /// </summary>
         private readonly GUIStyle mouseTipLabelStyle;
@@ -51,7 +46,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 可出发点击事件的区域
         /// </summary>
-        private Rect eventRect = new Rect(0, 0, ICON_HEIGHT, ICON_HEIGHT);
+        private Rect eventRect = new Rect(0, 0, GAME_OBJECT_HEIGHT, GAME_OBJECT_HEIGHT);
 
         /// <summary>
         /// 绘制的组件图标数量
@@ -180,7 +175,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             // 计算整个功能的显示矩形, Y 需要居中
             rect.x = curRect.x;
-            rect.y = curRect.y - (rect.height - ICON_HEIGHT) / 2;
+            rect.y = curRect.y - (rect.height - GAME_OBJECT_HEIGHT) / 2;
 
             // 记录下事件处理用的矩形, 记录的数据是全部的组件图标显示区域
             eventRect.width = totalWidth;
@@ -266,15 +261,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     selectionRect.height += 1;
 
                     // 第 1 行的提示显示在左侧
-                    if (selectionRect.y <= 16)
+                    if (selectionRect.y <= GAME_OBJECT_HEIGHT)
                     {
                         selectionRect.x -= (labelWidth + rect.width) / 2f;
                     }
 
                     // 后续行的提示显示在上一行
-                    if (selectionRect.y > 16)
+                    if (selectionRect.y > GAME_OBJECT_HEIGHT)
                     {
-                        selectionRect.y -= 16;
+                        selectionRect.y -= GAME_OBJECT_HEIGHT;
                     }
 
                     // 绘制提示框背景

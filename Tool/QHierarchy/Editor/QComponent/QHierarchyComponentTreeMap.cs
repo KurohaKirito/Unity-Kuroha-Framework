@@ -10,7 +10,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
     public class QHierarchyComponentTreeMap: QHierarchyBaseComponent
     {
         // CONST
-        private const float TREE_STEP_WIDTH  = 14.0f;
+        private const float TREE_STEP_WIDTH = 14.0f;
         
         // PRIVATE
         private bool enhanced;
@@ -33,7 +33,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             treeMapLastTexture    = QResources.Instance().GetTexture(QTexture.QTreeMapLast);
             
             rect.width  = 14;
-            rect.height = 16;
+            rect.height = GAME_OBJECT_HEIGHT;
             
             showComponentDuringPlayMode = true;
 

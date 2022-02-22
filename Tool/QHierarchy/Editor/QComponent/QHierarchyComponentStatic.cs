@@ -60,9 +60,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             curRect.x -= ICON_WIDTH + COMPONENT_SPACE;
 
             rect.x = curRect.x;
-            rect.y = curRect.y + (16 - ICON_HEIGHT) / 2f;
+            rect.y = curRect.y + (GAME_OBJECT_HEIGHT - ICON_HEIGHT) / 2f;
+            
             staticFlags = GameObjectUtility.GetStaticEditorFlags(gameObject);
-
+            
             return EM_QLayoutStatus.Success;
         }
 
@@ -77,19 +78,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 staticButtonColors = new Color32[11 * 10];
             }
 
-            var state = StaticEditorFlags.ContributeGI;
+            var state = StaticEditorFlags.ContributeGI;      // 0000001
             DrawQuad(37, 3, 4, (staticFlags & state) > 0);
-            state = StaticEditorFlags.OccluderStatic;
+            state = StaticEditorFlags.OccluderStatic;        // 0000010
             DrawQuad(6,  5, 2, (staticFlags & state) > 0);
-            state = StaticEditorFlags.BatchingStatic;
+            state = StaticEditorFlags.BatchingStatic;        // 0000100
             DrawQuad(33, 3, 4, (staticFlags & state) > 0);
-            state = StaticEditorFlags.NavigationStatic;
+            state = StaticEditorFlags.NavigationStatic;      // 0001000
             DrawQuad(88, 5, 2, (staticFlags & state) > 0);
-            state = StaticEditorFlags.OccludeeStatic;
+            state = StaticEditorFlags.OccludeeStatic;        // 0010000
             DrawQuad(0,  5, 2, (staticFlags & state) > 0);
-            state = StaticEditorFlags.OffMeshLinkGeneration;
+            state = StaticEditorFlags.OffMeshLinkGeneration; // 0100000
             DrawQuad(94, 5, 2, (staticFlags & state) > 0);
-            state = StaticEditorFlags.ReflectionProbeStatic;
+            state = StaticEditorFlags.ReflectionProbeStatic; // 1000000
             DrawQuad(41, 3, 4, (staticFlags & state) > 0);
 
             staticButton.SetPixels32(staticButtonColors);
@@ -107,33 +108,33 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 currentEvent.Use();
 
-                var intStaticFlags = (int) staticFlags;
+                staticFlags = GameObjectUtility.GetStaticEditorFlags(gameObject);
                 gameObjects = Selection.Contains(gameObject) ? Selection.gameObjects : new [] { gameObject };
 
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("Nothing"), intStaticFlags == 0, StaticChangeHandler, 0);
-                menu.AddItem(new GUIContent("Everything"), intStaticFlags == -1, StaticChangeHandler, -1);
+                menu.AddItem(new GUIContent("Nothing"), staticFlags == 0, StaticChangeHandler, 0);
+                menu.AddItem(new GUIContent("Everything"), (int) staticFlags == -1, StaticChangeHandler, -1);
                 
                 var state = StaticEditorFlags.ContributeGI;
-                menu.AddItem(new GUIContent($"ContributeGI (old : {state.ToString()})"), (intStaticFlags & (int) state) > 0, StaticChangeHandler, (int) state);
+                menu.AddItem(new GUIContent(state.ToString()), (staticFlags & state) > 0, StaticChangeHandler, state);
                 
                 state = StaticEditorFlags.OccluderStatic;
-                menu.AddItem(new GUIContent(state.ToString()), (intStaticFlags & (int) state) > 0, StaticChangeHandler, (int) state);
-                
-                state = StaticEditorFlags.OccludeeStatic;
-                menu.AddItem(new GUIContent(state.ToString()), (intStaticFlags & (int) state) > 0, StaticChangeHandler, (int) state);
-                
+                menu.AddItem(new GUIContent(state.ToString()), (staticFlags & state) > 0, StaticChangeHandler, state);
+
                 state = StaticEditorFlags.BatchingStatic;
-                menu.AddItem(new GUIContent(state.ToString()), (intStaticFlags & (int) state) > 0, StaticChangeHandler, (int) state);
+                menu.AddItem(new GUIContent(state.ToString()), (staticFlags & state) > 0, StaticChangeHandler, state);
                 
                 state = StaticEditorFlags.NavigationStatic;
-                menu.AddItem(new GUIContent(state.ToString()), (intStaticFlags & (int) state) > 0, StaticChangeHandler, (int) state);
+                menu.AddItem(new GUIContent(state.ToString()), (staticFlags & state) > 0, StaticChangeHandler, state);
+                
+                state = StaticEditorFlags.OccludeeStatic;
+                menu.AddItem(new GUIContent(state.ToString()), (staticFlags & state) > 0, StaticChangeHandler, state);
                 
                 state = StaticEditorFlags.OffMeshLinkGeneration;
-                menu.AddItem(new GUIContent(state.ToString()), (intStaticFlags & (int) state) > 0, StaticChangeHandler, (int) state);
+                menu.AddItem(new GUIContent(state.ToString()), (staticFlags & state) > 0, StaticChangeHandler, state);
                 
                 state = StaticEditorFlags.ReflectionProbeStatic;
-                menu.AddItem(new GUIContent(state.ToString()), (intStaticFlags & (int) state) > 0, StaticChangeHandler, (int) state);
+                menu.AddItem(new GUIContent(state.ToString()), (staticFlags & state) > 0, StaticChangeHandler, state);
                 
                 menu.ShowAsContext();
             }
@@ -145,17 +146,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private void StaticChangeHandler(object result)
         {
             var intResult = (int) result;
-            var resultStaticFlags = (StaticEditorFlags) result;
+            var flagResult = (StaticEditorFlags) result;
+            
             if (intResult != 0 && intResult != -1)
             {
-                resultStaticFlags = staticFlags ^ resultStaticFlags;
+                flagResult = staticFlags ^ flagResult;
             }
 
-            for (var i = gameObjects.Length - 1; i >= 0; i--)
+            foreach (var gameObject in gameObjects)
             {
-                var gameObject = gameObjects[i];
                 Undo.RecordObject(gameObject, "Change Static Flags");
-                GameObjectUtility.SetStaticEditorFlags(gameObject, resultStaticFlags);
+                GameObjectUtility.SetStaticEditorFlags(gameObject, flagResult);
                 EditorUtility.SetDirty(gameObject);
             }
         }

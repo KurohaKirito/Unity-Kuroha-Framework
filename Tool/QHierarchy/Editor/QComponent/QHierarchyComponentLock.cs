@@ -130,7 +130,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private static bool CheckWhiteList(UnityEngine.Object obj)
         {
             // 特殊情况: 没有 Canvas 组件的 UGUI 预制体会自动创建一个 Locked 标记的 Canvas
-            return WHITE_LIST.Contains(obj.name);
+            return WHITE_LIST.Equals(obj.name);
         }
 
         /// <summary>

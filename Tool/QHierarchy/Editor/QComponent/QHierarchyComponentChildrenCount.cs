@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Kuroha.Tool.QHierarchy.RunTime;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
@@ -27,7 +26,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 alignment = TextAnchor.MiddleRight
             };
 
-            rect.height = 16;
+            rect.height = GAME_OBJECT_HEIGHT;
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountShow, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ChildrenCountShowDuringPlayMode, OnSettingsChanged);

@@ -22,16 +22,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
         protected const float COMPONENT_SPACE = 2;
         
         /// <summary>
+        /// Inspector 面板中单个物体的高度
+        /// </summary>
+        protected const int GAME_OBJECT_HEIGHT = 16;
+        
+        /// <summary>
         /// 控件绘制矩形
         /// </summary>
-        protected Rect rect = new Rect(0, 0, 16, 16);
+        protected Rect rect = new Rect(0, 0, 16, GAME_OBJECT_HEIGHT);
 
         /// <summary>
         /// 构造方法
         /// </summary>
-        protected QHierarchyBaseComponent()
-        {
-        }
+        protected QHierarchyBaseComponent() { }
 
         /// <summary>
         /// 计算布局
@@ -96,10 +99,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
         protected static void GetGameObjectListRecursive(GameObject gameObject, ref List<GameObject> result, int maxDepth = int.MaxValue)
         {
             result.Add(gameObject);
+            
             if (maxDepth > 0)
             {
                 var transform = gameObject.transform;
-                for (var index = transform.childCount - 1; index >= 0; index--)
+                for (var index = 0; index < transform.childCount; index++)
                 {
                     GetGameObjectListRecursive(transform.GetChild(index).gameObject, ref result, maxDepth - 1);
                 }

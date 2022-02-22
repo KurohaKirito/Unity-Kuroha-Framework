@@ -15,7 +15,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
         private const float COLOR_RECT_SPACE = 1;
         private const float COMPONENT_WIDTH = 8;
-        private const float COMPONENT_HEIGHT = 16;
 
         /// <summary>
         /// 构造函数
@@ -25,7 +24,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             colorTexture = QResources.Instance().GetTexture(QTexture.QColorButton);
 
             rect.width = COMPONENT_WIDTH;
-            rect.height = COMPONENT_HEIGHT;
+            rect.height = GAME_OBJECT_HEIGHT;
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ColorShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ColorShowDuringPlayMode, SettingsChanged);

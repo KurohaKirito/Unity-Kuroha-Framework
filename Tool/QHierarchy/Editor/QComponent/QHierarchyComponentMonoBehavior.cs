@@ -10,12 +10,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
     public class QHierarchyComponentMonoBehavior : QHierarchyBaseComponent
     {
         private const float TREE_STEP_WIDTH = 14.0f;
-        private const float TREE_STEP_HEIGHT = 16.0f;
 
         private readonly Texture2D monoBehaviourIconTexture;
         private bool ignoreUnityMonoBehaviour;
         private Color iconColor;
-        private bool showTreeMap;
 
         /// <summary>
         /// 构造函数
@@ -23,7 +21,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         public QHierarchyComponentMonoBehavior()
         {
             rect.width = TREE_STEP_WIDTH;
-            rect.height = TREE_STEP_HEIGHT;
+            rect.height = GAME_OBJECT_HEIGHT;
 
             monoBehaviourIconTexture = QResources.Instance().GetTexture(QTexture.QMonoBehaviourIcon);
 
@@ -45,7 +43,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.MonoBehaviourIconShow);
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.MonoBehaviourIconShowDuringPlayMode);
             iconColor = QSettings.Instance().GetColor(EM_QHierarchySettings.MonoBehaviourIconColor);
-            showTreeMap = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TreeMapShow);
 
             EditorApplication.RepaintHierarchyWindow();
         }
@@ -84,7 +81,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 rect.x = ident * TREE_STEP_WIDTH;
                 rect.y = selectionRect.y;
-                rect.width = 16;
+                rect.width = GAME_OBJECT_HEIGHT;
 
                 rect.x += TREE_STEP_WIDTH + 1;
                 rect.width += 1;
