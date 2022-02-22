@@ -8,10 +8,25 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
     public class QHierarchyComponentSeparator : QHierarchyBaseComponent
     {
+        /// <summary>
+        /// 分隔线颜色
+        /// </summary>
         private Color separatorColor;
+        
+        /// <summary>
+        /// 偶数行颜色
+        /// </summary>
         private Color evenShadingColor;
+        
+        /// <summary>
+        /// 奇数行颜色
+        /// </summary>
         private Color oddShadingColor;
-        private bool showRowShading;
+        
+        /// <summary>
+        /// 是否显示行颜色
+        /// </summary>
+        private bool isShowRowColor;
 
         /// <summary>
         /// 构造方法
@@ -34,7 +49,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         private void SettingsChanged()
         {
-            showRowShading = QSettings.Instance().Get<bool>(EM_QHierarchySettings.SeparatorShowRowShading);
+            isShowRowColor = QSettings.Instance().Get<bool>(EM_QHierarchySettings.SeparatorShowRowShading);
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.SeparatorShow);
             evenShadingColor = QSettings.Instance().GetColor(EM_QHierarchySettings.SeparatorEvenRowShadingColor);
             oddShadingColor = QSettings.Instance().GetColor(EM_QHierarchySettings.SeparatorOddRowShadingColor);
@@ -46,24 +61,34 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            rect.y = selectionRect.y;
-            rect.width = selectionRect.width + selectionRect.x;
-            rect.height = 1;
+            // Inspector Width
+            var inspectorWidth = selectionRect.width + selectionRect.x;
+            
+            // 绘制 1 像素的分隔线
             rect.x = 0;
-
+            rect.y = selectionRect.y;
+            rect.width = inspectorWidth;
+            rect.height = 1;
             EditorGUI.DrawRect(rect, separatorColor);
 
-            if (showRowShading)
+            // 显示行着色
+            if (isShowRowColor)
             {
-                selectionRect.width += selectionRect.x;
-                selectionRect.x = 0;
-                selectionRect.height -= 1;
-                selectionRect.y += 1;
-
-                var allHeight = selectionRect.y - 4;
-                var objectIndex = allHeight / 16;
-                var oddAndEven = Mathf.FloorToInt(objectIndex % 2);
-                EditorGUI.DrawRect(selectionRect, oddAndEven == 0 ? evenShadingColor : oddShadingColor);
+                // 露出 1 像素的分隔线
+                var rowRect = new Rect
+                {
+                    x = 0,
+                    width = inspectorWidth,
+                    y = selectionRect.y + 1,
+                    height = selectionRect.height - 1
+                };
+                
+                // 计算是否是奇数
+                // 第 1 行的 Y 值为 16
+                // 第 2 行的 Y 值为 32
+                var y = (int) selectionRect.y;
+                var isOdd = y / 16 % 2 == 1;
+                EditorGUI.DrawRect(rowRect, isOdd ? evenShadingColor : oddShadingColor);
             }
         }
     }
