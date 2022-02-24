@@ -7,14 +7,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
     {
         private static Color defaultColor = Color.white;
 
+        /// <summary>
+        /// 修改默认颜色
+        /// </summary>
         public static void SetDefaultColor(Color color)
         {
             defaultColor = color;
-        }
-
-        public static void SetColor(Color newColor)
-        {
-            UnityEngine.GUI.color = newColor;
         }
 
         public static void SetColor(Color newColor, float multiColor, float multiAlpha)
@@ -27,22 +25,34 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             UnityEngine.GUI.color = newColor;
         }
 
-        public static void ClearColor()
+        /// <summary>
+        /// 还原为默认颜色
+        /// </summary>
+        public static void ResetDefaultColor()
         {
             UnityEngine.GUI.color = defaultColor;
         }
 
-        public static Color StringToColor(string color)
+        /// <summary>
+        /// (8 位十六进制) 字符串转为颜色
+        /// </summary>
+        public static Color StringToColor(string colorString)
         {
-            return IntToColor(Convert.ToUInt32(color, 16));
+            return IntToColor(Convert.ToUInt32(colorString, 16));
         }
 
+        /// <summary>
+        /// 颜色转换为字符串 (8 位十六进制)
+        /// </summary>
         public static string ColorToString(Color color)
         {
             var intColor = ColorToInt(color);
             return intColor.ToString("X8");
         }
 
+        /// <summary>
+        /// int 数字转换为颜色
+        /// </summary>
         private static Color IntToColor(uint color)
         {
             var r = ((color >> 16) & 0xFF) / 255.0f;
@@ -53,6 +63,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             return new Color(r, g, b, a);
         }
 
+        /// <summary>
+        /// 颜色转换为 int 数字
+        /// </summary>
         private static uint ColorToInt(Color color)
         {
             var r = (uint) ((byte) (color.r * 255) << 16);

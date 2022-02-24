@@ -208,9 +208,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 if (layoutStatus != EM_QLayoutStatus.Success)
                 {
                     rect.width = 7;
-                    QHierarchyColorUtils.SetColor(inactiveColor);
+                    UnityEngine.GUI.color = inactiveColor;
                     UnityEngine.GUI.DrawTexture(rect, trimIcon);
-                    QHierarchyColorUtils.ClearColor();
+                    QHierarchyColorUtils.ResetDefaultColor();
                 }
             }
             else if (Event.current.isMouse)

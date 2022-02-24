@@ -67,9 +67,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             var renderer = gameObject.GetComponent<Renderer>();
             if (renderer != null)
             {
-                QHierarchyColorUtils.SetColor(renderer.enabled ? activeColor : inactiveColor);
+                UnityEngine.GUI.color = renderer.enabled ? activeColor : inactiveColor;
                 UnityEngine.GUI.DrawTexture(rect, rendererButtonTexture);
-                QHierarchyColorUtils.ClearColor();
+                QHierarchyColorUtils.ResetDefaultColor();
             }
         }
 

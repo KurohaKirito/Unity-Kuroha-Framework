@@ -67,17 +67,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             // Missing 和 Disconnected
             if (prefabStatus == PrefabInstanceStatus.MissingAsset || prefabStatus == PrefabInstanceStatus.Disconnected)
             {
-                QHierarchyColorUtils.SetColor(inactiveColor);
+                UnityEngine.GUI.color = inactiveColor;
                 UnityEngine.GUI.DrawTexture(rect, prefabTexture);
-                QHierarchyColorUtils.ClearColor();
+                QHierarchyColorUtils.ResetDefaultColor();
             }
             
             // 正常 Prefab
             else if (onlyShowBroken == false && prefabStatus != PrefabInstanceStatus.NotAPrefab)
             {
-                QHierarchyColorUtils.SetColor(activeColor);
+                UnityEngine.GUI.color = activeColor;
                 UnityEngine.GUI.DrawTexture(rect, prefabTexture);
-                QHierarchyColorUtils.ClearColor();
+                QHierarchyColorUtils.ResetDefaultColor();
             }
         }
     }

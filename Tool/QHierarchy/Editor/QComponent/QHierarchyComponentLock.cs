@@ -116,12 +116,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
 
             // 图标颜色
-            QHierarchyColorUtils.SetColor(isLockedInQHierarchy ? activeColor : inactiveColor);
+            UnityEngine.GUI.color = isLockedInQHierarchy ? activeColor : inactiveColor;
 
             // 绘制图标
             UnityEngine.GUI.DrawTexture(rect, lockButtonTexture);
 
-            QHierarchyColorUtils.ClearColor();
+            QHierarchyColorUtils.ResetDefaultColor();
         }
 
         /// <summary>

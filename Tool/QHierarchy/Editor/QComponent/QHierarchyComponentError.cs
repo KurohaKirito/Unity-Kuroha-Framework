@@ -135,18 +135,18 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             var components = gameObject.GetComponents<MonoBehaviour>();
             if (FindError(gameObject, components, false))
             {
-                QHierarchyColorUtils.SetColor(activeColor);
+                UnityEngine.GUI.color = activeColor;
                 UnityEngine.GUI.DrawTexture(rect, errorIconTexture);
-                QHierarchyColorUtils.ClearColor();
+                QHierarchyColorUtils.ResetDefaultColor();
             }
             else if (settingsShowErrorOfChildren)
             {
                 var children = gameObject.GetComponentsInChildren<MonoBehaviour>(true);
                 if (FindError(gameObject, children, false))
                 {
-                    QHierarchyColorUtils.SetColor(inactiveColor);
+                    UnityEngine.GUI.color = inactiveColor;
                     UnityEngine.GUI.DrawTexture(rect, errorIconTexture);
-                    QHierarchyColorUtils.ClearColor();
+                    QHierarchyColorUtils.ResetDefaultColor();
                 }
             }
         }

@@ -80,11 +80,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 }
             }
 
-            QHierarchyColorUtils.SetColor(inactiveColor);
-
+            UnityEngine.GUI.color = inactiveColor;
             UnityEngine.GUI.DrawTexture(rect, colorTexture, ScaleMode.StretchToFill, true, 1);
 
-            QHierarchyColorUtils.ClearColor();
+            QHierarchyColorUtils.ResetDefaultColor();
         }
 
         /// <summary>
@@ -99,7 +98,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     try
                     {
                         var obj = Selection.Contains(gameObject) ? Selection.gameObjects : new[] {gameObject};
+                        
                         var newPopupWindow = new QHierarchyColorPaletteWindow(obj, ColorSelectedHandler, ColorRemovedHandler);
+                        
                         PopupWindow.Show(rect, newPopupWindow);
                     }
                     catch
@@ -124,7 +125,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 var gameObject = gameObjects[i];
                 var objectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjects[i]);
+                
                 Undo.RecordObject(objectList, "Color Changed");
+                
                 if (objectList.gameObjectColor.ContainsKey(gameObject))
                 {
                     objectList.gameObjectColor[gameObject] = color;
@@ -153,6 +156,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 if (objectList.gameObjectColor.ContainsKey(gameObject))
                 {
                     Undo.RecordObject(objectList, "Color Changed");
+                    
                     objectList.gameObjectColor.Remove(gameObject);
                 }
             }

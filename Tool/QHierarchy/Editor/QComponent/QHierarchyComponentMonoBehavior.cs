@@ -86,9 +86,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 rect.x += TREE_STEP_WIDTH + 1;
                 rect.width += 1;
 
-                QHierarchyColorUtils.SetColor(iconColor);
+                UnityEngine.GUI.color = iconColor;
                 UnityEngine.GUI.DrawTexture(rect, monoBehaviourIconTexture);
-                QHierarchyColorUtils.ClearColor();
+                QHierarchyColorUtils.ResetDefaultColor();
             }
         }
     }
