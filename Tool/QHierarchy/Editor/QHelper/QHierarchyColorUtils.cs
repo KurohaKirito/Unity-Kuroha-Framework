@@ -10,14 +10,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         /// </summary>
         public static Color DefaultColor { get; set; } = Color.white;
 
-        public static void SetColor(Color newColor, float multiColor, float multiAlpha)
+        /// <summary>
+        /// 计算自定义颜色
+        /// </summary>
+        public static Color GetCustomColor(Color newColor, float multiColor, float multiAlpha)
         {
             newColor.r *= multiColor;
             newColor.g *= multiColor;
             newColor.b *= multiColor;
             newColor.a *= multiAlpha;
-            
-            UnityEngine.GUI.color = newColor;
+
+            return newColor;
         }
 
         /// <summary>

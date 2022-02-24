@@ -151,7 +151,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         UnityEngine.GUI.DrawTexture(rect, visibilityButtonTexture);
                         break;
                     default:
-                        QHierarchyColorUtils.SetColor(specialColor, 1.0f, 0.4f);
+                        UnityEngine.GUI.color = QHierarchyColorUtils.GetCustomColor(specialColor, 1.0f, 0.4f);
                         UnityEngine.GUI.DrawTexture(rect, editModeVisibleObjectsContains ? visibilityButtonTexture : visibilityOffButtonTexture);
                         break;
                 }
@@ -172,12 +172,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     {
                         if (gameObject.activeSelf)
                         {
-                            QHierarchyColorUtils.SetColor(activeColor, 0.65f, 0.65f);
+                            UnityEngine.GUI.color = QHierarchyColorUtils.GetCustomColor(activeColor, 0.65f, 0.65f);
                             UnityEngine.GUI.DrawTexture(rect, visibilityButtonTexture);
                         }
                         else
                         {
-                            QHierarchyColorUtils.SetColor(inactiveColor, 0.85f, 0.85f);
+                            UnityEngine.GUI.color = QHierarchyColorUtils.GetCustomColor(inactiveColor, 0.85f, 0.85f);
                             UnityEngine.GUI.DrawTexture(rect, visibilityOffButtonTexture);
                         }
 
