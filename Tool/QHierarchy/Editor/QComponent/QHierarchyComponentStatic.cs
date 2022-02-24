@@ -77,19 +77,26 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
 
             var selfFlag = GameObjectUtility.GetStaticEditorFlags(gameObject);
-            var state = StaticEditorFlags.ContributeGI;      // 0000001
+            
+            var state = StaticEditorFlags.ContributeGI;
             DrawQuad(37, 3, 4, (selfFlag & state) > 0);
-            state = StaticEditorFlags.OccluderStatic;        // 0000010
+            
+            state = StaticEditorFlags.OccluderStatic;
             DrawQuad(6,  5, 2, (selfFlag & state) > 0);
-            state = StaticEditorFlags.BatchingStatic;        // 0000100
+            
+            state = StaticEditorFlags.BatchingStatic;
             DrawQuad(33, 3, 4, (selfFlag & state) > 0);
-            state = StaticEditorFlags.NavigationStatic;      // 0001000
+            
+            state = StaticEditorFlags.NavigationStatic;
             DrawQuad(88, 5, 2, (selfFlag & state) > 0);
-            state = StaticEditorFlags.OccludeeStatic;        // 0010000
+            
+            state = StaticEditorFlags.OccludeeStatic;
             DrawQuad(0,  5, 2, (selfFlag & state) > 0);
-            state = StaticEditorFlags.OffMeshLinkGeneration; // 0100000
+            
+            state = StaticEditorFlags.OffMeshLinkGeneration;
             DrawQuad(94, 5, 2, (selfFlag & state) > 0);
-            state = StaticEditorFlags.ReflectionProbeStatic; // 1000000
+            
+            state = StaticEditorFlags.ReflectionProbeStatic;
             DrawQuad(41, 3, 4, (selfFlag & state) > 0);
 
             staticButton.SetPixels32(staticButtonColors);

@@ -1,4 +1,5 @@
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
+using Kuroha.Util.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,13 +14,21 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <summary>
         /// 工具实例
         /// </summary>
-        private static QHierarchyMain hierarchyMain;
+        private static QHierarchyMain qHierarchyMain;
 
         /// <summary>
-        /// 静态构造函数始终保证在使用类的任何静态函数或实例之前调用
+        /// 静态构造函数不使用访问修饰符
+        /// 静态构造函数不能直接调用, 仅由公共语言运行时 (CLR) 自动调用, 此处则是使用 [InitializeOnLoad] 特性来调用
         /// </summary>
         static QHierarchyInitializer()
         {
+            var timer = new TimerUtil(100, EditorApplication.RepaintHierarchyWindow)
+            {
+                AutoReStart = true
+            };
+            
+            timer.Start();
+            
             EditorApplication.update -= EditorUpdate;
             EditorApplication.update += EditorUpdate;
 
@@ -34,19 +43,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         }
 
         /// <summary>
-        /// Unity 执行 "撤销" 时触发的回调
-        /// </summary>
-        private static void UndoRedoPerformed()
-        {
-            EditorApplication.RepaintHierarchyWindow();          
-        }
-
-        /// <summary>
         /// 初始化 QHierarchy 工具
         /// </summary>
         private static void InitQHierarchy()
-        {       
-            hierarchyMain = new QHierarchyMain();
+        {
+            qHierarchyMain ??= new QHierarchyMain();
         }
 
         /// <summary>
@@ -54,11 +55,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private static void EditorUpdate()
         {
-            if (hierarchyMain == null)
-            {
-                InitQHierarchy();
-            }
-            
+            InitQHierarchy();
             QHierarchyObjectListManager.Instance().OnEditorUpdate();
         }
 
@@ -69,12 +66,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <param name="selectionRect"></param>
         private static void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)
         {
-            if (hierarchyMain == null)
-            {
-                InitQHierarchy();
-            }
-
-            hierarchyMain?.HierarchyWindowItemOnGUIHandler(instanceId, selectionRect);
+            InitQHierarchy();
+            qHierarchyMain.HierarchyWindowItemOnGUIHandler(instanceId, selectionRect);
         }
 
         /// <summary>
@@ -82,12 +75,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private static void HierarchyWindowChanged()
         {
-            if (hierarchyMain == null)
-            {
-                InitQHierarchy();
-            }
-            
+            InitQHierarchy();
             QHierarchyObjectListManager.Instance().Validate();
+        }
+        
+        /// <summary>
+        /// Unity 执行 "撤销" 时触发的回调
+        /// </summary>
+        private static void UndoRedoPerformed()
+        {
+            EditorApplication.RepaintHierarchyWindow();
         }
     }
 }

@@ -199,7 +199,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            GetAllComponentWithoutWhiteList(gameObject);
+            // GetAllComponentWithoutWhiteList(gameObject);
             
             // 仅绘制能显示的最大数量的组件
             // 比如物体挂载了 10 个组件, 但是只能显示 5 个, 则只显示最后 5 个
@@ -296,7 +296,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 currentEvent.Use();
 
-                GetAllComponentWithoutWhiteList(gameObject);
+                // GetAllComponentWithoutWhiteList(gameObject);
                 
                 // 计算单击的是第几个图标
                 var clickIndex = Mathf.FloorToInt((currentEvent.mousePosition.x - eventRect.x) / rect.width) + components.Count - countToDraw;

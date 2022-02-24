@@ -67,12 +67,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 计算布局
         /// </summary>
-        /// <param name="gameObject"></param>
-        /// <param name="hierarchyObjectList"></param>
-        /// <param name="selectionRect"></param>
-        /// <param name="curRect"></param>
-        /// <param name="maxWidth"></param>
-        /// <returns></returns>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             if (maxWidth < rect.width - 1)

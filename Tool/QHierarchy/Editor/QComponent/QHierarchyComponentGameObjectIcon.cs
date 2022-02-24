@@ -67,9 +67,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制 GUI
         /// </summary>
-        /// <param name="gameObject"></param>
-        /// <param name="hierarchyObjectList"></param>
-        /// <param name="selectionRect"></param>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             getIconMethodParams[0] = gameObject;
@@ -94,7 +91,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 var dynamicAssembly = ReflectionUtil.GetAssembly(typeof(EditorWindow));
                 var dynamicClass = ReflectionUtil.GetClass(dynamicAssembly, "UnityEditor.IconSelector");
 
-                // 由于目标方法重载, 需要使用参数类型进行区分
+                // 由于目标方法有 2 个重载 (下面 2 行), 所以需要使用参数类型进行区分
                 // private internal static bool ShowAtPosition(Object   targetObj, Rect activatorRect, bool showLabelIcons)
                 // private internal static bool ShowAtPosition(Object[] targetObj, Rect activatorRect, bool showLabelIcons)
                 var paramsTypeArray = new[] {typeof(Object), typeof(Rect), typeof(bool)};
