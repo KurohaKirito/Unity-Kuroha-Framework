@@ -131,7 +131,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// <param name="selectionRect"></param>
         public void HierarchyWindowItemOnGUIHandler(int instanceId, Rect selectionRect)
         {
-            QHierarchyColorUtils.SetDefaultColor(UnityEngine.GUI.color);
+            QHierarchyColorUtils.DefaultColor = UnityEngine.GUI.color;
             
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject != null)

@@ -5,15 +5,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
 {
     public static class QHierarchyColorUtils
     {
-        private static Color defaultColor = Color.white;
-
         /// <summary>
-        /// 修改默认颜色
+        /// 默认颜色
         /// </summary>
-        public static void SetDefaultColor(Color color)
-        {
-            defaultColor = color;
-        }
+        public static Color DefaultColor { get; set; } = Color.white;
 
         public static void SetColor(Color newColor, float multiColor, float multiAlpha)
         {
@@ -23,14 +18,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             newColor.a *= multiAlpha;
             
             UnityEngine.GUI.color = newColor;
-        }
-
-        /// <summary>
-        /// 还原为默认颜色
-        /// </summary>
-        public static void ResetDefaultColor()
-        {
-            UnityEngine.GUI.color = defaultColor;
         }
 
         /// <summary>

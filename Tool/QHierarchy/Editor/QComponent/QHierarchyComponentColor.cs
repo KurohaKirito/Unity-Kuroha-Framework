@@ -83,7 +83,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             UnityEngine.GUI.color = inactiveColor;
             UnityEngine.GUI.DrawTexture(rect, colorTexture, ScaleMode.StretchToFill, true, 1);
 
-            QHierarchyColorUtils.ResetDefaultColor();
+            UnityEngine.GUI.color = QHierarchyColorUtils.DefaultColor;
         }
 
         /// <summary>

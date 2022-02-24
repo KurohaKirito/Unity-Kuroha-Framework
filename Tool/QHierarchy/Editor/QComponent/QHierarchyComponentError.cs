@@ -137,7 +137,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 UnityEngine.GUI.color = activeColor;
                 UnityEngine.GUI.DrawTexture(rect, errorIconTexture);
-                QHierarchyColorUtils.ResetDefaultColor();
+                UnityEngine.GUI.color = QHierarchyColorUtils.DefaultColor;
             }
             else if (settingsShowErrorOfChildren)
             {
@@ -146,7 +146,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 {
                     UnityEngine.GUI.color = inactiveColor;
                     UnityEngine.GUI.DrawTexture(rect, errorIconTexture);
-                    QHierarchyColorUtils.ResetDefaultColor();
+                    UnityEngine.GUI.color = QHierarchyColorUtils.DefaultColor;
                 }
             }
         }

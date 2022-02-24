@@ -186,7 +186,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 }
             }
 
-            QHierarchyColorUtils.ResetDefaultColor();
+            UnityEngine.GUI.color = QHierarchyColorUtils.DefaultColor;
         }
 
         /// <summary>

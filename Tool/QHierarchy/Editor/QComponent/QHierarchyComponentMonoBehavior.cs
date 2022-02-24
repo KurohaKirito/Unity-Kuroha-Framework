@@ -88,7 +88,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 UnityEngine.GUI.color = iconColor;
                 UnityEngine.GUI.DrawTexture(rect, monoBehaviourIconTexture);
-                QHierarchyColorUtils.ResetDefaultColor();
+                UnityEngine.GUI.color = QHierarchyColorUtils.DefaultColor;
             }
         }
     }

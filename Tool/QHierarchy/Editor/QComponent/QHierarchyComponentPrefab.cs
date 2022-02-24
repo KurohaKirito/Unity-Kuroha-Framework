@@ -69,7 +69,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 UnityEngine.GUI.color = inactiveColor;
                 UnityEngine.GUI.DrawTexture(rect, prefabTexture);
-                QHierarchyColorUtils.ResetDefaultColor();
+                UnityEngine.GUI.color = QHierarchyColorUtils.DefaultColor;
             }
             
             // 正常 Prefab
@@ -77,7 +77,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             {
                 UnityEngine.GUI.color = activeColor;
                 UnityEngine.GUI.DrawTexture(rect, prefabTexture);
-                QHierarchyColorUtils.ResetDefaultColor();
+                UnityEngine.GUI.color = QHierarchyColorUtils.DefaultColor;
             }
         }
     }
