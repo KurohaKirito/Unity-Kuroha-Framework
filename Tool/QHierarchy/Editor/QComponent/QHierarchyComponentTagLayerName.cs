@@ -73,18 +73,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.TagAndLayerShowDuringPlayMode);
 
             var alignment = (EM_QHierarchyTagAndLayerAlignment) QSettings.Instance().Get<int>(EM_QHierarchySettings.TagAndLayerAlignment);
-            switch (alignment)
+            labelStyle.alignment = alignment switch
             {
-                case EM_QHierarchyTagAndLayerAlignment.Left:
-                    labelStyle.alignment = TextAnchor.MiddleLeft;
-                    break;
-                case EM_QHierarchyTagAndLayerAlignment.Center:
-                    labelStyle.alignment = TextAnchor.MiddleCenter;
-                    break;
-                case EM_QHierarchyTagAndLayerAlignment.Right:
-                    labelStyle.alignment = TextAnchor.MiddleRight;
-                    break;
-            }
+                EM_QHierarchyTagAndLayerAlignment.Left => TextAnchor.MiddleLeft,
+                EM_QHierarchyTagAndLayerAlignment.Center => TextAnchor.MiddleCenter,
+                EM_QHierarchyTagAndLayerAlignment.Right => TextAnchor.MiddleRight,
+                _ => labelStyle.alignment
+            };
         }
 
         /// <summary>
@@ -93,7 +88,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             var textWidth = sizeIsPixel ? pixelSize : percentSize * rect.x;
+            
             rect.width = textWidth + 4;
+            
             if (maxWidth < rect.width)
             {
                 return EM_QLayoutStatus.Failed;
@@ -104,7 +101,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.y = curRect.y;
 
             layer = gameObject.layer;
-            tag = GetTagName(gameObject);
+            tag = gameObject.tag;
 
             needDrawTag = showType != EM_QHierarchyTagAndLayerShowType.仅显示层级 && showAlways || tag != "Untagged";
             needDrawLayer = showType != EM_QHierarchyTagAndLayerShowType.仅显示标签 && showAlways || layer != 0;
@@ -129,23 +126,29 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             return EM_QLayoutStatus.Success;
         }
 
+        /// <summary>
+        /// 绘制 GUI
+        /// </summary>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             if (needDrawTag)
             {
-                tagColor.a = (tag == "Untagged" ? labelAlpha : 1.0f);
+                tagColor.a = tag == "Untagged" ? labelAlpha : 1.0f;
                 labelStyle.normal.textColor = tagColor;
                 EditorGUI.LabelField(tagRect, tag, labelStyle);
             }
 
             if (needDrawLayer)
             {
-                layerColor.a = (layer == 0 ? labelAlpha : 1.0f);
+                layerColor.a = layer == 0 ? labelAlpha : 1.0f;
                 labelStyle.normal.textColor = layerColor;
                 EditorGUI.LabelField(layerRect, GetLayerName(layer), labelStyle);
             }
         }
 
+        /// <summary>
+        /// 鼠标点击事件
+        /// </summary>
         public override void EventHandler(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Event currentEvent)
         {
             if (Event.current.isMouse && currentEvent.type == EventType.MouseDown && Event.current.button == 0)
@@ -158,52 +161,50 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                     layerRect.y += 4;
                 }
 
+                // 显示 Tag 菜单
                 if (needDrawTag && tagRect.Contains(Event.current.mousePosition))
                 {
-                    gameObjects = Selection.Contains(gameObject) ? Selection.gameObjects : new GameObject[] {gameObject};
-                    ShowTagsContextMenu(tag);
+                    gameObjects = Selection.Contains(gameObject) ? Selection.gameObjects : new[] { gameObject };
+                    ShowTagsContextMenu();
                     Event.current.Use();
                 }
-                else if (needDrawLayer && layerRect.Contains(Event.current.mousePosition))
+                
+                // 显示 Layer 菜单
+                if (needDrawLayer && layerRect.Contains(Event.current.mousePosition))
                 {
-                    gameObjects = Selection.Contains(gameObject) ? Selection.gameObjects : new GameObject[] {gameObject};
-                    ShowLayersContextMenu(LayerMask.LayerToName(layer));
+                    gameObjects = Selection.Contains(gameObject) ? Selection.gameObjects : new[] { gameObject };
+                    var layerName = LayerMask.LayerToName(layer);
+                    ShowLayersContextMenu(layerName);
                     Event.current.Use();
                 }
             }
         }
 
-        private static string GetTagName(GameObject gameObject)
-        {
-            string tag = "Undefined";
-            try
-            {
-                tag = gameObject.tag;
-            }
-            catch
-            {
-            }
-
-            return tag;
-        }
-
+        /// <summary>
+        /// 将 Layer 从 int 转为 string
+        /// </summary>
         private static string GetLayerName(int layer)
         {
-            string layerName = LayerMask.LayerToName(layer);
-            if (layerName.Equals("")) layerName = "Undefined";
+            var layerName = LayerMask.LayerToName(layer);
+            
+            if (layerName.Equals(""))
+            {
+                layerName = "Undefined";
+            }
+            
             return layerName;
         }
 
-        private void ShowTagsContextMenu(string tag)
+        private void ShowTagsContextMenu()
         {
-            List<string> tags = new List<string>(UnityEditorInternal.InternalEditorUtility.tags);
+            var tags = new List<string>(UnityEditorInternal.InternalEditorUtility.tags);
 
-            GenericMenu menu = new GenericMenu();
+            var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Untagged"), false, TagChangedHandler, "Untagged");
 
             for (int i = 0, n = tags.Count; i < n; i++)
             {
-                string curTag = tags[i];
+                var curTag = tags[i];
                 menu.AddItem(new GUIContent(curTag), tag == curTag, TagChangedHandler, curTag);
             }
 
@@ -212,17 +213,17 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             menu.ShowAsContext();
         }
 
-        private void ShowLayersContextMenu(string layer)
+        private void ShowLayersContextMenu(string layerName)
         {
-            List<string> layers = new List<string>(UnityEditorInternal.InternalEditorUtility.layers);
+            var layers = new List<string>(UnityEditorInternal.InternalEditorUtility.layers);
 
-            GenericMenu menu = new GenericMenu();
+            var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Default"), false, LayerChangedHandler, "Default");
 
             for (int i = 0, n = layers.Count; i < n; i++)
             {
-                string curLayer = layers[i];
-                menu.AddItem(new GUIContent(curLayer), layer == curLayer, LayerChangedHandler, curLayer);
+                var curLayer = layers[i];
+                menu.AddItem(new GUIContent(curLayer), layerName == curLayer, LayerChangedHandler, curLayer);
             }
 
             menu.AddSeparator("");
@@ -255,10 +256,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
         private static void AddTagOrLayerHandler(object value)
         {
-            PropertyInfo propertyInfo = typeof(EditorApplication).GetProperty("tagManager", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.GetProperty);
-            UnityEngine.Object obj = (UnityEngine.Object) (propertyInfo.GetValue(null, null));
-            obj.GetType().GetField("m_DefaultExpandedFoldout").SetValue(obj, value);
-            Selection.activeObject = obj;
+            var propertyInfo = typeof(EditorApplication).GetProperty("tagManager", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.GetProperty);
+            
+            var obj = (UnityEngine.Object) propertyInfo?.GetValue(null, null);
+
+            if (obj != null)
+            {
+                obj.GetType().GetField("m_DefaultExpandedFoldout").SetValue(obj, value);
+                Selection.activeObject = obj;
+            }
         }
     }
 }
