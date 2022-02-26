@@ -21,7 +21,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = 9;
 
-            prefabTexture = QResources.Instance().GetTexture(QTexture.QPrefabIcon);
+            prefabTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QPrefabIcon);
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.PrefabShow, SettingsChanged);

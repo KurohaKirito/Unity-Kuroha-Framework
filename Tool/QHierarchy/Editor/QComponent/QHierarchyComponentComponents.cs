@@ -55,14 +55,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public QHierarchyComponentComponents()
         {
-            backgroundDarkColor = QResources.Instance().GetColor(QColor.BackgroundDark);
-            componentDefaultIcon = QResources.Instance().GetTexture(QTexture.QComponentUnknownIcon);
+            backgroundDarkColor = QResources.Instance().GetColor(EM_QHierarchyColor.BackgroundDark);
+            componentDefaultIcon = QResources.Instance().GetTexture(EM_QHierarchyTexture.QComponentUnknownIcon);
 
             mouseTipLabelStyle = new GUIStyle
             {
                 normal =
                 {
-                    textColor = QResources.Instance().GetColor(QColor.Gray)
+                    textColor = QResources.Instance().GetColor(EM_QHierarchyColor.Gray)
                 },
                 fontSize = 11,
                 clipping = TextClipping.Clip

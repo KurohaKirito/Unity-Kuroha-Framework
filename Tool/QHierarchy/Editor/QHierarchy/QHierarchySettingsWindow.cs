@@ -311,14 +311,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 }
 
                 // 绘制背景色
-                DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT * 3 + UP_DOWN_SPACE * 2);
+                DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT + UP_DOWN_SPACE * 2);
 
                 // 绘制空白
                 DrawSpace(UP_DOWN_SPACE);
 
                 DrawColorPicker("树形结构的颜色", EM_QHierarchySettings.TreeMapColor);
-                DrawCheckBoxRight("透明背景", EM_QHierarchySettings.TreeMapTransparentBackground);
-                DrawCheckBoxRight("简洁模式", EM_QHierarchySettings.TreeMapEnhanced);
 
                 // 绘制空白
                 DrawSpace(UP_DOWN_SPACE);
@@ -605,6 +603,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Color
+        /// </summary>
         private void DrawColorComponentSettings()
         {
             if (DrawCheckBox("Color", "", EM_QHierarchySettings.ColorShow))
@@ -644,6 +645,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Tag Icon
+        /// </summary>
         private void DrawTagIconComponentSettings()
         {
             if (DrawCheckBox("Tag Icon", "", EM_QHierarchySettings.TagIconShow))
@@ -663,7 +667,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.TagIconShowDuringPlayMode);
-                DrawEnum("图标尺寸大小", EM_QHierarchySettings.TagIconSize, typeof(EM_QHierarchySizeAll));
+                DrawEnum("图标尺寸", EM_QHierarchySettings.TagIconSize, typeof(EM_QHierarchySizeAll));
                 if (DrawFoldout("标签图标列表", EM_QHierarchySettings.TagIconListFoldout))
                 {
                     var tagTextureList = QTagTexture.loadTagTextureList();
@@ -706,6 +710,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Layer Icon
+        /// </summary>
         private void DrawLayerIconComponentSettings()
         {
             if (DrawCheckBox("Layer Icon", "", EM_QHierarchySettings.LayerIconShow))
@@ -725,8 +732,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.LayerIconShowDuringPlayMode);
-                DrawEnum("Icon size", EM_QHierarchySettings.LayerIconSize, typeof(EM_QHierarchySizeAll));
-                if (DrawFoldout("Layer icon list", EM_QHierarchySettings.LayerIconListFoldout))
+                DrawEnum("图标尺寸", EM_QHierarchySettings.LayerIconSize, typeof(EM_QHierarchySizeAll));
+                if (DrawFoldout("层级图标列表", EM_QHierarchySettings.LayerIconListFoldout))
                 {
                     var layerTextureList = QLayerTexture.loadLayerTextureList();
 
@@ -768,6 +775,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
         }
 
+        /// <summary>
+        /// 绘制 Child Count
+        /// </summary>
         private void DrawChildrenCountComponentSettings()
         {
             if (DrawCheckBox("Children Count", "", EM_QHierarchySettings.ChildrenCountShow))
@@ -783,12 +793,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT * 3 + UP_DOWN_SPACE * 2);
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.ChildrenCountShowDuringPlayMode);
-                DrawEnum("Label size", EM_QHierarchySettings.ChildrenCountLabelSize, typeof(EM_QHierarchySize));
-                DrawColorPicker("Label color", EM_QHierarchySettings.ChildrenCountLabelColor);
+                DrawEnum("数字大小", EM_QHierarchySettings.ChildrenCountLabelSize, typeof(EM_QHierarchySize));
+                DrawColorPicker("数字颜色", EM_QHierarchySettings.ChildrenCountLabelColor);
                 DrawSpace(UP_DOWN_SPACE);
             }
         }
 
+        /// <summary>
+        /// 绘制 Vertices And Triangles Count
+        /// </summary>
         private void DrawVerticesAndTrianglesCountComponentSettings()
         {
             if (DrawCheckBox("Vertices And Triangles Count", "", EM_QHierarchySettings.VerticesAndTrianglesShow))

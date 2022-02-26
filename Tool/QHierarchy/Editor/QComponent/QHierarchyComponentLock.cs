@@ -31,7 +31,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = RECT_WIDTH;
 
-            lockButtonTexture = QResources.Instance().GetTexture(QTexture.QLockButton);
+            lockButtonTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QLockButton);
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalShowModifierWarning, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.LockShow, SettingsChanged);

@@ -21,7 +21,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public QHierarchyComponentColor()
         {
-            colorTexture = QResources.Instance().GetTexture(QTexture.QColorButton);
+            colorTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QColorButton);
 
             rect.width = COMPONENT_WIDTH;
             rect.height = GAME_OBJECT_HEIGHT;

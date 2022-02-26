@@ -41,8 +41,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width = rect.height = size switch
             {
                 EM_QHierarchySizeAll.Small => 14,
-                EM_QHierarchySizeAll.Normal => 15,
-                EM_QHierarchySizeAll.Big => 16,
+                EM_QHierarchySizeAll.Normal => 17,
+                EM_QHierarchySizeAll.Big => 20,
                 _ => 14
             };
         }

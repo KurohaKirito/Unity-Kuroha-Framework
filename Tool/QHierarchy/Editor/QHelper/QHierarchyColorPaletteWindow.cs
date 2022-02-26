@@ -34,7 +34,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             this.colorSelectedHandler = colorSelectedHandler;
             this.colorRemovedHandler = colorRemovedHandler;
 
-            colorPaletteTexture = QResources.Instance().GetTexture(QTexture.QColorPalette);
+            colorPaletteTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QColorPalette);
             paletteRect = new Rect(0, 0, colorPaletteTexture.width, colorPaletteTexture.height);
         }
 

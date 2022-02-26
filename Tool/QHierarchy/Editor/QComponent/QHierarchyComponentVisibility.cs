@@ -36,8 +36,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = RECT_WIDTH;
 
-            visibilityButtonTexture = QResources.Instance().GetTexture(QTexture.QVisibilityButton);
-            visibilityOffButtonTexture = QResources.Instance().GetTexture(QTexture.QVisibilityOffButton);
+            visibilityButtonTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QVisibilityButton);
+            visibilityOffButtonTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QVisibilityOffButton);
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.VisibilityShowDuringPlayMode, SettingsChanged);

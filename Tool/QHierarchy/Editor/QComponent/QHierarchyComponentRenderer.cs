@@ -22,7 +22,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = RECT_WIDTH;
 
-            rendererButtonTexture = QResources.Instance().GetTexture(QTexture.QRendererButton);
+            rendererButtonTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QRendererButton);
             
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.RendererShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.RendererShowDuringPlayMode, SettingsChanged);

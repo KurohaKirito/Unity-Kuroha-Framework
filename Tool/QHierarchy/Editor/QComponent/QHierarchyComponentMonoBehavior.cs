@@ -23,7 +23,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             rect.width = TREE_STEP_WIDTH;
             rect.height = GAME_OBJECT_HEIGHT;
 
-            monoBehaviourIconTexture = QResources.Instance().GetTexture(QTexture.QMonoBehaviourIcon);
+            monoBehaviourIconTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QMonoBehaviourIcon);
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconIgnoreUnityMonoBehaviour, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.MonoBehaviourIconShow, SettingsChanged);

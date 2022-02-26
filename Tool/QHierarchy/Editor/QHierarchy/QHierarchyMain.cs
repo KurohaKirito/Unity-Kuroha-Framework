@@ -87,7 +87,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             orderedComponents = new List<QHierarchyBaseComponent>();
 
-            trimIcon = QResources.Instance().GetTexture(QTexture.QTrimIcon);
+            trimIcon = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTrimIcon);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalIndentation, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ComponentsOrder, OnSettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.AdditionalHideIconsIfNotFit, OnSettingsChanged);

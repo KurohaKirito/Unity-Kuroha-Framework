@@ -20,8 +20,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         public QComponentsOrderList(EditorWindow window)
         {
             this.window = window;
-            dragButton = QResources.Instance().GetTexture(QTexture.QDragButton);
-            backgroundColor = QResources.Instance().GetColor(QColor.BackgroundDark);
+            dragButton = QResources.Instance().GetTexture(EM_QHierarchyTexture.QDragButton);
+            backgroundColor = QResources.Instance().GetColor(EM_QHierarchyColor.BackgroundDark);
         }
 
         // PUBLIC

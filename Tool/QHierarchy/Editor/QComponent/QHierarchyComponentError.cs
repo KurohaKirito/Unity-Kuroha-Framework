@@ -59,7 +59,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         {
             rect.width = RECT_WIDTH;
 
-            errorIconTexture = QResources.Instance().GetTexture(QTexture.QErrorIcon);
+            errorIconTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QErrorIcon);
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowIconOnParent, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ErrorShowReferenceIsNull, SettingsChanged);
