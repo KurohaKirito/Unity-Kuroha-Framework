@@ -195,6 +195,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             return layerName;
         }
 
+        /// <summary>
+        /// 显示 Tag 菜单
+        /// </summary>
         private void ShowTagsContextMenu()
         {
             var tags = new List<string>(UnityEditorInternal.InternalEditorUtility.tags);
@@ -213,6 +216,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             menu.ShowAsContext();
         }
 
+        /// <summary>
+        /// 显示 Layer 菜单
+        /// </summary>
         private void ShowLayersContextMenu(string layerName)
         {
             var layers = new List<string>(UnityEditorInternal.InternalEditorUtility.layers);
@@ -231,29 +237,37 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             menu.ShowAsContext();
         }
 
+        /// <summary>
+        /// 修改 Tag 事件
+        /// </summary>
         private void TagChangedHandler(object newTag)
         {
-            for (int i = gameObjects.Length - 1; i >= 0; i--)
+            foreach (var gameObject in gameObjects)
             {
-                GameObject gameObject = gameObjects[i];
                 Undo.RecordObject(gameObject, "Change Tag");
                 gameObject.tag = (string) newTag;
                 EditorUtility.SetDirty(gameObject);
             }
         }
 
+        /// <summary>
+        /// Layer 修改事件
+        /// </summary>
         private void LayerChangedHandler(object newLayer)
         {
-            int newLayerId = LayerMask.NameToLayer((string) newLayer);
-            for (int i = gameObjects.Length - 1; i >= 0; i--)
+            var newLayerId = LayerMask.NameToLayer((string) newLayer);
+
+            foreach (var gameObject in gameObjects)
             {
-                GameObject gameObject = gameObjects[i];
                 Undo.RecordObject(gameObject, "Change Layer");
                 gameObject.layer = newLayerId;
                 EditorUtility.SetDirty(gameObject);
             }
         }
 
+        /// <summary>
+        /// 增加 Tag Layer 事件
+        /// </summary>
         private static void AddTagOrLayerHandler(object value)
         {
             var propertyInfo = typeof(EditorApplication).GetProperty("tagManager", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.GetProperty);
