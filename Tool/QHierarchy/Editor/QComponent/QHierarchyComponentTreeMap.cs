@@ -8,28 +8,26 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
     public class QHierarchyComponentTreeMap : QHierarchyBaseComponent
     {
-        private const float TREE_STEP_WIDTH = 14.0f;
-
         private Color treeMapColor;
-        
-        private readonly Texture2D treeMapLevelTexture;
-        private readonly Texture2D treeMapCurrentTexture;
-        private readonly Texture2D treeMapLastTexture;
-        private readonly Texture2D treeMapObjectTexture;
+        private const int TREE_MAP_WIDTH = 14;
+        private readonly Texture2D treeIconLevel;
+        private readonly Texture2D treeIconCurrent;
+        private readonly Texture2D treeIconLast;
+        private readonly Texture2D treeIconLine;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         public QHierarchyComponentTreeMap()
         {
-            rect.width = TREE_STEP_WIDTH;
+            rect.width = TREE_MAP_WIDTH;
             rect.height = GAME_OBJECT_HEIGHT;
             showComponentDuringPlayMode = true;
             
-            treeMapLevelTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTreeMapLevel);
-            treeMapCurrentTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTreeMapCurrent);
-            treeMapObjectTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTreeMapLine);
-            treeMapLastTexture = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTreeMapLast);
+            treeIconLevel = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTreeMapLevel);
+            treeIconCurrent = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTreeMapCurrent);
+            treeIconLine = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTreeMapLine);
+            treeIconLast = QResources.Instance().GetTexture(EM_QHierarchyTexture.QTreeMapLast);
             
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.TreeMapShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.TreeMapColor, SettingsChanged);
@@ -60,78 +58,92 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
+            // 设置颜色
+            UnityEngine.GUI.color = treeMapColor;
+            
+            // 得到当前需要绘制的物体的孩子数量
             var childCount = gameObject.transform.childCount;
             
-            var level = Mathf.RoundToInt(selectionRect.x / 14.0f);
+            // 计算出缩进级别, 每个缩进为 14 像素, 另外左侧有 4 像素留白
+            var totalPixelCount = (int) selectionRect.x;
+            var totalLevel = (totalPixelCount - 4) / TREE_MAP_WIDTH;
             
-            var gameObjectTransform = gameObject.transform;
+            // 临时变量
+            var currentTransform = gameObject.transform;
             Transform parentTransform = null;
-
-            for (int i = 0, j = level - 1; j >= 0; i++, j--)
+            
+            // 每一个物体都是从右向左绘制每一个图案
+            for (int counter = 0, curLevel = totalLevel - 1; curLevel >= 0; counter++, curLevel--)
             {
-                rect.x = 14 * j;
+                rect.x = TREE_MAP_WIDTH * curLevel;
                 
-                switch (i)
+                switch (counter)
                 {
+                    // 第 1 次循环
                     case 0:
                     {
                         if (childCount == 0)
                         {
-                            UnityEngine.GUI.color = treeMapColor;
-                            UnityEngine.GUI.DrawTexture(rect, treeMapObjectTexture);
+                            UnityEngine.GUI.DrawTexture(rect, treeIconLine);
                         }
-
-                        gameObjectTransform = gameObject.transform;
+            
+                        currentTransform = gameObject.transform;
                         break;
                     }
+                    // 第 2 次循环
                     case 1:
                     {
-                        UnityEngine.GUI.color = treeMapColor;
+                        var hierarchyIndex = currentTransform.GetSiblingIndex();
+                        
                         if (parentTransform == null)
                         {
-                            UnityEngine.GUI.DrawTexture(rect, gameObjectTransform.GetSiblingIndex() == gameObject.scene.rootCount - 1 ? treeMapLastTexture : treeMapCurrentTexture);
-                        }
-                        else if (gameObjectTransform.GetSiblingIndex() == parentTransform.childCount - 1)
-                        {
-                            UnityEngine.GUI.DrawTexture(rect, treeMapLastTexture);
+                            var sceneRootLastIndex = gameObject.scene.rootCount - 2;
+                            UnityEngine.GUI.DrawTexture(rect, hierarchyIndex == sceneRootLastIndex ? treeIconLast : treeIconCurrent);
                         }
                         else
                         {
-                            UnityEngine.GUI.DrawTexture(rect, treeMapCurrentTexture);
+                            var parentLastChildIndex = parentTransform.childCount - 1;
+                            UnityEngine.GUI.DrawTexture(rect, hierarchyIndex == parentLastChildIndex ? treeIconLast : treeIconCurrent);
                         }
-
-                        gameObjectTransform = parentTransform;
+                    
+                        currentTransform = parentTransform;
                         break;
                     }
+                    // 后续循环
                     default:
                     {
+                        var hierarchyIndex = currentTransform.GetSiblingIndex();
+                        
                         if (parentTransform == null)
                         {
-                            if (gameObjectTransform.GetSiblingIndex() != gameObject.scene.rootCount - 1)
+                            var sceneRootLastIndex = gameObject.scene.rootCount - 2;
+                            if (hierarchyIndex != sceneRootLastIndex)
                             {
-                                UnityEngine.GUI.DrawTexture(rect, treeMapLevelTexture);
+                                UnityEngine.GUI.DrawTexture(rect, treeIconLevel);
                             }
                         }
-                        else if (gameObjectTransform.GetSiblingIndex() != parentTransform.childCount - 1)
+                        else
                         {
-                            UnityEngine.GUI.DrawTexture(rect, treeMapLevelTexture);
+                            var parentLastChildIndex = parentTransform.childCount - 1;
+                            if (hierarchyIndex != parentLastChildIndex)
+                            {
+                                UnityEngine.GUI.DrawTexture(rect, treeIconLevel);
+                            }
                         }
-
-                        gameObjectTransform = parentTransform;
+                    
+                        currentTransform = parentTransform;
                         break;
                     }
                 }
 
-                if (gameObjectTransform != null)
-                {
-                    parentTransform = gameObjectTransform.parent;
-                }
-                else
-                {
+                if (currentTransform != null) {
+                    parentTransform = currentTransform.parent;
+                } else {
                     break;
                 }
             }
 
+            // 恢复默认颜色
             UnityEngine.GUI.color = QHierarchyColorUtils.DefaultColor;
         }
     }
