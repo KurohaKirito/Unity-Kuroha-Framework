@@ -40,7 +40,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 _ => 14
             };
 
-            tagTextureList = QTagTexture.loadTagTextureList();
+            tagTextureList = QTagTexture.LoadTagTextureList();
         }
 
         /// <summary>

@@ -68,10 +68,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 fontSize = 11,
                 clipping = TextClipping.Clip
             };
+            
+            rect.width = rect.height = GAME_OBJECT_HEIGHT;
 
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ComponentsShow, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ComponentsShowDuringPlayMode, SettingsChanged);
-            QSettings.Instance().AddEventListener(EM_QHierarchySettings.ComponentsIconSize, SettingsChanged);
             QSettings.Instance().AddEventListener(EM_QHierarchySettings.ComponentsIgnore, SettingsChanged);
 
             SettingsChanged();
@@ -87,16 +88,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
             // 获取设置: 是否在播放模式下显示
             showComponentDuringPlayMode = QSettings.Instance().Get<bool>(EM_QHierarchySettings.ComponentsShowDuringPlayMode);
-
-            // 获取设置: 组件图标大小
-            var size = (EM_QHierarchySizeAll) QSettings.Instance().Get<int>(EM_QHierarchySettings.ComponentsIconSize);
-            rect.width = rect.height = size switch
-            {
-                EM_QHierarchySizeAll.Normal => 15,
-                EM_QHierarchySizeAll.Big => 16,
-                _ => 14
-            };
-
+            
             // 获取设置: 忽略的组件
             var ignoreString = QSettings.Instance().Get<string>(EM_QHierarchySettings.ComponentsIgnore);
             if (string.IsNullOrEmpty(ignoreString) == false)

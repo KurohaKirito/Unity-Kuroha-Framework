@@ -34,79 +34,83 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 
         public void Set(string settingName, object value)
         {
-            if (value is bool)
+            switch (value)
             {
-                settingBoolValues[settingBoolNames.IndexOf(settingName)] = (bool)value;
+                case bool b:
+                    settingBoolValues[settingBoolNames.IndexOf(settingName)] = b;
+                    break;
+                
+                case string s:
+                    settingStringValues[settingStringNames.IndexOf(settingName)] = s;
+                    break;
+                
+                case float f:
+                    settingFloatValues[settingFloatNames.IndexOf(settingName)] = f;
+                    break;
+                
+                case int i:
+                    settingIntValues[settingIntNames.IndexOf(settingName)] = i;
+                    break;
             }
-            else if (value is string)
-            {
-                settingStringValues[settingStringNames.IndexOf(settingName)] = (string)value;
-            }
-            else if (value is float)
-            {
-                settingFloatValues[settingFloatNames.IndexOf(settingName)] = (float)value;
-            }
-            else if (value is int)
-            {
-                settingIntValues[settingIntNames.IndexOf(settingName)] = (int)value;
-            }
+
             EditorUtility.SetDirty(this);
         }
 
         public object Get(string settingName, object defaultValue)
         {
-            if (defaultValue is bool b)
+            switch (defaultValue)
             {
-                var id = settingBoolNames.IndexOf(settingName);
-                if (id == -1)
+                case bool b:
                 {
-                    settingBoolNames.Add(settingName);
-                    settingBoolValues.Add(b);
-                    return b;
-                }
+                    var id = settingBoolNames.IndexOf(settingName);
+                    if (id == -1)
+                    {
+                        settingBoolNames.Add(settingName);
+                        settingBoolValues.Add(b);
+                        return b;
+                    }
                 
-                return settingBoolValues[id];
-            }
-            
-            if (defaultValue is string s)
-            {
-                var id = settingStringNames.IndexOf(settingName);
-                if (id == -1) 
+                    return settingBoolValues[id];
+                }
+                case string s:
                 {
-                    settingStringNames.Add(settingName);
-                    settingStringValues.Add(s);
-                    return s;
-                }
+                    var id = settingStringNames.IndexOf(settingName);
+                    if (id == -1) 
+                    {
+                        settingStringNames.Add(settingName);
+                        settingStringValues.Add(s);
+                        return s;
+                    }
                 
-                return settingStringValues[id];
-            }
-            
-            if (defaultValue is float f)
-            {
-                var id = settingFloatNames.IndexOf(settingName);
-                if (id == -1) 
+                    return settingStringValues[id];
+                }
+                case float f:
                 {
-                    settingFloatNames.Add(settingName);
-                    settingFloatValues.Add(f);
-                    return f;
-                }
+                    var id = settingFloatNames.IndexOf(settingName);
+                    if (id == -1) 
+                    {
+                        settingFloatNames.Add(settingName);
+                        settingFloatValues.Add(f);
+                        return f;
+                    }
                 
-                return settingFloatValues[id];
-            }
-            
-            if (defaultValue is int i)
-            {
-                var id = settingIntNames.IndexOf(settingName);
-                if (id == -1) 
+                    return settingFloatValues[id];
+                }
+                case int i:
                 {
-                    settingIntNames.Add(settingName);
-                    settingIntValues.Add(i);
-                    return i;
-                }
+                    var id = settingIntNames.IndexOf(settingName);
+                    if (id == -1) 
+                    {
+                        settingIntNames.Add(settingName);
+                        settingIntValues.Add(i);
+                        return i;
+                    }
                 
-                return settingIntValues[id];
+                    return settingIntValues[id];
+                }
+                default:
+                    return null;
             }
-            return null;
         }
         
         public object Get<T>(string settingName)

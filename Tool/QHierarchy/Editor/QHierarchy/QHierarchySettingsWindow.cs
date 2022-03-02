@@ -672,7 +672,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 DrawEnum("图标尺寸", EM_QHierarchySettings.TagIconSize, typeof(EM_QHierarchySizeAll));
                 if (DrawFoldout("标签图标列表", EM_QHierarchySettings.TagIconListFoldout))
                 {
-                    var tagTextureList = QTagTexture.loadTagTextureList();
+                    var tagTextureList = QTagTexture.LoadTagTextureList();
 
                     var changed = false;
                     foreach (var tag in tags)
@@ -703,7 +703,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                     if (changed)
                     {
-                        QTagTexture.saveTagTextureList(EM_QHierarchySettings.TagIconList, tagTextureList);
+                        QTagTexture.SaveTagTextureList(EM_QHierarchySettings.TagIconList, tagTextureList);
                         EditorApplication.RepaintHierarchyWindow();
                     }
                 }
@@ -737,7 +737,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 DrawEnum("图标尺寸", EM_QHierarchySettings.LayerIconSize, typeof(EM_QHierarchySizeAll));
                 if (DrawFoldout("层级图标列表", EM_QHierarchySettings.LayerIconListFoldout))
                 {
-                    var layerTextureList = QLayerTexture.loadLayerTextureList();
+                    var layerTextureList = QLayerTexture.LoadLayerTextureList();
 
                     var changed = false;
                     foreach (var layer in layers)
@@ -768,7 +768,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                     if (changed)
                     {
-                        QLayerTexture.saveLayerTextureList(EM_QHierarchySettings.LayerIconList, layerTextureList);
+                        QLayerTexture.SaveLayerTextureList(EM_QHierarchySettings.LayerIconList, layerTextureList);
                         EditorApplication.RepaintHierarchyWindow();
                     }
                 }
@@ -858,13 +858,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 if (DrawRestore(28))
                 {
                     QSettings.Instance().Restore(EM_QHierarchySettings.ComponentsShowDuringPlayMode);
-                    QSettings.Instance().Restore(EM_QHierarchySettings.ComponentsIconSize);
                 }
 
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT * 3 + UP_DOWN_SPACE * 2);
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.ComponentsShowDuringPlayMode);
-                DrawEnum("图标大小", EM_QHierarchySettings.ComponentsIconSize, typeof(EM_QHierarchySizeAll));
                 DrawTextField("类名白名单", EM_QHierarchySettings.ComponentsIgnore);
                 DrawSpace(UP_DOWN_SPACE);
             }
