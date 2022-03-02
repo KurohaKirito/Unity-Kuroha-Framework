@@ -99,6 +99,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         private const string PREFS_DARK = "Dark_";
         private const string PREFS_LIGHT = "Light_";
         public const string DEFAULT_ORDER = "0;1;2;3;4;5;6;7;8;9;10;11;12";
+        
+        /// <summary>
+        /// 默认情况下参与排序的功能的数量
+        /// </summary>
         public const int DEFAULT_ORDER_COUNT = 13;
         private const string SETTINGS_FILE_NAME = "QSettingsObjectAsset";
 

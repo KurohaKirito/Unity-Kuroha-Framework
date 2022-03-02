@@ -26,6 +26,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         private readonly List<QHierarchyBaseComponent> componentsAtLeft;
         
         private readonly List<QHierarchyBaseComponent> orderedComponents;
+        
+        /// <summary>
+        /// 一个左三角
+        /// 用于表示当前 Hierarchy 面板宽度太小, 图标显示未显示完全, 请扩大 Hierarchy 面板宽度
+        /// </summary>
         private readonly Texture2D trimIcon;
 
         private int indentation;
@@ -109,23 +114,24 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private void OnSettingsChanged()
         {
+            // 读取功能排序设置
             var componentOrder = QSettings.Instance().Get<string>(EM_QHierarchySettings.ComponentsOrder);
             var componentIds = componentOrder.Split(';');
-
             if (componentIds.Length != QSettings.DEFAULT_ORDER_COUNT)
             {
                 QSettings.Instance().Set(EM_QHierarchySettings.ComponentsOrder, QSettings.DEFAULT_ORDER, false);
                 componentIds = QSettings.DEFAULT_ORDER.Split(';');
             }
 
+            // 根据设置进行排序
             orderedComponents.Clear();
             foreach (var stringID in componentIds)
             {
                 orderedComponents.Add(componentsAtRight[(EM_QHierarchyComponent) Enum.Parse(typeof(EM_QHierarchyComponent), stringID)]);
             }
-
             orderedComponents.Add(componentsAtRight[EM_QHierarchyComponent.ComponentsComponent]);
 
+            // 读取其他设置
             indentation = QSettings.Instance().Get<int>(EM_QHierarchySettings.AdditionalIndentation);
             hideIconsIfThereIsNoFreeSpace = QSettings.Instance().Get<bool>(EM_QHierarchySettings.AdditionalHideIconsIfNotFit);
             backgroundColor = QSettings.Instance().GetColor(EM_QHierarchySettings.AdditionalBackgroundColor);

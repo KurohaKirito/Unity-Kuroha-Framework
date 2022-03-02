@@ -294,7 +294,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             EditorGUI.LabelField(rect, sectionTitle);
         }
 
-        #region DrawSettings
+        #region Draw Components
 
         /// <summary>
         /// 绘制 HierarchyTree
@@ -552,7 +552,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT + UP_DOWN_SPACE * 2);
                 DrawSpace(UP_DOWN_SPACE);
-                DrawCheckBoxRight("仅显示 Broken 状态的预制体", EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly);
+                DrawCheckBoxRight("仅显示 Missing 状态的预制体", EM_QHierarchySettings.PrefabShowBrakedPrefabsOnly);
                 DrawSpace(UP_DOWN_SPACE);
             }
         }
@@ -885,6 +885,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             var componentIds = componentOrder.Split(';');
 
             var rect = GetNewRect(position.width, 17 * componentIds.Length + 10);
+            
             componentsOrderList ??= new QComponentsOrderList(this);
             componentsOrderList.Draw(rect, componentIds);
 
@@ -906,6 +907,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             }
 
             DrawSpace(UP_DOWN_SPACE);
+            
             DrawCheckBoxRight("Show QHierarchyObjectList GameObject", EM_QHierarchySettings.AdditionalShowHiddenQHierarchyObjectList);
             DrawCheckBoxRight("Hide icons if not fit", EM_QHierarchySettings.AdditionalHideIconsIfNotFit);
             DrawIntSlider("Right indent", EM_QHierarchySettings.AdditionalIndentation, 0, 500);
@@ -914,75 +916,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             DrawColorPicker("Active color", EM_QHierarchySettings.AdditionalActiveColor);
             DrawColorPicker("Inactive color", EM_QHierarchySettings.AdditionalInactiveColor);
             DrawColorPicker("Special color", EM_QHierarchySettings.AdditionalSpecialColor);
+            
             DrawSpace(UP_DOWN_SPACE);
-        }
-
-        private void DrawLabel(string label)
-        {
-            var rect = GetNewRect(0, 16, 34, 6);
-            rect.y -= (EditorGUIUtility.singleLineHeight - rect.height) * 0.5f;
-            EditorGUI.LabelField(rect, label);
-            DrawSpace(2);
-        }
-
-        private void DrawTextField(string label, EM_QHierarchySettings hierarchySettings)
-        {
-            var currentValue = QSettings.Instance().Get<string>(hierarchySettings);
-            var newValue = EditorGUI.TextField(GetNewRect(0, 16, 34, 6), label, currentValue);
-            if (!currentValue.Equals(newValue))
-            {
-                QSettings.Instance().Set(hierarchySettings, newValue);
-            }
-            DrawSpace(2);
-        }
-
-        private bool DrawFoldout(string label, EM_QHierarchySettings hierarchySettings)
-        {
-            var foldoutRect = GetNewRect(0, 16, 19, 6);
-            var foldoutValue = QSettings.Instance().Get<bool>(hierarchySettings);
-            var newFoldoutValue = EditorGUI.Foldout(foldoutRect, foldoutValue, label);
-            if (foldoutValue != newFoldoutValue)
-            {
-                QSettings.Instance().Set(hierarchySettings, newFoldoutValue);
-            }
-            DrawSpace(2);
-            return newFoldoutValue;
-        }
-
-        private Enum DrawEnum(string label, EM_QHierarchySettings hierarchySettings, Type enumType)
-        {
-            var currentEnum = (Enum) Enum.ToObject(enumType, QSettings.Instance().Get<int>(hierarchySettings));
-            Enum newEnumValue;
-            if (!(newEnumValue = EditorGUI.EnumPopup(GetNewRect(0, 16, 34, 6), label, currentEnum)).Equals(currentEnum))
-            {
-                QSettings.Instance().Set(hierarchySettings, Convert.ToInt32(newEnumValue));
-            }
-            DrawSpace(2);
-            return newEnumValue;
-        }
-
-        private void DrawIntSlider(string label, EM_QHierarchySettings hierarchySettings, int minValue, int maxValue)
-        {
-            var rect = GetNewRect(0, 16, 34, 4);
-            var currentValue = QSettings.Instance().Get<int>(hierarchySettings);
-            var newValue = EditorGUI.IntSlider(rect, label, currentValue, minValue, maxValue);
-            if (currentValue != newValue)
-            {
-                QSettings.Instance().Set(hierarchySettings, newValue);
-            }
-            DrawSpace(2);
-        }
-
-        private void DrawFloatSlider(string label, EM_QHierarchySettings hierarchySettings, float minValue, float maxValue)
-        {
-            var rect = GetNewRect(0, 16, 34, 4);
-            var currentValue = QSettings.Instance().Get<float>(hierarchySettings);
-            var newValue = EditorGUI.Slider(rect, label, currentValue, minValue, maxValue);
-            if (!currentValue.Equals(newValue))
-            {
-                QSettings.Instance().Set(hierarchySettings, newValue);
-            }
-            DrawSpace(2);
         }
 
         #region 界面组件
@@ -1156,6 +1091,116 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             {
                 DrawSpace(spaceAfter);
             }
+        }
+        
+        /// <summary>
+        /// 绘制 Int 滑动条
+        /// </summary>
+        private void DrawIntSlider(string label, EM_QHierarchySettings hierarchySettings, int minValue, int maxValue)
+        {
+            var rect = GetNewRect(0, 16, 34, 4);
+            
+            var currentValue = QSettings.Instance().Get<int>(hierarchySettings);
+            
+            var newValue = EditorGUI.IntSlider(rect, label, currentValue, minValue, maxValue);
+            
+            if (currentValue.Equals(newValue) == false)
+            {
+                QSettings.Instance().Set(hierarchySettings, newValue);
+            }
+            DrawSpace(2);
+        }
+
+        /// <summary>
+        /// 绘制 Float 滑动条
+        /// </summary>
+        private void DrawFloatSlider(string label, EM_QHierarchySettings hierarchySettings, float minValue, float maxValue)
+        {
+            var rect = GetNewRect(0, 16, 34, 4);
+            
+            var currentValue = QSettings.Instance().Get<float>(hierarchySettings);
+            
+            var newValue = EditorGUI.Slider(rect, label, currentValue, minValue, maxValue);
+            
+            if (currentValue.Equals(newValue) == false)
+            {
+                QSettings.Instance().Set(hierarchySettings, newValue);
+            }
+            
+            DrawSpace(2);
+        }
+        
+        /// <summary>
+        /// 绘制枚举选单
+        /// </summary>
+        private Enum DrawEnum(string label, EM_QHierarchySettings hierarchySettings, Type enumType)
+        {
+            var currentEnum = (Enum) Enum.ToObject(enumType, QSettings.Instance().Get<int>(hierarchySettings));
+            
+            var newEnumValue = EditorGUI.EnumPopup(GetNewRect(0, 16, 34, 6), label, currentEnum);
+            
+            if (newEnumValue.Equals(currentEnum) == false)
+            {
+                QSettings.Instance().Set(hierarchySettings, Convert.ToInt32(newEnumValue));
+            }
+            
+            DrawSpace(2);
+            
+            return newEnumValue;
+        }
+        
+        /// <summary>
+        /// 绘制折叠框
+        /// </summary>
+        private bool DrawFoldout(string label, EM_QHierarchySettings hierarchySettings)
+        {
+            var foldoutRect = GetNewRect(0, 16, 19, 6);
+            
+            var foldoutValue = QSettings.Instance().Get<bool>(hierarchySettings);
+            
+            var newFoldoutValue = EditorGUI.Foldout(foldoutRect, foldoutValue, label);
+            
+            if (foldoutValue != newFoldoutValue)
+            {
+                QSettings.Instance().Set(hierarchySettings, newFoldoutValue);
+            }
+            
+            DrawSpace(2);
+            
+            return newFoldoutValue;
+        }
+        
+        /// <summary>
+        /// 绘制文本输入框
+        /// </summary>
+        private void DrawTextField(string label, EM_QHierarchySettings hierarchySettings)
+        {
+            var currentValue = QSettings.Instance().Get<string>(hierarchySettings);
+            
+            var newValue = EditorGUI.TextField(GetNewRect(0, 16, 34, 6), label, currentValue);
+            
+            if (currentValue.Equals(newValue) == false)
+            {
+                QSettings.Instance().Set(hierarchySettings, newValue);
+            }
+            
+            DrawSpace(2);
+        }
+        
+        /// <summary>
+        /// 绘制文本标签
+        /// </summary>
+        private void DrawLabel(string label)
+        {
+            var rect = GetNewRect(0, 16, 34, 6);
+            
+            var offset = (EditorGUIUtility.singleLineHeight - rect.height) * 0.5f;
+            
+            rect.y -= offset;
+            
+            EditorGUI.LabelField(rect, label);
+            
+            DrawSpace(2);
         }
 
         #endregion
