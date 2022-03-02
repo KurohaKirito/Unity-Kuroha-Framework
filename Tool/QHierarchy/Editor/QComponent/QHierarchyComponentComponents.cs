@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
@@ -167,24 +168,15 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 foreach (var component in allComponents)
                 {
                     var componentName = component.GetType().FullName;
-                    
-                    if (componentName != null)
+                    if (componentName == null)
                     {
-                        var ignore = false;
-                        
-                        foreach (var keyWorld in ignoreKeyList)
-                        {
-                            if (componentName.Contains(keyWorld))
-                            {
-                                ignore = true;
-                                break;
-                            }
-                        }
-
-                        if (ignore == false)
-                        {
-                            components.Add(component);
-                        }
+                        continue;
+                    }
+                    
+                    var ignore = ignoreKeyList.Any(keyWorld => componentName.Contains(keyWorld));
+                    if (ignore == false)
+                    {
+                        components.Add(component);
                     }
                 }
             }
@@ -303,24 +295,28 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 
                 // 反射获取组件的 enabled 字段
                 var component = components[clickIndex];
-                if (component != null)
+                if (component == null)
                 {
-                    var classInfo = component.GetType();
-                    var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
-                    if (propertyInfo != null)
-                    {
-                        var componentEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
-
-                        // 在撤销栈中记录下操作
-                        Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
-
-                        // 反射 Set enabled 字段具体的值
-                        componentEnabled = !componentEnabled;
-                        propertyInfo.GetSetMethod().Invoke(components[clickIndex], new object[] {componentEnabled});
-
-                        EditorUtility.SetDirty(gameObject);
-                    }
+                    return;
                 }
+                
+                var classInfo = component.GetType();
+                var propertyInfo = ReflectionUtil.GetProperty(classInfo, "enabled");
+                if (propertyInfo == null)
+                {
+                    return;
+                }
+                
+                var componentEnabled = (bool) ReflectionUtil.GetValueProperty(propertyInfo, component);
+
+                // 在撤销栈中记录下操作
+                Undo.RecordObject(components[clickIndex], componentEnabled ? "Disable Component" : "Enable Component");
+
+                // 反射 Set enabled 字段具体的值
+                componentEnabled = !componentEnabled;
+                propertyInfo.GetSetMethod().Invoke(components[clickIndex], new object[] {componentEnabled});
+
+                EditorUtility.SetDirty(gameObject);
             }
         }
     }

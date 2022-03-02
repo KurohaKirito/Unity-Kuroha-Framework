@@ -8,7 +8,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
     public class QHierarchyComponentVerticesAndTrianglesCount : QHierarchyBaseComponent
     {
-        // PRIVATE
         private readonly GUIStyle labelStyle;
         private Color verticesLabelColor;
         private Color trianglesLabelColor;
@@ -17,7 +16,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private bool showVerticesCount;
         private EM_QHierarchySize labelSize;
 
-        // CONSTRUCTOR
         public QHierarchyComponentVerticesAndTrianglesCount()
         {
             labelStyle = new GUIStyle
@@ -38,7 +36,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             SettingsChanged();
         }
 
-        // PRIVATE
         private void SettingsChanged()
         {
             enabled = QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShow);
@@ -50,112 +47,140 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             trianglesLabelColor = QSettings.Instance().GetColor(EM_QHierarchySettings.VerticesAndTrianglesTrianglesLabelColor);
             labelSize = (EM_QHierarchySize) QSettings.Instance().Get<int>(EM_QHierarchySettings.VerticesAndTrianglesLabelSize);
 
-#if UNITY_2019_1_OR_NEWER
-            labelStyle.fontSize = labelSize == EM_QHierarchySize.Big ? 7 : 6;
-            rect.width = labelSize == EM_QHierarchySize.Big ? 24 : 22;
-#else
-                labelStyle.fontSize = labelSize == EM_QHierarchySize.Big ? 9 : 8;
-                rect.width = labelSize == EM_QHierarchySize.Big ? 33 : 25;
-#endif
+            labelStyle.fontSize = labelSize == EM_QHierarchySize.Big ? 10 : 8;
+            rect.width = labelSize == EM_QHierarchySize.Big ? 36 : 30;
         }
 
-        // DRAW
+        /// <summary>
+        /// 计算布局
+        /// </summary>
         public override EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
-            if (maxWidth < rect.width)
+            if (maxWidth < rect.width + COMPONENT_SPACE)
             {
                 return EM_QLayoutStatus.Failed;
             }
-            else
-            {
-                curRect.x -= rect.width + 2;
-                rect.x = curRect.x;
-                rect.y = curRect.y;
-#if UNITY_2019_1_OR_NEWER
-                rect.y += labelSize == EM_QHierarchySize.Big ? 2 : 1;
-#endif
-                return EM_QLayoutStatus.Success;
-            }
+            
+            curRect.x -= rect.width + COMPONENT_SPACE;
+            rect.x = curRect.x;
+            rect.y = curRect.y;
+            
+            return EM_QLayoutStatus.Success;
         }
 
+        /// <summary>
+        /// 绘制 GUI
+        /// </summary>
         public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             var vertexCount = 0;
             var triangleCount = 0;
 
-            var meshFilterArray = calculateTotalCount ? gameObject.GetComponentsInChildren<MeshFilter>(true) : gameObject.GetComponents<MeshFilter>();
+            var meshFilterArray = gameObject.GetComponentsInChildren<MeshFilter>(calculateTotalCount);
             foreach (var meshFilter in meshFilterArray)
             {
                 var sharedMesh = meshFilter.sharedMesh;
-                if (sharedMesh != null)
+                if (sharedMesh == null)
                 {
-                    if (showVerticesCount) vertexCount += sharedMesh.vertexCount;
-                    if (showTrianglesCount) triangleCount += sharedMesh.triangles.Length;
+                    continue;
+                }
+
+                if (showVerticesCount)
+                {
+                    vertexCount += sharedMesh.vertexCount;
+                }
+
+                if (showTrianglesCount)
+                {
+                    triangleCount += sharedMesh.triangles.Length;
                 }
             }
 
-            var skinnedMeshRendererArray = calculateTotalCount ? gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true) : gameObject.GetComponents<SkinnedMeshRenderer>();
-
+            var skinnedMeshRendererArray = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(calculateTotalCount);
             foreach (var skinnedMeshRenderer in skinnedMeshRendererArray)
             {
                 var sharedMesh = skinnedMeshRenderer.sharedMesh;
-                if (sharedMesh != null)
+                if (sharedMesh == null)
                 {
-                    if (showVerticesCount) vertexCount += sharedMesh.vertexCount;
-                    if (showTrianglesCount) triangleCount += sharedMesh.triangles.Length;
+                    continue;
+                }
+
+                if (showVerticesCount)
+                {
+                    vertexCount += sharedMesh.vertexCount;
+                }
+
+                if (showTrianglesCount)
+                {
+                    triangleCount += sharedMesh.triangles.Length;
                 }
             }
 
             triangleCount /= 3;
 
-            if (vertexCount > 0 || triangleCount > 0)
+            if (vertexCount <= 0 && triangleCount <= 0)
             {
-                if (showTrianglesCount && showVerticesCount)
-                {
-                    rect.y -= 4;
-                    labelStyle.normal.textColor = verticesLabelColor;
-                    EditorGUI.LabelField(rect, GetCountString(vertexCount), labelStyle);
+                return;
+            }
+            
+            if (showTrianglesCount && showVerticesCount)
+            {
+                rect.y -= 4;
+                labelStyle.normal.textColor = verticesLabelColor;
+                EditorGUI.LabelField(rect, GetCountString(vertexCount), labelStyle);
 
-                    rect.y += 8;
-                    labelStyle.normal.textColor = trianglesLabelColor;
-                    EditorGUI.LabelField(rect, GetCountString(triangleCount), labelStyle);
-                }
-                else if (showVerticesCount)
-                {
-                    labelStyle.normal.textColor = verticesLabelColor;
-                    EditorGUI.LabelField(rect, GetCountString(vertexCount), labelStyle);
-                }
-                else
-                {
-                    labelStyle.normal.textColor = trianglesLabelColor;
-                    EditorGUI.LabelField(rect, GetCountString(triangleCount), labelStyle);
-                }
+                rect.y += 8;
+                labelStyle.normal.textColor = trianglesLabelColor;
+                EditorGUI.LabelField(rect, GetCountString(triangleCount), labelStyle);
+            }
+            else if (showVerticesCount)
+            {
+                labelStyle.normal.textColor = verticesLabelColor;
+                EditorGUI.LabelField(rect, GetCountString(vertexCount), labelStyle);
+            }
+            else
+            {
+                labelStyle.normal.textColor = trianglesLabelColor;
+                EditorGUI.LabelField(rect, GetCountString(triangleCount), labelStyle);
             }
         }
 
-        // PRIVATE
+        /// <summary>
+        /// 处理数字为字符串
+        /// </summary>
         private static string GetCountString(int count)
         {
+            string result;
+            
+            // 小于 1 K
             if (count < 1000)
             {
-                return count.ToString();
+                result = count.ToString();
             }
 
-            if (count < 1000000)
+            // 小于 100 K
+            else if (count < 100000)
             {
-                return (count > 100000) switch
-                {
-                    true => (count / 1000.0f).ToString("0") + "k",
-                    _ => (count / 1000.0f).ToString("0.0") + "k"
-                };
+                result = $"{count / 1000.0f:0.0}K";
             }
-
-            if (count > 10000000)
+            
+            // 小于 1 M
+            else if (count < 1000000)
             {
-                return (count / 1000.0f).ToString("0") + "M";
+                result = $"{count / 1000.0f:0}K";
             }
-
-            return (count / 1000000.0f).ToString("0.0") + "M";
+            
+            // 小于 100 M
+            else if (count < 100000000)
+            {
+                result = $"{count / 1000000.0f:0.0}M";
+            }
+            else
+            {
+                result = $"{count / 1000000.0f:0}M";
+            }
+            
+            return result;
         }
     }
 }

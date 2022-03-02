@@ -2,6 +2,7 @@
 {
     public enum EM_QHierarchyComponent
     {
+        // 右侧
         LockComponent               = 0,
         VisibilityComponent         = 1,
         StaticComponent             = 2,
@@ -15,9 +16,11 @@
         LayerIconComponent          = 10,
         ChildrenCountComponent      = 11,
         VerticesAndTrianglesCount   = 12,
+        
+        // 左侧
         SeparatorComponent          = 1000,
         TreeMapComponent            = 1001,
         MonoBehaviourIconComponent  = 1002,
-        ComponentsComponent         = 1003,
+        ComponentsComponent         = 1003
     }
 }

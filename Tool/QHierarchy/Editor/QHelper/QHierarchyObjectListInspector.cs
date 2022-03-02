@@ -14,7 +14,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         /// <summary>
         /// 帮助提示
         /// </summary>
-        private const string HELP_MESSAGE = "这是一个由 QHierarchy 插件管理并自动创建的游戏物体.它存储了当前场景中一些游戏对象的引用.\r\n此对象不会包含在应用程序构建中. 您可以安全地删除它, 但删除后 '是否锁定' '颜色标记' 等设置将被重置.\r\n在 QHierarchy 的设置中取消选中 '显示 QHierarchy GameObject' 可以隐藏此对象.";
+        private const string HELP_MESSAGE = @"这是一个由 QHierarchy 插件管理并自动创建的游戏物体.它存储了当前场景中一些游戏对象的引用.
+此对象不会包含在应用程序构建中. 您可以安全地删除它, 但删除后 '是否锁定' '颜色标记' 等设置将被重置.
+在 QHierarchy 的设置中取消选中 '显示 QHierarchy GameObject' 可以隐藏此对象.";
         
         /// <summary>
         /// 重新绘制 Inspector 面板

@@ -32,7 +32,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             },
             {
                 EM_QHierarchyTexture.QErrorIcon,
-                "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAQCAYAAADagWXwAAAANklEQVQYGWP8/fs3Ay7AhEsCJE605H+gYhCGA6J1wnXAGAOhkwVmOZBmRGKDmUQ7iLRAIN9OAA9DBxP0TyMiAAAAAElFTkSuQmCC"},
+                "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAQCAYAAADagWXwAAAANklEQVQYGWP8/fs3Ay7AhEsCJE605H+gYhCGA6J1wnXAGAOhkwVmOZBmRGKDmUQ7iLRAIN9OAA9DBxP0TyMiAAAAAElFTkSuQmCC"
+            },
             {
                 EM_QHierarchyTexture.QLockButton,
                 "iVBORw0KGgoAAAANSUhEUgAAAA0AAAAQBAMAAAA/jegKAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAACdQTFRFAAAA////////////////////////////////////AAAA////////Uw8KpAAAAA10Uk5TAGh7TvX/yICO/UCK/PopRqIAAABFSURBVHicY2CAA0ZFMMXsGuoMolkSGFJAtCgDA6sAkC4F0gUImmNqaGjoDAYGTiAVGgkUCw1dGhqKm4ap4z4KpE/DLQUA21oT++3FRPAAAAAASUVORK5CYII="
@@ -59,13 +60,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             },
             {
                 EM_QHierarchyTexture.QTreeMapLast,
-                "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAPUlEQVQoFWNgwA+E/wMBUIkwujImdAFi+aMa8YQUCx45dCmUKCFKIzAq36CbwogugMbnBvI50MRGuTQLAQD/rQhHffk54gAAAABJRU5ErkJggg=="},
+                "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAPUlEQVQoFWNgwA+E/wMBUIkwujImdAFi+aMa8YQUCx45dCmUKCFKIzAq36CbwogugMbnBvI50MRGuTQLAQD/rQhHffk54gAAAABJRU5ErkJggg=="
+            },
             {
                 EM_QHierarchyTexture.QTreeMapLevel,
-                "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAJElEQVQoFWNgwA8k/wMBUIkkujImdAFi+aMa8YTUaOCM8MABAI00BE1+cZ4yAAAAAElFTkSuQmCC"},
+                "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAJElEQVQoFWNgwA8k/wMBUIkkujImdAFi+aMa8YTUaOCM8MABAI00BE1+cZ4yAAAAAElFTkSuQmCC"
+            },
             {
                 EM_QHierarchyTexture.QTreeMapLevel4,
-                "iVBORw0KGgoAAAANSUhEUgAAADgAAAAQCAYAAABDebxFAAAATklEQVRIDe2SMQoAMAgDpV/w/29t3QWzpnKOGiHmjJgrb1VJcpa1qc3eadaWNTjwd6AQhKB5AryoOSBpD4IyInMBBM0BSXsQlBGZC9YTfL7XEKcUdfHdAAAAAElFTkSuQmCC"},
+                "iVBORw0KGgoAAAANSUhEUgAAADgAAAAQCAYAAABDebxFAAAATklEQVRIDe2SMQoAMAgDpV/w/29t3QWzpnKOGiHmjJgrb1VJcpa1qc3eadaWNTjwd6AQhKB5AryoOSBpD4IyInMBBM0BSXsQlBGZC9YTfL7XEKcUdfHdAAAAAElFTkSuQmCC"
+            },
             {
                 EM_QHierarchyTexture.QTreeMapObject,
                 "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAABnUlEQVQoFdVSTW/aQBR83vX6K9iOkAqmQVUQyoUrUg7cg/qLkTjliDggVfTKZ9rKiT9Q2hjLLsTprMWBWL311Lcar/12Z+fN8xL9N6FUKlXxbQHOCTZmBqTAM/Dr9H6QG8+jPhgM7hqNxnW73b7wPK8mhGBxGKfbb9uX1WoVxnH8FfO8SrwaDoe3rusatu2Srovy0I+e53Zvum6v1/uw2Ww+gfhUJV4WRWEsl0uyrBp1Oh0yTUE/fJ+iICKs6a1Wq8BpTpXIuMLfsEEJgoCiKICqTsfjkegN5i8syrIMH8Sk8feBjFAFFA1KkoTDkyaYIKEByHPOy4ZWFQtd1RSmgA0FNIZIFoZgGCpXybAMKXaoKv5M0v1vprKSxFBQgcEEQwUWCTRrNpvtQNxxedpZvMa72K3X67ZpmTq8gcuY4zivh+Mhm0wm36fT6TjP822VmIdh+LBerxN4cZvNpq1pGvd9/3E0Gn1ZLBbjNE2XEMqrN0eKy5wJf91+v/8ZHbbw3+6jKJojL29O6fpvRKyVoeFZA2Qf9kAGoGX/GH8AjXiXWwSceRAAAAAASUVORK5CYII="
@@ -88,7 +92,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             },
         };
 
-        private readonly Dictionary<EM_QHierarchyTexture, string> resourcesDark = new Dictionary<EM_QHierarchyTexture, string>()
+        private readonly Dictionary<EM_QHierarchyTexture, string> resourcesDark = new Dictionary<EM_QHierarchyTexture, string>
         {
             {
                 EM_QHierarchyTexture.QCheckBoxChecked,
@@ -104,7 +108,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             },
         };
 
-        private readonly Dictionary<EM_QHierarchyTexture, string> resourcesLight = new Dictionary<EM_QHierarchyTexture, string>()
+        private readonly Dictionary<EM_QHierarchyTexture, string> resourcesLight = new Dictionary<EM_QHierarchyTexture, string>
         {
             {
                 EM_QHierarchyTexture.QCheckBoxChecked,
@@ -122,7 +126,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 
         private readonly Dictionary<EM_QHierarchyColor, Color> colors;
 
-        private readonly Dictionary<EM_QHierarchyColor, Color> colorsDarkSkin = new Dictionary<EM_QHierarchyColor, Color>()
+        private readonly Dictionary<EM_QHierarchyColor, Color> colorsDarkSkin = new Dictionary<EM_QHierarchyColor, Color>
         {
             {
                 EM_QHierarchyColor.BackgroundDark, new Color(0.15f, 0.15f, 0.15f)
@@ -141,7 +145,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             },
         };
 
-        private readonly Dictionary<EM_QHierarchyColor, Color> colorsLightSkin = new Dictionary<EM_QHierarchyColor, Color>()
+        private readonly Dictionary<EM_QHierarchyColor, Color> colorsLightSkin = new Dictionary<EM_QHierarchyColor, Color>
         {
             {
                 EM_QHierarchyColor.BackgroundDark, new Color(0.88f, 0.88f, 0.88f)
@@ -163,7 +167,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         private QResources()
         {
             textures = new Dictionary<EM_QHierarchyTexture, Texture2D>();
-            
+
             foreach (var resourcePair in resourcesCommon)
             {
                 var texture = new Texture2D(0, 0, TextureFormat.ARGB32, false, false)
@@ -175,7 +179,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             }
 
             var resources = EditorGUIUtility.isProSkin ? resourcesDark : resourcesLight;
-            
+
             foreach (var resourcePair in resources)
             {
                 var texture = new Texture2D(0, 0, TextureFormat.ARGB32, false, false)

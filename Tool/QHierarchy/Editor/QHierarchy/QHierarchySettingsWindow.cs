@@ -104,21 +104,23 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         private void Init()
         {
             // 未初始化或者编辑器更换了皮肤, 则进行初始化
-            if (initFlag == false || isProSkin != EditorGUIUtility.isProSkin)
+            if (initFlag && isProSkin == EditorGUIUtility.isProSkin)
             {
-                initFlag = true;
-
-                isProSkin = EditorGUIUtility.isProSkin;
-                yellowColor = isProSkin ? new Color(1.00f, 0.90f, 0.40f) : new Color(0.31f, 0.31f, 0.31f);
-                separatorColor = isProSkin ? new Color(0.18f, 0.18f, 0.18f) : new Color(0.59f, 0.59f, 0.59f);
-                menuButtonColor = isProSkin ? new Color(0.7f, 0.7f, 0.7f) : new Color(0.9f, 0.9f, 0.9f);
-                
-                checkBoxGray = EditorGUIUtility.IconContent("d_lightRim").image as Texture2D;
-                checkBoxGreen = EditorGUIUtility.IconContent("d_greenLight").image as Texture2D;
-                checkBoxOrange = EditorGUIUtility.IconContent("d_orangeLight").image as Texture2D;
-                restoreButtonTexture = EditorGUIUtility.IconContent("Refresh@2x").image as Texture2D;
-                componentsOrderList = new QComponentsOrderList(this);
+                return;
             }
+            
+            initFlag = true;
+
+            isProSkin = EditorGUIUtility.isProSkin;
+            yellowColor = isProSkin ? new Color(1.00f, 0.90f, 0.40f) : new Color(0.31f, 0.31f, 0.31f);
+            separatorColor = isProSkin ? new Color(0.18f, 0.18f, 0.18f) : new Color(0.59f, 0.59f, 0.59f);
+            menuButtonColor = isProSkin ? new Color(0.7f, 0.7f, 0.7f) : new Color(0.9f, 0.9f, 0.9f);
+                
+            checkBoxGray = EditorGUIUtility.IconContent("d_lightRim").image as Texture2D;
+            checkBoxGreen = EditorGUIUtility.IconContent("d_greenLight").image as Texture2D;
+            checkBoxOrange = EditorGUIUtility.IconContent("d_orangeLight").image as Texture2D;
+            restoreButtonTexture = EditorGUIUtility.IconContent("Refresh@2x").image as Texture2D;
+            componentsOrderList = new QComponentsOrderList(this);
         }
 
         /// <summary>
@@ -821,7 +823,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                 DrawBackground(rect.x, rect.y, rect.width, ITEM_SETTING_HEIGHT * 7 + UP_DOWN_SPACE * 2);
                 DrawSpace(UP_DOWN_SPACE);
                 DrawCheckBoxRight("播放模式是否启用", EM_QHierarchySettings.VerticesAndTrianglesShowDuringPlayMode);
-                if (DrawCheckBoxRight("Show vertices count", EM_QHierarchySettings.VerticesAndTrianglesShowVertices))
+                if (DrawCheckBoxRight("显示网格顶点数", EM_QHierarchySettings.VerticesAndTrianglesShowVertices))
                 {
                     if (QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowVertices) == false && QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles) == false)
                     {
@@ -829,7 +831,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     }
                 }
 
-                if (DrawCheckBoxRight("Show triangles count (very slow)", EM_QHierarchySettings.VerticesAndTrianglesShowTriangles))
+                if (DrawCheckBoxRight("显示网格三角面数", EM_QHierarchySettings.VerticesAndTrianglesShowTriangles))
                 {
                     if (QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowVertices) == false && QSettings.Instance().Get<bool>(EM_QHierarchySettings.VerticesAndTrianglesShowTriangles) == false)
                     {
@@ -837,10 +839,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
                     }
                 }
 
-                DrawCheckBoxRight("Calculate the count including children (very slow)", EM_QHierarchySettings.VerticesAndTrianglesCalculateTotalCount);
-                DrawEnum("Label size", EM_QHierarchySettings.VerticesAndTrianglesLabelSize, typeof(EM_QHierarchySize));
-                DrawColorPicker("Vertices label color", EM_QHierarchySettings.VerticesAndTrianglesVerticesLabelColor);
-                DrawColorPicker("Triangles label color", EM_QHierarchySettings.VerticesAndTrianglesTrianglesLabelColor);
+                DrawCheckBoxRight("计算时是否包含子物体", EM_QHierarchySettings.VerticesAndTrianglesCalculateTotalCount);
+                DrawEnum("字体大小", EM_QHierarchySettings.VerticesAndTrianglesLabelSize, typeof(EM_QHierarchySize));
+                DrawColorPicker("顶点数颜色", EM_QHierarchySettings.VerticesAndTrianglesVerticesLabelColor);
+                DrawColorPicker("三角面数颜色", EM_QHierarchySettings.VerticesAndTrianglesTrianglesLabelColor);
                 DrawSpace(UP_DOWN_SPACE);
             }
         }

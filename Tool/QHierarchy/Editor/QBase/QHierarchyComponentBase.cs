@@ -39,12 +39,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
         /// <summary>
         /// 计算布局
         /// </summary>
-        /// <param name="gameObject"></param>
-        /// <param name="hierarchyObjectList"></param>
-        /// <param name="selectionRect"></param>
-        /// <param name="curRect"></param>
-        /// <param name="maxWidth"></param>
-        /// <returns></returns>
         public virtual EM_QLayoutStatus Layout(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect, ref Rect curRect, float maxWidth)
         {
             return EM_QLayoutStatus.Success;
