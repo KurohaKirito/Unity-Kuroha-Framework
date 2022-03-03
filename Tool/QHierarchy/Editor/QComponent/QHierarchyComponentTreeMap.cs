@@ -118,7 +118,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         if (parentTransform == null)
                         {
                             var isHadSpecialObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjectToDraw, false);
-                            var sceneRootLastIndex = gameObjectToDraw.scene.rootCount - (isHadSpecialObjectList ? 2 : 1);;
+                            var sceneRootLastIndex = gameObjectToDraw.scene.rootCount - (isHadSpecialObjectList ? 2 : 1);
                             if (hierarchyIndex != sceneRootLastIndex)
                             {
                                 UnityEngine.GUI.DrawTexture(rect, treeIconLevel);
