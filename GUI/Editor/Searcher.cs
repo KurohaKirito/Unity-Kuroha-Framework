@@ -23,8 +23,10 @@ namespace Kuroha.GUI.Editor
                 textFieldRoundEdge = new GUIStyle("SearchTextField");
                 textFieldRoundEdgeCancelButton = new GUIStyle("SearchCancelButton");
                 textFieldRoundEdgeCancelButtonEmpty = new GUIStyle("SearchCancelButtonEmpty");
-                transparentTextField = new GUIStyle(EditorStyles.whiteLabel) {
-                    normal = {
+                transparentTextField = new GUIStyle(EditorStyles.whiteLabel)
+                {
+                    normal =
+                    {
                         textColor = EditorStyles.textField.normal.textColor
                     }
                 };

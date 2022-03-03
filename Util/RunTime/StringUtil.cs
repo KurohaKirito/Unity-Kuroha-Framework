@@ -1,7 +1,28 @@
-﻿namespace Kuroha.Util.RunTime
+﻿using System.Collections.Generic;
+
+namespace Kuroha.Util.RunTime
 {
     public static class StringUtil
     {
+        /// <summary>
+        /// 返回整个字符串中指定字符的全部索引
+        /// </summary>
+        public static List<int> GetAllIndexOfChar(string str, char target)
+        {
+            var result = new List<int>();
+            var allChar = str.ToCharArray();
+
+            for (var index = 0; index < allChar.Length; index++)
+            {
+                if (allChar[index] == target)
+                {
+                    result.Add(index);
+                }
+            }
+
+            return result;
+        }
+        
         /// <summary>
         /// 包含数字的字符串比较
         /// </summary>
