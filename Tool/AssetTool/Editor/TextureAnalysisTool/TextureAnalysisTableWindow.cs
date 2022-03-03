@@ -250,6 +250,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// <param name="asset">贴图资源</param>
         private static void DetectTexture(ref int counter, in List<TextureAnalysisData> dataList, in string assetPath, in Texture asset)
         {
+            // 去重
             var isHad = false;
             foreach (var data in dataList)
             {
@@ -258,7 +259,6 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                     isHad = true;
                 }
             }
-
             if (isHad)
             {
                 return;
@@ -266,22 +266,31 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
 
             // 计数
             counter++;
-
-            // 纯色纹理判断
+            
+            // 判断是否可以进行纯色与重复的检测
             var isSolid = false;
-            var textureImporter = (TextureImporter) AssetImporter.GetAtPath(assetPath);
-            if (!ReferenceEquals(textureImporter, null))
+            if (assetPath.IndexOf(".png", StringComparison.OrdinalIgnoreCase) < 0 && assetPath.IndexOf(".tga", StringComparison.OrdinalIgnoreCase) < 0 &&
+                assetPath.IndexOf(".psd", StringComparison.OrdinalIgnoreCase) < 0 && assetPath.IndexOf(".tif", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                if (textureImporter.textureShape == TextureImporterShape.Texture2D && TextureUtil.IsSolidColor(asset))
-                {
-                    isSolid = true;
-                }
+                Debug.LogError($"文件类型非法, 无法进行纯色以及重复检查: {assetPath}");
             }
+            else
+            {
+                // 纯色纹理判断
+                var textureImporter = (TextureImporter) AssetImporter.GetAtPath(assetPath);
+                if (ReferenceEquals(textureImporter, null) == false)
+                {
+                    if (textureImporter.textureShape == TextureImporterShape.Texture2D && TextureUtil.IsSolidColor(asset))
+                    {
+                        isSolid = true;
+                    }
+                }
 
-            // 重复纹理检测
-            var isBegin = counter == 1;
-            TextureRepeatChecker.CheckOneTexture(assetPath, isBegin);
-
+                // 重复纹理检测
+                var isBegin = counter == 1;
+                TextureRepeatChecker.CheckOneTexture(assetPath, isBegin);
+            }
+            
             // 汇总数据
             dataList.Add(new TextureAnalysisData
             {
