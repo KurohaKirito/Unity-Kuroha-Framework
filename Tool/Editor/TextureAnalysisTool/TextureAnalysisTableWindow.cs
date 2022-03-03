@@ -229,14 +229,23 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// <param name="assetPath">贴图路径</param>
         /// <param name="asset">贴图资源</param>
         private static void DetectTexture(ref int counter, in List<TextureAnalysisData> dataList, in string assetPath, in Texture asset) {
+            // 去重
             var isHad = false;
             foreach (var data in dataList) {
                 if (data.texturePath == assetPath) {
                     isHad = true;
                 }
             }
-
             if (isHad) {
+                return;
+            }
+            
+            // 合法性判断
+            if (assetPath.IndexOf(".png", StringComparison.OrdinalIgnoreCase) < 0 &&
+                assetPath.IndexOf(".tga", StringComparison.OrdinalIgnoreCase) < 0 &&
+                assetPath.IndexOf(".psd", StringComparison.OrdinalIgnoreCase) < 0 &&
+                assetPath.IndexOf(".tif", StringComparison.OrdinalIgnoreCase) < 0) {
+                Debug.LogError($"文件类型非法: {assetPath}");
                 return;
             }
 
