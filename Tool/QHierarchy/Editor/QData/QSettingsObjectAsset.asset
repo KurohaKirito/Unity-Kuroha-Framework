@@ -54,8 +54,8 @@ MonoBehaviour:
   - 
   - FF333333
   - FF333333
-  - "Untagged;Assets/Sprites/\u56FE\u6807/\u6280\u80FD\u56FE\u6807\u5927/6_skill_big.png;MainCamera;Assets/Sprites/\u56FE\u6807/\u6280\u80FD\u56FE\u6807\u5927/2_skill_big.png;"
-  - "Default;Assets/Sprites/\u56FE\u6807/\u6280\u80FD\u56FE\u6807\u5927/11_skill_big.png;UI;Assets/Sprites/\u56FE\u6807/\u6280\u80FD\u56FE\u6807\u5C0F/18_skill_small.png;"
+  - 
+  - 
   - FF333333
   - FF333333
   - FF333333
@@ -69,8 +69,8 @@ MonoBehaviour:
   - FF303030
   - 13000000
   - 00000000
-  - FFFF0000
-  - FF00FF1F
+  - FFCCCCCC
+  - FFCCCCCC
   - FF00FCFF
   - FF00FFFC
   - FF00F3FF
@@ -82,8 +82,8 @@ MonoBehaviour:
   - QTools.QHierarchy_TagAndLayerSizeValuePercent
   - QTools.QHierarchy_TagAndLayerLabelAlpha
   settingFloatValues:
-  - 0.151
-  - 0.694
+  - 0.25
+  - 0.35
   settingIntNames:
   - QTools.QHierarchy_TagAndLayerSizeShowType
   - QTools.QHierarchy_TagAndLayerType
@@ -100,7 +100,7 @@ MonoBehaviour:
   - QTools.QHierarchy_AdditionalIdentation
   - QTools.QHierarchy_TagAndLayerAlignment
   - QTools.QHierarchy_AdditionalIndentation
-  settingIntValues: 000000000100000000000000000000006400000001000000020000000200000002000000010000000100000001000000000000000000000000000000
+  settingIntValues: 000000000100000000000000000000004b00000001000000020000000200000002000000010000000100000001000000000000000000000000000000
   settingBoolNames:
   - QTools.QHierarchy_TreeMapShow
   - QTools.QHierarchy_TreeMapEnhanced
@@ -159,4 +159,4 @@ MonoBehaviour:
   - QTools.QHierarchy_AdditionalShowModifierWarning
   - QTools.QHierarchy_MonoBehaviourIconIgnoreUnityMonoBehaviour
   - QTools.QHierarchy_PrefabShowBrakedPrefabsOnly
-  settingBoolValues: 010001010101010101010101010101010101010101010101010101010101010101010101010101010101010101000101010101010001010100
+  settingBoolValues: 010001010101010101010001010001000101010101010101010100010001000100010001000101000101010100000101010101010001010100
