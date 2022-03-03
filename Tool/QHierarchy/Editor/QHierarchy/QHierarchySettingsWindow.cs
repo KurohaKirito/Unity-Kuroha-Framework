@@ -86,7 +86,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         private Texture2D checkBoxOrange;
         private Texture2D restoreButtonTexture;
 
-        private QComponentsOrderList componentsOrderList;
+        private QComponentsOrderListWindow componentsOrderListWindow;
 
         /// <summary>
         /// 打开窗口
@@ -120,7 +120,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             checkBoxGreen = EditorGUIUtility.IconContent("d_greenLight").image as Texture2D;
             checkBoxOrange = EditorGUIUtility.IconContent("d_orangeLight").image as Texture2D;
             restoreButtonTexture = EditorGUIUtility.IconContent("Refresh@2x").image as Texture2D;
-            componentsOrderList = new QComponentsOrderList(this);
+            componentsOrderListWindow = new QComponentsOrderListWindow(this);
         }
 
         /// <summary>
@@ -882,10 +882,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             var componentOrder = QSettings.Instance().Get<string>(EM_QHierarchySettings.ComponentsOrder);
             var componentIds = componentOrder.Split(';');
 
-            var rect = GetNewRect(position.width, 17 * componentIds.Length + 10);
+            var rect = GetNewRect(position.width, QComponentsOrderListWindow.ITEM_HEIGHT * componentIds.Length);
             
-            componentsOrderList ??= new QComponentsOrderList(this);
-            componentsOrderList.Draw(rect, componentIds);
+            componentsOrderListWindow ??= new QComponentsOrderListWindow(this);
+            componentsOrderListWindow.Draw(rect, componentIds);
 
             indentLevel -= 4;
         }
