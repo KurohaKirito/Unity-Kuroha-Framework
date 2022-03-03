@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
@@ -41,7 +42,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         /// </summary>
         private bool showListPlayMode;
         
+        /// <summary>
+        /// 特殊物体脚本所在的游戏物体名称
+        /// </summary>
         private const string Q_OBJECT_LIST_NAME = "QHierarchyObjectList";
+        
         private readonly Dictionary<Scene, QHierarchyObjectList> objectListDictionary = new Dictionary<Scene, QHierarchyObjectList>();
         
         /// <summary>
@@ -92,6 +97,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             return false;
         }
 
+        /// <summary>
+        /// 验证
+        /// </summary>
         public void Validate()
         {
             QHierarchyObjectList.instances.RemoveAll(item => item == null);
@@ -143,20 +151,26 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
                     }
                 }
 
-                foreach (var objectListKeyValue in objectListDictionary)
+                foreach (var objectList in objectListDictionary.Select(objectListKeyValue => objectListKeyValue.Value))
                 {
-                    var objectList = objectListKeyValue.Value;
-
-                    SetupObjectList(objectList);
-
-                    var objectListGameObject = objectList.gameObject;
-                    var flag1 = showObjectList && (objectListGameObject.hideFlags & HideFlags.HideInHierarchy) > 0;
-                    var flag2 = showObjectList == false && (objectListGameObject.hideFlags & HideFlags.HideInHierarchy) == 0;
-                    
-                    if (flag1 || flag2)
+                    if (objectList != null)
                     {
-                        objectList.gameObject.hideFlags ^= HideFlags.HideInHierarchy;
-                        EditorApplication.DirtyHierarchyWindowSorting();
+                        SetupObjectList(objectList);
+
+                        var objectListGameObject = objectList.gameObject;
+                        var flag1 = showObjectList && (objectListGameObject.hideFlags & HideFlags.HideInHierarchy) > 0;
+                        var flag2 = showObjectList == false && (objectListGameObject.hideFlags & HideFlags.HideInHierarchy) == 0;
+                    
+                        if (flag1 || flag2)
+                        {
+                            objectList.gameObject.hideFlags ^= HideFlags.HideInHierarchy;
+                            EditorApplication.DirtyHierarchyWindowSorting();
+                        }
+                    }
+                    else
+                    {
+                        Validate();
+                        return;
                     }
                 }
                 
@@ -196,26 +210,32 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             }
         }
 
+        /// <summary>
+        /// 得到特殊物体列表
+        /// </summary>
         public QHierarchyObjectList GetObjectList(GameObject gameObject, bool createIfNotExist = true)
         {
             objectListDictionary.TryGetValue(gameObject.scene, out var hierarchyObjectList);
 
             if (hierarchyObjectList == null && createIfNotExist)
             {
-                hierarchyObjectList = CreateObjectList(gameObject);
-                if (gameObject.scene != hierarchyObjectList.gameObject.scene) SceneManager.MoveGameObjectToScene(hierarchyObjectList.gameObject, gameObject.scene);
+                hierarchyObjectList = CreateObjectList();
+                
+                if (gameObject.scene != hierarchyObjectList.gameObject.scene)
+                {
+                    SceneManager.MoveGameObjectToScene(hierarchyObjectList.gameObject, gameObject.scene);
+                }
+                
                 objectListDictionary.Add(gameObject.scene, hierarchyObjectList);
             }
 
             return hierarchyObjectList;
         }
-
-        public bool IsSceneChanged()
-        {
-            return lastActiveScene != SceneManager.GetActiveScene() || lastSceneCount != EditorSceneManager.loadedSceneCount;
-        }
-
-        private static QHierarchyObjectList CreateObjectList(GameObject gameObject)
+        
+        /// <summary>
+        /// 创建特殊物体列表
+        /// </summary>
+        private static QHierarchyObjectList CreateObjectList()
         {
             var gameObjectList = new GameObject(Q_OBJECT_LIST_NAME);
             
@@ -225,7 +245,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             
             return hierarchyObjectList;
         }
-
+        
+        /// <summary>
+        /// 设置特殊物体列表脚本: QHierarchyObjectList
+        /// </summary>
+        /// <param name="hierarchyObjectList"></param>
         private static void SetupObjectList(MonoBehaviour hierarchyObjectList)
         {
             if (hierarchyObjectList.CompareTag("EditorOnly"))
@@ -234,11 +258,22 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
             }
             
             var monoScript = MonoScript.FromMonoBehaviour(hierarchyObjectList);
-            
             if (MonoImporter.GetExecutionOrder(monoScript) != -10000)
             {
                 MonoImporter.SetExecutionOrder(monoScript, -10000);
             }
+        }
+
+        /// <summary>
+        /// 判断场景是否变化
+        /// </summary>
+        /// <returns></returns>
+        public bool IsSceneChanged()
+        {
+            var flag1 = lastActiveScene != SceneManager.GetActiveScene();
+            var flag2 = lastSceneCount != EditorSceneManager.loadedSceneCount;
+            
+            return flag1 || flag2;
         }
     }
 }

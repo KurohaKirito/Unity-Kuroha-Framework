@@ -181,7 +181,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制组件图标
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             // GetAllComponentWithoutWhiteList(gameObject);
             

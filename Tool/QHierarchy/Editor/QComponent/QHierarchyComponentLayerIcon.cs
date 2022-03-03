@@ -62,9 +62,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            var gameObjectLayerName = LayerMask.LayerToName(gameObject.layer);
+            var gameObjectLayerName = LayerMask.LayerToName(gameObjectToDraw.layer);
 
             var layerTexture = layerTextureList.Find(texture => texture.layer == gameObjectLayerName);
             if (layerTexture != null && layerTexture.texture != null)

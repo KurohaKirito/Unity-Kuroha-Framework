@@ -68,7 +68,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制 GUI
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             if (staticButton == null)
             {
@@ -76,7 +76,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 staticButtonColors = new Color32[11 * 10];
             }
 
-            var selfFlag = GameObjectUtility.GetStaticEditorFlags(gameObject);
+            var selfFlag = GameObjectUtility.GetStaticEditorFlags(gameObjectToDraw);
             
             var state = StaticEditorFlags.ContributeGI;
             DrawQuad(37, 3, 4, (selfFlag & state) > 0);

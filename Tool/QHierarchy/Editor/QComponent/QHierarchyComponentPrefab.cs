@@ -60,9 +60,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制 GUI
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            var prefabStatus = PrefabUtility.GetPrefabInstanceStatus(gameObject);
+            var prefabStatus = PrefabUtility.GetPrefabInstanceStatus(gameObjectToDraw);
             
             // Missing 和 Disconnected
             if (prefabStatus == PrefabInstanceStatus.MissingAsset || prefabStatus == PrefabInstanceStatus.Disconnected)

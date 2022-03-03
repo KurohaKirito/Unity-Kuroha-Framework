@@ -107,27 +107,27 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            var visibility = gameObject.activeSelf ? 1 : 0;
+            var visibility = gameObjectToDraw.activeSelf ? 1 : 0;
 
-            var editModeVisibleObjectsContains = IsEditModeVisible(gameObject, hierarchyObjectList);
-            var editModeInvisibleObjectsContains = IsEditModeInvisible(gameObject, hierarchyObjectList);
+            var editModeVisibleObjectsContains = IsEditModeVisible(gameObjectToDraw, hierarchyObjectList);
+            var editModeInvisibleObjectsContains = IsEditModeInvisible(gameObjectToDraw, hierarchyObjectList);
 
             // 检查列表和可见性是否不一致
             if (EditorApplication.isPlayingOrWillChangePlaymode == false)
             {
-                switch (gameObject.activeSelf)
+                switch (gameObjectToDraw.activeSelf)
                 {
                     case false when editModeVisibleObjectsContains:
                     case true when editModeInvisibleObjectsContains:
-                        gameObject.SetActive(!gameObject.activeSelf);
+                        gameObjectToDraw.SetActive(!gameObjectToDraw.activeSelf);
                         break;
                 }
             }
 
             // 检查情况是否为: "自身激活 父级未激活"
-            var transform = gameObject.transform;
+            var transform = gameObjectToDraw.transform;
             while (transform.parent != null)
             {
                 transform = transform.parent;
@@ -170,7 +170,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         break;
                     default:
                     {
-                        if (gameObject.activeSelf)
+                        if (gameObjectToDraw.activeSelf)
                         {
                             UnityEngine.GUI.color = QHierarchyColorUtils.GetCustomColor(activeColor, 0.65f, 0.65f);
                             UnityEngine.GUI.DrawTexture(rect, visibilityButtonTexture);

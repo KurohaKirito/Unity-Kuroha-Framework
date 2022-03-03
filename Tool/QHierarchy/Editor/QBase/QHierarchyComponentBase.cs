@@ -47,10 +47,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QBase
         /// <summary>
         /// 绘制 GUI
         /// </summary>
-        /// <param name="gameObject"></param>
+        /// <param name="gameObjectToDraw"></param>
         /// <param name="hierarchyObjectList"></param>
         /// <param name="selectionRect"></param>
-        public virtual void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect) { }
+        public virtual void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect) { }
 
         /// <summary>
         /// 点击事件

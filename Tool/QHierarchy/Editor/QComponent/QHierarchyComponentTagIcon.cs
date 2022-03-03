@@ -63,9 +63,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            var gameObjectTag = gameObject.tag;
+            var gameObjectTag = gameObjectToDraw.tag;
             var tagTexture = tagTextureList.Find(texture => texture.tag == gameObjectTag);
             if (tagTexture != null && tagTexture.texture != null)
             {

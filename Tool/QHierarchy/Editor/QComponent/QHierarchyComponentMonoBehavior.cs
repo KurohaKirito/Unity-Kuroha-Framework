@@ -50,13 +50,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制 GUI
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             var isCustomComponent = false;
 
             if (ignoreUnityMonoBehaviour)
             {
-                var monoBehaviours = gameObject.GetComponents<MonoBehaviour>();
+                var monoBehaviours = gameObjectToDraw.GetComponents<MonoBehaviour>();
                 foreach (var monoBehaviour in monoBehaviours)
                 {
                     if (monoBehaviour != null)
@@ -72,7 +72,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
             else
             {
-                isCustomComponent = gameObject.GetComponent<MonoBehaviour>() != null;
+                isCustomComponent = gameObjectToDraw.GetComponent<MonoBehaviour>() != null;
             }
 
             if (isCustomComponent)

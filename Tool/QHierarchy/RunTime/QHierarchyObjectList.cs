@@ -8,7 +8,6 @@ namespace Kuroha.Tool.QHierarchy.RunTime
     /// 用于展示当前 QHierarchy 插件所引用的游戏物体列表
     /// </summary>
     [ExecuteInEditMode]
-    [AddComponentMenu("")]
     public class QHierarchyObjectList : MonoBehaviour, ISerializationCallbackReceiver
     {
         public static readonly List<QHierarchyObjectList> instances = new List<QHierarchyObjectList>();
@@ -39,7 +38,7 @@ namespace Kuroha.Tool.QHierarchy.RunTime
                 editModeGameObject.SetActive(Application.isPlaying);
             }
 
-            if (!Application.isEditor && Application.isPlaying)
+            if (Application.isEditor == false && Application.isPlaying)
             {
                 instances.Remove(this);
                 DestroyImmediate(gameObject);
@@ -47,7 +46,10 @@ namespace Kuroha.Tool.QHierarchy.RunTime
             }
 
             instances.RemoveAll(item => item == null);
-            if (!instances.Contains(this)) instances.Add(this);
+            if (instances.Contains(this) == false)
+            {
+                instances.Add(this);
+            }
         }
 
         public void OnEnable()
@@ -60,7 +62,7 @@ namespace Kuroha.Tool.QHierarchy.RunTime
 
         public void OnDestroy()
         {
-            if (!Application.isPlaying)
+            if (Application.isPlaying == false)
             {
                 CheckIntegrity();
 
@@ -85,27 +87,33 @@ namespace Kuroha.Tool.QHierarchy.RunTime
 
         public void Merge(QHierarchyObjectList anotherInstance)
         {
-            for (var index = anotherInstance.lockedObjects.Count - 1; index >= 0; index--)
+            for (var index = 0; index < anotherInstance.lockedObjects.Count; index++)
             {
-                if (!lockedObjects.Contains(anotherInstance.lockedObjects[index]))
+                if (lockedObjects.Contains(anotherInstance.lockedObjects[index]) == false)
+                {
                     lockedObjects.Add(anotherInstance.lockedObjects[index]);
+                }
             }
 
-            for (var index = anotherInstance.editModeVisibleObjects.Count - 1; index >= 0; index--)
+            for (var index = 0; index < anotherInstance.editModeVisibleObjects.Count; index++)
             {
-                if (!editModeVisibleObjects.Contains(anotherInstance.editModeVisibleObjects[index]))
+                if (editModeVisibleObjects.Contains(anotherInstance.editModeVisibleObjects[index]) == false)
+                {
                     editModeVisibleObjects.Add(anotherInstance.editModeVisibleObjects[index]);
+                }
             }
 
-            for (var index = anotherInstance.editModeInvisibleObjects.Count - 1; index >= 0; index--)
+            for (var index = 0; index < anotherInstance.editModeInvisibleObjects.Count; index++)
             {
-                if (!editModeInvisibleObjects.Contains(anotherInstance.editModeInvisibleObjects[index]))
+                if (editModeInvisibleObjects.Contains(anotherInstance.editModeInvisibleObjects[index]) == false)
+                {
                     editModeInvisibleObjects.Add(anotherInstance.editModeInvisibleObjects[index]);
+                }
             }
 
-            for (var index = anotherInstance.gameObjectColorKeys.Count - 1; index >= 0; index--)
+            for (var index = 0; index < anotherInstance.gameObjectColorKeys.Count; index++)
             {
-                if (!gameObjectColorKeys.Contains(anotherInstance.gameObjectColorKeys[index]))
+                if (gameObjectColorKeys.Contains(anotherInstance.gameObjectColorKeys[index]) == false)
                 {
                     gameObjectColorKeys.Add(anotherInstance.gameObjectColorKeys[index]);
                     gameObjectColorValues.Add(anotherInstance.gameObjectColorValues[index]);
@@ -120,6 +128,7 @@ namespace Kuroha.Tool.QHierarchy.RunTime
             editModeVisibleObjects.RemoveAll(item => item == null);
             editModeInvisibleObjects.RemoveAll(item => item == null);
 
+            // 因为需要移除元素, 所以必须倒序
             for (var index = gameObjectColorKeys.Count - 1; index >= 0; index--)
             {
                 if (gameObjectColorKeys[index] == null)
@@ -136,6 +145,7 @@ namespace Kuroha.Tool.QHierarchy.RunTime
         {
             gameObjectColorKeys.Clear();
             gameObjectColorValues.Clear();
+            
             foreach (var pair in gameObjectColor)
             {
                 gameObjectColorKeys.Add(pair.Key);
@@ -146,9 +156,10 @@ namespace Kuroha.Tool.QHierarchy.RunTime
         public void OnAfterDeserialize()
         {
             gameObjectColor.Clear();
-            for (var i = 0; i < gameObjectColorKeys.Count; i++)
+            
+            for (var index = 0; index < gameObjectColorKeys.Count; index++)
             {
-                gameObjectColor.Add(gameObjectColorKeys[i], gameObjectColorValues[i]);
+                gameObjectColor.Add(gameObjectColorKeys[index], gameObjectColorValues[index]);
             }
         }
     }

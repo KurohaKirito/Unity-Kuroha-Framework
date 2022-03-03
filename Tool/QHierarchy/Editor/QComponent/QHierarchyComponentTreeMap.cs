@@ -56,20 +56,20 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             // 设置颜色
             UnityEngine.GUI.color = treeMapColor;
             
             // 得到当前需要绘制的物体的孩子数量
-            var childCount = gameObject.transform.childCount;
+            var childCount = gameObjectToDraw.transform.childCount;
             
             // 计算出缩进级别, 每个缩进为 14 像素, 另外左侧有 4 像素留白
             var totalPixelCount = (int) selectionRect.x;
             var totalLevel = (totalPixelCount - 4) / TREE_MAP_WIDTH;
             
             // 临时变量
-            var currentTransform = gameObject.transform;
+            var currentTransform = gameObjectToDraw.transform;
             Transform parentTransform = null;
             
             // 每一个物体都是从右向左绘制每一个图案
@@ -87,7 +87,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                             UnityEngine.GUI.DrawTexture(rect, treeIconLine);
                         }
             
-                        currentTransform = gameObject.transform;
+                        currentTransform = gameObjectToDraw.transform;
                         break;
                     }
                     // 第 2 次循环
@@ -97,7 +97,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         
                         if (parentTransform == null)
                         {
-                            var sceneRootLastIndex = gameObject.scene.rootCount - 2;
+                            var isHadSpecialObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjectToDraw, false);
+                            var sceneRootLastIndex = gameObjectToDraw.scene.rootCount - (isHadSpecialObjectList ? 2 : 1);
                             UnityEngine.GUI.DrawTexture(rect, hierarchyIndex == sceneRootLastIndex ? treeIconLast : treeIconCurrent);
                         }
                         else
@@ -116,7 +117,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         
                         if (parentTransform == null)
                         {
-                            var sceneRootLastIndex = gameObject.scene.rootCount - 2;
+                            var isHadSpecialObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjectToDraw, false);
+                            var sceneRootLastIndex = gameObjectToDraw.scene.rootCount - (isHadSpecialObjectList ? 2 : 1);;
                             if (hierarchyIndex != sceneRootLastIndex)
                             {
                                 UnityEngine.GUI.DrawTexture(rect, treeIconLevel);

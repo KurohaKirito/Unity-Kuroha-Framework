@@ -62,9 +62,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            var renderer = gameObject.GetComponent<Renderer>();
+            var renderer = gameObjectToDraw.GetComponent<Renderer>();
             if (renderer != null)
             {
                 UnityEngine.GUI.color = renderer.enabled ? activeColor : inactiveColor;

@@ -63,11 +63,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 进行绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             if (hierarchyObjectList != null)
             {
-                if (hierarchyObjectList.gameObjectColor.TryGetValue(gameObject, out var newColor))
+                if (hierarchyObjectList.gameObjectColor.TryGetValue(gameObjectToDraw, out var newColor))
                 {
                     colorRect.x = rect.x + COLOR_RECT_SPACE;
                     colorRect.y = rect.y + COLOR_RECT_SPACE * 2;

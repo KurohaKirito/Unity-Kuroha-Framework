@@ -130,10 +130,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 进行绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            var components = gameObject.GetComponents<MonoBehaviour>();
-            if (FindError(gameObject, components, false))
+            var components = gameObjectToDraw.GetComponents<MonoBehaviour>();
+            if (FindError(gameObjectToDraw, components, false))
             {
                 UnityEngine.GUI.color = activeColor;
                 UnityEngine.GUI.DrawTexture(rect, errorIconTexture);
@@ -141,8 +141,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
             }
             else if (settingsShowErrorOfChildren)
             {
-                var children = gameObject.GetComponentsInChildren<MonoBehaviour>(true);
-                if (FindError(gameObject, children, false))
+                var children = gameObjectToDraw.GetComponentsInChildren<MonoBehaviour>(true);
+                if (FindError(gameObjectToDraw, children, false))
                 {
                     UnityEngine.GUI.color = inactiveColor;
                     UnityEngine.GUI.DrawTexture(rect, errorIconTexture);

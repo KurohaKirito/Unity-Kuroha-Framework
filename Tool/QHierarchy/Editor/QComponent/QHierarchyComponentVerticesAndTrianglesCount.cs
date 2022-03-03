@@ -71,12 +71,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制 GUI
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             var vertexCount = 0;
             var triangleCount = 0;
 
-            var meshFilterArray = gameObject.GetComponentsInChildren<MeshFilter>(calculateTotalCount);
+            var meshFilterArray = gameObjectToDraw.GetComponentsInChildren<MeshFilter>(calculateTotalCount);
             foreach (var meshFilter in meshFilterArray)
             {
                 var sharedMesh = meshFilter.sharedMesh;
@@ -96,7 +96,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 }
             }
 
-            var skinnedMeshRendererArray = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>(calculateTotalCount);
+            var skinnedMeshRendererArray = gameObjectToDraw.GetComponentsInChildren<SkinnedMeshRenderer>(calculateTotalCount);
             foreach (var skinnedMeshRenderer in skinnedMeshRendererArray)
             {
                 var sharedMesh = skinnedMeshRenderer.sharedMesh;

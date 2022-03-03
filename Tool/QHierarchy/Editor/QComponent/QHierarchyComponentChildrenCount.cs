@@ -89,9 +89,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 进行绘制
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            var childrenCount = gameObject.transform.childCount;
+            var childrenCount = gameObjectToDraw.transform.childCount;
             if (childrenCount > 0)
             {
                 UnityEngine.GUI.Label(rect, childrenCount.ToString("000"), labelStyle);

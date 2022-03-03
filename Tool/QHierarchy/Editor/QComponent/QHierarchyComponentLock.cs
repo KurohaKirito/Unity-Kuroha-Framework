@@ -81,19 +81,19 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制 GUI
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
             // 特殊情况: 没有 Canvas 组件的 UGUI 预制体会自动创建一个 Locked 标记的 Canvas
-            if (CheckWhiteList(gameObject))
+            if (CheckWhiteList(gameObjectToDraw))
             {
                 return;
             }
 
             // 在 QHierarchy 工具数据库中当前游戏物体是否被记录为 Locked
-            var isLockedInQHierarchy = IsLocked(gameObject, hierarchyObjectList);
+            var isLockedInQHierarchy = IsLocked(gameObjectToDraw, hierarchyObjectList);
 
             // 在 Hierarchy 面板中当前游戏物体是否被记录为 Locked
-            var isLockedInHierarchy = (gameObject.hideFlags & HideFlags.NotEditable) == HideFlags.NotEditable;
+            var isLockedInHierarchy = (gameObjectToDraw.hideFlags & HideFlags.NotEditable) == HideFlags.NotEditable;
 
             // 如果两个记录有冲突
             if (isLockedInQHierarchy)
@@ -101,8 +101,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 if (isLockedInHierarchy == false)
                 {
                     // 或运算
-                    gameObject.hideFlags |= HideFlags.NotEditable;
-                    EditorUtility.SetDirty(gameObject);
+                    gameObjectToDraw.hideFlags |= HideFlags.NotEditable;
+                    EditorUtility.SetDirty(gameObjectToDraw);
                 }
             }
             else
@@ -110,8 +110,8 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 if (isLockedInHierarchy)
                 {
                     // 异或运算 (不等返回真)
-                    gameObject.hideFlags ^= HideFlags.NotEditable;
-                    EditorUtility.SetDirty(gameObject);
+                    gameObjectToDraw.hideFlags ^= HideFlags.NotEditable;
+                    EditorUtility.SetDirty(gameObjectToDraw);
                 }
             }
 

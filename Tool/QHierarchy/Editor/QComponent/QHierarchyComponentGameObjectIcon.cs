@@ -67,9 +67,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// <summary>
         /// 绘制 GUI
         /// </summary>
-        public override void Draw(GameObject gameObject, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
+        public override void Draw(GameObject gameObjectToDraw, QHierarchyObjectList hierarchyObjectList, Rect selectionRect)
         {
-            getIconMethodParams[0] = gameObject;
+            getIconMethodParams[0] = gameObjectToDraw;
 
             var icon = (Texture2D) getIconMethodInfo.Invoke(null, getIconMethodParams);
             if (icon != null)
