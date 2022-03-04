@@ -906,14 +906,14 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
 
             DrawSpace(UP_DOWN_SPACE);
             
-            DrawCheckBoxRight("Show QHierarchyObjectList GameObject", EM_QHierarchySettings.AdditionalShowHiddenQHierarchyObjectList);
-            DrawCheckBoxRight("Hide icons if not fit", EM_QHierarchySettings.AdditionalHideIconsIfNotFit);
-            DrawIntSlider("Right indent", EM_QHierarchySettings.AdditionalIndentation, 0, 500);
-            DrawCheckBoxRight("Show warning when using modifiers + click", EM_QHierarchySettings.AdditionalShowModifierWarning);
-            DrawColorPicker("Background color", EM_QHierarchySettings.AdditionalBackgroundColor);
-            DrawColorPicker("Active color", EM_QHierarchySettings.AdditionalActiveColor);
-            DrawColorPicker("Inactive color", EM_QHierarchySettings.AdditionalInactiveColor);
-            DrawColorPicker("Special color", EM_QHierarchySettings.AdditionalSpecialColor);
+            DrawCheckBoxRight("显示 QHierarchyObjectList 物体", EM_QHierarchySettings.AdditionalShowHiddenQHierarchyObjectList);
+            DrawCheckBoxRight("如果图标比例无法适配则不显示图标", EM_QHierarchySettings.AdditionalHideIconsIfNotFit);
+            DrawCheckBoxRight("特殊操作时是否显示弹窗", EM_QHierarchySettings.AdditionalShowModifierWarning);
+            DrawIntSlider("右侧缩进", EM_QHierarchySettings.AdditionalIndentation, 0, 500);
+            DrawColorPicker("背景色", EM_QHierarchySettings.AdditionalBackgroundColor);
+            DrawColorPicker("表示激活的图标颜色", EM_QHierarchySettings.AdditionalActiveColor);
+            DrawColorPicker("表示未激活的图标颜色", EM_QHierarchySettings.AdditionalInactiveColor);
+            DrawColorPicker("表示特殊状态的图标颜色", EM_QHierarchySettings.AdditionalSpecialColor);
             
             DrawSpace(UP_DOWN_SPACE);
         }

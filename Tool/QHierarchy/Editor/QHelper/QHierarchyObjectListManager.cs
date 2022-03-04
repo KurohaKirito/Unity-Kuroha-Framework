@@ -30,7 +30,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         /// <summary>
         /// 是否显示物品列表
         /// </summary>
-        private bool showObjectList;
+        public bool showObjectList;
         
         /// <summary>
         /// 显示特殊物体列表

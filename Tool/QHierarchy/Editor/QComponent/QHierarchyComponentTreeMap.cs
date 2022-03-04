@@ -98,7 +98,13 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         if (parentTransform == null)
                         {
                             var isHadSpecialObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjectToDraw, false);
-                            var sceneRootLastIndex = gameObjectToDraw.scene.rootCount - (isHadSpecialObjectList ? 2 : 1);
+                            var isShowSpecialObjectList = QHierarchyObjectListManager.Instance().showObjectList;
+                            var indent = 1;
+                            if (isHadSpecialObjectList != null && isShowSpecialObjectList == false) {
+                                indent = 2;
+                            }
+                            
+                            var sceneRootLastIndex = gameObjectToDraw.scene.rootCount - indent;
                             UnityEngine.GUI.DrawTexture(rect, hierarchyIndex == sceneRootLastIndex ? treeIconLast : treeIconCurrent);
                         }
                         else
@@ -118,7 +124,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                         if (parentTransform == null)
                         {
                             var isHadSpecialObjectList = QHierarchyObjectListManager.Instance().GetObjectList(gameObjectToDraw, false);
-                            var sceneRootLastIndex = gameObjectToDraw.scene.rootCount - (isHadSpecialObjectList ? 2 : 1);
+                            var isShowSpecialObjectList = QHierarchyObjectListManager.Instance().showObjectList;
+                            var indent = 1;
+                            if (isHadSpecialObjectList != null && isShowSpecialObjectList == false) {
+                                indent = 2;
+                            }
+                            var sceneRootLastIndex = gameObjectToDraw.scene.rootCount - indent;
                             if (hierarchyIndex != sceneRootLastIndex)
                             {
                                 UnityEngine.GUI.DrawTexture(rect, treeIconLevel);
