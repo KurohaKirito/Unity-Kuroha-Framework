@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using Kuroha.Util.RunTime;
 using UnityEditor;
@@ -9,29 +8,6 @@ namespace Kuroha.Util.Editor
 {
     public static class PrefabUtil
     {
-        /// <summary>
-        /// 获取图片的硬盘空间占用
-        /// </summary>
-        private static long GetTextureStorageMemorySize(Texture asset)
-        {
-            // 获取到 UnityEditor 程序集
-            var dynamicAssembly = ReflectionUtil.GetAssembly(typeof(EditorWindow));
-            
-            // 获取到 TextureUtil 类
-            var dynamicClass = ReflectionUtil.GetClass(dynamicAssembly, "UnityEditor.TextureUtil");
-                
-            // public static extern long GetStorageMemorySizeLong(Texture t);
-            var dynamicMethod = ReflectionUtil.GetMethod(dynamicClass, "GetStorageMemorySizeLong", BindingFlags.Public | BindingFlags.Static);
-
-            // 参数
-            var paramsArray = new object[] { asset };
-            
-            // 调用
-            var result = ReflectionUtil.CallMethod(dynamicMethod, paramsArray);
-            
-            return (long)result;
-        }
-
         /// <summary>
         /// 统计实际内存占用
         /// </summary>
@@ -104,7 +80,7 @@ namespace Kuroha.Util.Editor
                         {
                             textureGuids.Add(textures[i].guid);
                             var runTimeSize = EditorUtility.FormatBytes(UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[i].asset));
-                            var storageSize = EditorUtility.FormatBytes(GetTextureStorageMemorySize(textures[i].asset));
+                            var storageSize = EditorUtility.FormatBytes(TextureUtil.GetTextureStorageMemorySize(textures[i].asset));
                             DebugUtil.Log($"纹理: {textures[i].asset.name}: 当前设备的运行内存占用 (Profiler): {runTimeSize}", textures[i].asset, "yellow");
                             DebugUtil.Log($"纹理: {textures[i].asset.name}: 当前设备的硬盘空间占用 (Inspector): {storageSize}", textures[i].asset, "yellow");
                         }

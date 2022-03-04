@@ -27,6 +27,7 @@
         public int width;
         public int height;
         public bool isSolid;
+        public float memory;
         public string repeatInfo;
         public string textureName;
         public string texturePath;

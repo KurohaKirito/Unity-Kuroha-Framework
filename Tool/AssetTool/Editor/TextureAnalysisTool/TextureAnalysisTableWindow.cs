@@ -37,6 +37,20 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// 高度错误线
         /// </summary>
         private static int heightError;
+        
+        /// <summary>
+        /// 内存警告线
+        /// </summary>
+        private static int memoryWarn;
+
+        /// <summary>
+        /// 内存错误线
+        /// </summary>
+        private static int memoryError;
+
+        private const int WARN_ERROR_TEXT_WIDTH = 100;
+        private const int WARN_ERROR_TEXT_NUMBER_SPACE = 10;
+        private const int WARN_ERROR_NUMBER_WIDTH = 60;
 
         /// <summary>
         /// 是否是对场景进行检测
@@ -63,7 +77,6 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
             detectGameObject = obj;
             var window = GetWindow<TextureAnalysisTableWindow>("纹理资源分析", true);
             window.minSize = new Vector2(1200, 1000);
-            window.maxSize = new Vector2(1200, 1000);
         }
 
         /// <summary>
@@ -72,25 +85,12 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         private void OnEnable()
         {
             // 初始化界限值
-            if (widthWarn == 0)
-            {
-                widthWarn = 500;
-            }
-
-            if (widthError == 0)
-            {
-                widthError = 1000;
-            }
-
-            if (heightWarn == 0)
-            {
-                heightWarn = 500;
-            }
-
-            if (heightError == 0)
-            {
-                heightError = 1000;
-            }
+            if (widthWarn == 0)   { widthWarn = 250; }
+            if (widthError == 0)  { widthError = 500; }
+            if (heightWarn == 0)  { heightWarn = 250; }
+            if (heightError == 0) { heightError = 500; }
+            if (memoryWarn == 0)  { memoryWarn = 512; }
+            if (memoryError == 0) { memoryError = 1024; }
 
             // 初始化表格
             InitTable();
@@ -101,37 +101,63 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// </summary>
         protected void OnGUI()
         {
+            // 顶部留白
             GUILayout.Space(20);
+            
             GUILayout.BeginHorizontal();
+            {
+                // 左侧留白
+                GUILayout.Space(20);
+                {
+                    GUILayout.BeginHorizontal("Box");
+                    EditorGUILayout.LabelField("Width Warning", GUILayout.Width(WARN_ERROR_TEXT_WIDTH));
+                    GUILayout.Space(WARN_ERROR_TEXT_NUMBER_SPACE);
+                    widthWarn = EditorGUILayout.IntField(widthWarn, GUILayout.Width(WARN_ERROR_NUMBER_WIDTH));
+                    GUILayout.EndHorizontal();
+                    
+                    GUILayout.FlexibleSpace();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            widthWarn = EditorGUILayout.IntField("Enter Width Warning Line", widthWarn, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal("Box");
+                    EditorGUILayout.LabelField("Width Error", GUILayout.Width(WARN_ERROR_TEXT_WIDTH));
+                    GUILayout.Space(WARN_ERROR_TEXT_NUMBER_SPACE);
+                    widthError = EditorGUILayout.IntField(widthError, GUILayout.Width(WARN_ERROR_NUMBER_WIDTH));
+                    GUILayout.EndHorizontal();
+                    
+                    GUILayout.FlexibleSpace();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            widthError = EditorGUILayout.IntField("Enter Width Error Line", widthError, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal("Box");
+                    EditorGUILayout.LabelField("Height Warning", GUILayout.Width(WARN_ERROR_TEXT_WIDTH));
+                    GUILayout.Space(WARN_ERROR_TEXT_NUMBER_SPACE);
+                    heightWarn = EditorGUILayout.IntField(heightWarn, GUILayout.Width(WARN_ERROR_NUMBER_WIDTH));
+                    GUILayout.EndHorizontal();
+                    
+                    GUILayout.FlexibleSpace();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            heightWarn = EditorGUILayout.IntField("Enter Height Warning Line", heightWarn, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            GUILayout.BeginVertical("Box");
-            heightError = EditorGUILayout.IntField("Enter Tris Error Line", heightError, GUILayout.Width(200));
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
+                    GUILayout.BeginHorizontal("Box");
+                    EditorGUILayout.LabelField("Height Error", GUILayout.Width(WARN_ERROR_TEXT_WIDTH));
+                    GUILayout.Space(WARN_ERROR_TEXT_NUMBER_SPACE);
+                    heightError = EditorGUILayout.IntField(heightError, GUILayout.Width(WARN_ERROR_NUMBER_WIDTH));
+                    GUILayout.EndHorizontal();
+                    
+                    GUILayout.FlexibleSpace();
+                    
+                    GUILayout.BeginHorizontal("Box");
+                    EditorGUILayout.LabelField("Memory Warning", GUILayout.Width(WARN_ERROR_TEXT_WIDTH));
+                    GUILayout.Space(WARN_ERROR_TEXT_NUMBER_SPACE);
+                    memoryWarn = EditorGUILayout.IntField(memoryWarn, GUILayout.Width(WARN_ERROR_NUMBER_WIDTH));
+                    GUILayout.EndHorizontal();
+                    
+                    GUILayout.FlexibleSpace();
+                    
+                    GUILayout.BeginHorizontal("Box");
+                    EditorGUILayout.LabelField("Memory Error", GUILayout.Width(WARN_ERROR_TEXT_WIDTH));
+                    GUILayout.Space(WARN_ERROR_TEXT_NUMBER_SPACE);
+                    memoryError = EditorGUILayout.IntField(memoryError, GUILayout.Width(WARN_ERROR_NUMBER_WIDTH));
+                    GUILayout.EndHorizontal();
+                }
+                // 右侧留白
+                GUILayout.Space(18);
+            }
             GUILayout.EndHorizontal();
 
             table?.OnGUI();
@@ -267,7 +293,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
             // 计数
             counter++;
             
-            // 判断是否可以进行纯色与重复的检测
+            // 判断是否可以进行特殊检测
             var isSolid = false;
             if (assetPath.IndexOf(".png", StringComparison.OrdinalIgnoreCase) < 0 && assetPath.IndexOf(".tga", StringComparison.OrdinalIgnoreCase) < 0 &&
                 assetPath.IndexOf(".psd", StringComparison.OrdinalIgnoreCase) < 0 && assetPath.IndexOf(".tif", StringComparison.OrdinalIgnoreCase) < 0)
@@ -291,12 +317,16 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                 TextureRepeatChecker.CheckOneTexture(assetPath, isBegin);
             }
             
+            // 内存占用汇总
+            var memoryLong = TextureUtil.GetTextureStorageMemorySize(asset);
+            
             // 汇总数据
             dataList.Add(new TextureAnalysisData
             {
                 id = counter,
                 width = asset.width,
                 height = asset.height,
+                memory = memoryLong / 1024f,
                 isSolid = isSolid,
                 textureName = asset.name,
                 texturePath = assetPath
@@ -429,6 +459,43 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                 },
                 new CustomTableColumn<TextureAnalysisData>
                 {
+                    headerContent = new GUIContent("Memory"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 100,
+                    minWidth = 80,
+                    maxWidth = 120,
+                    allowToggleVisibility = false,
+                    autoResize = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.memory.CompareTo(dataB.memory),
+                    DrawCell = (cellRect, data) =>
+                    {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        
+                        var iconRect = cellRect;
+                        iconRect.width = 20f;
+                        cellRect.xMin += 20f;
+
+                        if (data.memory > memoryError)
+                        {
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.errorIcon.sml"));
+                            EditorGUI.LabelField(cellRect, $"{data.memory:F1} KB");
+                        }
+                        else if (data.memory > memoryWarn)
+                        {
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
+                            EditorGUI.LabelField(cellRect, $"{data.memory:F1} KB");
+                        }
+                        else
+                        {
+                            EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
+                            EditorGUI.LabelField(cellRect, $"{data.memory:F1} KB");
+                        }
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData>
+                {
                     headerContent = new GUIContent("Solid"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 80,
@@ -465,7 +532,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                 {
                     headerContent = new GUIContent("Repeat"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 300,
+                    width = 80,
                     minWidth = 80,
                     maxWidth = 400,
                     allowToggleVisibility = false,

@@ -32,7 +32,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// <summary>
         /// 待检测目录
         /// </summary>
-        private static string detectPath = "Assets/Sprites/UI";
+        private static string detectPath = "Assets/_Temp/Test_AssetCheckTool/UI";
 
         /// <summary>
         /// 待检测游戏物体
