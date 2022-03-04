@@ -47,12 +47,16 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         /// </summary>
         private const string Q_OBJECT_LIST_NAME = "QHierarchyObjectList";
         
-        private readonly Dictionary<Scene, QHierarchyObjectList> objectListDictionary = new Dictionary<Scene, QHierarchyObjectList>();
+        /// <summary>
+        /// QHierarchyObjectList 字典
+        /// 不同的场景分开保存
+        /// </summary>
+        private readonly Dictionary<UnityEngine.SceneManagement.Scene, QHierarchyObjectList> objectListDictionary = new Dictionary<UnityEngine.SceneManagement.Scene, QHierarchyObjectList>();
         
         /// <summary>
         /// 上次打开的场景
         /// </summary>
-        private Scene lastActiveScene;
+        private UnityEngine.SceneManagement.Scene lastActiveScene;
         
         /// <summary>
         /// 上次选择的场景数量
