@@ -411,7 +411,14 @@ namespace Kuroha.Util.Editor
             textureDataList = new List<TextureData>();
 
             // 直接以文本形式逐行读取 Material 文件 (这样才能读取到的冗余的纹理引用)
-            var materialPathName = Path.GetFullPath(AssetDatabase.GetAssetPath(material));
+            var materialPath = AssetDatabase.GetAssetPath(material);
+            if (string.IsNullOrEmpty(materialPath))
+            {
+                DebugUtil.LogError($"材质球 {material.name} 为实例材质球, 跳过检测!", null, "yellow");
+                return;
+            }
+            
+            var materialPathName = Path.GetFullPath(materialPath);
             if (materialPathName.IndexOf("Assets", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 using (var reader = new StreamReader(materialPathName))
