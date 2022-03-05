@@ -13,7 +13,7 @@ namespace Kuroha.Util.RunTime
         public static Vector3Int GetTilePositionOfMouse(Tilemap tileMap)
         {
             // 鼠标坐标系即屏幕坐标系 (0,0) ~ (1920,1080)
-            var mouseScreenPosition = InputUtil.GetMousePosition();
+            var mouseScreenPosition = UnityEngine.Input.mousePosition;
 
             // 但是需要的不是屏幕坐标系, 需要的是游戏中的世界坐标系
             var mouseWorldPosition = UIManager.Instance.MainCamera.ScreenToWorldPoint(mouseScreenPosition);
