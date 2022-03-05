@@ -95,8 +95,6 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 消息入队
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
         private bool EnqueueMessage(BaseMessage message)
         {
             var flag = false;
@@ -113,8 +111,6 @@ namespace Kuroha.Framework.Message
         /// 触发消息
         /// 正常情况下是在 Update 中触发事件 (下一帧)
         /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
         private bool TriggerMessage(BaseMessage msg)
         {
             var msgName = msg.messageName;
@@ -150,7 +146,6 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 注册监听
         /// </summary>
-        /// <param name="handler"></param>
         /// <returns>成功标志</returns>
         public bool AddListener<T>(MessageHandler handler) where T : BaseMessage
         {
@@ -175,7 +170,6 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 移除监听
         /// </summary>
-        /// <param name="handler"></param>
         /// <returns>成功标志</returns>
         public bool RemoveListener<T>(MessageHandler handler) where T : BaseMessage
         {
@@ -212,7 +206,6 @@ namespace Kuroha.Framework.Message
         /// <summary>
         /// 向消息系统请求一条消息 (插队, 立即处理当前消息)
         /// </summary>
-        /// <returns></returns>
         public bool Request(BaseMessage msg)
         {
             return TriggerMessage(msg);
