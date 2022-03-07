@@ -249,6 +249,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                             var allPrefab = allPath.Select(AssetDatabase.LoadAssetAtPath<GameObject>);
 
                             foreach (var prefab in allPrefab) {
+                                if (prefab.transform.GetComponentsInChildren<FashionEffect>().Length > 0) {
+                                    Debug.LogError($"预制体 {prefab} 中挂载有 Fashion Effect 脚本!", prefab);
+                                }
+                                
                                 TextureUtil.GetTexturesInGameObject(prefab, out var assetsNew, out var assetPathsNew);
                                 assets.AddRange(assetsNew);
                                 assetPaths.AddRange(assetPathsNew);
