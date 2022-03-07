@@ -23,7 +23,7 @@ namespace Kuroha.Util.RunTime
         }
         
         /// <summary>
-        /// 获取类
+        /// 获取指定命名空间下指定名称的类
         /// </summary>
         public static Type GetClass(Assembly assembly, string className)
         {
@@ -33,6 +33,20 @@ namespace Kuroha.Util.RunTime
             }
             
             DebugUtil.LogError("程序集为空, 无法获得程序集中指定名称的类", null, "red");
+            return null;
+        }
+        
+        /// <summary>
+        /// 获取指定命名空间下全部的类
+        /// </summary>
+        public static Type[] GetAllClass(Assembly assembly)
+        {
+            if (ReferenceEquals(assembly, null) == false)
+            {
+                return assembly.GetTypes();
+            }
+            
+            DebugUtil.LogError("程序集为空, 无法获得程序集中的类", null, "red");
             return null;
         }
 
@@ -285,6 +299,24 @@ namespace Kuroha.Util.RunTime
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 获取指定类型的自定义特性
+        /// </summary>
+        /// <param name="classInfo">类信息</param>
+        /// <param name="attributeType">特性类型</param>
+        /// <param name="inherit">是否查询继承链</param>
+        public static object[] GetCustomAttributes(Type classInfo, Type attributeType, bool inherit)
+        {
+            if (ReferenceEquals(classInfo, null) == false)
+            {
+                return classInfo.GetCustomAttributes(attributeType, inherit);
+            }
+            
+            DebugUtil.LogError("类信息为空, 无法获得类中的特性", null, "red");
+            
+            return null;
         }
     }
 }
