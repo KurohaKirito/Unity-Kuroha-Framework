@@ -7,22 +7,6 @@ using UnityEngine;
 namespace Script.Effect.Editor.AssetTool.Util.Editor {
     public static class PrefabUtil {
         /// <summary>
-        /// 获取图片的硬盘空间占用
-        /// </summary>
-        private static long GetTextureStorageMemorySize(Texture asset) {
-            // 获取到 UnityEditor 程序集
-            var dynamicAssembly = new DynamicAssembly(typeof(EditorWindow));
-
-            // 获取到 TextureUtil 类
-            var dynamicClass = dynamicAssembly.GetClass("UnityEditor.TextureUtil");
-
-            // 调用 GetStorageMemorySizeLong 方法
-            var result = dynamicClass.CallMethod_PublicStatic("GetStorageMemorySizeLong", asset);
-
-            return (long)result;
-        }
-
-        /// <summary>
         /// 统计实际内存占用
         /// </summary>
         /// <param name="asset"></param>
@@ -83,7 +67,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                         if (textureGuids.Contains(textures[i].guid) == false) {
                             textureGuids.Add(textures[i].guid);
                             var runTimeSize = EditorUtility.FormatBytes(UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[i].asset));
-                            var storageSize = EditorUtility.FormatBytes(GetTextureStorageMemorySize(textures[i].asset));
+                            var storageSize = EditorUtility.FormatBytes(TextureUtil.GetTextureStorageMemorySize(textures[i].asset));
                             DebugUtil.Log($"{textures[i].asset.name}: 当前设备的运行内存占用 (Profiler): {runTimeSize}", textures[i].asset, "yellow");
                             DebugUtil.Log($"{textures[i].asset.name}: 当前设备的硬盘空间占用 (Inspector): {storageSize}", textures[i].asset, "yellow");
                         }

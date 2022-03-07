@@ -233,7 +233,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             foreach (var meshRenderer in meshRenderers) {
                 if (meshRenderer != null && meshRenderer.sharedMaterials != null) {
                     foreach (var material in meshRenderer.sharedMaterials) {
-                        TextureUtil.GetAllTexturesInMaterial(material, out var textureDataList);
+                        TextureUtil.GetTexturesInMaterial(material, out var textureDataList);
 
                         if (textureDataList.Count > 0) {
                             infos.AddRange(from textureData in textureDataList select textureData.asset into asset where asset != null && (asset.width > WIDTH || asset.height > HEIGHT) select new PrintNode($"纹理尺寸过大: {asset.width} X {asset.height}, {asset.name}", asset));

@@ -19,10 +19,23 @@
             /// </summary>
             GameObject
         }
+        
+        public enum DetectTypeAtPath {
+            /// <summary>
+            /// 检测指定路径下全部的纹理资源
+            /// </summary>
+            Textures,
+            
+            /// <summary>
+            /// 检测指定路径全部预制体所引用的纹理
+            /// </summary>
+            Prefabs,
+        }
 
         public int id;
         public int width;
         public int height;
+        public float memory;
         public bool isSolid;
         public string repeatInfo;
         public string textureName;

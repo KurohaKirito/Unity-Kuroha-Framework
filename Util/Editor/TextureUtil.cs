@@ -249,7 +249,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                             foreach (var material in materials) {
                                 if (ReferenceEquals(material, null) == false) {
                                     // 获取材质引用的全部纹理
-                                    GetAllTexturesInMaterial(material, out var textures);
+                                    GetTexturesInMaterial(material, out var textures);
                                     if (textures.Count > 0) {
                                         // 遍历纹理
                                         foreach (var data in textures) {
@@ -289,7 +289,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                             foreach (var material in materials) {
                                 if (ReferenceEquals(material, null) == false) {
                                     // 获取全部纹理
-                                    GetAllTexturesInMaterial(material, out var textures);
+                                    GetTexturesInMaterial(material, out var textures);
                                     if (textures.Count > 0) {
                                         foreach (var data in textures) {
                                             if (ReferenceEquals(data.asset, null) == false) {
@@ -388,6 +388,22 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                     }
                 }
             }
+        }
+        
+        /// <summary>
+        /// 获取图片的硬盘空间占用
+        /// </summary>
+        public static long GetTextureStorageMemorySize(Texture asset) {
+            // 获取到 UnityEditor 程序集
+            var dynamicAssembly = new DynamicAssembly(typeof(EditorWindow));
+
+            // 获取到 TextureUtil 类
+            var dynamicClass = dynamicAssembly.GetClass("UnityEditor.TextureUtil");
+
+            // 调用 GetStorageMemorySizeLong 方法
+            var result = dynamicClass.CallMethod_PublicStatic("GetStorageMemorySizeLong", asset);
+
+            return (long)result;
         }
     }
 }
