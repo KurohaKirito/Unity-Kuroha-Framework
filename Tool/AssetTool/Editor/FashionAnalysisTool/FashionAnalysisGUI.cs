@@ -155,7 +155,7 @@ namespace Kuroha.Tool.AssetTool.Editor.FashionAnalysisTool
         /// </summary>
         private static void CollectTextures()
         {
-            TextureAnalysisTableWindow.Open(TextureAnalysisData.DetectType.GameObject, null, role.gameObject);
+            TextureAnalysisTableWindow.Open(TextureAnalysisData.DetectType.GameObject, TextureAnalysisData.DetectTypeAtPath.Prefabs, null, role.gameObject);
         }
 
         /// <summary>

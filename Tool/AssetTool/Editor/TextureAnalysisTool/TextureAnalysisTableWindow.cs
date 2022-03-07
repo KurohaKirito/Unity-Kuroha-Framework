@@ -56,6 +56,11 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// 是否是对场景进行检测
         /// </summary>
         private static TextureAnalysisData.DetectType detectType;
+        
+        /// <summary>
+        /// 对路径中资源检测的类型
+        /// </summary>
+        private static TextureAnalysisData.DetectTypeAtPath detectTypeAtPath;
 
         /// <summary>
         /// 待检测路径
@@ -70,11 +75,12 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// <summary>
         /// 打开窗口
         /// </summary>
-        public static void Open(TextureAnalysisData.DetectType type, string path, GameObject obj)
+        public static void Open(TextureAnalysisData.DetectType type, TextureAnalysisData.DetectTypeAtPath typeAtPath, string path, GameObject obj)
         {
             detectType = type;
             detectPath = path;
             detectGameObject = obj;
+            detectTypeAtPath = typeAtPath;
             var window = GetWindow<TextureAnalysisTableWindow>("纹理资源分析", true);
             window.minSize = new Vector2(1200, 1000);
         }
@@ -195,7 +201,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
             var counter = 0;
 
             // 获取全部的纹理
-            GetAllTexture(detectType, detectPath, out var textures, out var paths);
+            GetAllTexture(detectType, detectTypeAtPath, detectPath, out var textures, out var paths);
 
             // 遍历每一张贴图进行检测
             for (var index = 0; index < textures.Count; index++)
@@ -238,12 +244,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// <summary>
         /// 获取全部的纹理
         /// </summary>
-        /// <param name="type">检测类型</param>
-        /// <param name="texturesPath">纹理贴图所在的路径</param>
-        /// <param name="assets">返回的资源</param>
-        /// <param name="assetPaths">返回的资源路径</param>
-        /// <returns></returns>
-        private static void GetAllTexture(TextureAnalysisData.DetectType type, string texturesPath, out List<Texture> assets, out List<string> assetPaths)
+        private static void GetAllTexture(TextureAnalysisData.DetectType type, TextureAnalysisData.DetectTypeAtPath typeAtPath, string texturesPath, out List<Texture> assets, out List<string> assetPaths)
         {
             assets = new List<Texture>();
             assetPaths = new List<string>();
@@ -255,6 +256,28 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
                     break;
 
                 case TextureAnalysisData.DetectType.Path:
+                    switch (typeAtPath)
+                    {
+                        case TextureAnalysisData.DetectTypeAtPath.Textures:
+                            TextureUtil.GetTexturesInPath(new[] { texturesPath }, out assets, out assetPaths);
+                            break;
+                        
+                        case TextureAnalysisData.DetectTypeAtPath.Prefabs:
+                            var allPrefabGuids = AssetDatabase.FindAssets("t:Prefab", new[] { texturesPath });
+                            var allPath = allPrefabGuids.Select(AssetDatabase.GUIDToAssetPath);
+                            var allPrefab = allPath.Select(AssetDatabase.LoadAssetAtPath<GameObject>);
+
+                            foreach (var prefab in allPrefab)
+                            {
+                                TextureUtil.GetTexturesInGameObject(prefab, out var assetsNew, out var assetPathsNew);
+                                assets.AddRange(assetsNew);
+                                assetPaths.AddRange(assetPathsNew);
+                            }
+                            break;
+                        
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(typeAtPath), typeAtPath, null);
+                    }
                     TextureUtil.GetTexturesInPath(new[] {texturesPath}, out assets, out assetPaths);
                     break;
 
@@ -270,10 +293,6 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         /// <summary>
         /// 检测单张贴图
         /// </summary>
-        /// <param name="counter">序号</param>
-        /// <param name="dataList">表格数据</param>
-        /// <param name="assetPath">贴图路径</param>
-        /// <param name="asset">贴图资源</param>
         private static void DetectTexture(ref int counter, in List<TextureAnalysisData> dataList, in string assetPath, in Texture asset)
         {
             // 去重

@@ -269,7 +269,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
                 {
                     foreach (var material in meshRenderer.sharedMaterials)
                     {
-                        TextureUtil.GetAllTexturesInMaterial(material, out var textureDataList);
+                        TextureUtil.GetTexturesInMaterial(material, out var textureDataList);
 
                         if (textureDataList.Count > 0)
                         {
