@@ -305,13 +305,12 @@ namespace Kuroha.Util.RunTime
         /// 获取指定类型的自定义特性
         /// </summary>
         /// <param name="classInfo">类信息</param>
-        /// <param name="attributeType">特性类型</param>
         /// <param name="inherit">是否查询继承链</param>
-        public static object[] GetCustomAttributes(Type classInfo, Type attributeType, bool inherit)
+        public static T GetCustomAttribute<T>(Type classInfo, bool inherit) where T : Attribute
         {
             if (ReferenceEquals(classInfo, null) == false)
             {
-                return classInfo.GetCustomAttributes(attributeType, inherit);
+                return classInfo.GetCustomAttribute<T>(inherit);
             }
             
             DebugUtil.LogError("类信息为空, 无法获得类中的特性", null, "red");
