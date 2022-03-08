@@ -101,23 +101,23 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitTexture(CheckItemInfo info)
         {
-            switch ((CheckTexture.CheckOptions)info.checkType)
+            switch ((CheckTextureImporter.CheckOptions)info.checkType)
             {
-                case CheckTexture.CheckOptions.Size:
+                case CheckTextureImporter.CheckOptions.Size:
                     var parameter = info.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
                     EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(parameter[0]);
                     EffectCheckItemSetViewWindow.ParameterInt2 = Convert.ToInt32(parameter[1]);
                     break;
 
-                case CheckTexture.CheckOptions.ReadWriteEnable:
+                case CheckTextureImporter.CheckOptions.ReadWriteEnable:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
 
-                case CheckTexture.CheckOptions.MipMaps:
+                case CheckTextureImporter.CheckOptions.MipMaps:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
                 
-                case CheckTexture.CheckOptions.CompressFormat:
+                case CheckTextureImporter.CheckOptions.CompressFormat:
                     break;
 
                 default:

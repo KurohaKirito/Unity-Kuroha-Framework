@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Kuroha.Framework.AsyncLoad.Asset
 {
-    [CreateAssetMenu(fileName = "Default Name.asset", menuName = "Kuroha/AssetConfig")]
+    [CreateAssetMenu(fileName = "AssetConfig_XXX.asset", menuName = "Kuroha/AssetConfig")]
     [Serializable]
     public class DS_Asset : ScriptableObject
     {

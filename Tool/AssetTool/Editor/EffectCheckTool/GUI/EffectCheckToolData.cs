@@ -36,6 +36,20 @@
             /// 通用检查
             /// </summary>
             Asset = 5,
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            TextureImporter = 6,
         }
     }
 }

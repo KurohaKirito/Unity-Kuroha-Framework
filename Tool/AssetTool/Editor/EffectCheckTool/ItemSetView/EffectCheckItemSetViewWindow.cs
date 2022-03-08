@@ -177,7 +177,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     break;
 
                 case EffectToolData.AssetsType.Texture:
-                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckTexture.checkOptions);
+                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckTextureImporter.checkOptions);
                     OnGUI_CheckTexture();
                     break;
 
@@ -320,28 +320,28 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         private static void OnGUI_CheckTexture()
         {
-            var modeType = (CheckTexture.CheckOptions)itemInfo.checkType;
+            var modeType = (CheckTextureImporter.CheckOptions)itemInfo.checkType;
             var oldAlignment = UnityEngine.GUI.skin.label.alignment;
 
             switch (modeType)
             {
-                case CheckTexture.CheckOptions.Size:
-                    ParameterInt1 = EditorGUILayout.Popup("最大长", ParameterInt1, CheckTexture.sizeOptions);
-                    ParameterInt2 = EditorGUILayout.Popup("最大宽", ParameterInt2, CheckTexture.sizeOptions);
+                case CheckTextureImporter.CheckOptions.Size:
+                    ParameterInt1 = EditorGUILayout.Popup("最大长", ParameterInt1, CheckTextureImporter.sizeOptions);
+                    ParameterInt2 = EditorGUILayout.Popup("最大宽", ParameterInt2, CheckTextureImporter.sizeOptions);
                     itemInfo.parameter = $"{ParameterInt1}{DELIMITER}{ParameterInt2}";
                     break;
 
-                case CheckTexture.CheckOptions.ReadWriteEnable:
+                case CheckTextureImporter.CheckOptions.ReadWriteEnable:
                     ParameterBool1 = EditorGUILayout.Toggle("开启 Read Write", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
 
-                case CheckTexture.CheckOptions.MipMaps:
+                case CheckTextureImporter.CheckOptions.MipMaps:
                     ParameterBool1 = EditorGUILayout.Toggle("开启 Mip Maps", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
                 
-                case CheckTexture.CheckOptions.CompressFormat:
+                case CheckTextureImporter.CheckOptions.CompressFormat:
                     UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
                     GUILayout.Label("描述: Android => ETC2; iOS => PVRTC");
                     UnityEngine.GUI.skin.label.alignment = oldAlignment;
