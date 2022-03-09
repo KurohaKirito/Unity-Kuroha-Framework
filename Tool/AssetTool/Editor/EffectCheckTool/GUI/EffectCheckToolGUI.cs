@@ -114,7 +114,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                 var checkModelEnumCount = Enum.GetNames(typeof(CheckModel.CheckOptions)).Length;
                 var checkParticleEnumCount = Enum.GetNames(typeof(CheckParticleSystem.CheckOptions)).Length;
                 var checkPrefabEnumCount = Enum.GetNames(typeof(CheckPrefab.CheckOptions)).Length;
-                var checkTextureEnumCount = Enum.GetNames(typeof(CheckTextureImporter.CheckOptions)).Length;
+                var checkTextureEnumCount = Enum.GetNames(typeof(CheckTextureImporter.EM_CheckOption)).Length;
                 var checkAssetEnumCount = Enum.GetNames(typeof(CheckAsset.CheckOptions)).Length;
 
                 var sum = checkMeshEnumCount + checkModelEnumCount + checkParticleEnumCount + checkPrefabEnumCount + checkTextureEnumCount + checkAssetEnumCount;
@@ -177,7 +177,10 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                             }
                         }
 
-                        switch (checkItemInfo.assetsType)
+                        CheckAssetRoot.Check(checkItemInfo, ref reportInfos);
+                        
+                        /*
+                        switch (checkItemInfo.checkAssetType)
                         {
                             case EffectToolData.AssetsType.Model:
                                 CheckModel.Check(checkItemInfo, ref reportInfos);
@@ -206,6 +209,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+                        */
                     }
 
                     #endregion

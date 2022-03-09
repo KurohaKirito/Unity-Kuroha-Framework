@@ -19,7 +19,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         {
             if (isEditMode)
             {
-                switch (itemInfo.assetsType)
+                switch (itemInfo.checkAssetType)
                 {
                     case EffectToolData.AssetsType.Prefab:
                         InitPrefab(itemInfo);
@@ -51,9 +51,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             }
             else
             {
-                EffectCheckItemSetViewWindow.itemInfo = new CheckItemInfo(
-                    string.Empty, string.Empty, EffectToolData.AssetsType.Mesh, 0, string.Empty, string.Empty,
-                    string.Empty, string.Empty, 0, true, false, true, string.Empty);
+                EffectCheckItemSetViewWindow.itemInfo = new CheckItemInfo(string.Empty, string.Empty, EffectToolData.AssetsType.Mesh,
+                    0, 0, string.Empty, string.Empty, string.Empty, string.Empty,
+                    0, true, false, true, string.Empty);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitMesh(CheckItemInfo info)
         {
-            switch ((CheckMesh.CheckOptions)info.checkType)
+            switch ((CheckMesh.CheckOptions)info.checkOption)
             {
                 case CheckMesh.CheckOptions.MeshUV:
                     var parameter = info.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
@@ -101,23 +101,23 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitTexture(CheckItemInfo info)
         {
-            switch ((CheckTextureImporter.CheckOptions)info.checkType)
+            switch ((CheckTextureImporter.EM_CheckOption)info.checkOption)
             {
-                case CheckTextureImporter.CheckOptions.Size:
+                case CheckTextureImporter.EM_CheckOption.Size:
                     var parameter = info.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
                     EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(parameter[0]);
                     EffectCheckItemSetViewWindow.ParameterInt2 = Convert.ToInt32(parameter[1]);
                     break;
 
-                case CheckTextureImporter.CheckOptions.ReadWriteEnable:
+                case CheckTextureImporter.EM_CheckOption.ReadWriteEnable:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
 
-                case CheckTextureImporter.CheckOptions.MipMaps:
+                case CheckTextureImporter.EM_CheckOption.MipMaps:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
                 
-                case CheckTextureImporter.CheckOptions.CompressFormat:
+                case CheckTextureImporter.EM_CheckOption.CompressFormat:
                     break;
 
                 default:
@@ -131,7 +131,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitParticleSystem(CheckItemInfo info)
         {
-            switch ((CheckParticleSystem.CheckOptions)info.checkType)
+            switch ((CheckParticleSystem.CheckOptions)info.checkOption)
             {
                 case CheckParticleSystem.CheckOptions.RenderMode:
                     var parameterRenderMode = Convert.ToInt32(info.parameter);
@@ -174,7 +174,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitPrefab(CheckItemInfo info)
         {
-            switch ((CheckPrefab.CheckOptions)info.checkType)
+            switch ((CheckPrefab.CheckOptions)info.checkOption)
             {
                 case CheckPrefab.CheckOptions.ObjectName:
                     var parameterObjectName = info.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
@@ -244,7 +244,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitModel(CheckItemInfo info)
         {
-            switch ((CheckModel.CheckOptions)info.checkType)
+            switch ((CheckModel.CheckOptions)info.checkOption)
             {
                 case CheckModel.CheckOptions.ReadWriteEnable:
                     break;
@@ -275,7 +275,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitAsset(CheckItemInfo info)
         {
-            switch ((CheckAsset.CheckOptions)info.checkType)
+            switch ((CheckAsset.CheckOptions)info.checkOption)
             {
                 case CheckAsset.CheckOptions.AssetName:
                     var parameterAssetName = info.parameter;

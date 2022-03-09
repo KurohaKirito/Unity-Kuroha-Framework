@@ -85,9 +85,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                 {
                     (i + 1).ToString(),
                     itemData.title,
-                    Convert.ToInt32(itemData.assetsType).ToString(),
-                    Convert.ToInt32(itemData.checkType).ToString(),
-                    itemData.path,
+                    Convert.ToInt32(itemData.checkAssetType).ToString(),
+                    Convert.ToInt32(itemData.checkOption).ToString(),
+                    itemData.checkPath,
                     itemData.assetWhiteRegex,
                     itemData.objectWhiteRegex,
                     itemData.parameter,

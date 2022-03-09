@@ -34,13 +34,13 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         
         public static void Check(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos)
         {
-            if (itemData.path.StartsWith("Assets"))
+            if (itemData.checkPath.StartsWith("Assets"))
             {
-                var fullPath = Path.GetFullPath(itemData.path);
+                var fullPath = Path.GetFullPath(itemData.checkPath);
                 if (Directory.Exists(fullPath))
                 {
                     var direction = new DirectoryInfo(fullPath);
-                    switch ((CheckOptions)itemData.checkType)
+                    switch ((CheckOptions)itemData.checkOption)
                     {
                         case CheckOptions.AssetName:
                             CheckAssetName(direction, itemData, ref reportInfos);

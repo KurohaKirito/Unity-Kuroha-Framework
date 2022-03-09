@@ -5,30 +5,21 @@ using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report;
 
 namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check 
 {
-    public class AssetCheckRoot
+    public static class CheckAssetRoot
     {
-        public void Check(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos)
+        private static CheckTextureImporter checkTextureImporter;
+        
+        public static void Check(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos)
         {
-            switch (itemData.assetsType)
+            switch (itemData.checkAssetType)
             {
                 case EffectToolData.AssetsType.TextureImporter:
                 {
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                    checkTextureImporter = new CheckTextureImporter(itemData);
+                    checkTextureImporter.Check(ref reportInfos);
                     break;
                 }
             }
         }
-        
-        
-        
-        
     }
 }

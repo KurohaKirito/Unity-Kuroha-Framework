@@ -33,8 +33,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                 content = content,
                 effectCheckReportType = effectCheckReportType,
 
-                assetType = itemData.assetsType,
-                modeType = itemData.checkType,
+                assetType = itemData.checkAssetType,
+                modeType = itemData.checkOption,
                 parameter = itemData.parameter,
                 isEnable = itemData.effectEnable,
                 dangerLevel = itemData.dangerLevel

@@ -150,8 +150,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             #region 共有 UI
 
             itemInfo.title = EditorGUILayout.TextField("标题", itemInfo.title);
-            itemInfo.assetsType = (EffectToolData.AssetsType)EditorGUILayout.EnumPopup("资源类型", itemInfo.assetsType);
-            itemInfo.path = EditorGUILayout.TextField("相对路径", itemInfo.path);
+            itemInfo.checkAssetType = (EffectToolData.AssetsType)EditorGUILayout.EnumPopup("资源类型", itemInfo.checkAssetType);
+            itemInfo.checkPath = EditorGUILayout.TextField("相对路径", itemInfo.checkPath);
             itemInfo.assetWhiteRegex = EditorGUILayout.TextField("资源白名单【正则】", itemInfo.assetWhiteRegex);
             itemInfo.objectWhiteRegex = EditorGUILayout.TextField("物体白名单【正则】", itemInfo.objectWhiteRegex);
             itemInfo.isCheckSubFile = EditorGUILayout.Toggle("是否检测子目录", itemInfo.isCheckSubFile);
@@ -164,35 +164,35 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
 
             #region 特有 UI
 
-            switch (itemInfo.assetsType)
+            switch (itemInfo.checkAssetType)
             {
                 case EffectToolData.AssetsType.ParticleSystem:
-                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckParticleSystem.checkOptions);
+                    itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckParticleSystem.checkOptions);
                     OnGUI_CheckParticleSystem();
                     break;
                 
                 case EffectToolData.AssetsType.Mesh:
-                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckMesh.checkOptions);
+                    itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckMesh.checkOptions);
                     OnGUI_CheckMesh();
                     break;
 
                 case EffectToolData.AssetsType.Texture:
-                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckTextureImporter.checkOptions);
+                    itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckTextureImporter.checkOptionArray);
                     OnGUI_CheckTexture();
                     break;
 
                 case EffectToolData.AssetsType.Prefab:
-                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckPrefab.checkOptions);
+                    itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckPrefab.checkOptions);
                     OnGUI_CheckPrefab();
                     break;
 
                 case EffectToolData.AssetsType.Model:
-                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckModel.checkOptions);
+                    itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckModel.checkOptions);
                     OnGUI_CheckModel();
                     break;
 
                 case EffectToolData.AssetsType.Asset:
-                    itemInfo.checkType = EditorGUILayout.Popup("检测内容", itemInfo.checkType, CheckAsset.checkOptions);
+                    itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckAsset.checkOptions);
                     OnGUI_CheckAsset();
                     break;
                 
@@ -251,7 +251,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         private static void OnGUI_CheckParticleSystem()
         {
-            var modeType = (CheckParticleSystem.CheckOptions)itemInfo.checkType;
+            var modeType = (CheckParticleSystem.CheckOptions)itemInfo.checkOption;
             var oldAlignment = UnityEngine.GUI.skin.label.alignment;
 
             switch (modeType)
@@ -320,28 +320,28 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         private static void OnGUI_CheckTexture()
         {
-            var modeType = (CheckTextureImporter.CheckOptions)itemInfo.checkType;
+            var modeType = (CheckTextureImporter.EM_CheckOption)itemInfo.checkOption;
             var oldAlignment = UnityEngine.GUI.skin.label.alignment;
 
             switch (modeType)
             {
-                case CheckTextureImporter.CheckOptions.Size:
-                    ParameterInt1 = EditorGUILayout.Popup("最大长", ParameterInt1, CheckTextureImporter.sizeOptions);
-                    ParameterInt2 = EditorGUILayout.Popup("最大宽", ParameterInt2, CheckTextureImporter.sizeOptions);
+                case CheckTextureImporter.EM_CheckOption.Size:
+                    ParameterInt1 = EditorGUILayout.Popup("最大长", ParameterInt1, CheckTextureImporter.sizeOptionArray);
+                    ParameterInt2 = EditorGUILayout.Popup("最大宽", ParameterInt2, CheckTextureImporter.sizeOptionArray);
                     itemInfo.parameter = $"{ParameterInt1}{DELIMITER}{ParameterInt2}";
                     break;
 
-                case CheckTextureImporter.CheckOptions.ReadWriteEnable:
+                case CheckTextureImporter.EM_CheckOption.ReadWriteEnable:
                     ParameterBool1 = EditorGUILayout.Toggle("开启 Read Write", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
 
-                case CheckTextureImporter.CheckOptions.MipMaps:
+                case CheckTextureImporter.EM_CheckOption.MipMaps:
                     ParameterBool1 = EditorGUILayout.Toggle("开启 Mip Maps", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
                 
-                case CheckTextureImporter.CheckOptions.CompressFormat:
+                case CheckTextureImporter.EM_CheckOption.CompressFormat:
                     UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
                     GUILayout.Label("描述: Android => ETC2; iOS => PVRTC");
                     UnityEngine.GUI.skin.label.alignment = oldAlignment;
@@ -357,7 +357,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         private static void OnGUI_CheckMesh()
         {
-            var modeType = (CheckMesh.CheckOptions)itemInfo.checkType;
+            var modeType = (CheckMesh.CheckOptions)itemInfo.checkOption;
 
             switch (modeType)
             {
@@ -379,7 +379,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         private static void OnGUI_CheckPrefab()
         {
-            var modeType = (CheckPrefab.CheckOptions)itemInfo.checkType;
+            var modeType = (CheckPrefab.CheckOptions)itemInfo.checkOption;
             var oldAlignment = UnityEngine.GUI.skin.label.alignment;
 
             switch (modeType)
@@ -466,7 +466,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         private static void OnGUI_CheckModel()
         {
-            var modeType = (CheckModel.CheckOptions)itemInfo.checkType;
+            var modeType = (CheckModel.CheckOptions)itemInfo.checkOption;
             var oldAlignment = UnityEngine.GUI.skin.label.alignment;
 
             switch (modeType)
@@ -512,7 +512,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         private static void OnGUI_CheckAsset()
         {
-            var modeType = (CheckAsset.CheckOptions)itemInfo.checkType;
+            var modeType = (CheckAsset.CheckOptions)itemInfo.checkOption;
             var oldAlignment = UnityEngine.GUI.skin.label.alignment;
 
             switch (modeType)

@@ -48,9 +48,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// <param name="reportInfos">检测结果</param>
         public static void Check(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos)
         {
-            if (itemData.path.StartsWith("Assets"))
+            if (itemData.checkPath.StartsWith("Assets"))
             {
-                var assetGuids = AssetDatabase.FindAssets("t:Model", new[] { itemData.path });
+                var assetGuids = AssetDatabase.FindAssets("t:Model", new[] { itemData.checkPath });
                 
                 for (var index = 0; index < assetGuids.Length; index++)
                 {
@@ -67,7 +67,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         }
                     }
                     
-                    switch ((CheckOptions)itemData.checkType)
+                    switch ((CheckOptions)itemData.checkOption)
                     {
                         case CheckOptions.ReadWriteEnable:
                             CheckReadWriteEnable(assetPath, itemData, ref reportInfos);

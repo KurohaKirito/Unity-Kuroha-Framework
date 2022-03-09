@@ -37,9 +37,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// <param name="reportInfos">检测结果</param>
         public static void Check(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos)
         {
-            if (itemData.path.StartsWith("Assets"))
+            if (itemData.checkPath.StartsWith("Assets"))
             {
-                var fullPath = System.IO.Path.GetFullPath(itemData.path);
+                var fullPath = System.IO.Path.GetFullPath(itemData.checkPath);
                 if (Directory.Exists(fullPath))
                 {
                     var direction = new DirectoryInfo(fullPath);
@@ -67,7 +67,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                             }
                         }
                         
-                        switch ((CheckOptions)itemData.checkType)
+                        switch ((CheckOptions)itemData.checkOption)
                         {
                             case CheckOptions.MeshUV:
                                 CheckSkinnedMeshRenderer(assetPath, files[index], itemData, ref reportInfos);

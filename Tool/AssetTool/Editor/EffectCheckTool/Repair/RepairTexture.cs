@@ -13,22 +13,22 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// <param name="effectCheckReportInfo">问题项</param>
         public static void Repair(EffectCheckReportInfo effectCheckReportInfo)
         {
-            var modeType = (CheckTextureImporter.CheckOptions) effectCheckReportInfo.modeType;
+            var modeType = (CheckTextureImporter.EM_CheckOption) effectCheckReportInfo.modeType;
 
             switch (modeType)
             {
-                case CheckTextureImporter.CheckOptions.Size:
+                case CheckTextureImporter.EM_CheckOption.Size:
                     break;
                 
-                case CheckTextureImporter.CheckOptions.MipMaps:
+                case CheckTextureImporter.EM_CheckOption.MipMaps:
                     RepairMipMaps(effectCheckReportInfo);
                     break;
                 
-                case CheckTextureImporter.CheckOptions.ReadWriteEnable:
+                case CheckTextureImporter.EM_CheckOption.ReadWriteEnable:
                     RepairReadWrite(effectCheckReportInfo);
                     break;
                 
-                case CheckTextureImporter.CheckOptions.CompressFormat:
+                case CheckTextureImporter.EM_CheckOption.CompressFormat:
                     break;
                 
                 default:

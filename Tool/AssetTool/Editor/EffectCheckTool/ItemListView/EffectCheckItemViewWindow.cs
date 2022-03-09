@@ -118,7 +118,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
                     var srcString = searchTypeIndex switch
                     {
                         0 => checkItem.title,
-                        1 => checkItem.assetsType.ToString(),
+                        1 => checkItem.checkAssetType.ToString(),
                         _ => string.Empty
                     };
                     

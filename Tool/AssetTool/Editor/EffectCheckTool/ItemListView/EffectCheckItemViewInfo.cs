@@ -16,24 +16,34 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         public string title;
 
         /// <summary>
-        /// 待检查资源的类型
+        /// 表示检查什么类型的资源
         /// </summary>
-        public EffectToolData.AssetsType assetsType;
+        public EffectToolData.AssetsType checkAssetType;
 
         /// <summary>
-        /// 子检查项类型
+        /// 表示获取哪里的资源
         /// </summary>
-        public int checkType;
+        public int getAssetType;
 
         /// <summary>
-        /// 子检查项参数
+        /// 表示检查资源的什么选项
+        /// </summary>
+        public int checkOption;
+
+        /// <summary>
+        /// 表示检查时的指标和参数
         /// </summary>
         public string parameter;
+        
+        /// <summary>
+        /// 表示是否检查子目录
+        /// </summary>
+        public bool isCheckSubFile;
 
         /// <summary>
-        /// 待检查资源的类型路径
+        /// 待检查路径
         /// </summary>
-        public string path;
+        public string checkPath;
         
         /// <summary>
         /// 资源白名单规则
@@ -61,11 +71,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         public bool cicdEnable;
 
         /// <summary>
-        /// 检测子目录标志
-        /// </summary>
-        public bool isCheckSubFile;
-
-        /// <summary>
         /// 检查项的备注
         /// </summary>
         public string remark;
@@ -73,15 +78,14 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         /// <summary>
         /// 构造函数
         /// </summary>
-        public CheckItemInfo(string guid, string title, EffectToolData.AssetsType assetsType, int checkType, string path,
-            string assetWhiteRegex, string objectWhiteRegex, string parameter, int dangerLevel,
-            bool effectEnable, bool cicdEnable, bool isCheckSubFile, string remark)
+        public CheckItemInfo(string guid, string title, EffectToolData.AssetsType checkAssetType, int getAssetType, int checkOption, string checkPath, string assetWhiteRegex, string objectWhiteRegex, string parameter, int dangerLevel, bool effectEnable, bool cicdEnable, bool isCheckSubFile, string remark)
         {
             this.guid = guid;
             this.title = title;
-            this.assetsType = assetsType;
-            this.checkType = checkType;
-            this.path = path;
+            this.checkAssetType = checkAssetType;
+            this.getAssetType = getAssetType;
+            this.checkOption = checkOption;
+            this.checkPath = checkPath;
             this.assetWhiteRegex = assetWhiteRegex;
             this.objectWhiteRegex = objectWhiteRegex;
             this.parameter = parameter;
@@ -105,9 +109,10 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
 
             guid = item.guid;
             title = item.title;
-            assetsType = item.assetsType;
-            checkType = item.checkType;
-            path = item.path;
+            checkAssetType = item.checkAssetType;
+            getAssetType = item.getAssetType;
+            checkOption = item.checkOption;
+            checkPath = item.checkPath;
             assetWhiteRegex = item.assetWhiteRegex;
             objectWhiteRegex = item.objectWhiteRegex;
             parameter = item.parameter;
@@ -131,17 +136,18 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
 
             guid = data[0];
             title = data[1];
-            assetsType = (EffectToolData.AssetsType)Convert.ToInt32(data[2]);
-            checkType = Convert.ToInt32(data[3]);
-            path = data[4];
-            assetWhiteRegex = data[5];
-            objectWhiteRegex = data[6];
-            parameter = data[7];
-            dangerLevel = Convert.ToInt32(data[8]);
-            effectEnable = bool.Parse(data[9]);
-            cicdEnable = bool.Parse(data[10]);
-            isCheckSubFile = Convert.ToBoolean(data[11]);
-            remark = data[12];
+            checkAssetType = (EffectToolData.AssetsType)Convert.ToInt32(data[2]);
+            getAssetType = Convert.ToInt32(data[3]);
+            checkOption = Convert.ToInt32(data[4]);
+            checkPath = data[5];
+            assetWhiteRegex = data[6];
+            objectWhiteRegex = data[7];
+            parameter = data[8];
+            dangerLevel = Convert.ToInt32(data[9]);
+            effectEnable = bool.Parse(data[10]);
+            cicdEnable = bool.Parse(data[11]);
+            isCheckSubFile = Convert.ToBoolean(data[12]);
+            remark = data[13];
         }
     }
 }
