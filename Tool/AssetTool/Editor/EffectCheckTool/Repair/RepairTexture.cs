@@ -17,7 +17,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
 
             switch (modeType)
             {
-                case CheckTextureImporter.EM_CheckOption.Size:
+                case CheckTextureImporter.EM_CheckOption.ImporterSize:
                     break;
                 
                 case CheckTextureImporter.EM_CheckOption.MipMaps:

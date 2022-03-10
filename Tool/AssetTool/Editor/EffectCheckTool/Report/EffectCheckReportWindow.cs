@@ -165,24 +165,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
 
             #endregion
         }
-
-        /// <summary>
-        /// 计算得出可以自动修复的问题的数量
-        /// </summary>
-        /// <returns></returns>
-        private static int CanRepairCount(in List<EffectCheckReportInfo> reportInfos)
-        {
-            var count = 0;
-            foreach (var reportInfo in reportInfos)
-            {
-                if (EffectCheckReport.RepairOrSelect(reportInfo.effectCheckReportType)) {
-                    count++;
-                }
-            }
-
-            return count;
-        }
-
+        
+        
+        
         /// <summary>
         /// 显示一个问题项
         /// </summary>
@@ -218,14 +203,32 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             
             // 危险等级
             checkItemGUIStyle.normal.textColor = effectCheckReportInfo.dangerLevel == 0 ? Color.yellow : Color.red;
-            EditorGUILayout.SelectableLabel(EffectCheckItemSetView.dangerLevelOptions[effectCheckReportInfo.dangerLevel], checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(40));
+            EditorGUILayout.SelectableLabel(EffectCheckItemSetView.dangerLevelOptions[effectCheckReportInfo.dangerLevel], checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(60));
             checkItemGUIStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
 
             // 错误信息
-            EditorGUILayout.SelectableLabel(effectCheckReportInfo.content, checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(1600));
+            EditorGUILayout.SelectableLabel("Android: 纹理尺寸过大", checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(400));
 
             // 填满留白
             GUILayout.FlexibleSpace();
         }
+        
+        /// <summary>
+        /// 计算得出可以自动修复的问题的数量
+        /// </summary>
+        /// <returns></returns>
+        private static int CanRepairCount(in List<EffectCheckReportInfo> reportInfos)
+        {
+            var count = 0;
+            foreach (var reportInfo in reportInfos)
+            {
+                if (EffectCheckReport.RepairOrSelect(reportInfo.effectCheckReportType)) {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
     }
 }

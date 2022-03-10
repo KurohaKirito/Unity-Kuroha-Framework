@@ -16,22 +16,22 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// <summary>
         /// 检查哪里的纹理
         /// </summary>
-        private enum EM_GetAssetOption
+        public enum EM_GetAssetOption
         {
             /// <summary>
-            /// 直接检查资源管理器中的纹理
+            /// 直接检查资源管理器中的资源
             /// </summary>
             InExplorer,
             
             /// <summary>
-            /// 检查预制体中引用的全部纹理
+            /// 检查预制体中引用的全部资源
             /// </summary>
             InPrefab,
             
             /// <summary>
-            /// 检查材质球中引用的全部纹理
+            /// 检查材质球中引用的全部资源
             /// </summary>
-            InMaterial,
+            InMaterial
         }
         
         /// <summary>
@@ -39,23 +39,12 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// </summary>
         public enum EM_CheckOption
         {
-            Size,
+            ImporterSize,
             MipMaps,
             ReadWriteEnable,
-            CompressFormat,
+            CompressFormat
         }
-        
-        /// <summary>
-        /// 检查纹理的什么设置
-        /// </summary>
-        public static readonly string[] checkOptionArray =
-        {
-            "纹理尺寸",
-            "Mip Maps 设置",
-            "读写设置",
-            "压缩格式"
-        };
-        
+
         /// <summary>
         /// 检查尺寸时的子检查项
         /// </summary>
@@ -75,7 +64,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private readonly EM_CheckOption checkOption;
         private readonly string checkOptionParameter;
         private readonly string[] checkOptionParameterArray;
-        private readonly List<TextureImporter> textureImportersToCheck;
+        private readonly List<TextureImporter> assetsToCheck;
 
         /// <summary>
         /// 构造函数
@@ -83,7 +72,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         public CheckTextureImporter(CheckItemInfo checkItemInfo)
         {
             this.checkItemInfo = checkItemInfo;
-            textureImportersToCheck = new List<TextureImporter>();
+            assetsToCheck = new List<TextureImporter>();
             
             getOption = (EM_GetAssetOption) this.checkItemInfo.getAssetType;
             checkOption = (EM_CheckOption) this.checkItemInfo.checkOption;
@@ -91,31 +80,62 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             checkOptionParameterArray = this.checkItemInfo.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
         }
         
-        private void GetTextureImporterInExplorer()
+        private void GetAssetInExplorer()
         {
-            textureImportersToCheck.Clear();
+            assetsToCheck.Clear();
             
             var guids = AssetDatabase.FindAssets("t:Texture", new[] { checkItemInfo.checkPath });
             var paths = guids.Select(AssetDatabase.GUIDToAssetPath);
             var assetImporters = paths.Select(AssetImporter.GetAtPath);
+            AddAssetToCheck(assetImporters);
+        }
+        
+        private void GetAssetInPrefab()
+        {
+            assetsToCheck.Clear();
+            
+            var guids = AssetDatabase.FindAssets("t:Prefab", new[] { checkItemInfo.checkPath });
+            var paths = guids.Select(AssetDatabase.GUIDToAssetPath);
+            var prefabs = paths.Select(AssetDatabase.LoadAssetAtPath<GameObject>);
 
-            foreach (var assetImporter in assetImporters) {
-                if (assetImporter is TextureImporter textureImporter) {
-                    textureImportersToCheck.Add(textureImporter);
-                } else {
-                    DebugUtil.LogError("此资源并不是纹理类型!", assetImporter, "red");
-                }
+            foreach (var prefab in prefabs)
+            {
+                TextureUtil.GetTexturesInGameObject(prefab, out _, out var assetPaths);
+                var assetImporters = assetPaths.Select(AssetImporter.GetAtPath);
+                AddAssetToCheck(assetImporters);
             }
         }
         
-        private void GetTextureImporterInPrefab()
+        private void GetAssetInMaterial()
         {
+            assetsToCheck.Clear();
+            
+            var guids = AssetDatabase.FindAssets("t:Material", new[] { checkItemInfo.checkPath });
+            var paths = guids.Select(AssetDatabase.GUIDToAssetPath);
+            var materials = paths.Select(AssetDatabase.LoadAssetAtPath<Material>);
+            
+            foreach (var material in materials)
+            {
+                TextureUtil.GetTexturesInMaterial(material, out var textureDataList);
+                var assetImporters = textureDataList.Select(t => AssetImporter.GetAtPath(t.path));
+                AddAssetToCheck(assetImporters);
+            }
             
         }
-        
-        private void GetTextureImporterInMaterial()
+
+        private void AddAssetToCheck(IEnumerable<AssetImporter> assetImporters)
         {
-            
+            foreach (var assetImporter in assetImporters)
+            {
+                if (assetImporter is TextureImporter importer)
+                {
+                    assetsToCheck.Add(importer);
+                }
+                else
+                {
+                    DebugUtil.LogError("此资源并不是纹理类型!", assetImporter, "red");
+                }
+            }
         }
         
         /// <summary>
@@ -137,24 +157,25 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// </summary>
         public void Check(ref List<EffectCheckReportInfo> reportInfos)
         {
-            if (checkItemInfo.checkPath.IndexOf("Assets", StringComparison.Ordinal) == 0)
+            if (checkItemInfo.checkPath.IndexOf("Assets", StringComparison.Ordinal) != 0)
             {
                 DebugUtil.LogError("检测路径必须以 Assets 开头!");
                 return;
             }
 
+            // 获取待检测资源
             switch (getOption)
             {
                 case EM_GetAssetOption.InExplorer:
-                    GetTextureImporterInExplorer();
+                    GetAssetInExplorer();
                     break;
                 
                 case EM_GetAssetOption.InPrefab:
-                    GetTextureImporterInPrefab();
+                    GetAssetInPrefab();
                     break;
                 
                 case EM_GetAssetOption.InMaterial:
-                    GetTextureImporterInMaterial();
+                    GetAssetInMaterial();
                     break;
                 
                 default:
@@ -162,28 +183,29 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     break;
             }
 
-            foreach (var textureImporter in textureImportersToCheck)
+            // 遍历检测资源
+            foreach (var asset in assetsToCheck)
             {
-                var textureImporterPath = AssetDatabase.GetAssetPath(textureImporter);
+                var path = AssetDatabase.GetAssetPath(asset);
                 
-                if (IsFormatRight(textureImporterPath))
+                if (IsFormatRight(path))
                 {
                     switch (checkOption)
                     {
-                        case EM_CheckOption.Size:
-                            CheckSize(textureImporter, textureImporterPath, checkItemInfo, ref reportInfos);
+                        case EM_CheckOption.ImporterSize:
+                            CheckSize(asset, path, checkItemInfo, ref reportInfos);
                             break;
 
                         case EM_CheckOption.ReadWriteEnable:
-                            CheckReadWriteEnable(textureImporter, textureImporterPath, checkItemInfo, ref reportInfos);
+                            CheckReadWriteEnable(asset, path, checkItemInfo, ref reportInfos);
                             break;
 
                         case EM_CheckOption.MipMaps:
-                            CheckMipMaps(textureImporter, textureImporterPath, checkItemInfo, ref reportInfos);
+                            CheckMipMaps(asset, path, checkItemInfo, ref reportInfos);
                             break;
 
                         case EM_CheckOption.CompressFormat:
-                            CheckCompressFormat(textureImporter, textureImporterPath, checkItemInfo, ref reportInfos);
+                            CheckCompressFormat(asset, path, checkItemInfo, ref reportInfos);
                             break;
 
                         default:
@@ -192,101 +214,20 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     }
                 }
             }
-            
-            /*
-            
-            
-            
-            
-            
-            if (itemData.checkPath.StartsWith("Assets"))
-            {
-                var fullPath = System.IO.Path.GetFullPath(itemData.checkPath);
-                if (Directory.Exists(fullPath))
-                {
-                    var direction = new DirectoryInfo(fullPath);
-                    var searchType = itemData.isCheckSubFile ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-                    
-                    var files = direction.GetFiles("*", searchType);
-                    for (var index = 0; index < files.Length; index++)
-                    {
-                        ProgressBar.DisplayProgressBar("特效检测工具", $"Texture 排查中: {index + 1}/{files.Length}", index + 1, files.Length);
-                        if (files[index].Name.EndsWith(".meta"))
-                        {
-                            continue;
-                        }
-
-                        var assetPath = PathUtil.GetAssetPath(files[index].FullName);
-                        var pattern = itemData.assetWhiteRegex;
-                        if (string.IsNullOrEmpty(pattern) == false)
-                        {
-                            var regex = new Regex(pattern);
-                            if (regex.IsMatch(assetPath))
-                            {
-                                continue;
-                            }
-                        }
-
-                        switch ((EM_CheckOption) itemData.checkOption)
-                        {
-                            case EM_CheckOption.Size:
-                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureSize, files[index], itemData, ref reportInfos) == false)
-                                {
-                                    CheckSize(assetPath, files[index], itemData, ref reportInfos);
-                                }
-
-                                break;
-
-                            case EM_CheckOption.ReadWriteEnable:
-                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureReadWriteEnable, files[index], itemData, ref reportInfos) == false)
-                                {
-                                    CheckReadWriteEnable(assetPath, files[index], itemData, ref reportInfos);
-                                }
-
-                                break;
-
-                            case EM_CheckOption.MipMaps:
-                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, files[index], itemData, ref reportInfos) == false)
-                                {
-                                    CheckMipMaps(assetPath, files[index], itemData, ref reportInfos);
-                                }
-
-                                break;
-
-                            case EM_CheckOption.CompressFormat:
-                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, files[index], itemData, ref reportInfos) == false)
-                                {
-                                    CheckCompressFormat(assetPath, files[index], itemData, ref reportInfos);
-                                }
-
-                                break;
-
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    }
-                }
-            }
-            else
-            {
-                DebugUtil.LogError("检测路径必须以 Assets 开头!");
-            }
-            
-            */
         }
         
         /// <summary>
         /// 检测: 贴图尺寸
         /// </summary>
-        private void CheckSize(TextureImporter textureImporter, string textureImporterPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private void CheckSize(TextureImporter importer, string path, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             // 参数标准
             var width = Convert.ToInt32(sizeOptionArray[Convert.ToInt32(checkOptionParameterArray[0])]);
             var height = Convert.ToInt32(sizeOptionArray[Convert.ToInt32(checkOptionParameterArray[1])]);
 
             // 计算原始尺寸
-            TextureUtil.GetTextureOriginalSize(textureImporter, out var originWidth, out var originHeight);
-            if (textureImporter.textureShape == TextureImporterShape.TextureCube)
+            TextureUtil.GetTextureOriginalSize(importer, out var originWidth, out var originHeight);
+            if (importer.textureShape == TextureImporterShape.TextureCube)
             {
                 originWidth /= 2;
             }
@@ -295,23 +236,23 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             {
                 #region Android
 
-                if (TextureUtil.GetTextureSizeAndroid(textureImporter, out var maxSizeAndroid))
+                if (TextureUtil.GetTextureSizeAndroid(importer, out var maxSizeAndroid))
                 {
                     if (maxSizeAndroid > width && maxSizeAndroid > height)
                     {
-                        var content = $"Android: 纹理尺寸过大, 路径为: {textureImporterPath}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Android 导入设置: {maxSizeAndroid} >>> 规范: ({width}X{height})";
-                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                        report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                        var content = $"Android: 纹理尺寸过大, 路径为: {path}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Android 导入设置: {maxSizeAndroid} >>> 规范: ({width}X{height})";
+                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                        report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
                     }
                 }
                 else
                 {
-                    TextureUtil.GetTextureSizeDefault(textureImporter, out var maxSizeDefault);
+                    TextureUtil.GetTextureSizeDefault(importer, out var maxSizeDefault);
                     if (maxSizeDefault > width && maxSizeDefault > height)
                     {
-                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                        var content = $"未启用 Android 导入, 资源路径为: {textureImporterPath}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {maxSizeDefault} >>> 规范: ({width}X{height})";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                        var content = $"未启用 Android 导入, 资源路径为: {path}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {maxSizeDefault} >>> 规范: ({width}X{height})";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
                     }
                 }
 
@@ -319,23 +260,23 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 #region iPhone
 
-                if (TextureUtil.GetTextureSizeIPhone(textureImporter, out var maxSizeIPhone))
+                if (TextureUtil.GetTextureSizeIPhone(importer, out var maxSizeIPhone))
                 {
                     if (maxSizeIPhone > width && maxSizeIPhone > height)
                     {
-                        var content = $"iPhone: 纹理尺寸过大, 路径为: {textureImporterPath}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 iPhone 导入设置: {maxSizeIPhone} >>> 规范: ({width}X{height})";
-                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                        report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                        var content = $"iPhone: 纹理尺寸过大, 路径为: {path}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 iPhone 导入设置: {maxSizeIPhone} >>> 规范: ({width}X{height})";
+                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                        report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
                     }
                 }
                 else
                 {
-                    TextureUtil.GetTextureSizeDefault(textureImporter, out var maxSizeDefault);
+                    TextureUtil.GetTextureSizeDefault(importer, out var maxSizeDefault);
                     if (maxSizeDefault > width && maxSizeDefault > height)
                     {
-                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                        var content = $"未启用 iPhone 导入, 资源路径为: {textureImporterPath}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {maxSizeDefault} >>> 规范: ({width}X{height})";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
+                        var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                        var content = $"未启用 iPhone 导入, 资源路径为: {path}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {maxSizeDefault} >>> 规范: ({width}X{height})";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
                     }
                 }
 
@@ -346,41 +287,41 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// <summary>
         /// 检测: 贴图读写设置
         /// </summary>
-        private void CheckReadWriteEnable(TextureImporter textureImporter, string textureImporterPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private void CheckReadWriteEnable(TextureImporter importer, string path, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var isOpenReadWriter = Convert.ToBoolean(checkOptionParameter);
-            if (textureImporter.isReadable != isOpenReadWriter)
+            if (importer.isReadable != isOpenReadWriter)
             {
                 var tips = isOpenReadWriter ? "需要强制开启" : "需要强制关闭";
-                var content = $"Read/Write Enable 配置不规范, 路径为: {textureImporterPath} 当前设置: {textureImporter.isReadable} >>> {tips}";
-                var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureReadWriteEnable, content, item));
+                var content = $"Read/Write Enable 配置不规范, 路径为: {path} 当前设置: {importer.isReadable} >>> {tips}";
+                var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureReadWriteEnable, content, item));
             }
         }
 
         /// <summary>
         /// 检测: 贴图 MipMap 设置
         /// </summary>
-        private static void CheckMipMaps(TextureImporter textureImporter, string textureImporterPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private void CheckMipMaps(TextureImporter importer, string path, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
-            var isOpenMinMaps = Convert.ToBoolean(item.parameter);
+            var isOpenMinMaps = Convert.ToBoolean(checkOptionParameter);
 
-            if (textureImporter.mipmapEnabled != isOpenMinMaps)
+            if (importer.mipmapEnabled != isOpenMinMaps)
             {
-                var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
+                var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
                 if (isOpenMinMaps)
                 {
                     // 尺寸小于 64 的纹理不需要开启 MipMaps
                     if (asset.width > 64 || asset.height > 64)
                     {
-                        var content = $"Mip Maps 配置不规范, 路径为: {textureImporterPath} 当前 MinMaps: {textureImporter.mipmapEnabled} >>> 需要强制开启 ({asset.width}X{asset.height})";
-                        report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, content, item));
+                        var content = $"Mip Maps 配置不规范, 路径为: {path} 当前 MinMaps: {importer.mipmapEnabled} >>> 需要强制开启 ({asset.width}X{asset.height})";
+                        report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, content, item));
                     }
                 }
                 else
                 {
-                    var content = $"Mip Maps 配置不规范, 路径为: {textureImporterPath} 当前 MinMaps: {textureImporter.mipmapEnabled} >>> 需要强制关闭";
-                    report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, content, item));
+                    var content = $"Mip Maps 配置不规范, 路径为: {path} 当前 MinMaps: {importer.mipmapEnabled} >>> 需要强制关闭";
+                    report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, content, item));
                 }
             }
         }
@@ -388,44 +329,73 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// <summary>
         /// 检测: 贴图压缩格式
         /// </summary>
-        private static void CheckCompressFormat(TextureImporter textureImporter, string textureImporterPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
+        private void CheckCompressFormat(TextureImporter importer, string path, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
-             #region Android
+            #region Android
 
-            if (TextureUtil.GetTextureFormatAndroid(textureImporter, out var formatAndroid))
+            var androidError = false;
+            var androidContent = string.Empty;
+            var android = (TextureImporterFormat) Convert.ToInt32(checkOptionParameterArray[0]);
+
+            if (TextureUtil.GetTextureFormatAndroid(importer, out var formatAndroid))
             {
-                if (formatAndroid != TextureImporterFormat.ETC2_RGB4 && formatAndroid != TextureImporterFormat.ETC2_RGBA8)
+                if (android == TextureImporterFormat.ETC2_RGB4 || android == TextureImporterFormat.ETC2_RGBA8)
                 {
-                    var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                    var content = $"Android: 纹理压缩格式不是 ETC2, 路径为: {textureImporterPath}, 当前压缩格式: {formatAndroid}";
-                    report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                    if (formatAndroid != TextureImporterFormat.ETC2_RGB4 && formatAndroid != TextureImporterFormat.ETC2_RGBA8)
+                    {
+                        androidError = true;
+                        androidContent = $"Android: 纹理压缩格式不是 ETC2, 路径为: {path}, 当前压缩格式: {formatAndroid}";
+                    }
                 }
             }
             else
             {
-                var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                var content = $"未启用 Android 导入, 资源路径为: {textureImporterPath}";
-                report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                androidError = true;
+                androidContent = $"无 Android 压缩格式设置, 资源路径为: {path}";
+            }
+
+            if (androidError)
+            {
+                var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, androidContent, item));
             }
 
             #endregion
 
             #region iPhone
+            
+            var iphoneError = false;
+            var iphoneContent = string.Empty;
+            var iphone = (TextureImporterFormat) Convert.ToInt32(checkOptionParameterArray[1]);
 
-            if (TextureUtil.GetTextureFormatIPhone(textureImporter, out var formatIOS))
+            if (TextureUtil.GetTextureFormatIPhone(importer, out var formatIOS))
             {
-                if (formatIOS != TextureImporterFormat.PVRTC_RGB4 && formatIOS != TextureImporterFormat.PVRTC_RGBA4)
+                if (iphone == TextureImporterFormat.PVRTC_RGB4 || android == TextureImporterFormat.PVRTC_RGBA4)
                 {
-                    var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                    var content = $"iPhone: 纹理压缩格式不是 PVRTC, 路径为: {textureImporterPath}";
-                    report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                    if (formatIOS != TextureImporterFormat.PVRTC_RGB4 && formatIOS != TextureImporterFormat.PVRTC_RGBA4)
+                    {
+                        iphoneError = true;
+                        iphoneContent = $"iPhone: 纹理压缩格式不是 PVRTC, 路径为: {path}, 当前压缩格式: {formatIOS}";
+                    }
+                }
+                else if (iphone == TextureImporterFormat.ASTC_6x6 || android == TextureImporterFormat.ASTC_HDR_6x6)
+                {
+                    if (formatIOS != TextureImporterFormat.ASTC_6x6 && formatIOS != TextureImporterFormat.ASTC_HDR_6x6)
+                    {
+                        iphoneError = true;
+                        iphoneContent = $"iPhone: 纹理压缩格式不是 ASTC_6x6, 路径为: {path}, 当前压缩格式: {formatIOS}";
+                    }
                 }
             }
             else
             {
-                var asset = AssetDatabase.LoadAssetAtPath<Texture>(textureImporterPath);
-                var content = $"未启用 iPhone 导入, 资源路径为: {textureImporterPath}";
-                report.Add(EffectCheckReport.AddReportInfo(asset, textureImporterPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
+                iphoneError = true;
+                iphoneContent = $"无 iPhone 压缩格式设置, 资源路径为: {path}";
+            }
+
+            if (iphoneError) {
+                var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
+                report.Add(EffectCheckReport.AddReportInfo(asset, path, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, iphoneContent, item));
             }
 
             #endregion

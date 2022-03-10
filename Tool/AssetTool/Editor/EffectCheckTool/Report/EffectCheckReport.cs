@@ -78,6 +78,10 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
                 case EffectToolData.AssetsType.ParticleSystem:
                     RepairParticle.Repair(effectCheckReportInfo);
                     break;
+                
+                case EffectToolData.AssetsType.ModelImporter:
+                    RepairModel.Repair(effectCheckReportInfo);
+                    break;
 
                 case EffectToolData.AssetsType.Mesh:
                     break;
@@ -88,10 +92,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
 
                 case EffectToolData.AssetsType.Prefab:
                     RepairPrefab.Repair(effectCheckReportInfo);
-                    break;
-
-                case EffectToolData.AssetsType.Model:
-                    RepairModel.Repair(effectCheckReportInfo);
                     break;
 
                 case EffectToolData.AssetsType.Asset:
@@ -128,7 +128,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
              *
              * FBX          -   Read Write Enable
              * FBX          -   NormalsImport
-             * FBX          -   OptimizeMesh
+             * FBX          -   MeshOptimize
              * FBX          -   MeshCompression
              * FBX          -   WeldVertices
              * 

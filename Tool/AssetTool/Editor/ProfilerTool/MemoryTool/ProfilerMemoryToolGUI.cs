@@ -112,7 +112,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
                     
                     EditorGUI.indentLevel++;
                     EditorGUILayout.LabelField("2. 按照内存占用大小筛选");
-                    memorySize = EditorGUILayout.FloatField("Memory Size (KB) >= ", memorySize, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    memorySize = EditorGUILayout.FloatField("Memory ImporterSize (KB) >= ", memorySize, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     EditorGUI.indentLevel--;
                     
                     EditorGUI.indentLevel++;
@@ -162,7 +162,7 @@ namespace Kuroha.Tool.AssetTool.Editor.ProfilerTool.MemoryTool
             if (profilerMemoryElementRoot != null)
             {
                 var memoryConnect = ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler);
-                texts.Add($"Memory Size: >= {memorySize} KB)");
+                texts.Add($"Memory ImporterSize: >= {memorySize} KB)");
                 texts.Add($"Memory Depth: {memoryDepth}");
                 texts.Add($"Current Target: {memoryConnect}");
                 texts.Add("****************************************************************************************");

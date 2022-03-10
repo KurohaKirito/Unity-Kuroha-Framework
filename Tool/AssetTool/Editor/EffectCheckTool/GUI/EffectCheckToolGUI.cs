@@ -111,7 +111,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                 var reportEnumCount = Enum.GetNames(typeof(EffectCheckReportInfo.EffectCheckReportType)).Length;
 
                 var checkMeshEnumCount = Enum.GetNames(typeof(CheckMesh.CheckOptions)).Length;
-                var checkModelEnumCount = Enum.GetNames(typeof(CheckModel.CheckOptions)).Length;
+                var checkModelEnumCount = Enum.GetNames(typeof(CheckModelImporter.EM_CheckOption)).Length;
                 var checkParticleEnumCount = Enum.GetNames(typeof(CheckParticleSystem.CheckOptions)).Length;
                 var checkPrefabEnumCount = Enum.GetNames(typeof(CheckPrefab.CheckOptions)).Length;
                 var checkTextureEnumCount = Enum.GetNames(typeof(CheckTextureImporter.EM_CheckOption)).Length;
@@ -183,7 +183,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI
                         switch (checkItemInfo.checkAssetType)
                         {
                             case EffectToolData.AssetsType.Model:
-                                CheckModel.Check(checkItemInfo, ref reportInfos);
+                                CheckModelImporter.Check(checkItemInfo, ref reportInfos);
                                 break;
 
                             case EffectToolData.AssetsType.Prefab:

@@ -21,8 +21,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// </summary>
         public static readonly string[] dangerLevelOptions =
         {
-            "警告",
-            "危险"
+            "Warning",
+            "Error"
         };
 
         /// <summary>
@@ -75,17 +75,18 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             var lines = new string[configData.Count + 1];
 
             // 配置文件标题行
-            lines[0] = "GUID\t标题\t资源类型\t检查类型\t路径\t资源白名单规则\t物体白名单规则\t参数\t危险等级\t是否参与特效检测\t是否参与自动检测\t是否检查子目录\t备注";
+            lines[0] = "GUID\t标题\t资源类型\t资源获取类型\t检查类型\t路径\t资源白名单规则\t物体白名单规则\t参数\t危险等级\t是否参与特效检测\t是否参与自动检测\t是否检查子目录\t备注";
 
             // 配置文件数据行
-            for (var i = 0; i < configData.Count; i++)
+            for (var index = 0; index < configData.Count; index++)
             {
-                var itemData = configData[i];
+                var itemData = configData[index];
                 var values = new List<string>
                 {
-                    (i + 1).ToString(),
+                    (index + 1).ToString(),
                     itemData.title,
                     Convert.ToInt32(itemData.checkAssetType).ToString(),
+                    Convert.ToInt32(itemData.getAssetType).ToString(),
                     Convert.ToInt32(itemData.checkOption).ToString(),
                     itemData.checkPath,
                     itemData.assetWhiteRegex,
@@ -98,7 +99,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     itemData.remark
                 };
 
-                lines[i + 1] = string.Join("\t", values.ToArray());
+                lines[index + 1] = string.Join("\t", values.ToArray());
             }
 
             var directory = Path.GetDirectoryName(ConfigFilePath);

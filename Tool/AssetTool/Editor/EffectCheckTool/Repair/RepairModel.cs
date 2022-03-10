@@ -1,5 +1,4 @@
 ﻿using System;
-using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report;
 using UnityEditor;
 
@@ -13,27 +12,27 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// <param name="effectCheckReportInfo">问题项</param>
         public static void Repair(EffectCheckReportInfo effectCheckReportInfo)
         {
-            var modeType = (CheckModel.CheckOptions)effectCheckReportInfo.modeType;
+            var modeType = (Check.CheckModelImporter.EM_CheckOption)effectCheckReportInfo.modeType;
 
             switch (modeType)
             {
-                case CheckModel.CheckOptions.ReadWriteEnable:
+                case Check.CheckModelImporter.EM_CheckOption.ReadWriteEnable:
                     RepairReadWriteEnable(effectCheckReportInfo);
                     break;
 
-                case CheckModel.CheckOptions.Normals:
+                case Check.CheckModelImporter.EM_CheckOption.Normals:
                     RepairNormals(effectCheckReportInfo);
                     break;
 
-                case CheckModel.CheckOptions.OptimizeMesh:
+                case Check.CheckModelImporter.EM_CheckOption.MeshOptimize:
                     RepairOptimizeMesh(effectCheckReportInfo);
                     break;
                 
-                case CheckModel.CheckOptions.MeshCompression:
+                case Check.CheckModelImporter.EM_CheckOption.MeshCompression:
                     RepairMeshCompression(effectCheckReportInfo);
                     break;
                 
-                case CheckModel.CheckOptions.WeldVertices:
+                case Check.CheckModelImporter.EM_CheckOption.WeldVertices:
                     RepairWeldVertices(effectCheckReportInfo);
                     break;
                 

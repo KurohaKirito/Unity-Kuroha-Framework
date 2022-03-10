@@ -21,6 +21,10 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             {
                 switch (itemInfo.checkAssetType)
                 {
+                    case EffectToolData.AssetsType.TextureImporter:
+                        InitSettingTextureImporter(itemInfo);
+                        break;
+                    
                     case EffectToolData.AssetsType.Prefab:
                         InitPrefab(itemInfo);
                         break;
@@ -37,7 +41,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                         InitTexture(itemInfo);
                         break;
 
-                    case EffectToolData.AssetsType.Model:
+                    case EffectToolData.AssetsType.ModelImporter:
                         InitModel(itemInfo);
                         break;
 
@@ -54,6 +58,38 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                 EffectCheckItemSetViewWindow.itemInfo = new CheckItemInfo(string.Empty, string.Empty, EffectToolData.AssetsType.Mesh,
                     0, 0, string.Empty, string.Empty, string.Empty, string.Empty,
                     0, true, false, true, string.Empty);
+            }
+        }
+        
+        /// <summary>
+        /// 初始化 Texture 检查项设置页面
+        /// </summary>
+        private static void InitSettingTextureImporter(CheckItemInfo info)
+        {
+            switch ((CheckTextureImporter.EM_CheckOption)info.checkOption)
+            {
+                case CheckTextureImporter.EM_CheckOption.ImporterSize:
+                    var parameterImporterSize = info.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
+                    EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(parameterImporterSize[0]);
+                    EffectCheckItemSetViewWindow.ParameterInt2 = Convert.ToInt32(parameterImporterSize[1]);
+                    break;
+
+                case CheckTextureImporter.EM_CheckOption.ReadWriteEnable:
+                    EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
+                    break;
+
+                case CheckTextureImporter.EM_CheckOption.MipMaps:
+                    EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
+                    break;
+                
+                case CheckTextureImporter.EM_CheckOption.CompressFormat:
+                    var parameterCompressFormat = info.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
+                    EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(parameterCompressFormat[0]);
+                    EffectCheckItemSetViewWindow.ParameterInt2 = Convert.ToInt32(parameterCompressFormat[1]);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -103,7 +139,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         {
             switch ((CheckTextureImporter.EM_CheckOption)info.checkOption)
             {
-                case CheckTextureImporter.EM_CheckOption.Size:
+                case CheckTextureImporter.EM_CheckOption.ImporterSize:
                     var parameter = info.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
                     EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(parameter[0]);
                     EffectCheckItemSetViewWindow.ParameterInt2 = Convert.ToInt32(parameter[1]);
@@ -244,23 +280,23 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitModel(CheckItemInfo info)
         {
-            switch ((CheckModel.CheckOptions)info.checkOption)
+            switch ((Check.CheckModelImporter.EM_CheckOption)info.checkOption)
             {
-                case CheckModel.CheckOptions.ReadWriteEnable:
+                case Check.CheckModelImporter.EM_CheckOption.ReadWriteEnable:
                     break;
 
-                case CheckModel.CheckOptions.Normals:
+                case Check.CheckModelImporter.EM_CheckOption.Normals:
                     break;
 
-                case CheckModel.CheckOptions.OptimizeMesh:
+                case Check.CheckModelImporter.EM_CheckOption.MeshOptimize:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
 
-                case CheckModel.CheckOptions.MeshCompression:
+                case Check.CheckModelImporter.EM_CheckOption.MeshCompression:
                     EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
                     break;
 
-                case CheckModel.CheckOptions.WeldVertices:
+                case Check.CheckModelImporter.EM_CheckOption.WeldVertices:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
 

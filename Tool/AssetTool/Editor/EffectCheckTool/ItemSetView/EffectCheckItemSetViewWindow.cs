@@ -2,6 +2,7 @@
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.GUI;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView;
+using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
@@ -166,6 +167,18 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
 
             switch (itemInfo.checkAssetType)
             {
+                case EffectToolData.AssetsType.TextureImporter:
+                    itemInfo.getAssetType = (int) (CheckTextureImporter.EM_GetAssetOption) EditorGUILayout.EnumPopup("资源获取方式", (CheckTextureImporter.EM_GetAssetOption) itemInfo.getAssetType);
+                    itemInfo.checkOption = (int) (CheckTextureImporter.EM_CheckOption) EditorGUILayout.EnumPopup("检测内容", (CheckTextureImporter.EM_CheckOption) itemInfo.checkOption);
+                    OnGUI_CheckTextureImporter();
+                    break;
+                
+                case EffectToolData.AssetsType.ModelImporter:
+                    itemInfo.getAssetType = (int) (CheckModelImporter.EM_GetAssetOption) EditorGUILayout.EnumPopup("资源获取方式", (CheckModelImporter.EM_GetAssetOption) itemInfo.getAssetType);
+                    itemInfo.checkOption = (int) (CheckModelImporter.EM_CheckOption) EditorGUILayout.EnumPopup("检测内容", (CheckModelImporter.EM_CheckOption) itemInfo.checkOption);
+                    OnGUI_CheckModelImporter();
+                    break;
+                
                 case EffectToolData.AssetsType.ParticleSystem:
                     itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckParticleSystem.checkOptions);
                     OnGUI_CheckParticleSystem();
@@ -177,18 +190,13 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     break;
 
                 case EffectToolData.AssetsType.Texture:
-                    itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckTextureImporter.checkOptionArray);
+                    itemInfo.checkOption = (int) (CheckTextureImporter.EM_CheckOption) EditorGUILayout.EnumPopup("检测内容", (CheckTextureImporter.EM_CheckOption) itemInfo.checkOption);
                     OnGUI_CheckTexture();
                     break;
 
                 case EffectToolData.AssetsType.Prefab:
                     itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckPrefab.checkOptions);
                     OnGUI_CheckPrefab();
-                    break;
-
-                case EffectToolData.AssetsType.Model:
-                    itemInfo.checkOption = EditorGUILayout.Popup("检测内容", itemInfo.checkOption, CheckModel.checkOptions);
-                    OnGUI_CheckModel();
                     break;
 
                 case EffectToolData.AssetsType.Asset:
@@ -244,6 +252,89 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
             #endregion
 
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
+        }
+        
+        /// <summary>
+        /// 绘制 Texture 检查页面
+        /// </summary>
+        private static void OnGUI_CheckTextureImporter()
+        {
+            var modeType = (CheckTextureImporter.EM_CheckOption) itemInfo.checkOption;
+
+            switch (modeType)
+            {
+                case CheckTextureImporter.EM_CheckOption.ImporterSize:
+                    ParameterInt1 = EditorGUILayout.Popup("最大长", ParameterInt1, CheckTextureImporter.sizeOptionArray);
+                    ParameterInt2 = EditorGUILayout.Popup("最大宽", ParameterInt2, CheckTextureImporter.sizeOptionArray);
+                    itemInfo.parameter = $"{ParameterInt1}{DELIMITER}{ParameterInt2}";
+                    break;
+
+                case CheckTextureImporter.EM_CheckOption.ReadWriteEnable:
+                    ParameterBool1 = EditorGUILayout.Toggle("Read Write Enable", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+
+                case CheckTextureImporter.EM_CheckOption.MipMaps:
+                    ParameterBool1 = EditorGUILayout.Toggle("开启 Mip Maps", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+                
+                case CheckTextureImporter.EM_CheckOption.CompressFormat:
+                    if (ParameterInt1 == 0) {
+                        ParameterInt1 = 1;
+                    }
+                    if (ParameterInt2 == 0) {
+                        ParameterInt2 = 1;
+                    }
+                    ParameterInt1 = (int) (TextureImporterFormat) EditorGUILayout.EnumPopup("Android : 压缩格式", (TextureImporterFormat) ParameterInt1);
+                    ParameterInt2 = (int) (TextureImporterFormat) EditorGUILayout.EnumPopup("iOS : 压缩格式", (TextureImporterFormat) ParameterInt2);
+                    itemInfo.parameter = $"{ParameterInt1}{DELIMITER}{ParameterInt2}";
+                    break;
+
+                default:
+                    DebugUtil.LogError("枚举值 CheckTextureImporter.EM_CheckOption 错误!");
+                    break;
+            }
+        }
+        
+        /// <summary>
+        /// 绘制 Model 检查页面
+        /// </summary>
+        private static void OnGUI_CheckModelImporter()
+        {
+            var modeType = (Check.CheckModelImporter.EM_CheckOption) itemInfo.checkOption;
+            var oldAlignment = UnityEngine.GUI.skin.label.alignment;
+
+            switch (modeType)
+            {
+                case Check.CheckModelImporter.EM_CheckOption.ReadWriteEnable:
+                    ParameterBool1 = EditorGUILayout.Toggle("Read Write Enable", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+
+                case Check.CheckModelImporter.EM_CheckOption.Normals:
+                    ParameterInt1 = (int) (ModelImporterNormals) EditorGUILayout.EnumPopup("Model Importer Normals", (ModelImporterNormals) ParameterInt1);
+                    itemInfo.parameter = $"{ParameterInt1}";
+                    break;
+                
+                case Check.CheckModelImporter.EM_CheckOption.MeshOptimize:
+                    ParameterBool1 = EditorGUILayout.Toggle("Optimize Mesh Enable", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+                
+                case Check.CheckModelImporter.EM_CheckOption.MeshCompression:
+                    ParameterInt1 = (int) (ModelImporterMeshCompression) EditorGUILayout.EnumPopup("网格压缩等级", (ModelImporterMeshCompression) ParameterInt1);
+                    itemInfo.parameter = $"{ParameterInt1}";
+                    break;
+                
+                case Check.CheckModelImporter.EM_CheckOption.WeldVertices:
+                    ParameterBool1 = EditorGUILayout.Toggle("Weld Vertices Enable", ParameterBool1);
+                    itemInfo.parameter = $"{ParameterBool1}";
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         /// <summary>
@@ -325,7 +416,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
 
             switch (modeType)
             {
-                case CheckTextureImporter.EM_CheckOption.Size:
+                case CheckTextureImporter.EM_CheckOption.ImporterSize:
                     ParameterInt1 = EditorGUILayout.Popup("最大长", ParameterInt1, CheckTextureImporter.sizeOptionArray);
                     ParameterInt2 = EditorGUILayout.Popup("最大宽", ParameterInt2, CheckTextureImporter.sizeOptionArray);
                     itemInfo.parameter = $"{ParameterInt1}{DELIMITER}{ParameterInt2}";
@@ -456,52 +547,6 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
                     UnityEngine.GUI.skin.label.alignment = oldAlignment;
                     break;
                 
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        /// <summary>
-        /// 绘制 Model 检查页面
-        /// </summary>
-        private static void OnGUI_CheckModel()
-        {
-            var modeType = (CheckModel.CheckOptions)itemInfo.checkOption;
-            var oldAlignment = UnityEngine.GUI.skin.label.alignment;
-
-            switch (modeType)
-            {
-                case CheckModel.CheckOptions.ReadWriteEnable:
-                    GUILayout.BeginHorizontal();
-                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
-                    GUILayout.Label("描述: 关闭 Read Write Enable");
-                    UnityEngine.GUI.skin.label.alignment = oldAlignment;
-                    GUILayout.EndHorizontal();
-                    break;
-
-                case CheckModel.CheckOptions.Normals:
-                    GUILayout.BeginHorizontal();
-                    UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
-                    GUILayout.Label("描述: 仅作为碰撞用的模型不需要开启 Normals 平滑处理");
-                    UnityEngine.GUI.skin.label.alignment = oldAlignment;
-                    GUILayout.EndHorizontal();
-                    break;
-                
-                case CheckModel.CheckOptions.OptimizeMesh:
-                    ParameterBool1 = EditorGUILayout.Toggle("开启 Optimize Mesh", ParameterBool1);
-                    itemInfo.parameter = $"{ParameterBool1}";
-                    break;
-                
-                case CheckModel.CheckOptions.MeshCompression:
-                    ParameterInt1 = EditorGUILayout.Popup("网格压缩等级", ParameterInt1, CheckModel.meshCompressionOptions);
-                    itemInfo.parameter = ParameterInt1.ToString();
-                    break;
-                
-                case CheckModel.CheckOptions.WeldVertices:
-                    ParameterBool1 = EditorGUILayout.Toggle("开启 Weld Vertices", ParameterBool1);
-                    itemInfo.parameter = $"{ParameterBool1}";
-                    break;
-
                 default:
                     throw new ArgumentOutOfRangeException();
             }

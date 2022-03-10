@@ -8,6 +8,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
     public static class CheckAssetRoot
     {
         private static CheckTextureImporter checkTextureImporter;
+        private static CheckModelImporter checkModelImporter;
         
         public static void Check(CheckItemInfo itemData, ref List<EffectCheckReportInfo> reportInfos)
         {
@@ -17,6 +18,12 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 {
                     checkTextureImporter = new CheckTextureImporter(itemData);
                     checkTextureImporter.Check(ref reportInfos);
+                    break;
+                }
+
+                case EffectToolData.AssetsType.ModelImporter: {
+                    checkModelImporter = new CheckModelImporter(itemData);
+                    checkModelImporter.Check(ref reportInfos);
                     break;
                 }
             }

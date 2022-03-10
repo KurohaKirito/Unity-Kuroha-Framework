@@ -48,7 +48,8 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         public static void Open()
         {
             var window = GetWindow<EffectCheckItemViewWindow>("检查项列表");
-            window.minSize = new Vector2Int(800, 600);
+            window.minSize = new Vector2Int(795, 600);
+            window.maxSize = new Vector2Int(795, 600);
         }
 
         /// <summary>

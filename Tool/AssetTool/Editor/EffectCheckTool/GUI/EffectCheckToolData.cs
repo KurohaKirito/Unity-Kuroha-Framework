@@ -30,7 +30,7 @@
             /// <summary>
             /// 模型
             /// </summary>
-            Model = 4,
+            ModelImporter = 4,
             
             /// <summary>
             /// 通用检查
