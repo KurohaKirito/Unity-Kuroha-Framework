@@ -70,7 +70,11 @@ namespace Kuroha.Framework.Launcher
         /// </summary>
         private void ExecuteStartEvent()
         {
-            startEventQueue ??= new Queue<IOnStart>();
+            if (startEventQueue == null)
+            {
+                startEventQueue = new Queue<IOnStart>();
+            }
+
             while (startEventQueue.Count > 0)
             {
                 startEventQueue.Dequeue().StartEvent();
@@ -82,7 +86,11 @@ namespace Kuroha.Framework.Launcher
         /// </summary>
         private void ExecuteDestroyEvent()
         {
-            destroyEventQueue ??= new Queue<IOnDestroy>();
+            if (destroyEventQueue == null)
+            {
+                destroyEventQueue = new Queue<IOnDestroy>();
+            }
+            
             while (destroyEventQueue.Count > 0)
             {
                 destroyEventQueue.Dequeue().DestroyEvent();
@@ -94,7 +102,11 @@ namespace Kuroha.Framework.Launcher
         /// </summary>
         private void ExecuteApplicationQuitEvent()
         {
-            applicationQuitEventQueue ??= new Queue<IOnApplicationQuit>();
+            if (applicationQuitEventQueue == null)
+            {
+                applicationQuitEventQueue = new Queue<IOnApplicationQuit>();
+            }
+            
             while (applicationQuitEventQueue.Count > 0)
             {
                 applicationQuitEventQueue.Dequeue().ApplicationQuitEvent();
@@ -106,7 +118,11 @@ namespace Kuroha.Framework.Launcher
         /// </summary>
         protected void RegisterStartEvent(IOnStart func)
         {
-            startEventQueue ??= new Queue<IOnStart>();
+            if (startEventQueue == null)
+            {
+                startEventQueue = new Queue<IOnStart>();
+            }
+            
             startEventQueue.Enqueue(func);
         }
         
@@ -115,7 +131,11 @@ namespace Kuroha.Framework.Launcher
         /// </summary>
         protected void RegisterDestroyEvent(IOnDestroy func)
         {
-            destroyEventQueue ??= new Queue<IOnDestroy>();
+            if (destroyEventQueue == null)
+            {
+                destroyEventQueue = new Queue<IOnDestroy>();
+            }
+            
             destroyEventQueue.Enqueue(func);
         }
         
@@ -124,7 +144,11 @@ namespace Kuroha.Framework.Launcher
         /// </summary>
         protected void RegisterOnApplicationQuit(IOnApplicationQuit func)
         {
-            applicationQuitEventQueue ??= new Queue<IOnApplicationQuit>();
+            if (applicationQuitEventQueue == null)
+            {
+                applicationQuitEventQueue = new Queue<IOnApplicationQuit>();
+            }
+            
             applicationQuitEventQueue.Enqueue(func);
         }
     }

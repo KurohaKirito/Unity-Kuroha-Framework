@@ -19,7 +19,10 @@ namespace Kuroha.Framework.Message
 
         private void OnGUI()
         {
-            messageListenerList ??= new List<Kuroha.Framework.Message.MessageListener>();
+            if (messageListenerList == null)
+            {
+                messageListenerList = new List<Kuroha.Framework.Message.MessageListener>();
+            }
 
             messageListenerList.Clear();
             foreach (var key in listenerDic.Keys)

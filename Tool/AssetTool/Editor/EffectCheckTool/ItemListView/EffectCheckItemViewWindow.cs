@@ -57,8 +57,16 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
         /// </summary>
         private void OnEnable()
         {
-            searchField ??= new SearchField();
-            searchTypeArray ??= new[] { "标题", "资源类型" };
+            if (searchField == null)
+            {
+                searchField = new SearchField();
+            }
+
+            if (searchTypeArray == null)
+            {
+                searchTypeArray = new[] { "标题", "资源类型" };
+            }
+            
             searchTypeRect = new Rect(10, 16, 80, EditorGUIUtility.singleLineHeight);
             searchFieldRect = new Rect(100, 17, 180, EditorGUIUtility.singleLineHeight);
             

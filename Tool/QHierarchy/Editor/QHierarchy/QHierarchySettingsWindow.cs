@@ -883,8 +883,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
             var componentIds = componentOrder.Split(';');
 
             var rect = GetNewRect(position.width, QComponentsOrderListWindow.ITEM_HEIGHT * componentIds.Length);
+
+            if (componentsOrderListWindow == null)
+            {
+                componentsOrderListWindow = new QComponentsOrderListWindow(this);
+            }
             
-            componentsOrderListWindow ??= new QComponentsOrderListWindow(this);
             componentsOrderListWindow.Draw(rect, componentIds);
 
             indentLevel -= 4;

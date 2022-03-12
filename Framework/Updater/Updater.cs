@@ -35,7 +35,11 @@ namespace Kuroha.Framework.Updater
         protected override void AutoInit()
         {
             base.AutoInit();
-            updateMessage ??= new UpdateMessage(Time.deltaTime);
+
+            if (updateMessage == null)
+            {
+                updateMessage = new UpdateMessage(Time.deltaTime);
+            }
         }
 
         /// <summary>
@@ -56,8 +60,14 @@ namespace Kuroha.Framework.Updater
             if (MessageSystem.Instance.AddListener<UpdateMessage>(updater.UpdateEvent))
             {
                 #if KUROHA_DEBUG_MODE
-                updaterList ??= new System.Collections.Generic.List<string>(5);
+
+                if (updaterList == null)
+                {
+                    updaterList = new System.Collections.Generic.List<string>(5);
+                }
+                
                 updaterList.Add(updater.GetType().FullName);
+                
                 #endif
             }
         }

@@ -32,7 +32,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         private static QSettings instance;
         public static QSettings Instance()
         {
-            return instance ??= new QSettings();
+            if (instance == null)
+            {
+                instance = new QSettings();
+            }
+            
+            return instance;
         }
         
         /// <summary>

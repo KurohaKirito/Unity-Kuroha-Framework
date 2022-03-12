@@ -49,8 +49,8 @@ namespace Kuroha.Framework.Audio
         {
             if (audioClipManager == null || audioSourceManager == null)
             {
-                audioSourceManager ??= new AudioSourceManager(gameObject);
-                audioClipManager ??= new AudioClipManager();
+                audioSourceManager = new AudioSourceManager(gameObject);
+                audioClipManager = new AudioClipManager();
                 await audioClipManager.InitAsync();
             }
         }

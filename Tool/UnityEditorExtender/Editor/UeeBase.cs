@@ -96,7 +96,7 @@ namespace Kuroha.Tool.UnityEditorExtender.Editor
 
             if (newEditorInstance == null)
             {
-                Debug.LogError($"不能创建此编辑器脚本 {targetCustomEditorClassInfo} !");
+                DebugUtil.LogError($"不能创建此编辑器脚本 {targetCustomEditorClassInfo} !", null, "red");
             }
 
             return newEditorInstance;
@@ -107,7 +107,10 @@ namespace Kuroha.Tool.UnityEditorExtender.Editor
         /// </summary>
         private void OnEnable()
         {
-            editorInstance ??= CreateEditorInstance();
+            if (editorInstance == null)
+            {
+                editorInstance = CreateEditorInstance();
+            }
         }
 
         /// <summary>
@@ -123,6 +126,11 @@ namespace Kuroha.Tool.UnityEditorExtender.Editor
         /// </summary>
         public override void OnInspectorGUI()
         {
+            if (editorInstance == null)
+            {
+                editorInstance = CreateEditorInstance();
+            }
+
             editorInstance.OnInspectorGUI();
         }
 

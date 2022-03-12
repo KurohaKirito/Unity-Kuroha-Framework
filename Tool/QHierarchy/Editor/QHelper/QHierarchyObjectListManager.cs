@@ -14,7 +14,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHelper
         private static QHierarchyObjectListManager instance;
         public static QHierarchyObjectListManager Instance()
         {
-            return instance ??= new QHierarchyObjectListManager();
+            if (instance == null)
+            {
+                instance = new QHierarchyObjectListManager();
+            }
+            
+            return instance;
         }
         
         /// <summary>

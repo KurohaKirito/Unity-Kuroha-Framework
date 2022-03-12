@@ -23,7 +23,11 @@ namespace Kuroha.Framework.Launcher
         /// </summary>
         public sealed override async Task InitAsync()
         {
-            asyncLoadScene ??= new AsyncLoadScene();
+            if (asyncLoadScene == null)
+            {
+                asyncLoadScene = new AsyncLoadScene();
+            }
+            
             asyncLoadScene.OnLaunch();
             
             await AudioPlayManager.Instance.InitAsync();

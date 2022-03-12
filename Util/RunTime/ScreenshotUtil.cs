@@ -31,8 +31,15 @@ namespace Kuroha.Util.RunTime
             cameraShotWidth = Screen.width;
             cameraShotHeight = Screen.height;
 
-            renderTexture ??= new RenderTexture(cameraShotWidth, cameraShotHeight, 0);
-            cameraShot ??= new Texture2D(cameraShotWidth, cameraShotHeight, TextureFormat.RGBA32, false, true);
+            if (renderTexture == null)
+            {
+                renderTexture = new RenderTexture(cameraShotWidth, cameraShotHeight, 0);
+            }
+            
+            if (cameraShot == null)
+            {
+                cameraShot = new Texture2D(cameraShotWidth, cameraShotHeight, TextureFormat.RGBA32, false, true);
+            }
         }
 
         /// <summary>

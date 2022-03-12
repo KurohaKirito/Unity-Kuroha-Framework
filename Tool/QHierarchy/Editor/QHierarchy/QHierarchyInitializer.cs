@@ -47,7 +47,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         private static void InitQHierarchy()
         {
-            qHierarchyMain ??= new QHierarchyMain();
+            if (qHierarchyMain == null)
+            {
+                qHierarchyMain = new QHierarchyMain();
+            }
         }
 
         /// <summary>

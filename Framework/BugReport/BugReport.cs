@@ -18,8 +18,15 @@ namespace Kuroha.Framework.BugReport
 
         private void OnGUI()
         {
-            logList ??= new List<Kuroha.Framework.BugReport.UnityLog>();
-            unityLogDic ??= new Dictionary<int, Kuroha.Framework.BugReport.UnityLog>();
+            if (logList == null)
+            {
+                logList = new List<Kuroha.Framework.BugReport.UnityLog>();
+            }
+
+            if (unityLogDic == null)
+            {
+                unityLogDic = new Dictionary<int, Kuroha.Framework.BugReport.UnityLog>();
+            }
 
             logList.Clear();
             foreach (var value in unityLogDic.Values)
@@ -69,7 +76,11 @@ namespace Kuroha.Framework.BugReport
         /// </summary>
         public sealed override async Task InitAsync()
         {
-            unityLogDic ??= new Dictionary<int, UnityLog>();
+            if (unityLogDic == null)
+            {
+                unityLogDic = new Dictionary<int, UnityLog>();
+            }
+            
             if (trello?.cachedUserLists == null || trello.cachedUserLists.Count <= 0)
             {
                 trello = new Trello(trelloUserKey, trelloUserToken);
@@ -103,8 +114,11 @@ namespace Kuroha.Framework.BugReport
         /// </summary>
         private void SyncList()
         {
-            userListName ??= new List<string>();
-            
+            if (userListName == null)
+            {
+                userListName = new List<string>();
+            }
+
             if (userListName.Count <= 0)
             {
                 foreach (var listName in trello.cachedUserLists.Keys)

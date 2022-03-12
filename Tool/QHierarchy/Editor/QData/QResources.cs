@@ -11,7 +11,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 
         public static QResources Instance()
         {
-            return instance ??= new QResources();
+            if (instance == null)
+            {
+                instance = new QResources();
+            }
+            
+            return instance;
         }
 
         private readonly Dictionary<EM_QHierarchyTexture, Texture2D> textures;
