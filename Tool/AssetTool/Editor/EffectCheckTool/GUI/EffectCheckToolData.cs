@@ -27,10 +27,7 @@
             /// </summary>
             Prefab = 3,
 
-            /// <summary>
-            /// 模型
-            /// </summary>
-            ModelImporter = 4,
+            
             
             /// <summary>
             /// 通用检查
@@ -46,9 +43,14 @@
             
             
             
+            /// <summary>
+            /// 模型资源
+            /// </summary>
+            ModelImporter = 4,
             
-            
-            
+            /// <summary>
+            /// 纹理资源
+            /// </summary>
             TextureImporter = 6,
         }
     }

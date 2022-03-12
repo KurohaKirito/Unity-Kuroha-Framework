@@ -48,7 +48,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
             // 这里并不能直接对 CheckItemInfoList 进行修改, 因为 Window 中有一个 Foreach 在对其遍历, 因此需要 Copy 一份数据
             var newCheckItemInfoList = new List<CheckItemInfo>(CheckItemInfoList);
 
-            if (!newCheckItemInfoList.Contains(info))
+            if (newCheckItemInfoList.Contains(info) == false)
             {
                 return;
             }

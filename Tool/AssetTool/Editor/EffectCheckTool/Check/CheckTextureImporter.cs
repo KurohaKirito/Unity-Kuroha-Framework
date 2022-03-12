@@ -39,9 +39,24 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// </summary>
         public enum EM_CheckOption
         {
+            /// <summary>
+            /// 导入尺寸设置
+            /// </summary>
             ImporterSize,
+            
+            /// <summary>
+            /// Mip Maps 设置
+            /// </summary>
             MipMaps,
+            
+            /// <summary>
+            /// 读写设置
+            /// </summary>
             ReadWriteEnable,
+            
+            /// <summary>
+            /// 压缩格式设置
+            /// </summary>
             CompressFormat
         }
 
@@ -50,20 +65,22 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         /// </summary>
         public static readonly string[] sizeOptionArray =
         {
-            "32",
-            "64",
-            "128",
-            "256",
-            "512",
-            "1024",
-            "2048"
+            "32", "64", "128", "256", "512", "1024", "2048"
         };
 
+        /// <summary>
+        /// 检查项信息
+        /// </summary>
         private readonly CheckItemInfo checkItemInfo;
+        
         private readonly EM_GetAssetOption getOption;
+        
         private readonly EM_CheckOption checkOption;
+        
         private readonly string checkOptionParameter;
+        
         private readonly string[] checkOptionParameterArray;
+        
         private readonly List<TextureImporter> assetsToCheck;
 
         /// <summary>
@@ -80,6 +97,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             checkOptionParameterArray = this.checkItemInfo.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
         }
         
+        /// <summary>
+        /// 得到资源管理器中的全部纹理
+        /// </summary>
         private void GetAssetInExplorer()
         {
             assetsToCheck.Clear();
@@ -90,6 +110,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             AddAssetToCheck(assetImporters);
         }
         
+        /// <summary>
+        /// 得到预制体中的全部纹理
+        /// </summary>
         private void GetAssetInPrefab()
         {
             assetsToCheck.Clear();
@@ -106,6 +129,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             }
         }
         
+        /// <summary>
+        /// 得到材质中的全部纹理
+        /// </summary>
         private void GetAssetInMaterial()
         {
             assetsToCheck.Clear();

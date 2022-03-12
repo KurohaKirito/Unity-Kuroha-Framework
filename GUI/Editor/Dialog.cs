@@ -68,6 +68,16 @@ namespace Kuroha.GUI.Editor
         private static Dialog window;
 
         /// <summary>
+        /// 处理按钮事件前的窗口 ID
+        /// </summary>
+        private static int windowIDBeforeEvent;
+        
+        /// <summary>
+        /// 处理按钮事件后的窗口 ID
+        /// </summary>
+        private static int windowIDAfterEvent;
+
+        /// <summary>
         /// 弹窗按钮事件结果
         /// </summary>
         private static DialogButtonType pressedButton = DialogButtonType.Null;
@@ -98,6 +108,11 @@ namespace Kuroha.GUI.Editor
         /// <param name="buttonAltName">Alt 按钮的显示文本</param>
         public static void Display(string titleText, string info, DialogType type, string buttonOkName, string buttonCancelName = null, string buttonAltName = null)
         {
+            if (window != null)
+            {
+                CloseWindow();
+            }
+            
             defaultColor = UnityEngine.GUI.backgroundColor;
             message = info;
             windowType = type;
@@ -106,6 +121,7 @@ namespace Kuroha.GUI.Editor
             buttonAlt = buttonAltName;
 
             window = GetWindow<Dialog>();
+            windowIDAfterEvent = window.GetInstanceID();
             window.minSize = new Vector2(400, 150);
             window.maxSize = window.minSize;
 
@@ -188,8 +204,6 @@ namespace Kuroha.GUI.Editor
                 {
                     pressedButton = DialogButtonType.Cancel;
                     OnDialogEvent();
-                    window.Close();
-                    DestroyImmediate(window);
                 }
 
                 GUILayout.FlexibleSpace();
@@ -205,8 +219,6 @@ namespace Kuroha.GUI.Editor
                 {
                     pressedButton = DialogButtonType.Alt;
                     OnDialogEvent();
-                    window.Close();
-                    DestroyImmediate(window);
                 }
 
                 GUILayout.FlexibleSpace();
@@ -223,8 +235,6 @@ namespace Kuroha.GUI.Editor
                 {
                     pressedButton = DialogButtonType.Ok;
                     OnDialogEvent();
-                    window.Close();
-                    DestroyImmediate(window);
                 }
 
                 UnityEngine.GUI.backgroundColor = defaultColor;
@@ -241,19 +251,33 @@ namespace Kuroha.GUI.Editor
         }
 
         /// <summary>
-        /// 重置数据
+        /// 关闭窗口
         /// </summary>
-        private static void ResetWindow()
+        private static void CloseWindow()
         {
-            pressedButton = DialogButtonType.Null;
-            message = string.Empty;
+            // 清空 ID
+            windowIDAfterEvent = 0;
+            
+            // 重置枚举
             windowType = DialogType.Message;
+            pressedButton = DialogButtonType.Null;
+            
+            // 清空消息
+            message = string.Empty;
+            
+            // 清空按钮
             buttonOk = string.Empty;
             buttonCancel = string.Empty;
             buttonAlt = string.Empty;
+            
+            // 清空事件
             okEvent = null;
             cancelEvent = null;
             altEvent = null;
+            
+            // 关闭窗口
+            window.Close();
+            DestroyImmediate(window);
         }
 
         /// <summary>
@@ -286,28 +310,34 @@ namespace Kuroha.GUI.Editor
         /// </summary>
         private static void OnDialogEvent()
         {
-            switch (pressedButton)
+            if (pressedButton != DialogButtonType.Null)
             {
-                case DialogButtonType.Ok:
-                    okEvent?.Invoke();
-                    ResetWindow();
-                    break;
+                // 记录 ID
+                windowIDBeforeEvent = windowIDAfterEvent;
+                
+                switch (pressedButton)
+                {
+                    case DialogButtonType.Ok:
+                        okEvent?.Invoke();
+                        break;
 
-                case DialogButtonType.Cancel:
-                    cancelEvent?.Invoke();
-                    ResetWindow();
-                    break;
+                    case DialogButtonType.Cancel:
+                        cancelEvent?.Invoke();
+                        break;
 
-                case DialogButtonType.Alt:
-                    altEvent?.Invoke();
-                    ResetWindow();
-                    break;
-
-                case DialogButtonType.Null:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
+                    case DialogButtonType.Alt:
+                        altEvent?.Invoke();
+                        break;
+                    
+                    case DialogButtonType.Null:
+                    default:
+                        break;
+                }
+                
+                if (windowIDBeforeEvent == 0 || windowIDBeforeEvent == windowIDAfterEvent)
+                {
+                    CloseWindow();
+                }
             }
         }
     }
