@@ -110,7 +110,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemSetView
 
             File.WriteAllLines(ConfigFilePath, lines);
             AssetDatabase.Refresh();
-            Dialog.Display("消息", dialogMessage, Dialog.DialogType.Message, "OK");
+            Dialog.Display("消息", dialogMessage, Dialog.DialogType.Message, "OK", null, null);
         }
     }
 }

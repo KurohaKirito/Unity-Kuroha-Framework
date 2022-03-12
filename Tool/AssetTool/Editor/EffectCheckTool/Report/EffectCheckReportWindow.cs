@@ -207,7 +207,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             checkItemGUIStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
 
             // 错误信息
-            EditorGUILayout.SelectableLabel("Android: 纹理尺寸过大", checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(400));
+            EditorGUILayout.SelectableLabel(effectCheckReportInfo.content, checkItemGUIStyle, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(400));
 
             // 填满留白
             GUILayout.FlexibleSpace();

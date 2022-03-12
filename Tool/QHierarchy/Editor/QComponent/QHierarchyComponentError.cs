@@ -169,7 +169,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 if (errorCount > 0)
                 {
                     var title = errorCount + (errorCount == 1 ? " error was found" : " errors were found");
-                    Dialog.Display(title, errorMessageStringBuilder.ToString(), Dialog.DialogType.Error, "OK");
+                    Dialog.Display(title, errorMessageStringBuilder.ToString(), Dialog.DialogType.Error, "OK", null, null);
                 }
             }
         }

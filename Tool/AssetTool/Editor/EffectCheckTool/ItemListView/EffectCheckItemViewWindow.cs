@@ -215,12 +215,12 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.ItemListView
             // 删除按钮
             if (GUILayout.Button("Delete", GUILayout.Height(UI_ROW_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2)))
             {
-                Dialog.SetListener(() =>
+                Dialog.Display("消息", $"是否删除检查项:\n\n{info.title}", Dialog.DialogType.Message, "确认", null, null, OkEvent);
+                
+                void OkEvent()
                 {
                     EffectCheckItemView.Remove(info);
-                });
-                
-                Dialog.Display("消息", $"是否删除检查项:\n\n{info.title}", Dialog.DialogType.Message, "确认");
+                }
             }
 
             GUILayout.EndHorizontal();

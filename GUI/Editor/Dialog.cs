@@ -33,6 +33,11 @@ namespace Kuroha.GUI.Editor
         private static Vector2 messageVector2Scroll;
 
         /// <summary>
+        /// 弹窗标题
+        /// </summary>
+        private static string windowTitle;
+
+        /// <summary>
         /// 弹窗消息内容
         /// </summary>
         private static string message;
@@ -106,16 +111,25 @@ namespace Kuroha.GUI.Editor
         /// <param name="buttonOkName">OK 按钮的显示文本</param>
         /// <param name="buttonCancelName">Cancel 按钮的显示文本</param>
         /// <param name="buttonAltName">Alt 按钮的显示文本</param>
-        public static void Display(string titleText, string info, DialogType type, string buttonOkName, string buttonCancelName = null, string buttonAltName = null)
+        /// <param name="okAction">OK 按钮事件</param>
+        /// <param name="cancelAction">Cancel 按钮事件</param>
+        /// <param name="altAction">Alt 按钮事件</param>
+        public static void Display(string titleText, string info, DialogType type, string buttonOkName, string buttonCancelName, string buttonAltName, Action okAction = null, Action cancelAction = null, Action altAction = null)
         {
+            if (windowTitle == titleText && message == info && windowType == type && buttonOk == buttonOkName && buttonCancel == buttonCancelName && buttonAlt == buttonAltName)
+            {
+                return;
+            }
+            
             if (window != null)
             {
                 CloseWindow();
             }
             
-            defaultColor = UnityEngine.GUI.backgroundColor;
+            windowTitle = titleText;
             message = info;
             windowType = type;
+            
             buttonOk = string.IsNullOrEmpty(buttonOkName) ? "OK" : buttonOkName;
             buttonCancel = buttonCancelName;
             buttonAlt = buttonAltName;
@@ -124,14 +138,19 @@ namespace Kuroha.GUI.Editor
             windowIDAfterEvent = window.GetInstanceID();
             window.minSize = new Vector2(400, 150);
             window.maxSize = window.minSize;
-
             window.titleContent = windowType switch
             {
-                DialogType.Message => new GUIContent(titleText, EditorGUIUtility.IconContent("console.infoIcon.sml").image as Texture2D, "消息"),
-                DialogType.Warn => new GUIContent(titleText, EditorGUIUtility.IconContent("console.warnIcon.sml").image as Texture2D, "警告"),
-                DialogType.Error => new GUIContent(titleText, EditorGUIUtility.IconContent("console.errorIcon.sml").image as Texture2D, "错误"),
+                DialogType.Message => new GUIContent(windowTitle, EditorGUIUtility.IconContent("console.infoIcon.sml").image as Texture2D, "消息"),
+                DialogType.Warn => new GUIContent(windowTitle, EditorGUIUtility.IconContent("console.warnIcon.sml").image as Texture2D, "警告"),
+                DialogType.Error => new GUIContent(windowTitle, EditorGUIUtility.IconContent("console.errorIcon.sml").image as Texture2D, "错误"),
                 _ => throw new Exception()
             };
+            
+            if (okAction != null) { okEvent = okAction; }
+            if (cancelAction != null) { cancelEvent = cancelAction; }
+            if (altAction != null) { altEvent = altAction; }
+            
+            defaultColor = UnityEngine.GUI.backgroundColor;
         }
 
         /// <summary>
@@ -278,31 +297,6 @@ namespace Kuroha.GUI.Editor
             // 关闭窗口
             window.Close();
             DestroyImmediate(window);
-        }
-
-        /// <summary>
-        /// 设置弹窗按钮事件
-        /// </summary>
-        /// <param name="ok">OK 按钮回调</param>
-        /// <param name="cancel">Cancel 按钮回调</param>
-        /// <param name="alt">Alt 按钮回调</param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static void SetListener(Action ok = null, Action cancel = null, Action alt = null)
-        {
-            if (ok != null)
-            {
-                okEvent = ok;
-            }
-
-            if (cancel != null)
-            {
-                cancelEvent = cancel;
-            }
-
-            if (alt != null)
-            {
-                altEvent = alt;
-            }
         }
 
         /// <summary>

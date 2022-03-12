@@ -1,7 +1,4 @@
 GUID	标题	资源类型	资源获取类型	检查类型	路径	资源白名单规则	物体白名单规则	参数	危险等级	是否参与特效检测	是否参与自动检测	是否检查子目录	备注
-1	纹理设置-尺寸	6	0	0	Assets/_Temp/Test_AssetCheckTool/Textures/Fashion			2;2	0	True	False	True	
-2	检查特定路径下的全部纹理导入设置	6	0	1	Assets/_Temp/Test_AssetCheckTool/Aerocraft			False	0	False	False	True	
-3	检查特定路径下的全部纹理导入设置	6	0	3	Assets/_Temp/Test_AssetCheckTool/Aerocraft			45;50	0	False	False	True	
-4	测试模型检查-读写	4	0	0	Assets/_Temp/Test_AssetCheckTool/Models/Gloves			True	1	False	False	True	
-5	测试模型检查-网格压缩	4	0	3	Assets/_Temp/Test_AssetCheckTool/Models/Gloves			1	0	False	False	True	
-6	测试模型检查-法线导入	4	0	1	Assets/_Temp/Test_AssetCheckTool/Models/Gloves			2	0	False	False	True	
+1	测试模型检查-读写	4	0	0	Assets/_Temp/Test_AssetCheckTool/Models/Gloves			True	1	False	False	True	
+2	测试模型检查-网格压缩	4	0	3	Assets/_Temp/Test_AssetCheckTool/Models/Gloves			1	0	False	False	True	
+3	测试模型检查-法线导入	6	1	1	Assets/_Temp/Test_AssetCheckTool/Prefabs			True	1	True	False	True	
