@@ -149,6 +149,9 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             
         }
 
+        /// <summary>
+        /// 添加资源到待检查列表
+        /// </summary>
         private void AddAssetToCheck(IEnumerable<AssetImporter> assetImporters)
         {
             foreach (var assetImporter in assetImporters)

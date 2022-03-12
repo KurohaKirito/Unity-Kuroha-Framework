@@ -76,24 +76,46 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
             var guids = AssetDatabase.FindAssets("t:Model", new[] { checkItemInfo.checkPath });
             var paths = guids.Select(AssetDatabase.GUIDToAssetPath);
             var assetImporters = paths.Select(AssetImporter.GetAtPath);
-
-            foreach (var assetImporter in assetImporters) {
-                if (assetImporter is ModelImporter importer) {
-                    assetsToCheck.Add(importer);
-                } else {
-                    DebugUtil.LogError("此资源并不是模型类型!", assetImporter, "red");
-                }
-            }
+            AddAssetToCheck(assetImporters);
         }
         
         private void GetAssetInPrefab()
         {
+            assetsToCheck.Clear();
             
+            var guids = AssetDatabase.FindAssets("t:Prefab", new[] { checkItemInfo.checkPath });
+            var paths = guids.Select(AssetDatabase.GUIDToAssetPath);
+            var prefabs = paths.Select(AssetDatabase.LoadAssetAtPath<GameObject>);
+
+            foreach (var prefab in prefabs)
+            {
+                // TextureUtil.GetMeshesInGameObject(prefab, out _, out var assetPaths);
+                // var assetImporters = assetPaths.Select(AssetImporter.GetAtPath);
+                // AddAssetToCheck(assetImporters);
+            }
         }
         
         private void GetAssetInMaterial()
         {
             
+        }
+        
+        /// <summary>
+        /// 添加资源到待检查列表
+        /// </summary>
+        private void AddAssetToCheck(IEnumerable<AssetImporter> assetImporters)
+        {
+            foreach (var assetImporter in assetImporters)
+            {
+                if (assetImporter is ModelImporter importer)
+                {
+                    assetsToCheck.Add(importer);
+                }
+                else
+                {
+                    DebugUtil.LogError("此资源并不是模型类型!", assetImporter, "red");
+                }
+            }
         }
         
         /// <summary>
@@ -160,8 +182,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                 }
             }
         }
-        
-        
+
         /// <summary>
         /// 检测: 读写设置
         /// </summary>
