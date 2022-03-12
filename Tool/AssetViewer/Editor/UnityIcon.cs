@@ -71,7 +71,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
                                 }
 
                                 var content = EditorGUIUtility.IconContent(builtInTextures[index].name);
-                                if (ReferenceEquals(content.image, null))
+                                if (content.image == null)
                                 {
                                     GUILayout.Button("Error", GUILayout.Width(UI_WIDTH), GUILayout.Height(UI_HEIGHT));
                                 }
@@ -132,7 +132,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
                 var info = typeof(EditorGUIUtility).GetMethod("GetEditorAssetBundle", FLAGS);
                 var bundle = info?.Invoke(null, null) as AssetBundle;
 
-                if (ReferenceEquals(bundle, null) == false)
+                if (bundle != null)
                 {
                     var objects = bundle.LoadAllAssets();
                     if (objects != null)

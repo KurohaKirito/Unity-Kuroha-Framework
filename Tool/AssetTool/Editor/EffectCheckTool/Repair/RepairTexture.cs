@@ -46,7 +46,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
 
             var textureImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as TextureImporter;
 
-            if (ReferenceEquals(textureImporter, null) == false)
+            if (textureImporter != null)
             {
                 if (textureImporter.mipmapEnabled != enable)
                 {
@@ -66,7 +66,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
             var enable = Convert.ToBoolean(effectCheckReportInfo.parameter);
             var textureImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as TextureImporter;
 
-            if (ReferenceEquals(textureImporter, null) == false)
+            if (textureImporter != null)
             {
                 if (textureImporter.isReadable != enable)
                 {

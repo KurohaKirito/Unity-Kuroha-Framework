@@ -424,7 +424,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckMotionVectors(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
                 return;
@@ -452,7 +452,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 if (transform.TryGetComponent<SkinnedMeshRenderer>(out var renderer))
                 {
-                    if (ReferenceEquals(renderer, null) == false)
+                    if (renderer != null)
                     {
                         if (renderer.skinnedMotionVectors != isOpen)
                         {
@@ -474,7 +474,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckDynamicOcclusion(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
                 return;
@@ -524,7 +524,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckForbidParticleSystem(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
                 return;
@@ -570,7 +570,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckCastShadows(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
                 return;
@@ -605,7 +605,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
 
                 if (transform.TryGetComponent<Renderer>(out var renderer))
                 {
-                    if (ReferenceEquals(renderer, null) == false)
+                    if (renderer != null)
                     {
                         if (renderer.shadowCastingMode != parameter)
                         {
@@ -627,7 +627,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckLightProbes(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
                 return;
@@ -681,7 +681,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckReflectionProbes(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
                 return;
@@ -735,7 +735,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckAnimatorCullMode(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
                 return;
@@ -786,7 +786,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckLODGroupRenderers(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到预制体资源, 路径为: {assetPath}");
                 return;

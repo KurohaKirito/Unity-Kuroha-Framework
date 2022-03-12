@@ -102,7 +102,7 @@ namespace Kuroha.Util.Editor
             };
 
             var parent = self.parent;
-            while (ReferenceEquals(parent, null) == false)
+            while (parent != null)
             {
                 hierarchy.Add(parent.name);
                 parent = parent.parent;

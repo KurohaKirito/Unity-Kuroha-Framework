@@ -326,13 +326,13 @@ namespace Kuroha.Util.Editor
                         {
                             foreach (var material in materials)
                             {
-                                if (ReferenceEquals(material, null) == false)
+                                if (material != null)
                                 {
                                     // 获取全部纹理
                                     GetAllTexturesInMaterial(material, out var textures);
                                     if (textures.Count > 0)
                                     {
-                                        foreach (var data in textures.Where(data => ReferenceEquals(data.asset, null) == false))
+                                        foreach (var data in textures.Where(data => data.asset != null))
                                         {
                                             assets.Add(data.asset);
                                             assetPaths.Add(data.path);

@@ -480,7 +480,7 @@ namespace Kuroha.Tool.LODSetTool.Editor
             {
                 if (trans.TryGetComponent<LODGroup>(out var lod))
                 {
-                    if (ReferenceEquals(lod, null) == false)
+                    if (lod != null)
                     {
                         lodGroups.Add(lod);
                     }

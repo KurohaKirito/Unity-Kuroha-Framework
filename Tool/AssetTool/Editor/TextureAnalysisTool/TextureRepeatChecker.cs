@@ -43,7 +43,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
         {
             var textureA = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPathA);
             textureA = TextureUtil.CopyTexture(textureA) as Texture2D;
-            if (ReferenceEquals(textureA, null))
+            if (textureA == null)
             {
                 DebugUtil.LogWarning("图片导入格式不是 2D 纹理, 请检查!", AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPathA));
                 return;
@@ -72,7 +72,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
 
                     for (var i = 0; i < repeatTextureList.Count; i++)
                     {
-                        if (ReferenceEquals(repeatTextureList[i].assetPaths, null))
+                        if (repeatTextureList[i].assetPaths == null)
                         {
                             continue;
                         }

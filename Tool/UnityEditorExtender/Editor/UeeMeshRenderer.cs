@@ -42,7 +42,7 @@ namespace Kuroha.Tool.UnityEditorExtender.Editor
 
             if (showLayerValue)
             {
-                if (ReferenceEquals(self, null) == false)
+                if (self != null)
                 {
                     if (layerNames.Count <= 0 || layerNames.Count != SortingLayer.layers.Length)
                     {

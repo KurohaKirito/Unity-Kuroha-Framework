@@ -327,13 +327,13 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         {
             foreach (var meshFilter in meshFilters)
             {
-                if (ReferenceEquals(meshFilter, null))
+                if (meshFilter == null)
                 {
                     continue;
                 }
 
                 var sharedMesh = meshFilter.sharedMesh;
-                if (ReferenceEquals(sharedMesh, null))
+                if (sharedMesh == null)
                 {
                     DebugUtil.LogError("使用了 MeshFilter 却没有指定 Mesh!", meshFilter.gameObject);
                     continue;
@@ -352,12 +352,12 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         {
             foreach (var particleSystem in particleSystems)
             {
-                if (ReferenceEquals(particleSystem, null) == false)
+                if (particleSystem != null)
                 {
                     var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
                     var mesh = renderer.mesh;
 
-                    if (ReferenceEquals(mesh, null))
+                    if (mesh == null)
                     {
                         if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
                         {
@@ -381,13 +381,13 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         {
             foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
             {
-                if (ReferenceEquals(skinnedMeshRenderer, null))
+                if (skinnedMeshRenderer == null)
                 {
                     continue;
                 }
 
                 var mesh = skinnedMeshRenderer.sharedMesh;
-                if (ReferenceEquals(mesh, null))
+                if (mesh == null)
                 {
                     DebugUtil.LogError("使用了 SkinnedMeshRenderer 却没有指定 Mesh!", skinnedMeshRenderer.gameObject);
                     continue;

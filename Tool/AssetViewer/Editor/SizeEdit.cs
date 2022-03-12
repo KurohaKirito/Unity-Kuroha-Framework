@@ -16,7 +16,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
         {
             if (GUILayout.Button($"缩小左右 {UnityIcon.windowWidth}", GUILayout.Width(120), GUILayout.Height(30)))
             {
-                if (ReferenceEquals(UnityIcon.window, null))
+                if (UnityIcon.window == null)
                 {
                     return;
                 }
@@ -26,7 +26,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
             }
             else if (GUILayout.Button($"缩小上下 {UnityIcon.windowHeight}", GUILayout.Width(120), GUILayout.Height(30)))
             {
-                if (ReferenceEquals(UnityIcon.window, null))
+                if (UnityIcon.window == null)
                 {
                     return;
                 }
@@ -36,7 +36,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
             }
             else if (GUILayout.Button($"增大左右 {UnityIcon.windowWidth}", GUILayout.Width(120), GUILayout.Height(30)))
             {
-                if (ReferenceEquals(UnityIcon.window, null))
+                if (UnityIcon.window == null)
                 {
                     return;
                 }
@@ -46,7 +46,7 @@ namespace Kuroha.Tool.AssetViewer.Editor
             }
             else if (GUILayout.Button($"增大上下 {UnityIcon.windowHeight}", GUILayout.Width(120), GUILayout.Height(30)))
             {
-                if (ReferenceEquals(UnityIcon.window, null))
+                if (UnityIcon.window == null)
                 {
                     return;
                 }

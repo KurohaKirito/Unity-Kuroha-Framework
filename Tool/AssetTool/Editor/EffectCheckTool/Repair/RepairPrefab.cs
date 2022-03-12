@@ -72,7 +72,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// </summary>
         private static void RepairMotionVectors(EffectCheckReportInfo effectCheckReportInfo)
         {
-            if (ReferenceEquals(effectCheckReportInfo.asset, null))
+            if (effectCheckReportInfo.asset == null)
             {
                 DebugUtil.LogError("执行自动修复时, 预制为空!");
                 return;
@@ -82,7 +82,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
             {
                 var top = topObj.transform;
                 var child = top.Find(effectCheckReportInfo.assetPath);
-                if (ReferenceEquals(child, null) == false)
+                if (child != null)
                 {
                     if (child.TryGetComponent<SkinnedMeshRenderer>(out var renderer))
                     {
@@ -99,7 +99,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// </summary>
         private static void RepairDynamicOcclusion(EffectCheckReportInfo effectCheckReportInfo)
         {
-            if (ReferenceEquals(effectCheckReportInfo.asset, null))
+            if (effectCheckReportInfo.asset == null)
             {
                 DebugUtil.LogError("执行自动修复时, 预制为空!");
                 return;
@@ -109,7 +109,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
             {
                 var top = topObj.transform;
                 var child = top.Find(effectCheckReportInfo.assetPath);
-                if (ReferenceEquals(child, null) == false)
+                if (child != null)
                 {
                     if (child.TryGetComponent<Renderer>(out var renderer))
                     {
@@ -126,7 +126,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// </summary>
         private static void RepairCastShadows(EffectCheckReportInfo effectCheckReportInfo)
         {
-            if (ReferenceEquals(effectCheckReportInfo.asset, null))
+            if (effectCheckReportInfo.asset == null)
             {
                 DebugUtil.LogError("执行自动修复时, 预制为空!");
                 return;
@@ -136,7 +136,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
             {
                 var top = topObj.transform;
                 var child = top.Find(effectCheckReportInfo.assetPath);
-                if (ReferenceEquals(child, null) == false)
+                if (child != null)
                 {
                     if (child.TryGetComponent<SkinnedMeshRenderer>(out var renderer))
                     {
@@ -153,7 +153,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// </summary>
         private static void RepairLightProbes(EffectCheckReportInfo effectCheckReportInfo)
         {
-            if (ReferenceEquals(effectCheckReportInfo.asset, null))
+            if (effectCheckReportInfo.asset == null)
             {
                 DebugUtil.LogError("执行自动修复时, 预制为空!");
                 return;
@@ -163,7 +163,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
             {
                 var top = topObj.transform;
                 var child = top.Find(effectCheckReportInfo.assetPath);
-                if (ReferenceEquals(child, null) == false)
+                if (child != null)
                 {
                     if (child.TryGetComponent<Renderer>(out var renderer))
                     {
@@ -180,7 +180,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// </summary>
         private static void RepairReflectionProbes(EffectCheckReportInfo effectCheckReportInfo)
         {
-            if (ReferenceEquals(effectCheckReportInfo.asset, null))
+            if (effectCheckReportInfo.asset == null)
             {
                 DebugUtil.LogError("执行自动修复时, 预制为空!");
                 return;
@@ -190,7 +190,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
             {
                 var top = topObj.transform;
                 var child = top.Find(effectCheckReportInfo.assetPath);
-                if (ReferenceEquals(child, null) == false)
+                if (child != null)
                 {
                     if (child.TryGetComponent<Renderer>(out var renderer))
                     {
@@ -207,7 +207,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// </summary>
         private static void RepairAnimatorCullingMode(EffectCheckReportInfo effectCheckReportInfo)
         {
-            if (ReferenceEquals(effectCheckReportInfo.asset, null))
+            if (effectCheckReportInfo.asset == null)
             {
                 DebugUtil.LogError("执行自动修复时, 预制为空!");
                 return;
@@ -217,7 +217,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
             {
                 var top = topObj.transform;
                 var child = top.Find(effectCheckReportInfo.assetPath);
-                if (ReferenceEquals(child, null) == false)
+                if (child != null)
                 {
                     if (child.TryGetComponent<Animator>(out var animator))
                     {

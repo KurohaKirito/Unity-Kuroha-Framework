@@ -323,7 +323,7 @@ namespace Kuroha.Tool.AssetTool.Editor.TextureAnalysisTool
             {
                 // 纯色纹理判断
                 var textureImporter = (TextureImporter) AssetImporter.GetAtPath(assetPath);
-                if (ReferenceEquals(textureImporter, null) == false)
+                if (textureImporter != null)
                 {
                     if (textureImporter.textureShape == TextureImporterShape.Texture2D && TextureUtil.IsSolidColor(asset))
                     {

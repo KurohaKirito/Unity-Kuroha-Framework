@@ -89,7 +89,7 @@ namespace Kuroha.Tool.AssetTool.Editor.MeshAnalysisTool
 
                     GUILayout.BeginVertical("Box");
                     {
-                        UnityEngine.GUI.enabled = ReferenceEquals(prefab, null) == false;
+                        UnityEngine.GUI.enabled = prefab != null;
                         if (GUILayout.Button("计算内存占用", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                         {
                             PrefabUtil.CountMemoryOfPrefab(prefab);

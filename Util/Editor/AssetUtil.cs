@@ -168,7 +168,7 @@ namespace Kuroha.Util.Editor
             var objects = new List<UnityEngine.Object>();
             foreach (var loadTransform in allLoadTransforms)
             {
-                if (ReferenceEquals(loadTransform, null) == false)
+                if (loadTransform != null)
                 {
                     switch (type)
                     {
@@ -333,11 +333,11 @@ namespace Kuroha.Util.Editor
 
             // 待移动资源
             var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(oldPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 // 目标路径
                 var path = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(newFolder);
-                if (ReferenceEquals(path, null) == false)
+                if (path != null)
                 {
                     // 待移动资源完整名称
                     var assetName = assetPath.Substring(assetPath.LastIndexOf("/", StringComparison.Ordinal));

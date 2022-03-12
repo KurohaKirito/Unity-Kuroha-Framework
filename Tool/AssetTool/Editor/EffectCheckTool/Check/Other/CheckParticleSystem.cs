@@ -267,7 +267,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckReceiveShadows(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 foreach (var particle in particles)
@@ -306,7 +306,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckMeshTrisLimit(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 var maxTris = Convert.ToInt32(item.parameter);
@@ -325,7 +325,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     }
                     
                     var renderer = particle.GetComponent<ParticleSystemRenderer>();
-                    if (ReferenceEquals(renderer.mesh, null) == false)
+                    if (renderer.mesh != null)
                     {
                         var triangle = renderer.mesh.triangles.Length / 3;
                         if (renderer.renderMode == ParticleSystemRenderMode.Mesh && triangle > maxTris)
@@ -351,7 +351,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckMeshUV(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 
@@ -369,7 +369,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     }
                     
                     var renderer = particle.GetComponent<ParticleSystemRenderer>();
-                    if (ReferenceEquals(renderer.mesh, null) == false)
+                    if (renderer.mesh != null)
                     {
                         var mesh = renderer.mesh;
                         var isError = false;
@@ -417,7 +417,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckCollisionAndTrigger(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 foreach (var particle in particles)
@@ -458,7 +458,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckSubEmittersError(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到资源, 路径为: {assetPath}");
                 return;
@@ -493,7 +493,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     var subEmitter = particle.subEmitters.GetSubEmitterSystem(index);
             
                     // 错误 1: Sub-Emitters 为空
-                    if (ReferenceEquals(subEmitter, null))
+                    if (subEmitter == null)
                     {
                         var content = $"粒子 Sub-Emitters 为空!\t物体: {assetPath} 子物体: {particle.name} 的第 {index + 1} 个设置为空!";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleSubEmittersError, content, item));
@@ -530,7 +530,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckZeroSurface(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到资源, 路径为: {assetPath}");
                 return;
@@ -556,7 +556,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                     if (particle.shape.shapeType == ParticleSystemShapeType.Mesh)
                     {
                         var mesh = particle.shape.mesh;
-                        if (ReferenceEquals(mesh, null))
+                        if (mesh == null)
                         {
                             var content = $"特效 Mesh 没有指定!\t物体: {assetPath} 子物件 {particle.name}";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.ParticleZeroSurface, content, item));
