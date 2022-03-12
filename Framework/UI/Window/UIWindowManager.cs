@@ -65,7 +65,7 @@ namespace Kuroha.Framework.UI.Window
                 {
                     var prefabPath = $"{UI_PREFAB_PATH}{uiPrefabName}/{uiPrefabName}";
                     var uiPrefab = Resources.Load<GameObject>(prefabPath);
-                    if (ReferenceEquals(uiPrefab, null))
+                    if (uiPrefab == null)
                     {
                         DebugUtil.LogError($"未获取到 {prefabPath} 预制体, 请检查命名是否符合规则: uiPrefabName_Controller", null, "red");
                     }

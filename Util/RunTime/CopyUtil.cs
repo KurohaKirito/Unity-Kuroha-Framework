@@ -13,7 +13,7 @@ namespace Kuroha.Util.RunTime
                 DebugUtil.LogError($"The type must be serializable. {typeof(T)}", null, "red");
             }
 
-            if (object.ReferenceEquals(source, null))
+            if (source == null)
             {
                 return default;
             }
@@ -26,8 +26,6 @@ namespace Kuroha.Util.RunTime
                 stream.Seek(0, SeekOrigin.Begin);
                 return formatter.Deserialize(stream) as T;
             }
-            
-            
         }
     }
 }

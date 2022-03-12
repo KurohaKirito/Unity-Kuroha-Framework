@@ -13,7 +13,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static Assembly GetAssembly(Type type)
         {
-            if (ReferenceEquals(type, null) == false)
+            if (type != null)
             {
                 return type.Assembly;
             }
@@ -27,7 +27,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static Type GetClass(Assembly assembly, string className)
         {
-            if (ReferenceEquals(assembly, null) == false)
+            if (assembly != null)
             {
                 return assembly.GetType(className);
             }
@@ -41,7 +41,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static Type[] GetAllClass(Assembly assembly)
         {
-            if (ReferenceEquals(assembly, null) == false)
+            if (assembly != null)
             {
                 return assembly.GetTypes();
             }
@@ -55,11 +55,11 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static MethodInfo GetMethod(Type currentClass, string methodName, BindingFlags targetFlags, Type[] parameterTypes)
         {
-            if (ReferenceEquals(currentClass, null) == false)
+            if (currentClass != null)
             {
                 var method = currentClass.GetMethod(methodName, targetFlags, Type.DefaultBinder, parameterTypes, null);
                 
-                if (ReferenceEquals(method, null) == false)
+                if (method != null)
                 {
                     return method;
                 }
@@ -79,11 +79,11 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static MethodInfo GetMethod(Type currentClass, string methodName, BindingFlags targetFlags)
         {
-            if (ReferenceEquals(currentClass, null) == false)
+            if (currentClass != null)
             {
                 var method = currentClass.GetMethod(methodName, targetFlags);
                 
-                if (ReferenceEquals(method, null) == false)
+                if (method != null)
                 {
                     return method;
                 }
@@ -103,11 +103,11 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static MethodInfo GetMethod(Type currentClass, string methodName)
         {
-            if (ReferenceEquals(currentClass, null) == false)
+            if (currentClass != null)
             {
                 var method = currentClass.GetMethod(methodName);
                 
-                if (ReferenceEquals(method, null) == false)
+                if (method != null)
                 {
                     return method;
                 }
@@ -127,7 +127,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static object CallMethod(MethodInfo method, object classInstance, object[] args)
         {
-            if (ReferenceEquals(method, null) == false)
+            if (method != null)
             {
                 return method.Invoke(classInstance, args);
             }
@@ -141,7 +141,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static object CallMethod(MethodInfo method, object[] args)
         {
-            if (ReferenceEquals(method, null) == false)
+            if (method != null)
             {
                 return method.Invoke(null, args);
             }
@@ -155,7 +155,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static FieldInfo GetField(Type currentClass, string fieldName, BindingFlags targetFlags)
         {
-            if (ReferenceEquals(currentClass, null) == false)
+            if (currentClass != null)
             {
                 return currentClass.GetField(fieldName, targetFlags);
             }
@@ -169,7 +169,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static FieldInfo GetField(Type currentClass, string fieldName)
         {
-            if (ReferenceEquals(currentClass, null) == false)
+            if (currentClass != null)
             {
                 return currentClass.GetField(fieldName);
             }
@@ -183,7 +183,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static object GetValueField(FieldInfo field, object classInstance)
         {
-            if (ReferenceEquals(field, null) == false)
+            if (field != null)
             {
                 return field.GetValue(classInstance);
             }
@@ -197,7 +197,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static object GetValueField(FieldInfo field)
         {
-            if (ReferenceEquals(field, null) == false)
+            if (field != null)
             {
                 return field.GetValue(null);
             }
@@ -211,7 +211,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static PropertyInfo GetProperty(Type currentClass, string propertyName, BindingFlags targetFlags)
         {
-            if (ReferenceEquals(currentClass, null) == false)
+            if (currentClass != null)
             {
                 return currentClass.GetProperty(propertyName, targetFlags);
             }
@@ -225,7 +225,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static PropertyInfo GetProperty(Type currentClass, string propertyName)
         {
-            if (ReferenceEquals(currentClass, null) == false)
+            if (currentClass != null)
             {
                 return currentClass.GetProperty(propertyName);
             }
@@ -239,7 +239,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static object GetValueProperty(PropertyInfo property, object classInstance)
         {
-            if (ReferenceEquals(property, null) == false)
+            if (property != null)
             {
                 return property.GetValue(classInstance);
             }
@@ -253,7 +253,7 @@ namespace Kuroha.Util.RunTime
         /// </summary>
         public static object GetValueProperty(PropertyInfo property)
         {
-            if (ReferenceEquals(property, null) == false)
+            if (property != null)
             {
                 return property.GetValue(null);
             }
@@ -287,7 +287,7 @@ namespace Kuroha.Util.RunTime
             {
                 // 得到源实例中的 "相同字段"
                 var sourceFieldInfo = sourceType.GetField(targetFieldInfo.Name, sourceFlags);
-                if (ReferenceEquals(sourceFieldInfo, null) == false)
+                if (sourceFieldInfo != null)
                 {
                     if (targetFieldInfo.FieldType == sourceFieldInfo.FieldType)
                     {
@@ -308,7 +308,7 @@ namespace Kuroha.Util.RunTime
         /// <param name="inherit">是否查询继承链</param>
         public static T GetCustomAttribute<T>(Type classInfo, bool inherit) where T : Attribute
         {
-            if (ReferenceEquals(classInfo, null) == false)
+            if (classInfo != null)
             {
                 return classInfo.GetCustomAttribute<T>(inherit);
             }

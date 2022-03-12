@@ -181,7 +181,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
             effectCheckReportInfo.isEnable = EditorGUILayout.Toggle(effectCheckReportInfo.isEnable, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_HEIGHT));
 
             // 定位按钮
-            var isSelectable = ReferenceEquals(effectCheckReportInfo.asset, null) == false;
+            var isSelectable = effectCheckReportInfo.asset != null;
             UnityEngine.GUI.enabled = isSelectable;
             if (GUILayout.Button("定位", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2))) {
                 EffectCheckReport.Ping(effectCheckReportInfo);

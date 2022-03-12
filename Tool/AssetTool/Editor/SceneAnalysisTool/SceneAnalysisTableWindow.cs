@@ -132,7 +132,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         {
             if (forceUpdate || table == null)
             {
-                if (ReferenceEquals(prefab, null) == false || isDetectCurrentScene)
+                if (prefab != null || isDetectCurrentScene)
                 {
                     var dataList = InitRows(isCollider);
 
@@ -271,10 +271,10 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
 
             foreach (var meshCollider in meshColliders)
             {
-                if (ReferenceEquals(meshCollider, null) == false)
+                if (meshCollider != null)
                 {
                     var sharedMesh = meshCollider.sharedMesh;
-                    if (ReferenceEquals(sharedMesh, null))
+                    if (sharedMesh == null)
                     {
                         DebugUtil.LogError("使用了 MeshCollider 却没有指定 Mesh!", meshCollider.gameObject, "red");
                     }

@@ -96,7 +96,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckSkinnedMeshRenderer(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 var skinnedMeshes = asset.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                 foreach (var skinnedMesh in skinnedMeshes)
@@ -156,7 +156,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckMeshFilter(string assetPath, FileSystemInfo assetInfo, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 var meshFilters = asset.GetComponentsInChildren<MeshFilter>(true);
                 foreach (var meshFilter in meshFilters)

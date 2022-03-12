@@ -131,7 +131,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
                                 var setting = particle.subEmitters.GetSubEmitterSystem(i);
 
                                 var isError = true;
-                                if (ReferenceEquals(setting, null) == false)
+                                if (setting != null)
                                 {
                                     foreach (var subParticleSystem in allSubParticleSystems)
                                     {

@@ -28,7 +28,7 @@ namespace Kuroha.Framework.Singleton
             get
             {
                 // 只有第 1 次调用的时候, instanceBase = null, 后续这个 if 全部为 false
-                if (ReferenceEquals(instanceBase, null))
+                if (instanceBase == null)
                 {
                     // 判断是否需要新建单例物体
                     if (IsNeedCreateSingleton(out var script))
@@ -47,7 +47,7 @@ namespace Kuroha.Framework.Singleton
         /// <summary>
         /// 单例活动标志
         /// </summary>
-        public static bool IsActive => ReferenceEquals(instanceBase, null) == false && InstanceBase.active;
+        public static bool IsActive => instanceBase != null && InstanceBase.active;
 
         /// <summary>
         /// 检测场景中的单例

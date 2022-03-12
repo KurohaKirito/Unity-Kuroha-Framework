@@ -32,7 +32,7 @@ namespace Kuroha.Util.Editor
         /// <param name="source">源纹理</param>
         public static Texture CopyTexture(Texture source)
         {
-            if (ReferenceEquals(source, null) == false)
+            if (source != null)
             {
                 var renderTexture = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
                 Graphics.Blit(source, renderTexture);
@@ -279,14 +279,14 @@ namespace Kuroha.Util.Editor
                             // 遍历材质
                             foreach (var material in materials)
                             {
-                                if (ReferenceEquals(material, null) == false)
+                                if (material != null)
                                 {
                                     // 获取材质引用的全部纹理
                                     GetAllTexturesInMaterial(material, out var textures);
                                     if (textures.Count > 0)
                                     {
                                         // 遍历纹理
-                                        foreach (var data in textures.Where(data => ReferenceEquals(data.asset, null) == false))
+                                        foreach (var data in textures.Where(data => data.asset != null))
                                         {
                                             assets.Add(data.asset);
                                             assetPaths.Add(data.path);

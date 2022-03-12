@@ -108,13 +108,11 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Report
         /// <param name="effectCheckReportInfo">问题项</param>
         public static void Ping(EffectCheckReportInfo effectCheckReportInfo)
         {
-            if (ReferenceEquals(effectCheckReportInfo.asset, null))
+            if (effectCheckReportInfo.asset != null)
             {
-                return;
+                EditorGUIUtility.PingObject(effectCheckReportInfo.asset);
+                Selection.activeObject = effectCheckReportInfo.asset;
             }
-            
-            EditorGUIUtility.PingObject(effectCheckReportInfo.asset);
-            Selection.activeObject = effectCheckReportInfo.asset;
         }
 
         /// <summary>

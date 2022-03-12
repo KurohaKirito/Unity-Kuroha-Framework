@@ -63,7 +63,7 @@ namespace Kuroha.Framework.Audio
             var clip = audioClipManager.Get(clipID);
             var source = audioSourceManager.Get();
 
-            if (ReferenceEquals(clip, null))
+            if (clip == null)
             {
                 DebugUtil.LogError("找不到指定 ID 的音频资源, 请检查音频数据库!", null, "red");
             }
@@ -80,7 +80,7 @@ namespace Kuroha.Framework.Audio
         {
             var clip = audioClipManager.Get(clipID);
             
-            if (ReferenceEquals(clip, null))
+            if (clip == null)
             {
                 DebugUtil.LogError("找不到指定 ID 的音频资源, 请检查音频数据库!", null, "red");
             }

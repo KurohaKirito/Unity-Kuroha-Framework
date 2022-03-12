@@ -48,7 +48,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         private static void RepairReadWriteEnable(EffectCheckReportInfo effectCheckReportInfo)
         {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
-            if (ReferenceEquals(modelImporter, null) == false)
+            if (modelImporter != null)
             {
                 if (modelImporter.isReadable)
                 {
@@ -66,7 +66,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         private static void RepairNormals(EffectCheckReportInfo effectCheckReportInfo)
         {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
-            if (ReferenceEquals(modelImporter, null) == false)
+            if (modelImporter != null)
             {
                 modelImporter.importNormals = ModelImporterNormals.None;
                 AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
@@ -80,13 +80,13 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         /// <param name="effectCheckReportInfo"></param>
         private static void RepairOptimizeMesh(EffectCheckReportInfo effectCheckReportInfo)
         {
-            
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
-            if (ReferenceEquals(modelImporter, null) == false)
+            if (modelImporter != null)
             {
-#pragma warning disable 618
-                modelImporter.optimizeMesh = true;
-#pragma warning restore 618
+                // 优化多边形
+                modelImporter.optimizeMeshPolygons = true;
+                // 优化顶点
+                modelImporter.optimizeMeshVertices = true;
                 AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
@@ -100,7 +100,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         private static void RepairMeshCompression(EffectCheckReportInfo effectCheckReportInfo)
         {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
-            if (ReferenceEquals(modelImporter, null) == false)
+            if (modelImporter != null)
             {
                 modelImporter.meshCompression = ModelImporterMeshCompression.Low;
                 AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
@@ -115,7 +115,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         private static void RepairWeldVertices(EffectCheckReportInfo effectCheckReportInfo)
         {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
-            if (ReferenceEquals(modelImporter, null) == false)
+            if (modelImporter != null)
             {
                 modelImporter.weldVertices = true;
                 AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);

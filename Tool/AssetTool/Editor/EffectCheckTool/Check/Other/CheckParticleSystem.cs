@@ -134,7 +134,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckRenderMode(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
                 
@@ -186,7 +186,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckPrewarm(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到资源, 路径为: {assetPath}");
                 return;
@@ -227,7 +227,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckCastShadows(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null) == false)
+            if (asset != null)
             {
                 var particles = asset.GetComponentsInChildren<ParticleSystem>(true);
 

@@ -31,7 +31,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AutoCheckTool.CheckItem
                 {
                     // 检测纹理的导入类型必须为: Texture2D
                     var textureImporter = (TextureImporter)AssetImporter.GetAtPath(texturePaths[index]);
-                    if (ReferenceEquals(textureImporter, null) == false)
+                    if (textureImporter != null)
                     {
                         if (textureImporter.textureShape == TextureImporterShape.Texture2D)
                         {

@@ -58,7 +58,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Repair
         private static void RepairZeroSurface(EffectCheckReportInfo effectCheckReportInfo)
         {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
-            if (ReferenceEquals(modelImporter, null) == false)
+            if (modelImporter != null)
             {
                 if (modelImporter.isReadable == false)
                 {

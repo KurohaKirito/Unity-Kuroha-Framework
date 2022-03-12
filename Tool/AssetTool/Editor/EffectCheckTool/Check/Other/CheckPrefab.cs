@@ -232,7 +232,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckObjectName(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到资源, 路径为: {assetPath}");
                 return;
@@ -275,7 +275,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckForbidCollider(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到资源, 路径为: {assetPath}");
                 return;
@@ -314,7 +314,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckDisableObject(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到资源, 路径为: {assetPath}");
                 return;
@@ -353,7 +353,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         private static void CheckTextureSize(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            if (ReferenceEquals(asset, null))
+            if (asset == null)
             {
                 DebugUtil.Log($"未读取到资源, 路径为: {assetPath}");
                 return;
@@ -387,7 +387,7 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
                         {
                             foreach (var material in renderer.sharedMaterials)
                             {
-                                if (ReferenceEquals(material, null) == false)
+                                if (material != null)
                                 {
                                     TextureUtil.GetTexturesInMaterial(material, out var textureDataList);
                                     foreach (var textureData in textureDataList)

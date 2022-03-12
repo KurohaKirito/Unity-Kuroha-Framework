@@ -65,7 +65,7 @@ namespace Kuroha.Tool.AssetTool.Editor.SceneAnalysisTool
         /// </summary>
         private static void InitTitle()
         {
-            if (ReferenceEquals(oneKeyContent, null))
+            if (oneKeyContent == null)
             {
                 var remarkStringBuilder = new StringBuilder();
                 remarkStringBuilder.Append("目前支持一键快速检测的检查项有:");
