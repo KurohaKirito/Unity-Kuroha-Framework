@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Kuroha.Util.Editor
+﻿namespace Kuroha.Util.Editor
 {
     public class MeshUtil
     {
