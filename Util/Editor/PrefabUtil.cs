@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Kuroha.Util.RunTime;
+using Kuroha.Framework.Utility.RunTime;
 using UnityEditor;
 using UnityEngine;
 

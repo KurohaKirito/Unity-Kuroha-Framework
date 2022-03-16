@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Kuroha.Framework.Singleton;
 using Kuroha.Framework.Singleton.RunTime;
-using Kuroha.Util.RunTime;
+using Kuroha.Framework.Utility.RunTime;
 using UnityEngine;
 using UnityEngine.UI;
 

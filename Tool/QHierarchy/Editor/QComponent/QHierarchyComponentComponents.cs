@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
 using UnityEditor;
 using Kuroha.Tool.QHierarchy.Editor.QData;
-using Kuroha.Util.RunTime;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {

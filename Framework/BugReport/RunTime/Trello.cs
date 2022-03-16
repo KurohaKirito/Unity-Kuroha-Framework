@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Kuroha.Util.RunTime;
+using Kuroha.Framework.Utility.RunTime;
 using UnityEngine;
 using UnityEngine.Networking;
 

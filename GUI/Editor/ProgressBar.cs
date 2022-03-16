@@ -1,4 +1,4 @@
-﻿using Kuroha.Util.RunTime;
+﻿using Kuroha.Framework.Utility.RunTime;
 using UnityEditor;
 
 namespace Kuroha.GUI.Editor

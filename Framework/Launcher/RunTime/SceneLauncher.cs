@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kuroha.Util.RunTime;
+using Kuroha.Framework.Utility.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.Launcher.RunTime

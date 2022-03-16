@@ -1,3 +1,4 @@
+using Kuroha.Framework.Utility.Editor;
 using Kuroha.Tool.QHierarchy.Editor.QHelper;
 using Kuroha.Util.Editor;
 using UnityEditor;
@@ -22,12 +23,12 @@ namespace Kuroha.Tool.QHierarchy.Editor.QHierarchy
         /// </summary>
         static QHierarchyInitializer()
         {
-            var timer = new TimerUtil(100, EditorApplication.RepaintHierarchyWindow)
+            var editorUpdater = new TimerUtil(100, EditorApplication.RepaintHierarchyWindow)
             {
                 AutoReStart = true
             };
-            
-            timer.Start();
+            editorUpdater.Stop();
+            editorUpdater.Start();
             
             EditorApplication.update -= EditorUpdate;
             EditorApplication.update += EditorUpdate;

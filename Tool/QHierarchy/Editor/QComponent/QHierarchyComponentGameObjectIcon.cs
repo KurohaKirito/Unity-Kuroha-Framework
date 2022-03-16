@@ -2,10 +2,10 @@ using System;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
+using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
-using Kuroha.Util.RunTime;
 using Object = UnityEngine.Object;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent

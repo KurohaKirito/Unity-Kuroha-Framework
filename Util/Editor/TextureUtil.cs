@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Kuroha.Framework.Utility.RunTime;
 using Kuroha.GUI.Editor;
-using Kuroha.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 

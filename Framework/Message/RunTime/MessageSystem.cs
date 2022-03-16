@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Kuroha.Framework.Singleton;
 using Kuroha.Framework.Singleton.RunTime;
-using Kuroha.Util.RunTime;
+using Kuroha.Framework.Utility.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.Message.RunTime

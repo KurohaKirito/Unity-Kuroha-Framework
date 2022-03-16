@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Kuroha.Util.RunTime;
+using Kuroha.Framework.Utility.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.UI.RunTime.Panel
