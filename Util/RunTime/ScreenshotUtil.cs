@@ -1,5 +1,6 @@
 ﻿using System;
 using Kuroha.Framework.Singleton;
+using Kuroha.Framework.Singleton.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Util.RunTime

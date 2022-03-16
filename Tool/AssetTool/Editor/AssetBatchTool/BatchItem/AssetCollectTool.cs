@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kuroha.Framework.AsyncLoad.RunTime;
 using UnityEditor;
 using UnityEngine;
-using Kuroha.Framework.AsyncLoad.Asset;
 using Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchGUI;
 
 namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
@@ -177,7 +177,7 @@ namespace Kuroha.Tool.AssetTool.Editor.AssetBatchTool.BatchItem
             });
             paths.AddRange(guids.Select(AssetDatabase.GUIDToAssetPath));
 
-            var config = AssetDatabase.LoadAssetAtPath<DS_Asset>(savePath);
+            var config = AssetDatabase.LoadAssetAtPath<ScriptableObjectAsyncLoadAsset>(savePath);
             config.assetPaths = paths;
             EditorUtility.SetDirty(config);
             AssetDatabase.SaveAssets();
