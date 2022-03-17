@@ -32,10 +32,7 @@ namespace Kuroha.Framework.Audio.RunTime
         /// </summary>
         private void Init()
         {
-            if (audioSourcePool == null)
-            {
-                audioSourcePool = new List<AudioSource>(5);
-            }
+            audioSourcePool ??= new List<AudioSource>(5);
             audioSourcePool.Add(audioSourceOwner.AddComponent<AudioSource>());
             audioSourcePool.Add(audioSourceOwner.AddComponent<AudioSource>());
         }

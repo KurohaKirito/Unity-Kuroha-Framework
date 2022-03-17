@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Kuroha.Framework.Singleton;
 using Kuroha.Framework.Singleton.RunTime;
 using Kuroha.Framework.Utility.RunTime;
 using UnityEngine;
@@ -20,12 +19,9 @@ namespace Kuroha.Framework.Message.RunTime
 
         private void OnGUI()
         {
-            if (messageListenerList == null)
-            {
-                messageListenerList = new List<MessageListener>();
-            }
-
+            messageListenerList ??= new List<MessageListener>();
             messageListenerList.Clear();
+            
             foreach (var key in listenerDic.Keys)
             {
                 var val = new MessageListener

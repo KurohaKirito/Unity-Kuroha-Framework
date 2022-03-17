@@ -1,6 +1,5 @@
-﻿using Kuroha.Framework.Message;
-using Kuroha.Framework.Message.RunTime;
-using Kuroha.Framework.Updater;
+﻿using Kuroha.Framework.Message.RunTime;
+using Kuroha.Framework.Updater.RunTime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -55,7 +54,7 @@ namespace Kuroha.Framework.AsyncLoad.RunTime
 
                 asyncOperation = SceneManager.LoadSceneAsync(scenePath);
                 asyncOperation.allowSceneActivation = false;
-                Updater.Updater.Instance.Register(this);
+                Updater.RunTime.Updater.Instance.Register(this);
             }
 
             return true;
@@ -91,7 +90,7 @@ namespace Kuroha.Framework.AsyncLoad.RunTime
         private void Clear()
         {
             ResetAsyncLoad(0);
-            Updater.Updater.Instance.Unregister(this);
+            Updater.RunTime.Updater.Instance.Unregister(this);
         }
 
         /// <summary>

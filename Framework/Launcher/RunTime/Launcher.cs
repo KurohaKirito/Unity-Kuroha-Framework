@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Kuroha.Framework.AsyncLoad.RunTime;
 using Kuroha.Framework.Audio.RunTime;
-using Kuroha.Framework.Singleton;
 using Kuroha.Framework.Singleton.RunTime;
 
 namespace Kuroha.Framework.Launcher.RunTime

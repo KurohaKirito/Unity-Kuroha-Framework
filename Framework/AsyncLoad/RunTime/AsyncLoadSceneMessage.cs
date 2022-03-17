@@ -1,5 +1,4 @@
-﻿using Kuroha.Framework.Message;
-using Kuroha.Framework.Message.RunTime;
+﻿using Kuroha.Framework.Message.RunTime;
 
 namespace Kuroha.Framework.AsyncLoad.RunTime
 {

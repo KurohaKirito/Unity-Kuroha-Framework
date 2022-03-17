@@ -4,7 +4,7 @@ using Kuroha.Framework.Message.RunTime;
 using Kuroha.Framework.Singleton.RunTime;
 using Kuroha.Framework.UI.RunTime.Panel;
 using Kuroha.Framework.UI.RunTime.Window;
-using Kuroha.Framework.Updater;
+using Kuroha.Framework.Updater.RunTime;
 using UnityEngine;
 
 namespace Kuroha.Framework.UI.RunTime.Manager
@@ -30,7 +30,7 @@ namespace Kuroha.Framework.UI.RunTime.Manager
         /// <summary>
         /// 主相机
         /// </summary>
-        public Camera MainCamera { get; set; }
+        public Camera MainCamera { get; private set; }
 
         /// <summary>
         /// Panel Manager
@@ -85,7 +85,7 @@ namespace Kuroha.Framework.UI.RunTime.Manager
         {
             eventNameList.Add($"{action.Method.DeclaringType}.{action.Method.Name}()");
             UIUpdateEvent += action;
-            Updater.Updater.Instance.Register(this);
+            Updater.RunTime.Updater.Instance.Register(this);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Kuroha.Framework.UI.RunTime.Manager
         {
             eventNameList.Remove($"{action.Method.DeclaringType}.{action.Method.Name}()");
             UIUpdateEvent -= action;
-            Updater.Updater.Instance.Unregister(this);
+            Updater.RunTime.Updater.Instance.Unregister(this);
         }
     }
 }

@@ -1,10 +1,8 @@
-﻿using Kuroha.Framework.Message;
-using Kuroha.Framework.Message.RunTime;
-using Kuroha.Framework.Singleton;
+﻿using Kuroha.Framework.Message.RunTime;
 using Kuroha.Framework.Singleton.RunTime;
 using UnityEngine;
 
-namespace Kuroha.Framework.Updater
+namespace Kuroha.Framework.Updater.RunTime
 {
     /// <summary>
     /// 帧更新器

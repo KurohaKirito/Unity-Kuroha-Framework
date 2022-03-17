@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Kuroha.GUI.Editor.Table {
-    public class CustomTable<T> where T : class {
+namespace Kuroha.GUI.Editor.Table
+{
+    public class CustomTable<T> where T : class
+    {
         #region private field
 
         private const float BUTTON_SPACE = 2;
@@ -22,31 +24,33 @@ namespace Kuroha.GUI.Editor.Table {
         private Vector2 exportVector2;
         private Vector2 distinctVector2;
 
-        private float WidthSpace { get; }
-        private float HeightSpace { get; }
+        private float WidthSpace{ get; }
+        private float HeightSpace{ get; }
 
-        private bool IsDrawExport { get; }
-        private bool IsDrawFilter { get; }
-        private bool IsDrawDistinct { get; }
+        private bool IsDrawExport{ get; }
+        private bool IsDrawFilter{ get; }
+        private bool IsDrawDistinct{ get; }
 
-        private CustomTableDelegate.FilterMethod<T> FilterFunction { get; }
-        private CustomTableDelegate.ExportMethod<T> ExportFunction { get; }
-        private CustomTableDelegate.SelectMethod<T> SelectFunction { get; }
-        private CustomTableDelegate.DistinctMethod<T> DistinctFunction { get; }
+        private CustomTableDelegate.FilterMethod<T> FilterFunction{ get; }
+        private CustomTableDelegate.ExportMethod<T> ExportFunction{ get; }
+        private CustomTableDelegate.SelectMethod<T> SelectFunction{ get; }
+        private CustomTableDelegate.DistinctMethod<T> DistinctFunction{ get; }
 
-        private MultiColumnHeaderState MultiColumnHeaderState { get; }
+        private MultiColumnHeaderState MultiColumnHeaderState{ get; }
 
         #endregion
 
         /// <summary>
         /// Constructor
         /// </summary>
-        protected CustomTable(Vector2 space, Vector2 minSize, List<T> dataList, bool isDrawFilter, bool isDrawExport, bool isDrawDistinct, CustomTableColumn<T>[] columns, CustomTableDelegate.FilterMethod<T> onFilterFunction, CustomTableDelegate.ExportMethod<T> onExportFunction, CustomTableDelegate.SelectMethod<T> onSelectFunction, CustomTableDelegate.DistinctMethod<T> onDistinctFunction) {
+        protected CustomTable(Vector2 space, Vector2 minSize, List<T> dataList, bool isDrawFilter, bool isDrawExport, bool isDrawDistinct, CustomTableColumn<T>[] columns, CustomTableDelegate.FilterMethod<T> onFilterFunction, CustomTableDelegate.ExportMethod<T> onExportFunction, CustomTableDelegate.SelectMethod<T> onSelectFunction, CustomTableDelegate.DistinctMethod<T> onDistinctFunction)
+        {
             minRect = minSize;
             WidthSpace = space.x;
             HeightSpace = space.y;
             displayedOptions = new string[columns.Length];
-            for (var i = 0; i < columns.Length; i++) {
+            for (var i = 0; i < columns.Length; i++)
+            {
                 displayedOptions[i] = columns[i].headerContent.text;
             }
 
@@ -65,11 +69,13 @@ namespace Kuroha.GUI.Editor.Table {
             treeView.Reload();
         }
 
-        public void OnGUI() {
+        public void OnGUI()
+        {
             // 定义表格 Rect
             var tableRect = GUILayoutUtility.GetRect(minRect.x, Screen.width, minRect.y, Screen.height);
 
-            if (Event.current.type != EventType.Layout) {
+            if (Event.current.type != EventType.Layout)
+            {
                 // Left Space
                 tableRect.x += WidthSpace;
 
@@ -77,12 +83,14 @@ namespace Kuroha.GUI.Editor.Table {
                 tableRect.y += HeightSpace;
 
                 // Export Button
-                if (IsDrawExport) {
+                if (IsDrawExport)
+                {
                     exportVector2 = new Vector2(tableRect.x, tableRect.y);
                 }
 
                 // Distinct Button
-                if (IsDrawDistinct) {
+                if (IsDrawDistinct)
+                {
                     distinctVector2 = exportVector2 == Vector2.zero? new Vector2(tableRect.x, tableRect.y) : new Vector2(exportVector2.x + BUTTON_WIDTH + BUTTON_SPACE, exportVector2.y);
                 }
 
@@ -90,7 +98,8 @@ namespace Kuroha.GUI.Editor.Table {
                 tableRect.width -= WidthSpace * 2;
 
                 // Filter
-                if (IsDrawFilter) {
+                if (IsDrawFilter)
+                {
                     filterRect = new Rect(tableRect.x, tableRect.y, tableRect.width, BUTTON_HEIGHT);
 
                     // Table Move Down The Filter Height

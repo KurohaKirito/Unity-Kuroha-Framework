@@ -1,4 +1,5 @@
 ﻿using System;
+using Kuroha.Framework.Utility.RunTime;
 using UnityEditor;
 using UnityEngine;
 
@@ -324,7 +325,10 @@ namespace Kuroha.GUI.Editor
                         break;
                     
                     case DialogButtonType.Null:
+                        break;
+                    
                     default:
+                        DebugUtil.LogError("Kuroha.GUI.Editor.Dialog 枚举错误!");
                         break;
                 }
                 

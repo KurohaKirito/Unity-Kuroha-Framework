@@ -1,7 +1,9 @@
 using UnityEngine;
 
-namespace Kuroha.GUI.Editor.Table {
-    internal static class CustomTableStyles {
+namespace Kuroha.GUI.Editor.Table
+{
+    internal static class CustomTableStyles
+    {
         public const string FOCUS_HELPER = "SerializedPropertyTreeViewFocusHelper";
         public const string SERIALIZE_FILTER_SELECTION = "_FilterSelection";
         public const string SERIALIZE_FILTER_DISABLE = "_FilterDisable";

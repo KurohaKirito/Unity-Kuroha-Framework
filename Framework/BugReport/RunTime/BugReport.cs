@@ -106,10 +106,7 @@ namespace Kuroha.Framework.BugReport.RunTime
         /// </summary>
         private void SyncList()
         {
-            if (userListName == null)
-            {
-                userListName = new List<string>();
-            }
+            userListName ??= new List<string>();
 
             if (userListName.Count <= 0)
             {
