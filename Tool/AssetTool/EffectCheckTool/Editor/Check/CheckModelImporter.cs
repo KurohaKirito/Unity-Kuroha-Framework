@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
-using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemSetView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using UnityEditor;
 using UnityEngine;
@@ -49,7 +48,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
         private readonly EM_GetAssetOption getOption;
         private readonly EM_CheckOption checkOption;
         private readonly string checkOptionParameter;
-        private readonly string[] checkOptionParameterArray;
+        //private readonly string[] checkOptionParameterArray;
         private readonly List<ModelImporter> assetsToCheck;
 
         /// <summary>
@@ -63,7 +62,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
             getOption = (EM_GetAssetOption) this.checkItemInfo.getAssetType;
             checkOption = (EM_CheckOption) this.checkItemInfo.checkOption;
             checkOptionParameter = this.checkItemInfo.parameter;
-            checkOptionParameterArray = this.checkItemInfo.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
+            //checkOptionParameterArray = this.checkItemInfo.parameter.Split(EffectCheckItemSetViewWindow.DELIMITER);
         }
 
         /// <summary>

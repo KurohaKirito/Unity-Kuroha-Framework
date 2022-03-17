@@ -40,9 +40,9 @@ namespace Kuroha.Framework.BugReport.RunTime
         [SerializeField]
         private Trello trello;
         
-        [Header("初始化成功标志")]
-        [SerializeField]
-        private bool initSuccess;
+        // [Header("初始化成功标志")]
+        // [SerializeField]
+        // private bool initSuccess;
 
         [Header("用户密钥")]
         [SerializeField]
@@ -89,7 +89,7 @@ namespace Kuroha.Framework.BugReport.RunTime
                             pair = await trello.WebRequest_GetUserAllLists();
                             if (pair.Key)
                             {
-                                initSuccess = true;
+                                // initSuccess = true;
                                 RegisterLogCollect();
                                 DebugUtil.Log("日志上报初始化完成", this, "green");
                             }

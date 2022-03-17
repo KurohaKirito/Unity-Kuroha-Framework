@@ -1,7 +1,7 @@
 ﻿using System;
 using Kuroha.Framework.Utility.RunTime;
-using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check;
+using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check.Other;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.GUI;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using UnityEditor;

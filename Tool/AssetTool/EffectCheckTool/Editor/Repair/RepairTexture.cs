@@ -1,5 +1,4 @@
 ﻿using System;
-using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using UnityEditor;

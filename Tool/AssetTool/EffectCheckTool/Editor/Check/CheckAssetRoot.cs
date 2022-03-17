@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.GUI;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
@@ -27,6 +27,23 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
                     checkModelImporter.Check(ref reportInfos);
                     break;
                 }
+                case EffectToolData.AssetsType.Mesh:
+                    break;
+                
+                case EffectToolData.AssetsType.Texture:
+                    break;
+                
+                case EffectToolData.AssetsType.ParticleSystem:
+                    break;
+                
+                case EffectToolData.AssetsType.Prefab:
+                    break;
+                
+                case EffectToolData.AssetsType.Asset:
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

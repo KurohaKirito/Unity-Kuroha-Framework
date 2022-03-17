@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Framework.GUI.Editor;
+using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using Kuroha.Util.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
+namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check.Other
 {
     public static class CheckMesh
     {

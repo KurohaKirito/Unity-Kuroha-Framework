@@ -10,7 +10,7 @@ using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using Kuroha.Util.Editor;
 using UnityEditor;
 
-namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
+namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check.Other
 {
     public static class CheckAsset
     {

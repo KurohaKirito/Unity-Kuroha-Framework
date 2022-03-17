@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Framework.GUI.Editor;
-using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check;
+using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check.Other;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemSetView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;

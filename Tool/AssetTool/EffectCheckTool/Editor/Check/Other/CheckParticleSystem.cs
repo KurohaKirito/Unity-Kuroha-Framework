@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Framework.GUI.Editor;
+using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
+namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check.Other
 {
     public static class CheckParticleSystem
     {
