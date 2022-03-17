@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Framework.Utility.Editor;
-using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.AssetSearchTool.Editor.Data;
 
 namespace Kuroha.Tool.AssetSearchTool.Editor.Searcher
@@ -46,7 +46,7 @@ namespace Kuroha.Tool.AssetSearchTool.Editor.Searcher
                     var all = threadPool.TaskCount;
                     if (threadPool.IsDone)
                     {
-                        Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("字符串引用分析工具", $"引用分析中: {cur}/{all}", cur, all);
+                        ProgressBar.DisplayProgressBar("字符串引用分析工具", $"引用分析中: {cur}/{all}", cur, all);
                         break;
                     }
 

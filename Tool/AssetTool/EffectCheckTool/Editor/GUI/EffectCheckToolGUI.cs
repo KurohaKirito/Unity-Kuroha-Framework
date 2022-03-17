@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kuroha.Framework.Utility.RunTime;
-using Kuroha.GUI.Editor;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
+using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemSetView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
@@ -229,7 +230,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.GUI
                 }
                 else
                 {
-                    Kuroha.GUI.Editor.Dialog.Display("消息", "当前未启用任何检查项, 请先启用检查项!", Dialog.DialogType.Message, "OK", null, null);
+                    Dialog.Display("消息", "当前未启用任何检查项, 请先启用检查项!", Dialog.DialogType.Message, "OK", null, null);
                 }
             }
         }

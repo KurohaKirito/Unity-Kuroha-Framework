@@ -1,6 +1,6 @@
 ﻿using System;
+using Kuroha.Framework.GUI.Editor.Splitter;
 using Kuroha.Framework.Utility.RunTime;
-using Kuroha.GUI.Editor.Splitter;
 using UnityEditor;
 using UnityEngine;
 

@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Framework.Utility.RunTime;
-using Kuroha.GUI.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -362,11 +362,11 @@ namespace Kuroha.Util.Editor
             var guids = AssetDatabase.FindAssets("t:Texture", paths);
             if (guids != null)
             {
-                for (var i = 0; i < guids.Length; i++)
+                for (var index = 0; index < guids.Length; index++)
                 {
-                    ProgressBar.DisplayProgressBar("纹理加载工具", $"加载纹理中: {i + 1}/{guids.Length}", i + 1, guids.Length);
+                    ProgressBar.DisplayProgressBar("纹理加载工具", $"加载纹理中: {index + 1}/{guids.Length}", index + 1, guids.Length);
 
-                    var assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
+                    var assetPath = AssetDatabase.GUIDToAssetPath(guids[index]);
                     var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
                     assets.Add(asset);
                     assetPaths.Add(assetPath);

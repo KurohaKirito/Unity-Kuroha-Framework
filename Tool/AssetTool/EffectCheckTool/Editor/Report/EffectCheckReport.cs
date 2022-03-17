@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kuroha.GUI.Editor;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.GUI;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Repair;

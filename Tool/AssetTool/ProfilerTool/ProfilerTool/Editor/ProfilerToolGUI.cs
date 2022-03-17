@@ -1,6 +1,6 @@
 ﻿using System;
+using Kuroha.Framework.GUI.Editor.Splitter;
 using Kuroha.Framework.Utility.RunTime;
-using Kuroha.GUI.Editor.Splitter;
 using Kuroha.Tool.AssetTool.ProfilerTool.LoadTimeRecordTool.Editor;
 using Kuroha.Tool.AssetTool.ProfilerTool.MemoryTool.Editor;
 using UnityEditor;
@@ -16,7 +16,7 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.ProfilerTool.Editor
         public enum ToolType
         {
             MemoryTool = 0,
-            AsyncLoadTool = 1,
+            AsyncLoadTool = 1
         }
 
         /// <summary>
@@ -54,19 +54,10 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.ProfilerTool.Editor
         /// <param name="window"></param>
         public static void OnGUI(in EditorWindow window)
         {
-            if (splitter == null)
-            {
-                splitter = new VerticalSplitter(window, 210, 210, false);
-            }
-            
+            splitter ??= new VerticalSplitter(window, 210, 210, false);
             splitter.OnGUI(window.position, MainRect, SubRect);
-
-
-            if (buttonStyle == null)
-            {
-                buttonStyle = new GUIStyle("Button");
-            }
-
+            
+            buttonStyle ??= new GUIStyle("Button");
             buttonStyle.alignment = TextAnchor.MiddleLeft;
             buttonStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
         }

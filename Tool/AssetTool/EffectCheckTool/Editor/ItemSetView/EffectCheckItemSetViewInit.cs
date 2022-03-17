@@ -1,5 +1,6 @@
 ﻿using System;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
+using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.GUI;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 
@@ -280,23 +281,23 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemSetView
         /// <param name="info">检查项信息</param>
         private static void InitModel(CheckItemInfo info)
         {
-            switch ((AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption)info.checkOption)
+            switch ((CheckModelImporter.EM_CheckOption)info.checkOption)
             {
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.ReadWriteEnable:
+                case CheckModelImporter.EM_CheckOption.ReadWriteEnable:
                     break;
 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.Normals:
+                case CheckModelImporter.EM_CheckOption.Normals:
                     break;
 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.MeshOptimize:
+                case CheckModelImporter.EM_CheckOption.MeshOptimize:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.MeshCompression:
+                case CheckModelImporter.EM_CheckOption.MeshCompression:
                     EffectCheckItemSetViewWindow.ParameterInt1 = Convert.ToInt32(info.parameter);
                     break;
 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.WeldVertices:
+                case CheckModelImporter.EM_CheckOption.WeldVertices:
                     EffectCheckItemSetViewWindow.ParameterBool1 = Convert.ToBoolean(info.parameter);
                     break;
 

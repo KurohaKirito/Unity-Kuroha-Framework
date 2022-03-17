@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Kuroha.Framework.Utility.RunTime;
-using Kuroha.GUI.Editor;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using UnityEditor;

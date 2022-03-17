@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Kuroha.GUI.Editor.Table;
+using Kuroha.Framework.GUI.Editor.Table;
 using UnityEditor;
 using UnityEngine;
 

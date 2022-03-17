@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Kuroha.Framework.Utility.Editor;
-using Kuroha.Framework.Utility.RunTime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;

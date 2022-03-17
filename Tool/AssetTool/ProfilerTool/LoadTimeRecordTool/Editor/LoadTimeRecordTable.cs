@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Kuroha.GUI.Editor.Table;
+using Kuroha.Framework.GUI.Editor.Table;
 using UnityEngine;
 
 namespace Kuroha.Tool.AssetTool.ProfilerTool.LoadTimeRecordTool.Editor

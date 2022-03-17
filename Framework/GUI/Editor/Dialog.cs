@@ -3,7 +3,7 @@ using Kuroha.Framework.Utility.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.GUI.Editor
+namespace Kuroha.Framework.GUI.Editor
 {
     public class Dialog : EditorWindow
     {

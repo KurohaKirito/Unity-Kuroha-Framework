@@ -1,6 +1,6 @@
 ﻿using System;
 using Kuroha.Framework.Utility.RunTime;
-using Kuroha.GUI.Editor;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Tool.AssetTool.AssetCheckTool.Editor;
 using Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor;
 using Kuroha.Tool.AssetTool.TextureAnalysisTool.Editor;
@@ -80,7 +80,7 @@ namespace Kuroha.Tool.AssetTool.FashionAnalysisTool.Editor
 
                 if (players == null)
                 {
-                    Kuroha.GUI.Editor.Dialog.Display("消息", "请先登录进入大厅", Dialog.DialogType.Message, "OK", null, null, window.ResetToolBarIndex);
+                    Dialog.Display("消息", "请先登录进入大厅", Dialog.DialogType.Message, "OK", null, null, window.ResetToolBarIndex);
                 }
                 else
                 {

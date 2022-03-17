@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kuroha.Framework.Singleton;
 using Kuroha.Framework.Singleton.RunTime;
 using Kuroha.Framework.Utility.RunTime;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Kuroha.Framework.BugReport.RunTime
 {
@@ -62,9 +60,9 @@ namespace Kuroha.Framework.BugReport.RunTime
         [SerializeField]
         private List<string> userListName;
 
-        [Header("错误上传按钮")]
-        [SerializeField]
-        private Button bugReportButton;
+        // [Header("错误上传按钮")]
+        // [SerializeField]
+        // private UnityEngine.UI.Button bugReportButton;
 
         /// <summary>
         /// [Async] 初始化
@@ -150,6 +148,7 @@ namespace Kuroha.Framework.BugReport.RunTime
             return pair;
         }
 
+        /*
         /// <summary>
         /// 上传报错
         /// </summary>
@@ -177,6 +176,7 @@ namespace Kuroha.Framework.BugReport.RunTime
                 DebugUtil.Log("日志上传完成!", this, "green");
             }
         }
+        */
         
         /// <summary>
         /// 注册日志收集

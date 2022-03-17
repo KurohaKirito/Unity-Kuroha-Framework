@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Collections;
 using UnityEditorInternal;
 using System.Text;
-using Kuroha.GUI.Editor;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.GUI;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 
-namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check 
+namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check 
 {
     public static class CheckAssetRoot
     {

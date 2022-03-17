@@ -1,4 +1,5 @@
 ﻿using System;
+using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using UnityEditor;
 
@@ -12,27 +13,27 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Repair
         /// <param name="effectCheckReportInfo">问题项</param>
         public static void Repair(EffectCheckReportInfo effectCheckReportInfo)
         {
-            var modeType = (AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption)effectCheckReportInfo.modeType;
+            var modeType = (CheckModelImporter.EM_CheckOption)effectCheckReportInfo.modeType;
 
             switch (modeType)
             {
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.ReadWriteEnable:
+                case CheckModelImporter.EM_CheckOption.ReadWriteEnable:
                     RepairReadWriteEnable(effectCheckReportInfo);
                     break;
 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.Normals:
+                case CheckModelImporter.EM_CheckOption.Normals:
                     RepairNormals(effectCheckReportInfo);
                     break;
 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.MeshOptimize:
+                case CheckModelImporter.EM_CheckOption.MeshOptimize:
                     RepairOptimizeMesh(effectCheckReportInfo);
                     break;
                 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.MeshCompression:
+                case CheckModelImporter.EM_CheckOption.MeshCompression:
                     RepairMeshCompression(effectCheckReportInfo);
                     break;
                 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.WeldVertices:
+                case CheckModelImporter.EM_CheckOption.WeldVertices:
                     RepairWeldVertices(effectCheckReportInfo);
                     break;
                 

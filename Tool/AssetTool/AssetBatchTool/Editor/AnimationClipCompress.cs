@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using Kuroha.Framework.GUI.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -79,7 +80,7 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
             var total = guids.Length;
             for (var index = 0; index < total; index++)
             {
-                Kuroha.GUI.Editor.ProgressBar.DisplayProgressBar("动画片段压缩中, 可能遇到动画片段较大的情况, 请耐心等候", $"{index + 1}/{total}", index + 1, total);
+                ProgressBar.DisplayProgressBar("动画片段压缩中, 可能遇到动画片段较大的情况, 请耐心等候", $"{index + 1}/{total}", index + 1, total);
                 var assetPath = AssetDatabase.GUIDToAssetPath(guids[index]);
                 var extension = Path.GetExtension(assetPath);
                 if (extension == ".anim")

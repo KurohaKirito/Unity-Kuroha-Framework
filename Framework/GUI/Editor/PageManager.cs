@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.GUI.Editor
+namespace Kuroha.Framework.GUI.Editor
 {
     /// <summary>
     /// 分页管理器

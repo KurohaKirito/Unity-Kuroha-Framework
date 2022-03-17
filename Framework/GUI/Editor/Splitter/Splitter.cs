@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
 using UnityEditor;
-using System;
+using UnityEngine;
 
-namespace Kuroha.GUI.Editor.Splitter
+namespace Kuroha.Framework.GUI.Editor.Splitter
 {
     [Serializable]
     public abstract class Splitter

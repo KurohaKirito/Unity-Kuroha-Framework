@@ -1,4 +1,5 @@
 ﻿using System;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Tool.AssetSearchTool.Editor.Data;
 using UnityEditor;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Kuroha.Tool.AssetSearchTool.Editor.GUI
         /// <summary>
         /// 标签页数据
         /// </summary>
-        private static Kuroha.GUI.Editor.Toolbar.ToolbarData toolbarData;
+        private static Toolbar.ToolbarData toolbarData;
 
         /// <summary>
         /// 标签页名称
@@ -44,7 +45,7 @@ namespace Kuroha.Tool.AssetSearchTool.Editor.GUI
         private void OnEnable()
         {
             toolBarNames = new[] { "String", "Reference", "Dependence" };
-            toolbarData = new Kuroha.GUI.Editor.Toolbar.ToolbarData(1200, 300, toolBarNames);
+            toolbarData = new Toolbar.ToolbarData(1200, 300, toolBarNames);
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace Kuroha.Tool.AssetSearchTool.Editor.GUI
             windowCurrentRect = position;
 
             // 标签页
-            findTypeIndex = Kuroha.GUI.Editor.Toolbar.ToolbarAnime(ref toolbarData, this, ref findTypeIndex, GUIStringSearcher.OnGUI, GUIReferenceSearcher.OnGUI, GUIDependenceSearcher.OnGUI);
+            findTypeIndex = Toolbar.ToolbarAnime(ref toolbarData, this, ref findTypeIndex, GUIStringSearcher.OnGUI, GUIReferenceSearcher.OnGUI, GUIDependenceSearcher.OnGUI);
 
             // 实现动画
             if (toolbarData.playAnime)

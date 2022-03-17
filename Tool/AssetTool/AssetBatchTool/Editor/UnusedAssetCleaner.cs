@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Kuroha.GUI.Editor;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Tool.AssetSearchTool.Editor.Searcher;
 using UnityEditor;
 using UnityEngine;
@@ -181,11 +181,11 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
                 var outputPath = $"{Application.dataPath}/Result_Unused_{enumStr}_Asset.txt";
                 System.IO.File.WriteAllLines(outputPath, resultExport);
                 System.Diagnostics.Process.Start(outputPath);
-                Kuroha.GUI.Editor.Dialog.Display("消息", $"检测结果位于: {outputPath} 文件中", Dialog.DialogType.Message, "OK", null, null);
+                Dialog.Display("消息", $"检测结果位于: {outputPath} 文件中", Dialog.DialogType.Message, "OK", null, null);
             }
             else
             {
-                Kuroha.GUI.Editor.Dialog.Display("消息", "检测结束, 未检测到问题!", Dialog.DialogType.Message, "OK", null, null);
+                Dialog.Display("消息", "检测结束, 未检测到问题!", Dialog.DialogType.Message, "OK", null, null);
             }
         }
     }

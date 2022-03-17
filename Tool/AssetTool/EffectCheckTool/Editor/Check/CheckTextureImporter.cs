@@ -9,7 +9,7 @@ using Kuroha.Util.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
+namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
 {
     public class CheckTextureImporter
     {

@@ -1,7 +1,7 @@
 ﻿using Kuroha.Framework.Utility.RunTime;
 using UnityEditor;
 
-namespace Kuroha.GUI.Editor
+namespace Kuroha.Framework.GUI.Editor
 {
     /// <summary>
     /// 可自动关闭的进度条

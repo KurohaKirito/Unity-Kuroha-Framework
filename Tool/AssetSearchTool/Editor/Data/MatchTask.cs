@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Kuroha.Framework.Utility.Editor;
-using Kuroha.Framework.Utility.RunTime;
 
 namespace Kuroha.Tool.AssetSearchTool.Editor.Data
 {

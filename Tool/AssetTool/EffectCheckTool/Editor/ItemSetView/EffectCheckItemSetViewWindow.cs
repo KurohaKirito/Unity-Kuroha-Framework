@@ -1,6 +1,7 @@
 ﻿using System;
 using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check;
+using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.GUI;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView;
 using UnityEditor;
@@ -302,31 +303,31 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemSetView
         /// </summary>
         private static void OnGUI_CheckModelImporter()
         {
-            var modeType = (AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption) itemInfo.checkOption;
+            var modeType = (CheckModelImporter.EM_CheckOption) itemInfo.checkOption;
 
             switch (modeType)
             {
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.ReadWriteEnable:
+                case CheckModelImporter.EM_CheckOption.ReadWriteEnable:
                     ParameterBool1 = EditorGUILayout.Toggle("Read Write Enable", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.Normals:
+                case CheckModelImporter.EM_CheckOption.Normals:
                     ParameterInt1 = (int) (ModelImporterNormals) EditorGUILayout.EnumPopup("Model Importer Normals", (ModelImporterNormals) ParameterInt1);
                     itemInfo.parameter = $"{ParameterInt1}";
                     break;
                 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.MeshOptimize:
+                case CheckModelImporter.EM_CheckOption.MeshOptimize:
                     ParameterBool1 = EditorGUILayout.Toggle("Optimize Mesh Enable", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;
                 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.MeshCompression:
+                case CheckModelImporter.EM_CheckOption.MeshCompression:
                     ParameterInt1 = (int) (ModelImporterMeshCompression) EditorGUILayout.EnumPopup("网格压缩等级", (ModelImporterMeshCompression) ParameterInt1);
                     itemInfo.parameter = $"{ParameterInt1}";
                     break;
                 
-                case AssetTool.Editor.EffectCheckTool.Check.CheckModelImporter.EM_CheckOption.WeldVertices:
+                case CheckModelImporter.EM_CheckOption.WeldVertices:
                     ParameterBool1 = EditorGUILayout.Toggle("Weld Vertices Enable", ParameterBool1);
                     itemInfo.parameter = $"{ParameterBool1}";
                     break;

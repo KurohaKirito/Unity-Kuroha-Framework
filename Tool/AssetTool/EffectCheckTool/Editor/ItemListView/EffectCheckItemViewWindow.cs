@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kuroha.GUI.Editor;
+using Kuroha.Framework.GUI.Editor;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemSetView;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;

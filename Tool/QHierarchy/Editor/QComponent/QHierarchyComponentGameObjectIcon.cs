@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
@@ -6,7 +5,6 @@ using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.QHierarchy.Editor.QData;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
-using Object = UnityEngine.Object;
 
 namespace Kuroha.Tool.QHierarchy.Editor.QComponent
 {
@@ -94,7 +92,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
                 // 由于目标方法有 2 个重载 (下面 2 行), 所以需要使用参数类型进行区分
                 // private internal static bool ShowAtPosition(Object   targetObj, Rect activatorRect, bool showLabelIcons)
                 // private internal static bool ShowAtPosition(Object[] targetObj, Rect activatorRect, bool showLabelIcons)
-                var paramsTypeArray = new[] {typeof(Object), typeof(Rect), typeof(bool)};
+                var paramsTypeArray = new[] {typeof(UnityEngine.Object), typeof(Rect), typeof(bool)};
                 var dynamicMethod = ReflectionUtil.GetMethod(dynamicClass, "ShowAtPosition", BindingFlags.Static | BindingFlags.NonPublic, paramsTypeArray);
 
 

@@ -8,7 +8,7 @@ using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
+namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
 {
     public class CheckModelImporter
     {
@@ -81,18 +81,18 @@ namespace Kuroha.Tool.AssetTool.Editor.EffectCheckTool.Check
         
         private void GetAssetInPrefab()
         {
-            assetsToCheck.Clear();
-            
-            var guids = AssetDatabase.FindAssets("t:Prefab", new[] { checkItemInfo.checkPath });
-            var paths = guids.Select(AssetDatabase.GUIDToAssetPath);
-            var prefabs = paths.Select(AssetDatabase.LoadAssetAtPath<GameObject>);
+            // assetsToCheck.Clear();
+            //
+            // var guids = AssetDatabase.FindAssets("t:Prefab", new[] { checkItemInfo.checkPath });
+            // var paths = guids.Select(AssetDatabase.GUIDToAssetPath);
+            // var prefabs = paths.Select(AssetDatabase.LoadAssetAtPath<GameObject>);
 
-            foreach (var prefab in prefabs)
-            {
-                // TextureUtil.GetMeshesInGameObject(prefab, out _, out var assetPaths);
-                // var assetImporters = assetPaths.Select(AssetImporter.GetAtPath);
-                // AddAssetToCheck(assetImporters);
-            }
+            // foreach (var prefab in prefabs)
+            // {
+            //     TextureUtil.GetMeshesInGameObject(prefab, out _, out var assetPaths);
+            //     var assetImporters = assetPaths.Select(AssetImporter.GetAtPath);
+            //     AddAssetToCheck(assetImporters);
+            // }
         }
         
         private void GetAssetInMaterial()
