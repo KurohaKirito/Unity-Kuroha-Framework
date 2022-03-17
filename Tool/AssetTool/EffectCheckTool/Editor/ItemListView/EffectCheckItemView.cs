@@ -6,11 +6,6 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemListView
     public static class EffectCheckItemView
     {
         /// <summary>
-        /// 当前正在展示的检查项
-        /// </summary>
-        private static CheckItemInfo currentShowItemInfo;
-
-        /// <summary>
         /// 检查项列表
         /// </summary>
         public static List<CheckItemInfo> CheckItemInfoList { get; set; }

@@ -54,11 +54,6 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report
         private int indexEnd;
 
         /// <summary>
-        /// [GUI] 分页管理器: 总页数
-        /// </summary>
-        private int pageCount;
-        
-        /// <summary>
         /// 问题项 GUI 风格
         /// </summary>
         private static GUIStyle checkItemGUIStyle;
@@ -165,8 +160,6 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report
 
             #endregion
         }
-        
-        
         
         /// <summary>
         /// 显示一个问题项

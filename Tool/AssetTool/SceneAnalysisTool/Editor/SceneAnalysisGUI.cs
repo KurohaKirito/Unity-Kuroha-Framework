@@ -41,11 +41,6 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
         private const float UI_BUTTON_HEIGHT = 25;
 
         /// <summary>
-        /// 一键检测备注
-        /// </summary>
-        private static string oneKeyCheckRemark;
-
-        /// <summary>
         /// 是否是高级模式, 高级模式下可以单独对检查项进行检查
         /// </summary>
         private static bool isAdvanceMode;

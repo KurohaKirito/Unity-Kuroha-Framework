@@ -15,7 +15,6 @@ namespace Kuroha.Tool.AssetTool.TextureAnalysisTool.Editor
             public List<string> assetPaths;
         }
 
-        private static int counter;
         private static readonly List<RepeatTextureInfo> repeatTextureList = new List<RepeatTextureInfo>();
         private static readonly Dictionary<string, string> base64Dictionary = new Dictionary<string, string>();
 

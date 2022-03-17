@@ -65,11 +65,6 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.ItemSetView
         public const char DELIMITER = ';';
 
         /// <summary>
-        /// 文本对齐方式
-        /// </summary>
-        private TextAnchor oldAnchor;
-
-        /// <summary>
         /// 是否是编辑模式
         /// </summary>
         private static bool isEditMode;

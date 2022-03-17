@@ -24,14 +24,9 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         private readonly Type targetCustomEditorClassInfo;
 
         /// <summary>
-        /// 目标组件的类型
-        /// </summary>
-        private readonly Type targetType;
-
-        /// <summary>
         /// Type object for the object that is edited by this editor.
         /// </summary>
-        private Type selfCustomEditorType;
+        private readonly Type selfCustomEditorType;
 
         /// <summary>
         /// 缓存通过反射获取到的目标组件中的方法
@@ -55,13 +50,16 @@ namespace Kuroha.Tool.InspectorExtender.Editor
             // 获取目标 CustomEditor 的 Component 类型
             var targetComponentType = GetTargetComponentType(targetCustomEditorClassInfo);
 
+            // 获取自身的 CustomEditor 类型
+            selfCustomEditorType = GetType();
+            
             // 获取自身 CustomEditor 的 Component 类型
-            var selfComponentType = GetTargetComponentType(GetType());
+            var selfComponentType = GetTargetComponentType(selfCustomEditorType);
 
             // 对比两个组件类型
             if (targetComponentType != selfComponentType)
             {
-                DebugUtil.LogError($"{GetType()} 所绘制的组件类型为 : {selfComponentType}\r\n{targetCustomEditorTypeName} 所绘制的组件类型为 : {targetComponentType}\r\n两者不匹配!", null, "red");
+                DebugUtil.LogError($"此 Editor: <{selfCustomEditorType}> 所绘制的组件类型为 : {selfComponentType},\r\n目标 Editor: <{targetCustomEditorTypeName}> 所绘制的组件类型为 : {targetComponentType}\r\n两者不匹配!", null, "red");
             }
         }
 
