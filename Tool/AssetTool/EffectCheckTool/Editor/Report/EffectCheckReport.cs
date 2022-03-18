@@ -134,6 +134,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report
              * Texture      -   Read Write Enable
              * 
              * Particle     -   ParticleZeroSurface
+             * Particle     -   Prewarm
              * 
              * Prefab       -   PrefabMotionVectors
              * Prefab       -   PrefabDynamicOcclusion
@@ -171,6 +172,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report
                 
                 // 9
                 case EffectCheckReportInfo.EffectCheckReportType.ParticlePrewarm:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.ParticleCastShadows:
                     break;

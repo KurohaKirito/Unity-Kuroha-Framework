@@ -3,6 +3,7 @@ using Kuroha.Framework.Utility.RunTime;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check.Other;
 using Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Report;
 using UnityEditor;
+using UnityEngine;
 
 namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Repair
 {
@@ -37,6 +38,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Repair
                     break;
                 
                 case CheckParticleSystem.CheckOptions.Prewarm:
+                    RepairPrewarm(effectCheckReportInfo);
                     break;
 
                 case CheckParticleSystem.CheckOptions.SubEmittersError:
@@ -66,6 +68,26 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Repair
                     modelImporter.isReadable = true;
                     AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
                 }
+                EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
+            }
+        }
+        
+        /// <summary>
+        /// 修复粒子系统预热
+        /// </summary>
+        private static void RepairPrewarm(EffectCheckReportInfo effectCheckReportInfo)
+        {
+            var prefab = effectCheckReportInfo.asset as GameObject;
+            if (prefab != null)
+            {
+                var particles = prefab.transform.GetComponentsInChildren<ParticleSystem>(true);
+                foreach (var particle in particles)
+                {
+                    var main = particle.main;
+                    main.prewarm = false;
+                }
+                
+                EditorUtility.SetDirty(prefab);
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }
