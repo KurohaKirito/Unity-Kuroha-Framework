@@ -123,6 +123,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
              * Texture      -   Read Write Enable
              * 
              * Particle     -   ParticleZeroSurface
+             * Particle     -   Prewarm
              * 
              * Prefab       -   PrefabMotionVectors
              * Prefab       -   PrefabDynamicOcclusion
@@ -159,6 +160,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report {
 
                 // 9
                 case EffectCheckReportInfo.EffectCheckReportType.ParticlePrewarm:
+                    isCanRepair = true;
                     break;
                 case EffectCheckReportInfo.EffectCheckReportType.ParticleCastShadows:
                     break;

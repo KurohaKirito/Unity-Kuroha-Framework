@@ -3,6 +3,7 @@ using Script.Effect.Editor.AssetTool.Util.RunTime;
 using Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check;
 using Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report;
 using UnityEditor;
+using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
     public static class RepairParticle {
@@ -33,6 +34,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
                     break;
 
                 case CheckParticleSystem.CheckOptions.Prewarm:
+                    RepairPrewarm(effectCheckReportInfo);
                     break;
 
                 case CheckParticleSystem.CheckOptions.SubEmittersError:
@@ -60,6 +62,26 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
                     AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
                 }
 
+                EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
+            }
+        }
+
+        /// <summary>
+        /// 修复粒子系统预热
+        /// </summary>
+        private static void RepairPrewarm(EffectCheckReportInfo effectCheckReportInfo)
+        {
+            var prefab = effectCheckReportInfo.asset as GameObject;
+            if (prefab != null)
+            {
+                var particles = prefab.transform.GetComponentsInChildren<ParticleSystem>(true);
+                foreach (var particle in particles)
+                {
+                    var main = particle.main;
+                    main.prewarm = false;
+                }
+                
+                EditorUtility.SetDirty(prefab);
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }
