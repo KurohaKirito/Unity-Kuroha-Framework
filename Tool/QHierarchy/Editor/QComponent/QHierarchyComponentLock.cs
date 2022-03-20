@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Kuroha.Tool.QHierarchy.Editor.QBase;
 using Kuroha.Tool.QHierarchy.RunTime;
 using UnityEngine;
@@ -16,9 +17,9 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         private Color inactiveColor;
 
         private bool showModifierWarning;
+        private static Regex regex;
 
         private const int RECT_WIDTH = 13;
-        private const string WHITE_LIST = "Canvas (Environment)";
         private const string SHIFT_TIP_LOCK = "要递归锁定此物体吗? (可以在设置中关闭此提示)";
         private const string SHIFT_TIP_UNLOCK = "要递归解锁此物体吗? (可以在设置中关闭此提示)";
         private const string ALT_TIP_LOCK = "要同时锁定此物体以及全部同级物体吗? (可以在设置中关闭此提示)";
@@ -125,8 +126,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QComponent
         /// </summary>
         private static bool CheckWhiteList(UnityEngine.Object obj)
         {
-            // 特殊情况: 没有 Canvas 组件的 UGUI 预制体会自动创建一个 Locked 标记的 Canvas
-            return WHITE_LIST.Equals(obj.name);
+            // 特殊情况: 没有 Canvas 组件的 UGUI 预制体会自动创建一个 Locked 标记的 Canvas (Environment) 物体
+            // 特殊情况: 没有 Grid 组件的 TileMap 预制体会自动创建一个 Locked 标记的 Grid (Environment) 物体
+            regex ??= new Regex(@"[\w]+ \(Environment\)$");
+            var match = regex.Match(obj.name);
+            return match.Success;
         }
 
         /// <summary>
