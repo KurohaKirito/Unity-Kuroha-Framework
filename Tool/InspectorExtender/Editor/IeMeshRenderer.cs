@@ -11,6 +11,7 @@ namespace Kuroha.Tool.InspectorExtender.Editor
     [CustomEditor(typeof(MeshRenderer))]
     public class IeMeshRenderer : IeBase
     {
+        private MeshFilter selfFilter;
         private MeshRenderer self;
         private bool showLayerValue;
         private readonly List<string> layerNames = new List<string>();
@@ -31,15 +32,80 @@ namespace Kuroha.Tool.InspectorExtender.Editor
 
             self = target as MeshRenderer;
 
+            #region 绘制按钮
+
             var defaultColor = UnityEngine.GUI.color;
             UnityEngine.GUI.color = Color.green;
-            if (GUILayout.Button(showLayerValue ? BUTTON_TO_SAVE : BUTTON_TO_EDIT))
+            
+            if (self != null)
             {
-                showLayerValue = !showLayerValue;
+                EditorGUILayout.BeginHorizontal();
+                
+                if (GUILayout.Button(showLayerValue ? BUTTON_TO_SAVE : BUTTON_TO_EDIT))
+                {
+                    showLayerValue = !showLayerValue;
+                }
+                
+                if (selfFilter == null)
+                {
+                    selfFilter = self.GetComponent<MeshFilter>();
+                }
+
+                if (selfFilter != null)
+                {
+                    var mesh = selfFilter.sharedMesh;
+                
+                    if (GUILayout.Button("Save Mesh..."))
+                    {
+                        SaveMesh(mesh, mesh.name, false, true);
+                    }
+                
+                    if (GUILayout.Button("Save Mesh As New Instance..."))
+                    {
+                        SaveMesh(mesh, mesh.name, true, true);
+                    }
+                }
+                
+                EditorGUILayout.EndHorizontal();
             }
+            
 
             UnityEngine.GUI.color = defaultColor;
 
+            #endregion
+
+            ShowSortingLayer();
+        }
+        
+        /// <summary>
+        /// 另存为 Mesh
+        /// </summary>
+        private static void SaveMesh(Mesh mesh, string name, bool makeNewInstance, bool optimizeMesh)
+        {
+            var path = EditorUtility.SaveFilePanel("Save Separate Mesh Asset", "Assets/", name, "asset");
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            path = FileUtil.GetProjectRelativePath(path);
+
+            var meshToSave = makeNewInstance ? Instantiate(mesh) : mesh;
+            
+            if (optimizeMesh)
+            {
+                MeshUtility.Optimize(meshToSave);
+            }
+
+            AssetDatabase.CreateAsset(meshToSave, path);
+            AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>
+        /// 显示 Sorting Layer 信息
+        /// </summary>
+        private void ShowSortingLayer()
+        {
             if (showLayerValue)
             {
                 if (self != null)
