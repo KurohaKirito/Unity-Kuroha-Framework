@@ -159,7 +159,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.GUI {
 
                     EditorGUILayout.BeginHorizontal();
 
-                    if (referenceAssets.Count <= 0) {
+                    if (referenceAssets.Count > 1) {
                         var oldColor = UnityEngine.GUI.color;
                         UnityEngine.GUI.color = Color.red;
                         GUILayout.Label($"引用对象:  共 {referenceAssets.Count} 个");

@@ -63,13 +63,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Searcher {
         /// <summary>
         /// 查找当前选中物体的引用
         /// </summary>
-        public static void OpenWindow() {
-            if (Selection.assetGUIDs.IsNotNullAndEmpty()) {
-                AssetSearchWindow.Open(1);
-                Find(Selection.assetGUIDs);
-            } else {
-                AssetSearchWindow.Open(2);
-            }
+        public static void OpenWindow()
+        {
+            AssetSearchWindow.Open(Selection.assetGUIDs.IsNotNullAndEmpty() ? 1 : 2);
         }
     }
 }
