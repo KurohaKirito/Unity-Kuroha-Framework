@@ -1,57 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-/*
- 介绍：
-    C# 0GC字符串补充方案。结合gstring与CString两者特点（向这两个方案的作者致敬），只有一个文件，性能与使用方便性高于两者。
-
- 报告地址：
-    https://coh5.cn/p/1ace6338.html
-
- 使用方式：
-    1.Unity引擎将ZString.cs文件放于plugins目录下即可使用（不在plugins目录，则IOS打包或IL2CPP打包等FULLAOT方式编译不过），或者直接把结构体定义放入ZString类中；其余C#程序将ZString.cs直接放入工程使用即可。
-
-    2.（最佳性能）当update每帧刷新标签显示，或者大量UI飘字，或者该字符串是短时间使用的则使用如下方式：
-        using (KString.Block())
-        {
-            uiText1.text=(KString)"hello world"+" you";
-            uiText2.text=KString.format("{0},{1}","hello","world");
-        }
-        此方式设置的string值位于浅拷贝缓存中，一定时间可能会改变,出作用域后正确性不予保证。
-
-     3.资源路径这种需要常驻的则需要intern一下在作用域外使用
-
-         using (KString.Block())
-        {
-            KString a="Assets/";
-            KString b=a+"prefabs/"+"/solider.prefab";
-            prefabPath1=b.Intern();
-
-            prefabPath2=KString.format("{0},{1}","hello","world").Intern();
-        }
-        此方式设置的string值位于深拷贝缓存中，游戏运行期间不会改变，可以在作用域外使用。
-
-    4.不可使用ZString作为类的成员变量，不建议在using作用域中写for循环，而是在for循环内using。
-
-    5.首次调用时会初始化类，分配各种空间，建议游戏启动时调用一次using(KString.Block()){}
-
-    6.0GC。时间消耗上，短字符串处理，ZString比gstring时间少20%~30%，比原生慢。大字符串处理，ZString比gstring时间少70%~80%，接近原生string速度。
-
-    7.追求极限性能的话，核心函数可以用C++Dll中的 memcpy内存拷贝函数，性能提升10%~20%，一般没这个必要。
-
-    8.测试打开ZStringTest工程，在Test脚本上勾选与不勾选bigStringTest下查看Profile性能。(同时对比了ZString，gstring，CString,还有王国纪元里的string)
-
-    9.据热心用户反应，IL2CPP 2017.4 在 Android上有字节对齐问题，换成2018就木有了。所以此时解决办法有三个：1.IL2CPP换成2018以上版本。 2.719行左右的memcpy函数换成循环一次拷贝一个字节。 3.不怕麻烦的话此处调用C语言的内存拷贝函数dll，即C语言<string.h>中的memcpy，这样性能也更高。
-
-    10.有事请联系 871041532@outlook.com 或 QQ(微信)：871041532
- */
-
 namespace Kuroha.Framework.ZString
 {
     public class KString
     {
         #region 结构体
-        
+
         private struct Byte8192
         {
             private Byte4096 a1;
@@ -133,15 +88,15 @@ namespace Kuroha.Framework.ZString
         }
 
         #endregion
-        
+
         private static Queue<KString>[] g_cache; //idx特定字符串长度,深拷贝核心缓存
         private static Dictionary<int, Queue<KString>> g_secCache; //key特定字符串长度value字符串栈，深拷贝次级缓存
         private static Stack<KString> g_shallowCache; //浅拷贝缓存
 
-        private static Stack<ZString_block> g_blocks; // ZString_block 缓存栈
-        private static Stack<ZString_block> g_open_blocks; // KString 已经打开的缓存栈      
+        private static Stack<KStringBlock> g_blocks; // KStringBlock 缓存栈
+        private static Stack<KStringBlock> g_open_blocks; // KString 已经打开的缓存栈      
         private static Dictionary<int, string> g_intern_table; // 字符串 intern 表
-        private static ZString_block g_current_block; // KString 所在的 block 块
+        private static KStringBlock g_current_block; // KString 所在的 block 块
         private static readonly List<int> g_finds; // 字符串 replace 功能记录子串位置
         private static readonly KString[] g_format_args; // 存储格式化字符串值
 
@@ -152,36 +107,31 @@ namespace Kuroha.Framework.ZString
         private const int INITIAL_OPEN_CAPACITY = 5; // 默认打开层数为5
         private const int INITIAL_SHALLOW_CAPACITY = 100; // 默认50个浅拷贝用
         private const char NEW_ALLOC_CHAR = 'X'; // 填充char
-        
+
         private readonly bool isShallow; //是否浅拷贝
-        
+
         [NonSerialized]
-        private string _value; //值
+        private string currentString;
+
         [NonSerialized]
-        private bool _disposed; //销毁标记
+        private bool disposedFlag;
 
         // 带默认长度的构造
         private KString(int length)
         {
-            _value = new string(NEW_ALLOC_CHAR, length);
+            currentString = new string(NEW_ALLOC_CHAR, length);
         }
 
         // 浅拷贝专用构造
         private KString(string value)
         {
             isShallow = true;
-            _value = value;
+            currentString = value;
         }
 
         static KString()
         {
-            Initialize(INITIAL_CACHE_CAPACITY,
-                INITIAL_STACK_CAPACITY,
-                INITIAL_BLOCK_CAPACITY,
-                INITIAL_INTERN_CAPACITY,
-                INITIAL_OPEN_CAPACITY,
-                INITIAL_SHALLOW_CAPACITY
-            );
+            Initialize(INITIAL_CACHE_CAPACITY, INITIAL_STACK_CAPACITY, INITIAL_BLOCK_CAPACITY, INITIAL_INTERN_CAPACITY, INITIAL_OPEN_CAPACITY, INITIAL_SHALLOW_CAPACITY);
 
             g_finds = new List<int>(10);
             g_format_args = new KString[10];
@@ -190,21 +140,19 @@ namespace Kuroha.Framework.ZString
         //析构
         private void dispose()
         {
-            if (_disposed)
+            if (disposedFlag)
                 throw new ObjectDisposedException(this);
 
             if (isShallow) //深浅拷贝走不同缓存
             {
                 g_shallowCache.Push(this);
-            }
-            else
+            } else
             {
                 Queue<KString> stack;
                 if (g_cache.Length > Length)
                 {
                     stack = g_cache[Length]; //取出valuelength长度的栈，将自身push进去
-                }
-                else
+                } else
                 {
                     stack = g_secCache[Length];
                 }
@@ -213,11 +161,11 @@ namespace Kuroha.Framework.ZString
             }
 
             //memcpy(_value, NEW_ALLOC_CHAR);//内存拷贝至value
-            _disposed = true;
+            disposedFlag = true;
         }
 
         //由string获取相同内容ZString，深拷贝
-        private static KString get(string value)
+        private static KString Get(string value)
         {
             if (value == null)
                 return null;
@@ -225,8 +173,8 @@ namespace Kuroha.Framework.ZString
             if (log != null)
                 log("Getting: " + value);
 #endif
-            var result = get(value.Length);
-            memcpy(dst: result, src: value); //内存拷贝
+            var result = Get(value.Length);
+            MemoryCopy(dst: result, src: value); //内存拷贝
             return result;
         }
 
@@ -242,15 +190,14 @@ namespace Kuroha.Framework.ZString
             if (g_shallowCache.Count == 0)
             {
                 result = new KString(value);
-            }
-            else
+            } else
             {
                 result = g_shallowCache.Pop();
-                result._value = value;
+                result.currentString = value;
             }
 
-            result._disposed = false;
-            g_current_block.push(result); //ZString推入块所在栈
+            result.disposedFlag = false;
+            g_current_block.Push(result); //ZString推入块所在栈
             return result;
         }
 
@@ -261,63 +208,23 @@ namespace Kuroha.Framework.ZString
             if (g_intern_table.ContainsKey(hash))
             {
                 return g_intern_table[hash];
-            }
-            else
+            } else
             {
                 string interned = new string(NEW_ALLOC_CHAR, value.Length);
-                memcpy(interned, value);
+                MemoryCopy(interned, value);
                 g_intern_table.Add(hash, interned);
                 return interned;
             }
         }
 
-        //手动添加方法
-        private static void getStackInCache(int index, out Queue<KString> outStack)
-        {
-            int length = g_cache.Length;
-            if (length > index) //从核心缓存中取
-            {
-                outStack = g_cache[index];
-            }
-            else //从次级缓存中取
-            {
-                if (!g_secCache.TryGetValue(index, out outStack))
-                {
-                    outStack = new Queue<KString>(INITIAL_STACK_CAPACITY);
-                    g_secCache[index] = outStack;
-                }
-            }
-        }
-
-        //获取特定长度ZString
-        private static KString get(int length)
-        {
-            if (g_current_block == null || length <= 0)
-                throw new InvalidOperationException("KString 操作必须在一个ZString_block块中。");
-
-            KString result;
-            Queue<KString> stack;
-            getStackInCache(length, out stack);
-            //从缓存中取Stack
-            if (stack.Count == 0)
-            {
-                result = new KString(length);
-            }
-            else
-            {
-                result = stack.Dequeue();
-            }
-
-            result._disposed = false;
-            g_current_block.push(result); //ZString推入块所在栈
-            return result;
-        }
-
+        
+        
         //value是10的次方数
         private static int get_digit_count(long value)
         {
             int cnt;
             for (cnt = 1; (value /= 10) > 0; cnt++) { }
+
             return cnt;
         }
 
@@ -325,9 +232,7 @@ namespace Kuroha.Framework.ZString
         private static uint get_digit_count(uint value)
         {
             uint cnt;
-            for (cnt = 1; (value /= 10) > 0; cnt++)
-            {
-            }
+            for (cnt = 1; (value /= 10) > 0; cnt++) { }
 
             return cnt;
         }
@@ -336,9 +241,7 @@ namespace Kuroha.Framework.ZString
         private static int get_digit_count(int value)
         {
             int cnt;
-            for (cnt = 1; (value /= 10) > 0; cnt++)
-            {
-            }
+            for (cnt = 1; (value /= 10) > 0; cnt++) { }
 
             return cnt;
         }
@@ -385,8 +288,8 @@ namespace Kuroha.Framework.ZString
                 new_len += arg.Length;
             }
 
-            var result = get(new_len);
-            var res_value = result._value;
+            var result = Get(new_len);
+            var res_value = result.currentString;
 
             var next_output_idx = 0;
             var next_input_idx = 0;
@@ -401,7 +304,7 @@ namespace Kuroha.Framework.ZString
 
                 next_input_idx = brace_idx;
                 var arg_idx = input[brace_idx + 1] - '0';
-                var arg = g_format_args[arg_idx]._value;
+                var arg = g_format_args[arg_idx].currentString;
                 if (brace_idx + 2 >= input.Length || input[brace_idx + 2] != '}')
                 {
                     throw new InvalidOperationException("没有发现大括号} for argument " + arg);
@@ -417,8 +320,7 @@ namespace Kuroha.Framework.ZString
                             {
                                 ptr_result[i++] = ptr_input[j++];
                                 ++next_output_idx;
-                            }
-                            else
+                            } else
                             {
                                 ptr_result[i++] = arg[k++];
                                 ++next_output_idx;
@@ -523,7 +425,7 @@ namespace Kuroha.Framework.ZString
             if (count == 0)
                 return input;
 
-            KString result = get(input.Length - count);
+            KString result = Get(input.Length - count);
             internal_remove(result, input, start, count);
             return result;
         }
@@ -541,6 +443,7 @@ namespace Kuroha.Framework.ZString
                         {
                             continue;
                         }
+
                         dst_ptr[j++] = src_ptr[i];
                     }
                 }
@@ -594,18 +497,17 @@ namespace Kuroha.Framework.ZString
             else
                 new_len = value.Length + (g_finds.Count * -dif);
 
-            KString result = get(new_len);
+            KString result = Get(new_len);
             fixed (char* ptr_this = value)
             {
-                fixed (char* ptr_result = result._value)
+                fixed (char* ptr_result = result.currentString)
                 {
                     for (int i = 0, x = 0, j = 0; i < new_len;)
                     {
                         if (x == g_finds.Count || g_finds[x] != j)
                         {
                             ptr_result[i++] = ptr_this[j++];
-                        }
-                        else
+                        } else
                         {
                             for (int n = 0; n < new_value.Length; n++)
                                 ptr_result[i + n] = new_value[n];
@@ -633,13 +535,13 @@ namespace Kuroha.Framework.ZString
                 throw new ArgumentOutOfRangeException("count=" + count);
 
             if (count == 0)
-                return get(value);
+                return Get(value);
 
             int new_len = value.Length + count;
-            KString result = get(new_len);
+            KString result = Get(new_len);
             fixed (char* ptr_value = value)
             {
-                fixed (char* ptr_result = result._value)
+                fixed (char* ptr_result = result.currentString)
                 {
                     for (int i = 0, j = 0; i < new_len; i++)
                     {
@@ -674,16 +576,15 @@ namespace Kuroha.Framework.ZString
 
             if (to_insert.Length == 0)
             {
-                return get(input);
+                return Get(input);
             }
 
             var new_len = input.Length + to_insert.Length;
-            var result = get(new_len);
+            var result = Get(new_len);
             internal_insert(result, input, to_insert, start);
             return result;
         }
 
-        
 
         //将to_insert串插入src的start位置，内容写入dst
         private static unsafe void internal_insert(string dst, string src, string to_insert, int start)
@@ -711,7 +612,7 @@ namespace Kuroha.Framework.ZString
         {
             int end = start + count;
             for (int i = end - 1; i >= start; i--, value /= 10)
-                *(dst + i) = (char) (value % 10 + 48);
+                *(dst + i) = (char)(value % 10 + 48);
         }
 
         //将长度为count的数字插入dst中，起始位置为start，dst的长度需大于start+count
@@ -719,7 +620,7 @@ namespace Kuroha.Framework.ZString
         {
             int end = start + count;
             for (int i = end - 1; i >= start; i--, value /= 10)
-                *(dst + i) = (char) (value % 10 + 48);
+                *(dst + i) = (char)(value % 10 + 48);
         }
 
         private static unsafe void _memcpy4(byte* dest, byte* src, int size)
@@ -738,10 +639,10 @@ namespace Kuroha.Framework.ZString
             }*/
             while (size >= 16)
             {
-                ((int*) dest)[0] = ((int*) src)[0];
-                ((int*) dest)[1] = ((int*) src)[1];
-                ((int*) dest)[2] = ((int*) src)[2];
-                ((int*) dest)[3] = ((int*) src)[3];
+                ((int*)dest)[0] = ((int*)src)[0];
+                ((int*)dest)[1] = ((int*)src)[1];
+                ((int*)dest)[2] = ((int*)src)[2];
+                ((int*)dest)[3] = ((int*)src)[3];
                 dest += 16;
                 src += 16;
                 size -= 16;
@@ -749,7 +650,7 @@ namespace Kuroha.Framework.ZString
 
             while (size >= 4)
             {
-                ((int*) dest)[0] = ((int*) src)[0];
+                ((int*)dest)[0] = ((int*)src)[0];
                 dest += 4;
                 src += 4;
                 size -= 4;
@@ -768,10 +669,10 @@ namespace Kuroha.Framework.ZString
         {
             while (size >= 8)
             {
-                ((short*) dest)[0] = ((short*) src)[0];
-                ((short*) dest)[1] = ((short*) src)[1];
-                ((short*) dest)[2] = ((short*) src)[2];
-                ((short*) dest)[3] = ((short*) src)[3];
+                ((short*)dest)[0] = ((short*)src)[0];
+                ((short*)dest)[1] = ((short*)src)[1];
+                ((short*)dest)[2] = ((short*)src)[2];
+                ((short*)dest)[3] = ((short*)src)[3];
                 dest += 8;
                 src += 8;
                 size -= 8;
@@ -779,7 +680,7 @@ namespace Kuroha.Framework.ZString
 
             while (size >= 2)
             {
-                ((short*) dest)[0] = ((short*) src)[0];
+                ((short*)dest)[0] = ((short*)src)[0];
                 dest += 2;
                 src += 2;
                 size -= 2;
@@ -790,7 +691,7 @@ namespace Kuroha.Framework.ZString
                 dest[0] = src[0];
             }
         }
-        
+
         //从src，0位置起始拷贝count长度字符串src到dst中
         //private static unsafe void memcpy(char* dest, char* src, int count)
         //{
@@ -817,143 +718,12 @@ namespace Kuroha.Framework.ZString
         //    //_memcpy4((byte*)dest, (byte*)src, count * 2);//转换为int*指针一次四个字节拷贝
         //}
         //--------------------------------------手敲memcpy-------------------------------------//
+
         
-        private static int m_charLen = sizeof(char);
-
-        private static unsafe void memcpy(char* dest, char* src, int count)
-        {
-            byteCopy((byte*) dest, (byte*) src, count * m_charLen);
-        }
-
-        private static unsafe void byteCopy(byte* dest, byte* src, int byteCount)
-        {
-            if (byteCount < 128)
-            {
-                goto g64;
-            }
-            else if (byteCount < 2048)
-            {
-                goto g1024;
-            }
-
-            while (byteCount >= 8192)
-            {
-                ((Byte8192*) dest)[0] = ((Byte8192*) src)[0];
-                dest += 8192;
-                src += 8192;
-                byteCount -= 8192;
-            }
-
-            if (byteCount >= 4096)
-            {
-                ((Byte4096*) dest)[0] = ((Byte4096*) src)[0];
-                dest += 4096;
-                src += 4096;
-                byteCount -= 4096;
-            }
-
-            if (byteCount >= 2048)
-            {
-                ((Byte2048*) dest)[0] = ((Byte2048*) src)[0];
-                dest += 2048;
-                src += 2048;
-                byteCount -= 2048;
-            }
-
-            g1024:
-            if (byteCount >= 1024)
-            {
-                ((Byte1024*) dest)[0] = ((Byte1024*) src)[0];
-                dest += 1024;
-                src += 1024;
-                byteCount -= 1024;
-            }
-
-            if (byteCount >= 512)
-            {
-                ((Byte512*) dest)[0] = ((Byte512*) src)[0];
-                dest += 512;
-                src += 512;
-                byteCount -= 512;
-            }
-
-            if (byteCount >= 256)
-            {
-                ((Byte256*) dest)[0] = ((Byte256*) src)[0];
-                dest += 256;
-                src += 256;
-                byteCount -= 256;
-            }
-
-            if (byteCount >= 128)
-            {
-                ((Byte128*) dest)[0] = ((Byte128*) src)[0];
-                dest += 128;
-                src += 128;
-                byteCount -= 128;
-            }
-
-            g64:
-            if (byteCount >= 64)
-            {
-                ((Byte64*) dest)[0] = ((Byte64*) src)[0];
-                dest += 64;
-                src += 64;
-                byteCount -= 64;
-            }
-
-            if (byteCount >= 32)
-            {
-                ((Byte32*) dest)[0] = ((Byte32*) src)[0];
-                dest += 32;
-                src += 32;
-                byteCount -= 32;
-            }
-
-            if (byteCount >= 16)
-            {
-                ((Byte16*) dest)[0] = ((Byte16*) src)[0];
-                dest += 16;
-                src += 16;
-                byteCount -= 16;
-            }
-
-            if (byteCount >= 8)
-            {
-                ((Byte8*) dest)[0] = ((Byte8*) src)[0];
-                dest += 8;
-                src += 8;
-                byteCount -= 8;
-            }
-
-            if (byteCount >= 4)
-            {
-                ((Byte4*) dest)[0] = ((Byte4*) src)[0];
-                dest += 4;
-                src += 4;
-                byteCount -= 4;
-            }
-
-            if (byteCount >= 2)
-            {
-                ((Byte2*) dest)[0] = ((Byte2*) src)[0];
-                dest += 2;
-                src += 2;
-                byteCount -= 2;
-            }
-
-            if (byteCount >= 1)
-            {
-                ((Byte1*) dest)[0] = ((Byte1*) src)[0];
-                dest += 1;
-                src += 1;
-                byteCount -= 1;
-            }
-        }
         //-----------------------------------------------------------------------------------------//
 
         //将字符串dst用字符src填充
-        private static unsafe void memcpy(string dst, char src)
+        private static unsafe void MemoryCopy(string dst, char src)
         {
             fixed (char* ptr_dst = dst)
             {
@@ -964,14 +734,14 @@ namespace Kuroha.Framework.ZString
         }
 
         //将字符拷贝到dst指定index位置
-        private static unsafe void memcpy(string dst, char src, int index)
+        private static unsafe void MemoryCopy(string dst, char src, int index)
         {
             fixed (char* ptr = dst)
                 ptr[index] = src;
         }
 
         //将相同长度的src内容拷入dst
-        private static unsafe void memcpy(string dst, string src)
+        private static unsafe void MemoryCopy(string dst, string src)
         {
             if (dst.Length != src.Length)
                 throw new InvalidOperationException("两个字符串参数长度不一致。");
@@ -979,38 +749,34 @@ namespace Kuroha.Framework.ZString
             {
                 fixed (char* src_ptr = src)
                 {
-                    memcpy(dst_ptr, src_ptr, dst.Length);
+                    MemoryCopy(dst_ptr, src_ptr, dst.Length);
                 }
             }
         }
 
-        //将src指定length内容拷入dst，dst下标src_offset偏移
-        private static unsafe void memcpy(char* dst, char* src, int length, int src_offset)
-        {
-            memcpy(dst + src_offset, src, length);
-        }
+        
 
-        private static unsafe void memcpy(string dst, string src, int length, int src_offset)
+        private static unsafe void MemoryCopy(string dst, string src, int length, int src_offset)
         {
             fixed (char* ptr_dst = dst)
             {
                 fixed (char* ptr_src = src)
                 {
-                    memcpy(ptr_dst + src_offset, ptr_src, length);
+                    MemoryCopy(ptr_dst + src_offset, ptr_src, length);
                 }
             }
         }
 
-        public class ZString_block : IDisposable
+        public class KStringBlock : IDisposable
         {
             readonly Stack<KString> stack;
 
-            internal ZString_block(int capacity)
+            internal KStringBlock(int capacity)
             {
                 stack = new Stack<KString>(capacity);
             }
 
-            internal void push(KString str)
+            internal void Push(KString str)
             {
                 stack.Push(str);
             }
@@ -1043,8 +809,7 @@ namespace Kuroha.Framework.ZString
                 if (g_open_blocks.Count > 0)
                 {
                     KString.g_current_block = g_open_blocks.Peek();
-                }
-                else
+                } else
                 {
                     KString.g_current_block = null;
                 }
@@ -1062,7 +827,7 @@ namespace Kuroha.Framework.ZString
         //获取字符串长度
         public int Length
         {
-            get { return _value.Length; }
+            get { return currentString.Length; }
         }
 
         //类构造：cache_capacity缓存栈字典容量，stack_capacity缓存字符串栈容量，block_capacity缓存栈容量，intern_capacity缓存,open_capacity默认打开层数
@@ -1070,9 +835,9 @@ namespace Kuroha.Framework.ZString
         {
             g_cache = new Queue<KString>[cache_capacity];
             g_secCache = new Dictionary<int, Queue<KString>>(cache_capacity);
-            g_blocks = new Stack<ZString_block>(block_capacity);
+            g_blocks = new Stack<KStringBlock>(block_capacity);
             g_intern_table = new Dictionary<int, string>(intern_capacity);
-            g_open_blocks = new Stack<ZString_block>(open_capacity);
+            g_open_blocks = new Stack<KStringBlock>(open_capacity);
             g_shallowCache = new Stack<KString>(shallowCache_capacity);
             for (int c = 0; c < cache_capacity; c++)
             {
@@ -1084,7 +849,7 @@ namespace Kuroha.Framework.ZString
 
             for (int i = 0; i < block_capacity; i++)
             {
-                var block = new ZString_block(block_capacity * 2);
+                var block = new KStringBlock(block_capacity * 2);
                 g_blocks.Push(block);
             }
 
@@ -1094,11 +859,11 @@ namespace Kuroha.Framework.ZString
             }
         }
 
-        //using语法所用。从ZString_block栈中取出一个block并将其置为当前g_current_block，在代码块{}中新生成的ZString都将push入块内部stack中。当离开块作用域时，调用块的Dispose函数，将内栈中所有ZString填充初始值并放入ZString缓存栈。同时将自身放入block缓存栈中。（此处有个问题：使用Stack缓存block，当block被dispose放入Stack后g_current_block仍然指向此block，无法记录此block之前的block，这样导致ZString.Block()无法嵌套使用）
+        //using语法所用。从KStringBlock栈中取出一个block并将其置为当前g_current_block，在代码块{}中新生成的ZString都将push入块内部stack中。当离开块作用域时，调用块的Dispose函数，将内栈中所有ZString填充初始值并放入ZString缓存栈。同时将自身放入block缓存栈中。（此处有个问题：使用Stack缓存block，当block被dispose放入Stack后g_current_block仍然指向此block，无法记录此block之前的block，这样导致ZString.Block()无法嵌套使用）
         public static IDisposable Block()
         {
             if (g_blocks.Count == 0)
-                g_current_block = new ZString_block(INITIAL_BLOCK_CAPACITY * 2);
+                g_current_block = new KStringBlock(INITIAL_BLOCK_CAPACITY * 2);
             else
                 g_current_block = g_blocks.Pop();
 
@@ -1112,7 +877,7 @@ namespace Kuroha.Framework.ZString
             //string interned = new string(NEW_ALLOC_CHAR, _value.Length);
             //memcpy(interned, _value);
             //return interned;
-            return __intern(_value);
+            return __intern(currentString);
         }
 
         //将string放入ZString intern缓存表中以供外部使用
@@ -1130,14 +895,14 @@ namespace Kuroha.Framework.ZString
         //下标取值函数
         public char this[int i]
         {
-            get { return _value[i]; }
-            set { memcpy(this, value, i); }
+            get { return currentString[i]; }
+            set { MemoryCopy(this, value, i); }
         }
 
         //获取 hashcode
         public override int GetHashCode()
         {
-            return _value.GetHashCode();
+            return currentString.GetHashCode();
         }
 
         //字面值比较
@@ -1148,11 +913,11 @@ namespace Kuroha.Framework.ZString
 
             var gstr = obj as KString;
             if (gstr != null)
-                return gstr._value == this._value;
+                return gstr.currentString == this.currentString;
 
             var str = obj as string;
             if (str != null)
-                return str == this._value;
+                return str == this.currentString;
 
             return false;
         }
@@ -1160,13 +925,13 @@ namespace Kuroha.Framework.ZString
         //转化为string
         public override string ToString()
         {
-            return _value;
+            return currentString;
         }
 
         //bool->ZString转换
         public static implicit operator KString(bool value)
         {
-            return get(value ? "True" : "False");
+            return Get(value? "True" : "False");
         }
 
         // long - >ZString转换
@@ -1182,17 +947,16 @@ namespace Kuroha.Framework.ZString
             KString result;
             if (negative)
             {
-                result = get(num_digits + 1);
-                fixed (char* ptr = result._value)
+                result = Get(num_digits + 1);
+                fixed (char* ptr = result.currentString)
                 {
                     *ptr = '-';
                     longcpy(ptr, value, 1, num_digits);
                 }
-            }
-            else
+            } else
             {
-                result = get(num_digits);
-                fixed (char* ptr = result._value)
+                result = Get(num_digits);
+                fixed (char* ptr = result.currentString)
                     longcpy(ptr, value, 0, num_digits);
             }
 
@@ -1212,17 +976,16 @@ namespace Kuroha.Framework.ZString
             KString result;
             if (negative)
             {
-                result = get(num_digits + 1);
-                fixed (char* ptr = result._value)
+                result = Get(num_digits + 1);
+                fixed (char* ptr = result.currentString)
                 {
                     *ptr = '-';
                     intcpy(ptr, value, 1, num_digits);
                 }
-            }
-            else
+            } else
             {
-                result = get(num_digits);
-                fixed (char* ptr = result._value)
+                result = Get(num_digits);
+                fixed (char* ptr = result.currentString)
                     intcpy(ptr, value, 0, num_digits);
             }
 
@@ -1234,45 +997,47 @@ namespace Kuroha.Framework.ZString
         {
             // e.g. 3.148
             bool negative = value < 0;
-            if (negative) value = -value;
-            long mul = (long) Math.Pow(10, DecimalAccuracy);
-            long number = (long) (value * mul); // gets the number as a whole, e.g. 3148
-            int left_num = (int) (number / mul); // left part of the decimal point, e.g. 3
-            int right_num = (int) (number % mul); // right part of the decimal pnt, e.g. 148
+            if (negative)
+                value = -value;
+            long mul = (long)Math.Pow(10, DecimalAccuracy);
+            long number = (long)(value * mul); // gets the number as a whole, e.g. 3148
+            int left_num = (int)(number / mul); // left part of the decimal point, e.g. 3
+            int right_num = (int)(number % mul); // right part of the decimal pnt, e.g. 148
             int left_digit_count = get_digit_count(left_num); // e.g. 1
             int right_digit_count = get_digit_count(right_num); // e.g. 3
             //int total = left_digit_count + right_digit_count + 1; // +1 for '.'
-            int total = left_digit_count + (int) DecimalAccuracy + 1; // +1 for '.'
+            int total = left_digit_count + (int)DecimalAccuracy + 1; // +1 for '.'
 
             KString result;
             if (negative)
             {
-                result = get(total + 1); // +1 for '-'
-                fixed (char* ptr = result._value)
+                result = Get(total + 1); // +1 for '-'
+                fixed (char* ptr = result.currentString)
                 {
                     *ptr = '-';
                     intcpy(ptr, left_num, 1, left_digit_count);
                     *(ptr + left_digit_count + 1) = '.';
-                    var offset = (int) DecimalAccuracy - right_digit_count;
+                    var offset = (int)DecimalAccuracy - right_digit_count;
                     for (var i = 0; i < offset; i++)
                     {
                         *(ptr + left_digit_count + i + 1) = '0';
                     }
+
                     intcpy(ptr, right_num, left_digit_count + 2 + offset, right_digit_count);
                 }
-            }
-            else
+            } else
             {
-                result = get(total);
-                fixed (char* ptr = result._value)
+                result = Get(total);
+                fixed (char* ptr = result.currentString)
                 {
                     intcpy(ptr, left_num, 0, left_digit_count);
                     *(ptr + left_digit_count) = '.';
-                    var offset = (int) DecimalAccuracy - right_digit_count;
+                    var offset = (int)DecimalAccuracy - right_digit_count;
                     for (var i = 0; i < offset; i++)
                     {
                         *(ptr + left_digit_count + i + 1) = '0';
                     }
+
                     intcpy(ptr, right_num, left_digit_count + 1 + offset, right_digit_count);
                 }
             }
@@ -1296,20 +1061,19 @@ namespace Kuroha.Framework.ZString
         //KString->string转换
         public static implicit operator string(KString value)
         {
-            return value._value;
+            return value.currentString;
         }
 
-        
 
         //转换为大写
         public unsafe KString ToUpper()
         {
-            var result = get(Length);
-            fixed (char* ptr_this = this._value)
+            var result = Get(Length);
+            fixed (char* ptr_this = this.currentString)
             {
-                fixed (char* ptr_result = result._value)
+                fixed (char* ptr_result = result.currentString)
                 {
-                    for (int i = 0; i < _value.Length; i++)
+                    for (int i = 0; i < currentString.Length; i++)
                     {
                         var ch = ptr_this[i];
                         if (char.IsLower(ch))
@@ -1326,12 +1090,12 @@ namespace Kuroha.Framework.ZString
         //转换为小写
         public unsafe KString ToLower()
         {
-            var result = get(Length);
-            fixed (char* ptr_this = this._value)
+            var result = Get(Length);
+            fixed (char* ptr_this = this.currentString)
             {
-                fixed (char* ptr_result = result._value)
+                fixed (char* ptr_result = result.currentString)
                 {
-                    for (int i = 0; i < _value.Length; i++)
+                    for (int i = 0; i < currentString.Length; i++)
                     {
                         var ch = ptr_this[i];
                         if (char.IsUpper(ch))
@@ -1354,32 +1118,32 @@ namespace Kuroha.Framework.ZString
         //移除剪切
         private KString Remove(int start, int count)
         {
-            return internal_remove(this._value, start, count);
+            return internal_remove(this.currentString, start, count);
         }
 
         //插入start起count长度字符
         public KString Insert(char value, int start, int count)
         {
-            return internal_insert(this._value, value, start, count);
+            return internal_insert(this.currentString, value, start, count);
         }
 
         //插入start起字符串
         public KString Insert(string value, int start)
         {
-            return internal_insert(this._value, value, start);
+            return internal_insert(this.currentString, value, start);
         }
 
         //子字符替换
         public unsafe KString Replace(char old_value, char new_value)
         {
-            KString result = get(Length);
-            fixed (char* ptr_this = this._value)
+            KString result = Get(Length);
+            fixed (char* ptr_this = this.currentString)
             {
-                fixed (char* ptr_result = result._value)
+                fixed (char* ptr_result = result.currentString)
                 {
                     for (int i = 0; i < Length; i++)
                     {
-                        ptr_result[i] = ptr_this[i] == old_value ? new_value : ptr_this[i];
+                        ptr_result[i] = ptr_this[i] == old_value? new_value : ptr_this[i];
                     }
                 }
             }
@@ -1390,7 +1154,7 @@ namespace Kuroha.Framework.ZString
         //子字符串替换
         public KString Replace(string old_value, string new_value)
         {
-            return internal_replace(this._value, old_value, new_value);
+            return internal_replace(this.currentString, old_value, new_value);
         }
 
         //剪切start位置起后续子串
@@ -1408,10 +1172,10 @@ namespace Kuroha.Framework.ZString
             if (count > Length)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            KString result = get(count);
-            fixed (char* src = this._value)
-            fixed (char* dst = result._value)
-                memcpy(dst, src + start, count);
+            KString result = Get(count);
+            fixed (char* src = this.currentString)
+            fixed (char* dst = result.currentString)
+                MemoryCopy(dst, src + start, count);
 
             return result;
         }
@@ -1435,9 +1199,9 @@ namespace Kuroha.Framework.ZString
             int last_find = -1;
             while (true)
             {
-                idx = internal_index_of(this._value, value, idx + value.Length);
+                idx = internal_index_of(this.currentString, value, idx + value.Length);
                 last_find = idx;
-                if (idx == -1 || idx + value.Length >= this._value.Length)
+                if (idx == -1 || idx + value.Length >= this.currentString.Length)
                     break;
             }
 
@@ -1451,9 +1215,9 @@ namespace Kuroha.Framework.ZString
             int last_find = -1;
             while (true)
             {
-                idx = internal_index_of(this._value, value, idx + 1);
+                idx = internal_index_of(this.currentString, value, idx + 1);
                 last_find = idx;
-                if (idx == -1 || idx + 1 >= this._value.Length)
+                if (idx == -1 || idx + 1 >= this.currentString.Length)
                     break;
             }
 
@@ -1469,13 +1233,13 @@ namespace Kuroha.Framework.ZString
         //字符自start起第一次出现位置
         public int IndexOf(char value, int start)
         {
-            return internal_index_of(this._value, value, start);
+            return internal_index_of(this.currentString, value, start);
         }
 
         //字符自start起count长度内，
         private int IndexOf(char value, int start, int count)
         {
-            return internal_index_of(this._value, value, start, count);
+            return internal_index_of(this.currentString, value, start, count);
         }
 
         // 子串第一次出现位置
@@ -1493,23 +1257,265 @@ namespace Kuroha.Framework.ZString
         //子串自start位置起，count长度内第一次出现位置
         private int IndexOf(string value, int start, int count)
         {
-            return internal_index_of(this._value, value, start, count);
+            return internal_index_of(this.currentString, value, start, count);
         }
 
-        //是否以某字符串结束
-        private unsafe bool EndsWith(string postfix)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        private static void GetStackInCache(int index, out Queue<KString> outStack)
+        {
+            var length = g_cache.Length;
+            
+            // 核心缓存
+            if (length > index)
+            {
+                outStack = g_cache[index];
+            }
+            // 次级缓存
+            else
+            {
+                if (!g_secCache.TryGetValue(index, out outStack))
+                {
+                    outStack = new Queue<KString>(INITIAL_STACK_CAPACITY);
+                    g_secCache[index] = outStack;
+                }
+            }
+        }
+        
+        private static KString Get(int length)
+        {
+            if (g_current_block == null || length <= 0)
+            {
+                throw new InvalidOperationException("KString 操作必须在一个 KStringBlock 块中");
+            }
+
+            GetStackInCache(length, out var stack);
+            
+            // 从缓存中取 Stack
+            var result = stack.Count == 0 ? new KString(length) : stack.Dequeue();
+            result.disposedFlag = false;
+            
+            // ZString 推入块所在栈
+            g_current_block.Push(result);
+            
+            return result;
+        }
+        
+        private static unsafe KString InternalConcat(string left, string right)
+        {
+            var totalLength = left.Length + right.Length;
+            var result = Get(totalLength);
+
+            fixed (char* ptr_result = result.currentString)
+            {
+                fixed (char* ptr_left = left)
+                {
+                    fixed (char* ptr_right = right)
+                    {
+                        MemoryCopy(ptr_result, ptr_left, left.Length, 0);
+                        MemoryCopy(ptr_result, ptr_right, right.Length, left.Length);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private const int charLengthThisPlatform = sizeof(char);
+
+        // 将 src 指定 length 内容拷入 dst, dst 下标 src_offset 偏移
+        private static unsafe void MemoryCopy(char* dst, char* src, int length, int src_offset)
+        {
+            MemoryCopy(dst + src_offset, src, length);
+        }
+        
+        private static unsafe void MemoryCopy(char* dest, char* src, int count)
+        {
+            ByteCopy( (byte*)dest, (byte*)src, count * charLengthThisPlatform);
+        }
+        
+        private static unsafe void ByteCopy(byte* dest, byte* src, int byteCount)
+        {
+            if (byteCount < 128)
+            {
+                goto g64;
+            } 
+            
+            if (byteCount < 2048)
+            {
+                goto g1024;
+            }
+
+            while (byteCount >= 8192)
+            {
+                ((Byte8192*)dest)[0] = ((Byte8192*)src)[0];
+                dest += 8192;
+                src += 8192;
+                byteCount -= 8192;
+            }
+
+            if (byteCount >= 4096)
+            {
+                ((Byte4096*)dest)[0] = ((Byte4096*)src)[0];
+                dest += 4096;
+                src += 4096;
+                byteCount -= 4096;
+            }
+
+            if (byteCount >= 2048)
+            {
+                ((Byte2048*)dest)[0] = ((Byte2048*)src)[0];
+                dest += 2048;
+                src += 2048;
+                byteCount -= 2048;
+            }
+
+            g1024:
+            if (byteCount >= 1024)
+            {
+                ((Byte1024*)dest)[0] = ((Byte1024*)src)[0];
+                dest += 1024;
+                src += 1024;
+                byteCount -= 1024;
+            }
+
+            if (byteCount >= 512)
+            {
+                ((Byte512*)dest)[0] = ((Byte512*)src)[0];
+                dest += 512;
+                src += 512;
+                byteCount -= 512;
+            }
+
+            if (byteCount >= 256)
+            {
+                ((Byte256*)dest)[0] = ((Byte256*)src)[0];
+                dest += 256;
+                src += 256;
+                byteCount -= 256;
+            }
+
+            if (byteCount >= 128)
+            {
+                ((Byte128*)dest)[0] = ((Byte128*)src)[0];
+                dest += 128;
+                src += 128;
+                byteCount -= 128;
+            }
+
+            g64:
+            if (byteCount >= 64)
+            {
+                ((Byte64*)dest)[0] = ((Byte64*)src)[0];
+                dest += 64;
+                src += 64;
+                byteCount -= 64;
+            }
+
+            if (byteCount >= 32)
+            {
+                ((Byte32*)dest)[0] = ((Byte32*)src)[0];
+                dest += 32;
+                src += 32;
+                byteCount -= 32;
+            }
+
+            if (byteCount >= 16)
+            {
+                ((Byte16*)dest)[0] = ((Byte16*)src)[0];
+                dest += 16;
+                src += 16;
+                byteCount -= 16;
+            }
+
+            if (byteCount >= 8)
+            {
+                ((Byte8*)dest)[0] = ((Byte8*)src)[0];
+                dest += 8;
+                src += 8;
+                byteCount -= 8;
+            }
+
+            if (byteCount >= 4)
+            {
+                ((Byte4*)dest)[0] = ((Byte4*)src)[0];
+                dest += 4;
+                src += 4;
+                byteCount -= 4;
+            }
+
+            if (byteCount >= 2)
+            {
+                ((Byte2*)dest)[0] = ((Byte2*)src)[0];
+                dest += 2;
+                src += 2;
+                byteCount -= 2;
+            }
+
+            if (byteCount >= 1)
+            {
+                ((Byte1*)dest)[0] = ((Byte1*)src)[0];
+                // dest += 1;
+                // src += 1;
+                // byteCount -= 1;
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        // ReSharper disable once UnusedMember.Global
+        public unsafe bool EndsWith(string postfix)
         {
             if (postfix == null)
+            {
                 throw new ArgumentNullException(nameof(postfix));
+            }
 
-            if (this.Length < postfix.Length)
+            if (Length < postfix.Length)
+            {
                 return false;
+            }
 
-            fixed (char* ptr_this = this._value)
+            fixed (char* ptr_this = currentString)
             {
                 fixed (char* ptr_postfix = postfix)
                 {
-                    for (int i = this._value.Length - 1, j = postfix.Length - 1; j >= 0; i--, j--)
+                    for (int i = currentString.Length - 1, j = postfix.Length - 1; j >= 0; i--, j--)
                         if (ptr_this[i] != ptr_postfix[j])
                             return false;
                 }
@@ -1517,9 +1523,8 @@ namespace Kuroha.Framework.ZString
 
             return true;
         }
-
-        //是否以某字符串开始
-        private unsafe bool StartsWith(string prefix)
+        // ReSharper disable once UnusedMember.Global
+        public unsafe bool StartsWith(string prefix)
         {
             if (prefix == null)
                 throw new ArgumentNullException(nameof(prefix));
@@ -1527,7 +1532,7 @@ namespace Kuroha.Framework.ZString
             if (this.Length < prefix.Length)
                 return false;
 
-            fixed (char* ptr_this = this._value)
+            fixed (char* ptr_this = this.currentString)
             {
                 fixed (char* ptr_prefix = prefix)
                 {
@@ -1539,39 +1544,12 @@ namespace Kuroha.Framework.ZString
 
             return true;
         }
-
-        //获取某长度字符串缓存数量
-        public static int GetCacheCount(int length)
-        {
-            getStackInCache(length, out var stack);
-            return stack.Count;
-        }
-        
-        #region 运算符重载
-        
-        private static unsafe KString internal_concat(string s1, string s2)
-        {
-            var total_length = s1.Length + s2.Length;
-            var result = get(total_length);
-            
-            fixed (char* ptr_result = result._value)
-            {
-                fixed (char* ptr_s1 = s1)
-                {
-                    fixed (char* ptr_s2 = s2)
-                    {
-                        memcpy(ptr_result, ptr_s1, s1.Length, 0);
-                        memcpy(ptr_result, ptr_s2, s2.Length, s1.Length);
-                    }
-                }
-            }
-
-            return result;
-        }
+        // ReSharper disable once UnusedMember.Global
         public static KString operator +(KString left, KString right)
         {
-            return internal_concat(left, right);
+            return InternalConcat(left, right);
         }
+        // ReSharper disable once UnusedMember.Global
         public static bool operator ==(KString left, KString right)
         {
             if (ReferenceEquals(left, null))
@@ -1583,238 +1561,21 @@ namespace Kuroha.Framework.ZString
             {
                 return false;
             }
-            
-            return left._value == right._value;
+
+            return left.currentString == right.currentString;
         }
+        // ReSharper disable once UnusedMember.Global
         public static bool operator !=(KString left, KString right)
         {
-            return right is { } && left is { } && left._value != right._value;
+            return right is { } && left is { } && left.currentString != right.currentString;
         }
 
-        #endregion
         
-        #region 静态拼接方法簇
-
-        public static KString Concat(KString s0, KString s1)
-        {
-            return s0 + s1;
-        }
-
-        public static KString Concat(KString s0, KString s1, KString s2)
-        {
-            return s0 + s1 + s2;
-        }
-
-        public static KString Concat(KString s0, KString s1, KString s2, KString s3)
-        {
-            return s0 + s1 + s2 + s3;
-        }
-
-        public static KString Concat(KString s0, KString s1, KString s2, KString s3, KString s4)
-        {
-            return s0 + s1 + s2 + s3 + s4;
-        }
-
-        public static KString Concat(KString s0, KString s1, KString s2, KString s3, KString s4, KString s5)
-        {
-            return s0 + s1 + s2 + s3 + s4 + s5;
-        }
-
-        public static KString Concat(KString s0, KString s1, KString s2, KString s3, KString s4, KString s5, KString s6)
-        {
-            return s0 + s1 + s2 + s3 + s4 + s5 + s6;
-        }
-
-        public static KString Concat(KString s0, KString s1, KString s2, KString s3, KString s4, KString s5, KString s6, KString s7)
-        {
-            return s0 + s1 + s2 + s3 + s4 + s5 + s6 + s7;
-        }
-
-        public static KString Concat(KString s0, KString s1, KString s2, KString s3, KString s4, KString s5, KString s6, KString s7, KString s8)
-        {
-            return s0 + s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8;
-        }
-
-        public static KString Concat(KString s0, KString s1, KString s2, KString s3, KString s4, KString s5, KString s6, KString s7, KString s8, KString s9)
-        {
-            return s0 + s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8 + s9;
-        }
-
-        #endregion
         
-        #region 静态格式化方法簇
-
-        public static KString Format(string input, KString arg0, KString arg1, KString arg2, KString arg3, KString arg4, KString arg5, KString arg6, KString arg7, KString arg8, KString arg9)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
-            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
-            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
-            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
-            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
-            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
-            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
-            if (arg9 == null) throw new ArgumentNullException(nameof(arg9));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            g_format_args[2] = arg2;
-            g_format_args[3] = arg3;
-            g_format_args[4] = arg4;
-            g_format_args[5] = arg5;
-            g_format_args[6] = arg6;
-            g_format_args[7] = arg7;
-            g_format_args[8] = arg8;
-            g_format_args[9] = arg9;
-            return internal_format(input, 10);
-        }
-
-        public static KString Format(string input, KString arg0, KString arg1, KString arg2, KString arg3, KString arg4, KString arg5, KString arg6, KString arg7, KString arg8)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
-            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
-            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
-            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
-            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
-            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
-            if (arg8 == null) throw new ArgumentNullException(nameof(arg8));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            g_format_args[2] = arg2;
-            g_format_args[3] = arg3;
-            g_format_args[4] = arg4;
-            g_format_args[5] = arg5;
-            g_format_args[6] = arg6;
-            g_format_args[7] = arg7;
-            g_format_args[8] = arg8;
-            return internal_format(input, 9);
-        }
-
-        public static KString Format(string input, KString arg0, KString arg1, KString arg2, KString arg3, KString arg4, KString arg5, KString arg6, KString arg7)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
-            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
-            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
-            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
-            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
-            if (arg7 == null) throw new ArgumentNullException(nameof(arg7));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            g_format_args[2] = arg2;
-            g_format_args[3] = arg3;
-            g_format_args[4] = arg4;
-            g_format_args[5] = arg5;
-            g_format_args[6] = arg6;
-            g_format_args[7] = arg7;
-            return internal_format(input, 8);
-        }
-
-        public static KString Format(string input, KString arg0, KString arg1, KString arg2, KString arg3, KString arg4, KString arg5, KString arg6)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
-            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
-            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
-            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
-            if (arg6 == null) throw new ArgumentNullException(nameof(arg6));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            g_format_args[2] = arg2;
-            g_format_args[3] = arg3;
-            g_format_args[4] = arg4;
-            g_format_args[5] = arg5;
-            g_format_args[6] = arg6;
-            return internal_format(input, 7);
-        }
-
-        public static KString Format(string input, KString arg0, KString arg1, KString arg2, KString arg3, KString arg4, KString arg5)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
-            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
-            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
-            if (arg5 == null) throw new ArgumentNullException(nameof(arg5));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            g_format_args[2] = arg2;
-            g_format_args[3] = arg3;
-            g_format_args[4] = arg4;
-            g_format_args[5] = arg5;
-            return internal_format(input, 6);
-        }
-
-        public static KString Format(string input, KString arg0, KString arg1, KString arg2, KString arg3, KString arg4)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
-            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
-            if (arg4 == null) throw new ArgumentNullException(nameof(arg4));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            g_format_args[2] = arg2;
-            g_format_args[3] = arg3;
-            g_format_args[4] = arg4;
-            return internal_format(input, 5);
-        }
-
-        public static KString Format(string input, KString arg0, KString arg1, KString arg2, KString arg3)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
-            if (arg3 == null) throw new ArgumentNullException(nameof(arg3));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            g_format_args[2] = arg2;
-            g_format_args[3] = arg3;
-            return internal_format(input, 4);
-        }
-
-        public static KString Format(string input, KString arg0, KString arg1, KString arg2)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-            if (arg2 == null) throw new ArgumentNullException(nameof(arg2));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            g_format_args[2] = arg2;
-            return internal_format(input, 3);
-        }
-
-        public static KString Format(string input, KString arg0, KString arg1)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-            if (arg1 == null) throw new ArgumentNullException(nameof(arg1));
-
-            g_format_args[0] = arg0;
-            g_format_args[1] = arg1;
-            return internal_format(input, 2);
-        }
-
-        public static KString Format(string input, KString arg0)
-        {
-            if (arg0 == null) throw new ArgumentNullException(nameof(arg0));
-
-            g_format_args[0] = arg0;
-            return internal_format(input, 1);
-        }
-
-        #endregion
+        
+        
+        
+        
         
         // 普通的float->string是隐式转换，小数点后只保留三位有效数字
         // 对于更高精确度需求，隐式转换，可以修改静态变量DecimalAccuracy
@@ -1828,23 +1589,7 @@ namespace Kuroha.Framework.ZString
             return target;
         }
 
-        //判空或长度
-        public static bool IsNullOrEmpty(KString str)
-        {
-            return str == null || str.Length == 0;
-        }
 
-        //是否以value结束
-        public static bool IsPrefix(KString str, string value)
-        {
-            return str.StartsWith(value);
-        }
-
-        //是否以value开始
-        public static bool isPostfix(KString str, string postfix)
-        {
-            return str.EndsWith(postfix);
-        }
 
         #endregion
     }
