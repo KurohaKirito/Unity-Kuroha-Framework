@@ -5,27 +5,136 @@ namespace Kuroha.Framework.KString
 {
     public class KString
     {
+        #region 静态变量
+
+        /// <summary>
+        /// 深拷贝核心缓存
+        /// index: 特定字符串长度
+        /// </summary>
+        private static readonly Queue<KString>[] coreCache;
+        
+        /// <summary>
+        /// 深拷贝次级缓存
+        /// key: 特定字符串长度
+        /// value: 字符串栈
+        /// </summary>
+        private static readonly Dictionary<int, Queue<KString>> secondCache;
+        
+        /// <summary>
+        /// 浅拷贝缓存
+        /// </summary>
+        private static readonly Stack<KString> shallowCache;
+        
+        /// <summary>
+        /// KStringBlock 缓存栈
+        /// </summary>
+        private static readonly Stack<KStringBlock> allBlocks;
+        
+        /// <summary>
+        /// KString 已经打开的缓存栈
+        /// </summary>
+        private static readonly Stack<KStringBlock> openedBlocks;
+        
+        /// <summary>
+        /// KString 所在的 block 块
+        /// </summary>
+        private static KStringBlock currentBlock;
+
+        #endregion
+        
+        /// <summary>
+        /// KStringBlock
+        /// </summary>
+        private class KStringBlock : IDisposable
+        {
+            /// <summary>
+            /// KStringBlock 块
+            /// </summary>
+            private readonly Stack<KString> stack;
+
+            /// <summary>
+            /// KStringBlock 构造函数
+            /// </summary>
+            internal KStringBlock(int capacity)
+            {
+                stack = new Stack<KString>(capacity);
+            }
+
+            /// <summary>
+            /// KString 入栈
+            /// </summary>
+            internal void Push(KString str)
+            {
+                stack.Push(str);
+            }
+
+            /// <summary>
+            /// 构造函数
+            /// </summary>
+            /// <returns></returns>
+            internal IDisposable Begin()
+            {
+                return this;
+            }
+
+            /// <summary>
+            /// 析构函数
+            /// </summary>
+            void IDisposable.Dispose()
+            {
+                // 循环调用栈中所有的 Dispose 方法
+                while (stack.Count > 0)
+                {
+                    stack.Pop().Dispose();
+                }
+
+                allBlocks.Push(this); //将自身push入缓存栈
+
+                //赋值currentBlock
+                openedBlocks.Pop();
+                currentBlock = openedBlocks.Count > 0 ? openedBlocks.Peek() : null;
+            }
+        }
+        
+        /// <summary>
+        /// using 块
+        /// </summary>
+        public static IDisposable Block()
+        {
+            currentBlock = allBlocks.Count == 0 ? new KStringBlock(INITIAL_BLOCK_CAPACITY) : allBlocks.Pop();
+            openedBlocks.Push(currentBlock);
+            return currentBlock.Begin();
+        }
+        
         /// <summary>
         /// Block 块数量  
         /// </summary>
-        private const int INITIAL_BLOCK_CAPACITY = 32;
-        
+        private const int INITIAL_BLOCK_CAPACITY = 64;
         /// <summary>
         /// 缓存字典容量  128 * 4 = 512 Byte
         /// </summary>
         private const int INITIAL_CACHE_CAPACITY = 128;
-        
         /// <summary>
         /// 缓存字典每个 Stack 默认 KString 容量
         /// </summary>
         private const int INITIAL_STACK_CAPACITY = 48;
-
-        private const int INITIAL_OPEN_CAPACITY = 5; // 默认打开层数为5
+        /// <summary>
+        /// 初始开启的 Stack 数量
+        /// </summary>
+        private const int INITIAL_OPEN_CAPACITY = 5;
+        /// <summary>
+        /// 浅拷贝缓存个数
+        /// </summary>
+        private const int INITIAL_SHALLOW_CAPACITY = 100;
         
-        private const int INITIAL_SHALLOW_CAPACITY = 100; // 默认50个浅拷贝用
+        /// <summary>
+        /// 创建新字符串时的默认字符
+        /// </summary>
+        private const char NEW_ALLOC_CHAR = 'X';
         
-        private const char NEW_ALLOC_CHAR = 'X'; // 默认 char
-        
+        /// <summary>
+        /// 平台 Char 类型长度
+        /// </summary>
         private const int CHAR_LENGTH_THIS_PLATFORM = sizeof(char);
         
         #region 结构体
@@ -112,86 +221,25 @@ namespace Kuroha.Framework.KString
 
         #endregion
 
-        // using 语法所用
-        // 从 KStringBlock 栈中取出一个 block 并将其置为当前 g_current_block
-        // 在代码块 {} 中新生成的 KString 都将push入块内部stack中
-        // 当离开块作用域时，调用块的 Dispose 函数，将内栈中所有 KString 填充初始值并放入KString缓存栈
-        // 同时将自身放入 block 缓存栈中。
-        // （此处有个问题：使用Stack缓存block，当block被dispose放入Stack后g_current_block仍然指向此block，无法记录此block之前的block，这样导致KString.Block()无法嵌套使用）
-        public static IDisposable Block()
-        {
-            g_current_block = g_blocks.Count == 0 ? new KStringBlock(INITIAL_BLOCK_CAPACITY * 2) : g_blocks.Pop();
-
-            g_open_blocks.Push(g_current_block); //新加代码，将此玩意压入open栈
-            return g_current_block.Begin();
-        }
-        
-        /// <summary>
-        /// KStringBlock
-        /// </summary>
-        private class KStringBlock : IDisposable
-        {
-            private readonly Stack<KString> stack;
-
-            internal KStringBlock(int capacity)
-            {
-                stack = new Stack<KString>(capacity);
-            }
-
-            internal void Push(KString str)
-            {
-                stack.Push(str);
-            }
-
-            /// <summary>
-            /// 构造函数
-            /// </summary>
-            /// <returns></returns>
-            internal IDisposable Begin()
-            {
-                return this;
-            }
-
-            /// <summary>
-            /// 析构函数
-            /// </summary>
-            void IDisposable.Dispose()
-            {
-                // 循环调用栈中所有的 Dispose 方法
-                while (stack.Count > 0)
-                {
-                    stack.Pop().Dispose();
-                }
-
-                g_blocks.Push(this); //将自身push入缓存栈
-
-                //赋值currentBlock
-                g_open_blocks.Pop();
-                g_current_block = g_open_blocks.Count > 0 ? g_open_blocks.Peek() : null;
-            }
-        }
-
-        private static Queue<KString>[] coreCache; // idx 特定字符串长度,深拷贝核心缓存
-        private static Dictionary<int, Queue<KString>> secondCache; //key特定字符串长度value字符串栈，深拷贝次级缓存
-        private static Stack<KString> shallowCache; //浅拷贝缓存
-
-        private static Stack<KStringBlock> g_blocks; // KStringBlock 缓存栈
-        private static Stack<KStringBlock> g_open_blocks; // KString 已经打开的缓存栈
-        private static KStringBlock g_current_block; // KString 所在的 block 块
-        
         /// <summary>
         /// 是否浅拷贝
         /// </summary>
         private readonly bool isShallow;
 
+        /// <summary>
+        /// 当前 KString 代表的 string 值
+        /// </summary>
         [NonSerialized]
         private string currentString;
 
+        /// <summary>
+        /// Dispose 标识
+        /// </summary>
         [NonSerialized]
         private bool disposedFlag;
 
         /// <summary>
-        /// 带默认长度的构造
+        /// 私有构造: 带默认长度的构造
         /// </summary>
         private KString(int length)
         {
@@ -199,7 +247,7 @@ namespace Kuroha.Framework.KString
         }
 
         /// <summary>
-        /// 浅拷贝专用构造
+        /// 私有构造: 浅拷贝专用构造
         /// </summary>
         private KString(string value)
         {
@@ -212,11 +260,41 @@ namespace Kuroha.Framework.KString
         /// </summary>
         static KString()
         {
-            Initialize(INITIAL_CACHE_CAPACITY,
-                INITIAL_STACK_CAPACITY,
-                INITIAL_BLOCK_CAPACITY,
-                INITIAL_OPEN_CAPACITY,
-                INITIAL_SHALLOW_CAPACITY);
+            // 建立核心缓存: 128 个 Queue<KString>
+            coreCache = new Queue<KString>[INITIAL_CACHE_CAPACITY];
+            for (var length = 0; length < INITIAL_CACHE_CAPACITY; ++length)
+            {
+                // 每个 Queue 由 48 个相同长度的 KString 组成
+                var stack = new Queue<KString>(INITIAL_STACK_CAPACITY);
+                for (var counter = 0; counter < INITIAL_STACK_CAPACITY; counter++)
+                {
+                    stack.Enqueue(new KString(length));
+                }
+                
+                // 128 个 Queue, 分别长度为 0 ~ 127
+                coreCache[length] = stack;
+            }
+            
+            // 建立次级缓存: 128 个 Queue<KString>
+            secondCache = new Dictionary<int, Queue<KString>>(INITIAL_CACHE_CAPACITY);
+            
+            // 建立 Block 块: 64 个长度均为 64 的 KStringBlock
+            allBlocks = new Stack<KStringBlock>(INITIAL_BLOCK_CAPACITY);
+            for (var length = 0; length < INITIAL_BLOCK_CAPACITY; ++length)
+            {
+                var block = new KStringBlock(INITIAL_BLOCK_CAPACITY);
+                allBlocks.Push(block);
+            }
+            
+            // 建立开启的 Block 块: 5 个
+            openedBlocks = new Stack<KStringBlock>(INITIAL_OPEN_CAPACITY);
+            
+            // 建立浅拷贝缓存: 100 个空的 KString
+            shallowCache = new Stack<KString>(INITIAL_SHALLOW_CAPACITY);
+            for (var index = 0; index < INITIAL_SHALLOW_CAPACITY; ++index)
+            {
+                shallowCache.Push(new KString(null));
+            }
         }
 
         /// <summary>
@@ -244,86 +322,6 @@ namespace Kuroha.Framework.KString
             disposedFlag = true;
         }
         
-       
-
-        //将字符拷贝到dst指定index位置
-        
-        
-
-        // cache_capacity  缓存栈字典容量
-        // stack_capacity  缓存字符串栈容量
-        // block_capacity  缓存栈容量
-        // intern_capacity 缓存
-        // open_capacity   默认打开层数
-        private static void Initialize(int cache_capacity, int stack_capacity, int block_capacity, int open_capacity, int shallowCache_capacity)
-        {
-            coreCache = new Queue<KString>[cache_capacity];
-            secondCache = new Dictionary<int, Queue<KString>>(cache_capacity);
-            g_blocks = new Stack<KStringBlock>(block_capacity);
-            g_open_blocks = new Stack<KStringBlock>(open_capacity);
-            shallowCache = new Stack<KString>(shallowCache_capacity);
-            
-            for (var c = 0; c < cache_capacity; c++)
-            {
-                var stack = new Queue<KString>(stack_capacity);
-                for (var j = 0; j < stack_capacity; j++)
-                {
-                    stack.Enqueue(new KString(c));
-                }
-                coreCache[c] = stack;
-            }
-
-            for (var i = 0; i < block_capacity; i++)
-            {
-                var block = new KStringBlock(block_capacity * 2);
-                g_blocks.Push(block);
-            }
-
-            for (var i = 0; i < shallowCache_capacity; i++)
-            {
-                shallowCache.Push(new KString(null));
-            }
-        }
-
-        
-
-        //获取 hashcode
-        
-
-        
-
-        // 将 src 指定 length 内容拷入 dst, dst 下标 src_offset 偏移
-        private static unsafe void MemoryCopy(char* dst, char* source, int length, int src_offset)
-        {
-            MemoryCopy(dst + src_offset, source, length);
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
-        
-        
-        
-
-        
-
-
         #region 外部类型转换
         
         /// <summary>
@@ -662,7 +660,7 @@ namespace Kuroha.Framework.KString
         /// </summary>
         private static KString ToKStringShallow(string value)
         {
-            if (g_current_block == null)
+            if (currentBlock == null)
             {
                 throw new InvalidOperationException("KString 操作必须在一个 KStringBlock 块中");
             }
@@ -680,7 +678,7 @@ namespace Kuroha.Framework.KString
 
             result.disposedFlag = false;
             
-            g_current_block.Push(result);
+            currentBlock.Push(result);
             
             return result;
         }
@@ -707,7 +705,7 @@ namespace Kuroha.Framework.KString
         /// </summary>
         private static KString GetKStringOfLength(int length)
         {
-            if (g_current_block == null || length <= 0)
+            if (currentBlock == null || length <= 0)
             {
                 throw new InvalidOperationException("KString 操作必须在一个 KStringBlock 块中");
             }
@@ -718,7 +716,7 @@ namespace Kuroha.Framework.KString
             result.disposedFlag = false;
             
             // KString 推入块所在栈
-            g_current_block.Push(result);
+            currentBlock.Push(result);
             
             return result;
         }
@@ -764,6 +762,14 @@ namespace Kuroha.Framework.KString
             }
 
             return result;
+        }
+        
+        /// <summary>
+        /// 将 source 指定 length 内容拷入下标偏移了 sourceOffset 的 target
+        /// </summary>
+        private static unsafe void MemoryCopy(char* target, char* source, int length, int sourceOffset)
+        {
+            MemoryCopy(target + sourceOffset, source, length);
         }
         
         /// <summary>
