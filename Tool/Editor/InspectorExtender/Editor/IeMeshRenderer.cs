@@ -33,9 +33,6 @@ namespace Kuroha.Tool.InspectorExtender.Editor
             self = target as MeshRenderer;
 
             #region 绘制按钮
-
-            var defaultColor = UnityEngine.GUI.color;
-            UnityEngine.GUI.color = Color.green;
             
             if (self != null)
             {
@@ -68,9 +65,6 @@ namespace Kuroha.Tool.InspectorExtender.Editor
                 
                 EditorGUILayout.EndHorizontal();
             }
-            
-
-            UnityEngine.GUI.color = defaultColor;
 
             #endregion
 

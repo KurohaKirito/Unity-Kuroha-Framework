@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
 using UnityEditor;
 using UnityEngine.Profiling;
@@ -89,10 +90,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.MemoryTool {
         /// <summary>
         /// 得到内存占用细节
         /// </summary>
-        /// <param name="root">内存细节页面的数据根节点</param>
-        /// <param name="filterName">名称筛选</param>
-        /// <returns></returns>
-        public static IEnumerable<string> GetMemoryDetail(ProfilerMemoryElement root, string filterName) {
+        public static IEnumerable<string> GetMemoryDetail(ProfilerMemoryElement root, string filter1, string filter2, string filter3) {
             const StringComparison COMPARISON = StringComparison.OrdinalIgnoreCase;
             var texts = new List<string>(100);
             var nodes = new Stack<ProfilerMemoryElement>(7000);
@@ -106,21 +104,24 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.MemoryTool {
 
                 // 筛选 3 级
                 if (currentText.IndexOf("\t\t\t", COMPARISON) >= 0) {
-                    stage3 = currentText.IndexOf(filterName, COMPARISON) >= 0;
+                    var regex = new Regex(filter3, RegexOptions.IgnoreCase);
+                    stage3 = regex.Match(currentText).Success;
                     if (stage3 && stage2 && stage1) {
                         texts.Add(currentText);
                     }
                 }
                 // 筛选 2 级
                 else if (currentText.IndexOf("\t\t", COMPARISON) >= 0) {
-                    stage2 = currentText.IndexOf($"Texture2D{ProfilerMemoryElement.DELIMITER}", COMPARISON) >= 0 || currentText.IndexOf($"Mesh{ProfilerMemoryElement.DELIMITER}", COMPARISON) >= 0;
+                    var regex = new Regex(filter2, RegexOptions.IgnoreCase);
+                    stage2 = regex.Match(currentText).Success;
                     if (stage2 && stage1) {
                         texts.Add(currentText);
                     }
                 }
                 // 筛选 1 级
                 else if (currentText.IndexOf("\t", COMPARISON) >= 0) {
-                    stage1 = currentText.IndexOf($"Assets{ProfilerMemoryElement.DELIMITER}", COMPARISON) >= 0;
+                    var regex = new Regex(filter1, RegexOptions.IgnoreCase);
+                    stage1 = regex.Match(currentText).Success;
                     if (stage1) {
                         texts.Add(currentText);
                     }
