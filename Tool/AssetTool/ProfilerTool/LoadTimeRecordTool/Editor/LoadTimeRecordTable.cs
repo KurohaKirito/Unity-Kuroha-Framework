@@ -15,6 +15,7 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.LoadTimeRecordTool.Editor
             bool isDrawDistinct,
             CustomTableColumn<LoadTimeRecordData>[] columns,
             CustomTableDelegate.FilterMethod<LoadTimeRecordData> onFilterFunction,
+            CustomTableDelegate.AfterFilterMethod<LoadTimeRecordData> onAfterFilterFunction,
             CustomTableDelegate.ExportMethod<LoadTimeRecordData> onExportFunction,
             CustomTableDelegate.SelectMethod<LoadTimeRecordData> onSelectFunction,
             CustomTableDelegate.DistinctMethod<LoadTimeRecordData> onDistinctFunction)
@@ -26,6 +27,7 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.LoadTimeRecordTool.Editor
                 isDrawDistinct,
                 columns,
                 onFilterFunction,
+                onAfterFilterFunction,
                 onExportFunction,
                 onSelectFunction,
                 onDistinctFunction) { }

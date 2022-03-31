@@ -15,6 +15,7 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
             bool isDrawDistinct,
             CustomTableColumn<SceneAnalysisData>[] columns,
             CustomTableDelegate.FilterMethod<SceneAnalysisData> onFilterFunction,
+            CustomTableDelegate.AfterFilterMethod<SceneAnalysisData> onAfterFilterFunction,
             CustomTableDelegate.ExportMethod<SceneAnalysisData> onExportFunction,
             CustomTableDelegate.SelectMethod<SceneAnalysisData> onSelectFunction,
             CustomTableDelegate.DistinctMethod<SceneAnalysisData> onDistinctFunction)
@@ -26,6 +27,7 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
                 isDrawDistinct,
                 columns,
                 onFilterFunction,
+                onAfterFilterFunction,
                 onExportFunction,
                 onSelectFunction,
                 onDistinctFunction)

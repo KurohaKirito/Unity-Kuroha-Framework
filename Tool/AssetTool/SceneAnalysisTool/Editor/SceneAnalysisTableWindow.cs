@@ -77,8 +77,8 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
             fontStyleYellow = new GUIStyle();
             resultTris = 0;
             resultVerts = 0;
-            fontStyleRed.normal.textColor = new Color((float)203 / 255, (float)27 / 255, (float)69 / 255);
-            fontStyleYellow.normal.textColor = new Color((float)226 / 255, (float)148 / 255, (float)59 / 255);
+            fontStyleRed.normal.textColor = new Color((float) 203 / 255, (float) 27 / 255, (float) 69 / 255);
+            fontStyleYellow.normal.textColor = new Color((float) 226 / 255, (float) 148 / 255, (float) 59 / 255);
 
             InitTable();
         }
@@ -130,23 +130,27 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
         /// <param name="forceUpdate">是否强制刷新</param>
         private void InitTable(bool forceUpdate = false)
         {
-            if (forceUpdate || table == null)
+            if (forceUpdate == false && table != null)
             {
-                if (prefab != null || isDetectCurrentScene)
-                {
-                    var dataList = InitRows(isCollider);
+                return;
+            }
 
-                    if (dataList != null)
-                    {
-                        var columns = InitColumns(isCollider);
-                        if (columns != null)
-                        {
-                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList,
-                                true, true, true, columns,
-                                OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
-                        }
-                    }
-                }
+            if (prefab == null && !isDetectCurrentScene)
+            {
+                return;
+            }
+
+            var dataList = InitRows(isCollider);
+            if (dataList == null)
+            {
+                return;
+            }
+
+            var columns = InitColumns(isCollider);
+            if (columns != null)
+            {
+                table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList, true, true, true, columns,
+                    OnFilterEnter, OnAfterFilter, OnExportPressed, OnRowSelect, OnDistinctPressed);
             }
         }
 
@@ -283,21 +287,27 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
                         var readWriteEnable = false;
 
                         // 负缩放的凸多面体
-                        if (meshCollider.transform.localScale.x < 0 || meshCollider.transform.localScale.y < 0 || meshCollider.transform.localScale.z < 0)
+                        if (meshCollider.transform.localScale.x < 0 || meshCollider.transform.localScale.y < 0 ||
+                            meshCollider.transform.localScale.z < 0)
                         {
                             if (meshCollider.convex)
                             {
                                 readWriteEnable = true;
-                                if (sharedMesh.isReadable == false) {
-                                    DebugUtil.Log($"{meshCollider.name} 是一个负缩放的凸多面体, 需要开启读写!", meshCollider.gameObject, "red");
+                                if (sharedMesh.isReadable == false)
+                                {
+                                    DebugUtil.Log($"{meshCollider.name} 是一个负缩放的凸多面体, 需要开启读写!", meshCollider.gameObject,
+                                        "red");
                                 }
                             }
                         }
 
                         // 倾斜
-                        else if (meshCollider.transform.localRotation != Quaternion.identity && meshCollider.transform.parent.localScale != Vector3.one) {
+                        else if (meshCollider.transform.localRotation != Quaternion.identity &&
+                                 meshCollider.transform.parent.localScale != Vector3.one)
+                        {
                             readWriteEnable = true;
-                            if (sharedMesh.isReadable == false) {
+                            if (sharedMesh.isReadable == false)
+                            {
                                 DebugUtil.Log($"{meshCollider.name} 的旋转是倾斜的, 需要开启读写!", meshCollider.gameObject, "red");
                             }
                         }
@@ -306,7 +316,8 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
                         else if (meshCollider.cookingOptions != DEFAULT_OPTIONS)
                         {
                             readWriteEnable = true;
-                            if (sharedMesh.isReadable == false) {
+                            if (sharedMesh.isReadable == false)
+                            {
                                 DebugUtil.Log($"{meshCollider.name} 的烘焙选项非默认, 需要开启读写!", meshCollider.gameObject, "red");
                             }
                         }
@@ -361,7 +372,8 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
                     {
                         if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
                         {
-                            DebugUtil.LogError($"粒子系统 {particleSystem.transform.name} 使用 Mesh 方式渲染粒子, 却没有指定 Mesh!", particleSystem.gameObject, "red");
+                            DebugUtil.LogError($"粒子系统 {particleSystem.transform.name} 使用 Mesh 方式渲染粒子, 却没有指定 Mesh!",
+                                particleSystem.gameObject, "red");
                         }
                     }
                     else
@@ -850,18 +862,82 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
 
             return isMatched;
         }
-        
+
+        /// <summary>
+        /// 查找按钮事件
+        /// </summary>
+        private void OnAfterFilter(List<SceneAnalysisData> dataList)
+        {
+            if (dataList.Count <= 0)
+            {
+                return;
+            }
+
+            if (dataList.Count == 1)
+            {
+                if (dataList[0].assetName == "Sum")
+                {
+                    dataList.Clear();
+                    return;
+                }
+            }
+
+            resultTris = 0;
+            resultVerts = 0;
+            resultUV = 0;
+            resultUV2 = 0;
+            resultUV3 = 0;
+            resultUV4 = 0;
+            resultColors = 0;
+            resultTangents = 0;
+            resultNormals = 0;
+
+            var sumIndex = 0;
+
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                if (dataList[i].assetName == "Sum")
+                {
+                    sumIndex = i;
+                }
+                else
+                {
+                    resultTris += dataList[i].tris;
+                    resultVerts += dataList[i].verts;
+                    resultUV += dataList[i].uv;
+                    resultUV2 += dataList[i].uv2;
+                    resultUV3 += dataList[i].uv3;
+                    resultUV4 += dataList[i].uv4;
+                    resultColors += dataList[i].colors;
+                    resultTangents += dataList[i].tangents;
+                    resultNormals += dataList[i].normals;
+                }
+            }
+
+            dataList.RemoveAt(sumIndex);
+
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                dataList[i].id = i + 1;
+            }
+
+            AddRowsSum(dataList);
+        }
+
         /// <summary>
         /// 数据去重事件
         /// </summary>
-        private void OnDistinctPressed(ref List<SceneAnalysisData> dataList) {
+        private void OnDistinctPressed(ref List<SceneAnalysisData> dataList)
+        {
             var newList = new List<SceneAnalysisData>();
-            foreach (var data in dataList) {
-                if (data.assetName != "Sum" && newList.Exists(analysisData => analysisData.Equal(data)) == false) {
+            foreach (var data in dataList)
+            {
+                if (data.assetName != "Sum" && newList.Exists(analysisData => analysisData.Equal(data)) == false)
+                {
                     newList.Add(data);
                 }
             }
-            
+
             dataList = newList;
 
             resultTris = 0;
@@ -875,7 +951,8 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
             resultTangents = 0;
 
             // 重新编号并求和
-            for (var index = 0; index < dataList.Count; ++index) {
+            for (var index = 0; index < dataList.Count; ++index)
+            {
                 dataList[index].id = index + 1;
                 resultTris += dataList[index].tris;
                 resultVerts += dataList[index].verts;
@@ -887,7 +964,7 @@ namespace Kuroha.Tool.AssetTool.SceneAnalysisTool.Editor
                 resultNormals += dataList[index].normals;
                 resultTangents += dataList[index].tangents;
             }
-            
+
             AddRowsSum(dataList);
         }
     }

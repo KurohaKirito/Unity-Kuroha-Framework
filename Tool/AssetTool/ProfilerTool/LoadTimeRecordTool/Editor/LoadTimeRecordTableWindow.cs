@@ -38,22 +38,26 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.LoadTimeRecordTool.Editor
         /// <param name="forceUpdate">是否强制刷新</param>
         private void InitTable(bool forceUpdate = false)
         {
-            if (forceUpdate || timeRecordTable == null)
+            if (forceUpdate == false && timeRecordTable != null)
             {
-                var dataList = InitData();
-                if (dataList != null)
-                {
-                    var columns = InitColumns();
-                    if (columns != null)
-                    {
-                        var space = new Vector2(20, 20);
-                        var min = new Vector2(300, 300);
-                        timeRecordTable = new LoadTimeRecordTable(space, min, dataList, 
-                            true, true, true, columns,
-                            OnFilterEnter, null, null, null);
-                    }
-                }
+                return;
             }
+            
+            var dataList = InitData();
+            if (dataList == null)
+            {
+                return;
+            }
+            
+            var columns = InitColumns();
+            if (columns == null)
+            {
+                return;
+            }
+            
+            var space = new Vector2(20, 20);
+            var min = new Vector2(300, 300);
+            timeRecordTable = new LoadTimeRecordTable(space, min, dataList, true, true, true, columns, OnFilterEnter, null, null, null, null);
         }
 
         /// <summary>

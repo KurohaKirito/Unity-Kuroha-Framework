@@ -23,11 +23,21 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.MemoryTool.Editor
         /// 筛选条件: 树形结构深度
         /// </summary>
         private static int memoryDepth = 3;
+        
+        /// <summary>
+        /// 筛选条件: 资源名称
+        /// </summary>
+        private static string nameFilter1 = "Assets";
 
         /// <summary>
         /// 筛选条件: 资源名称
         /// </summary>
-        private static string memoryName = "role";
+        private static string nameFilter2 = "Texture2D";
+        
+        /// <summary>
+        /// 筛选条件: 资源名称
+        /// </summary>
+        private static string nameFilter3 = "jeep";
         
         /// <summary>
         /// 全局默认 margin
@@ -77,7 +87,7 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.MemoryTool.Editor
 
                     GUILayout.Space(2 * UI_DEFAULT_MARGIN);
                     
-                    EditorGUILayout.LabelField("1. 请先打开 Profiler 窗口, 并聚焦 Memory 部分的 Detail 窗口.");
+                    EditorGUILayout.LabelField("一. 请先打开 Profiler 窗口, 并聚焦 Memory 部分的 Detail 窗口.");
                     GUILayout.BeginHorizontal("Box");
                     {
                         if (GUILayout.Button("打开 Profiler 窗口", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
@@ -89,7 +99,7 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.MemoryTool.Editor
                     
                     GUILayout.Space(2 * UI_DEFAULT_MARGIN);
                     
-                    EditorGUILayout.LabelField("2. 点击按钮, 获取设备当前的内存细节信息快照.");
+                    EditorGUILayout.LabelField("二. 点击按钮, 获取设备当前的内存细节信息快照.");
                     GUILayout.BeginHorizontal("Box");
                     {
                         if (GUILayout.Button("Take Sample", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
@@ -103,26 +113,36 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.MemoryTool.Editor
                     GUILayout.Space(2 * UI_DEFAULT_MARGIN);
                     
                     // 绘制筛选条件
-                    EditorGUILayout.LabelField("3. 填写筛选条件");
+                    EditorGUILayout.LabelField("三. 填写筛选条件");
                     
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.LabelField("1. 按照资源名称筛选");
-                    memoryName = EditorGUILayout.TextField("Name: ", memoryName, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    EditorGUILayout.LabelField("1. 一级菜单名称筛选");
+                    nameFilter1 = EditorGUILayout.TextField("Name: ", nameFilter1, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     EditorGUI.indentLevel--;
                     
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.LabelField("2. 按照内存占用大小筛选");
+                    EditorGUILayout.LabelField("2. 二级菜单名称筛选");
+                    nameFilter2 = EditorGUILayout.TextField("Name: ", nameFilter2, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    EditorGUI.indentLevel--;
+                    
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.LabelField("3. 三级菜单名称筛选");
+                    nameFilter3 = EditorGUILayout.TextField("Name: ", nameFilter3, GUILayout.Width(UI_INPUT_AREA_WIDTH));
+                    EditorGUI.indentLevel--;
+                    
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.LabelField("4. 三级菜单内存占用大小筛选");
                     memorySize = EditorGUILayout.FloatField("Memory ImporterSize (KB) >= ", memorySize, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     EditorGUI.indentLevel--;
                     
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.LabelField("3. 按照资源树深度筛选");
+                    EditorGUILayout.LabelField("5. 资源树深度筛选");
                     memoryDepth = EditorGUILayout.IntField("Memory Depth (>=1) ", memoryDepth, GUILayout.Width(UI_INPUT_AREA_WIDTH));
                     EditorGUI.indentLevel--;
 
                     GUILayout.Space(2 * UI_DEFAULT_MARGIN);
                     
-                    EditorGUILayout.LabelField("4. 点击按钮, 导出内存占用细节到文件: C:/MemoryDetail.txt");
+                    EditorGUILayout.LabelField("四. 点击按钮, 导出内存占用细节到文件: C:/MemoryDetail.txt");
                     GUILayout.BeginHorizontal("Box");
                     {
                         if (GUILayout.Button("Export", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
@@ -133,7 +153,7 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.MemoryTool.Editor
                             }
 
                             // 导出内存数据
-                            ExtractMemory(memoryName, memorySize * 1024f, memoryDepth - 1);
+                            ExtractMemory(nameFilter1, nameFilter2, nameFilter3, memorySize * 1024f, memoryDepth - 1);
                         }
                     }
                     GUILayout.EndHorizontal();
@@ -146,10 +166,7 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.MemoryTool.Editor
         /// <summary>
         /// 导出内存细节详情
         /// </summary>
-        /// <param name="memName"></param>
-        /// <param name="memSize"></param>
-        /// <param name="memDepth"></param>
-        private static void ExtractMemory(string memName, float memSize, int memDepth)
+        private static void ExtractMemory(string filter1, string filter2, string filter3, float memSize, int memDepth)
         {
             // 文本内容
             var texts = new List<string>(100);
@@ -166,7 +183,7 @@ namespace Kuroha.Tool.AssetTool.ProfilerTool.MemoryTool.Editor
                 texts.Add($"Memory Depth: {memoryDepth}");
                 texts.Add($"Current Target: {memoryConnect}");
                 texts.Add("****************************************************************************************");
-                texts.AddRange(ProfilerWindow.GetMemoryDetail(profilerMemoryElementRoot, memName));
+                texts.AddRange(ProfilerWindow.GetMemoryDetail(profilerMemoryElementRoot, filter1, filter2, filter3));
             }
 
             System.IO.File.WriteAllLines(outputPath, texts);

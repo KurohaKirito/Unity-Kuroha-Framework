@@ -175,20 +175,27 @@ namespace Kuroha.Tool.AssetTool.TextureAnalysisTool.Editor
         /// <param name="forceUpdate">是否强制刷新</param>
         private void InitTable(bool forceUpdate = false)
         {
-            if (forceUpdate || table == null)
+            if (forceUpdate == false && table != null)
             {
-                var dataList = InitData();
-                if (dataList != null)
-                {
-                    var columns = InitColumns();
-                    if (columns != null)
-                    {
-                        var space = new Vector2(20, 20);
-                        var min = new Vector2(300, 300);
-                        table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns, OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
-                    }
-                }
+                return;
             }
+            
+            var dataList = InitData();
+            if (dataList == null)
+            {
+                return;
+            }
+            
+            var columns = InitColumns();
+            if (columns == null)
+            {
+                return;
+            }
+            
+            var space = new Vector2(20, 20);
+            var min = new Vector2(300, 300);
+            table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns, 
+                OnFilterEnter, null, OnExportPressed, OnRowSelect, OnDistinctPressed);
         }
 
         /// <summary>
