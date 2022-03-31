@@ -30,6 +30,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         private bool IsDrawDistinct { get; }
 
         private CustomTableDelegate.FilterMethod<T> FilterFunction { get; }
+        private CustomTableDelegate.AfterFilterMethod<T> AfterFilterMethod { get; }
         private CustomTableDelegate.ExportMethod<T> ExportFunction { get; }
         private CustomTableDelegate.SelectMethod<T> SelectFunction { get; }
         private CustomTableDelegate.DistinctMethod<T> DistinctFunction { get; }
@@ -41,7 +42,13 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         /// <summary>
         /// Constructor
         /// </summary>
-        protected CustomTable(Vector2 space, Vector2 minSize, List<T> dataList, bool isDrawFilter, bool isDrawExport, bool isDrawDistinct, CustomTableColumn<T>[] columns, CustomTableDelegate.FilterMethod<T> onFilterFunction, CustomTableDelegate.ExportMethod<T> onExportFunction, CustomTableDelegate.SelectMethod<T> onSelectFunction, CustomTableDelegate.DistinctMethod<T> onDistinctFunction) {
+        protected CustomTable(Vector2 space, Vector2 minSize, List<T> dataList,
+            bool isDrawFilter, bool isDrawExport, bool isDrawDistinct,
+            CustomTableColumn<T>[] columns,
+            CustomTableDelegate.FilterMethod<T> onFilterFunction, CustomTableDelegate.AfterFilterMethod<T> afterFilterMethod,
+            CustomTableDelegate.ExportMethod<T> onExportFunction, CustomTableDelegate.SelectMethod<T> onSelectFunction,
+            CustomTableDelegate.DistinctMethod<T> onDistinctFunction)
+        {
             minRect = minSize;
             WidthSpace = space.x;
             HeightSpace = space.y;
@@ -55,13 +62,15 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             IsDrawDistinct = isDrawDistinct;
 
             FilterFunction = onFilterFunction;
+            AfterFilterMethod = afterFilterMethod;
             ExportFunction = onExportFunction;
             SelectFunction = onSelectFunction;
             DistinctFunction = onDistinctFunction;
 
             // ReSharper disable once CoVariantArrayConversion
             MultiColumnHeaderState = new MultiColumnHeaderState(columns);
-            treeView = new CustomTreeView<T>(new TreeViewState(), new MultiColumnHeader(MultiColumnHeaderState), dataList, FilterFunction, ExportFunction, SelectFunction, DistinctFunction);
+            treeView = new CustomTreeView<T>(new TreeViewState(), new MultiColumnHeader(MultiColumnHeaderState), dataList,
+                FilterFunction, AfterFilterMethod, ExportFunction, SelectFunction, DistinctFunction);
             treeView.Reload();
         }
 

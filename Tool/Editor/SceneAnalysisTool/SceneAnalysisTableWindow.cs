@@ -118,17 +118,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         /// 初始化表格
         /// </summary>
         /// <param name="forceUpdate">是否强制刷新</param>
-        private void InitTable(bool forceUpdate = false) {
-            if (forceUpdate || table == null) {
-                if (ReferenceEquals(prefab, null) == false || isDetectCurrentScene) {
+        private void InitTable(bool forceUpdate = false)
+        {
+            if (forceUpdate || table == null)
+            {
+                if (ReferenceEquals(prefab, null) == false || isDetectCurrentScene)
+                {
                     var dataList = InitRows(isCollider);
-
-                    if (dataList != null) {
+                    if (dataList != null)
+                    {
                         var columns = InitColumns(isCollider);
-                        if (columns != null) {
+                        if (columns != null)
+                        {
                             table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList,
-                                true, true, true, columns,
-                                OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
+                                true, true, true, columns, OnFilterEnter, OnAfterFilter, OnExportPressed, OnRowSelect, OnDistinctPressed);
                         }
                     }
                 }
@@ -710,6 +713,65 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             #endregion
 
             return isMatched;
+        }
+        
+        /// <summary>
+        /// 查找按钮事件
+        /// </summary>
+        private void OnAfterFilter(List<SceneAnalysisData> dataList)
+        {
+            if (dataList.Count <= 0)
+            {
+                return;
+            }
+            if (dataList.Count == 1)
+            {
+                if (dataList[0].assetName == "Sum")
+                {
+                    dataList.Clear();
+                    return;
+                }
+            }
+            
+            resultTris = 0;
+            resultVerts = 0;
+            resultUV = 0;
+            resultUV2 = 0;
+            resultUV3 = 0;
+            resultUV4 = 0;
+            resultColors = 0;
+            resultTangents = 0;
+            resultNormals = 0;
+        
+            var sumIndex = 0;
+
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                if (dataList[i].assetName == "Sum")
+                {
+                    sumIndex = i;
+                }
+                else
+                {
+                    resultTris += dataList[i].tris;
+                    resultVerts += dataList[i].verts;
+                    resultUV += dataList[i].uv;
+                    resultUV2 += dataList[i].uv2;
+                    resultUV3 += dataList[i].uv3;
+                    resultUV4 += dataList[i].uv4;
+                    resultColors += dataList[i].colors;
+                    resultTangents += dataList[i].tangents;
+                    resultNormals += dataList[i].normals;
+                }
+            }
+            dataList.RemoveAt(sumIndex);
+
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                dataList[i].id = i + 1;
+            }
+            
+            AddRowsSum(dataList);
         }
 
         /// <summary>

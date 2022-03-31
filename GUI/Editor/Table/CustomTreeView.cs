@@ -10,17 +10,16 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         private int filterMask = -1;
         private string filterText;
         private bool isReBuildRows;
-        private List<T> dataList;
-        private List<CustomTreeViewItem<T>> items;
+        private readonly List<T> dataList;
+        private List<T> dataListToShow;
+        private List<CustomTreeViewItem<T>> allRow;
 
         #region private property
 
         private CustomTableDelegate.FilterMethod<T> MethodFilter { get; }
-
+        private CustomTableDelegate.AfterFilterMethod<T> MethodAfterFilter { get; }
         private CustomTableDelegate.ExportMethod<T> MethodExport { get; }
-
         private CustomTableDelegate.SelectMethod<T> MethodSelect { get; }
-
         private CustomTableDelegate.DistinctMethod<T> MethodDistinct { get; }
 
         #endregion
@@ -28,10 +27,15 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         /// <summary>
         /// Constructor
         /// </summary>
-        public CustomTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, List<T> dataList, CustomTableDelegate.FilterMethod<T> methodFilter, CustomTableDelegate.ExportMethod<T> methodExport, CustomTableDelegate.SelectMethod<T> methodSelect, CustomTableDelegate.DistinctMethod<T> methodDistinct) : base(state, multiColumnHeader) {
+        public CustomTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, List<T> dataList, 
+            CustomTableDelegate.FilterMethod<T> methodFilter, CustomTableDelegate.AfterFilterMethod<T> methodAfterFilter,
+            CustomTableDelegate.ExportMethod<T> methodExport, CustomTableDelegate.SelectMethod<T> methodSelect,
+            CustomTableDelegate.DistinctMethod<T> methodDistinct) : base(state, multiColumnHeader)
+        {
             this.dataList = dataList;
 
             MethodFilter = methodFilter;
+            MethodAfterFilter = methodAfterFilter;
             MethodExport = methodExport;
             MethodSelect = methodSelect;
             MethodDistinct = methodDistinct;
@@ -71,8 +75,8 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             }
 
             if (UnityEngine.GUI.Button(new Rect(exportPosition.x, exportPosition.y - 1, width, height), "Export")) {
-                var path = EditorUtility.SaveFilePanel("Export DataList", Application.dataPath, "dataList.txt", "");
-                MethodExport(path, dataList);
+                var path = EditorUtility.SaveFilePanel("Export DataList", Application.dataPath, "Mesh Info.txt", "");
+                MethodExport(path, dataListToShow);
             }
         }
 
@@ -86,7 +90,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             }
 
             if (UnityEngine.GUI.Button(new Rect(position.x, position.y - 1, width, height), "Distinct")) {
-                MethodDistinct(ref dataList);
+                MethodDistinct(ref dataListToShow);
                 isReBuildRows = true;
                 Reload();
             }
@@ -126,26 +130,16 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
 
         #region private function
 
-        /// <summary>
-        /// 查询
-        /// </summary>
-        /// <param name="rows">所有行的全部具体信息</param>
-        /// <returns></returns>
-        private List<CustomTreeViewItem<T>> Filter(IEnumerable<CustomTreeViewItem<T>> rows) {
-            var enumerable = rows;
-
-            if (multiColumnHeader.state.visibleColumns.Any(visible => visible == 0) && MethodFilter != null) {
-                enumerable = enumerable.Where(item => MethodFilter(filterMask, item.Data, filterText));
+        private List<T> Filter(IEnumerable<T> rows)
+        {
+            var isHadColumsShowing = multiColumnHeader.state.visibleColumns.Any(visible => visible == 0);
+            if (isHadColumsShowing && MethodFilter != null) {
+                rows = rows.Where(item => MethodFilter(filterMask, item, filterText));
             }
-
-            return enumerable.ToList();
+            isReBuildRows = true;
+            return rows.ToList();
         }
 
-        /// <summary>
-        /// 排序
-        /// </summary>
-        /// <param name="rows">所有行的全部具体信息</param>
-        /// <param name="sortColumnIndex">触发排序的列</param>
         private void Sort(IList<TreeViewItem> rows, int sortColumnIndex) {
             // 获取排序类型
             // 升序: 箭头朝上, flag: true
@@ -197,36 +191,39 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         }
 
         protected override IList<TreeViewItem> BuildRows(TreeViewItem root) {
-            if (items == null) {
-                items = new List<CustomTreeViewItem<T>>();
-                for (var i = 0; i < dataList.Count; i++) {
-                    var data = dataList[i];
-                    items.Add(new CustomTreeViewItem<T>(i, 0, data));
+            if (dataListToShow == null) {
+                dataListToShow = new List<T>();
+            }
+            
+            if (string.IsNullOrEmpty(filterText)) {
+                if (dataListToShow.Count != dataList.Count) {
+                    dataListToShow = dataList;
+                    isReBuildRows = true;
                 }
+            } else {
+                dataListToShow = Filter(dataList);
+                MethodAfterFilter?.Invoke(dataListToShow);
+            }
+
+            if (allRow == null) {
+                allRow = new List<CustomTreeViewItem<T>>();
             }
 
             if (isReBuildRows) {
-                items.Clear();
-                for (var i = 0; i < dataList.Count; i++) {
-                    var data = dataList[i];
-                    items.Add(new CustomTreeViewItem<T>(i, 0, data));
+                allRow.Clear();
+                for (var i = 0; i < dataListToShow.Count; i++) {
+                    var data = dataListToShow[i];
+                    allRow.Add(new CustomTreeViewItem<T>(i, 0, data));
                 }
-
                 isReBuildRows = false;
             }
 
-            var itemList = items;
-            if (string.IsNullOrEmpty(filterText) == false) {
-                itemList = Filter(itemList);
-            }
-
-            var list = itemList.Cast<TreeViewItem>().ToList();
-
+            var list = allRow.Cast<TreeViewItem>().ToList();
             if (multiColumnHeader.sortedColumnIndex >= 0) {
                 Sort(list, multiColumnHeader.sortedColumnIndex);
             }
 
-            return itemList.Cast<TreeViewItem>().ToList();
+            return list;
         }
 
         protected override void KeyEvent() {
@@ -247,12 +244,12 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             var list = new List<T>();
 
             foreach (var id in selectedIds) {
-                if (id < 0 || id > dataList.Count) {
-                    DebugUtil.LogError(id + "out of range");
+                if (id < 0 || id > dataListToShow.Count) {
+                    DebugUtil.LogError($"CustomTreeView: {id} out of range: {dataListToShow.Count}");
                     continue;
                 }
 
-                var data = dataList[id];
+                var data = dataListToShow[id];
                 list.Add(data);
             }
 

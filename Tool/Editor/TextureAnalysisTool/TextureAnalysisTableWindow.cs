@@ -175,7 +175,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     if (columns != null) {
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
-                        table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns, OnFilterEnter, OnExportPressed, OnRowSelect, OnDistinctPressed);
+                        table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns, 
+                            OnFilterEnter, null, OnExportPressed, OnRowSelect, OnDistinctPressed);
                     }
                 }
             }
@@ -535,14 +536,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// <param name="dataList"></param>
         private static void OnExportPressed(string file, in List<TextureAnalysisData> dataList) {
             if (dataList.Count <= 0) {
-                EditorUtility.DisplayDialog("Warning", "No Data!", "Ok");
+                EditorUtility.DisplayDialog("Warning", "No Data!", "OK");
                 return;
             }
-
+            
             if (File.Exists(file)) {
                 File.Delete(file);
             }
-
+            
             foreach (var data in dataList) {
                 File.AppendAllText(file, $"{data.id}\t{data.textureName}\t{data.width}\t{data.height}\n");
             }

@@ -40,7 +40,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.AsyncLoadTool 
                         var space = new Vector2(20, 20);
                         var min = new Vector2(300, 300);
                         table = new AsyncLoadTable(space, min, dataList, true, true, true, columns,
-                            OnFilterEnter, null, null, null);
+                            OnFilterEnter, null, null, null, null);
                     }
                 }
             }
