@@ -41,10 +41,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
             UI_Foldout = EditorGUILayout.Foldout(UI_Foldout, AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.AssetRenameTool], true);
-            if (UI_Foldout == false)
-            {
-                return;
-            }
+            if (UI_Foldout == false) return;
 
             GUILayout.Space(UI_DEFAULT_MARGIN);
             GUILayout.BeginVertical("Box");
@@ -63,10 +60,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
 
                 if (Selection.objects != null)
                 {
-                    UI_Scrollview = GUILayout.BeginScrollView(UI_Scrollview, GUILayout.Height(300));
+                    UI_Scrollview = GUILayout.BeginScrollView(UI_Scrollview, GUILayout.Height(527));
                     for (int index = 0; index < Selection.objects.Length; index++)
                     {
-                        EditorGUILayout.ObjectField($"{index + 1}", Selection.objects[index], typeof(UnityEngine.Object), false);
+                        EditorGUILayout.ObjectField($"序号:   {index + 1}", Selection.objects[index], typeof(UnityEngine.Object), false);
                     }
                     GUILayout.EndScrollView();
                 }
@@ -81,8 +78,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
         {
             // 保存重命名步骤
             EditorUtility.SetDirty(renameSetting);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
             
             // 执行重命名步骤
             foreach (var step in renameSetting.steps)
