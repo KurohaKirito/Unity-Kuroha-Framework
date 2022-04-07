@@ -52,6 +52,9 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
             assetFilePath = "已执行处理!";
         }
 
+        /// <summary>
+        /// 设置纹理设置
+        /// </summary>
         private static bool SetTextureImportSettings(string assetPath) {
             var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
             if (textureImporter != null) {

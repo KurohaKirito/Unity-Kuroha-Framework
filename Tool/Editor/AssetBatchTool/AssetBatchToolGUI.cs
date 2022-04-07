@@ -16,12 +16,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             BundleAssetCounter,
             AssetDeleteTool,
             AssetMoveTool,
+            AssetRenameTool,
             MaterialShaderChecker,
             UnusedAssetChecker,
             CheckSubEmitterInAllScene,
             FbxUVColorsChecker,
             AnimationClipCompress,
-            AutoCheckTool = 11
+            AutoCheckTool = 12
         }
 
         /// <summary>
@@ -34,6 +35,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             "捆绑包资源数量分析",
             "资源批量删除工具",
             "资源批量移动工具",
+            "资源批量重命名工具",
             "材质球的着色器引用检测器",
             "废弃资源检测工具",
             "场景粒子 Sub-Emitter 检测",
@@ -145,6 +147,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                     case BatchType.AssetMoveTool:
                         AssetMoveTool.OnGUI();
                         break;
+                    
+                    case BatchType.AssetRenameTool:
+                        AssetRenameTool.AssetRenameTool.OnGUI();
+                        break;
 
                     case BatchType.MaterialShaderChecker:
                         ShaderChecker.OnGUI();
@@ -169,7 +175,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                     case BatchType.AutoCheckTool:
                         AutoCheckToolGUI.OnGUI();
                         break;
-
+                    
                     default:
                         DebugUtil.LogError("忘记注册 OnGUI 事件了!");
                         throw new ArgumentOutOfRangeException();

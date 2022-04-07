@@ -45,7 +45,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
         public static void OnGUI() {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int)AssetBatchToolGUI.BatchType.AssetDeleteTool], true);
+            foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int)AssetBatchToolGUI.BatchType.AssetMoveTool], true);
 
             if (foldout) {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
