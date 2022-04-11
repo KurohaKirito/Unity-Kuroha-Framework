@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
 {
@@ -16,14 +15,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
             Replace,
             Sort
         }
-        
         public enum PositionType
         {
             Begin,
             End,
             Index
         }
-        
         public enum SortType
         {
             A_Z,
@@ -36,20 +33,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
             public int beginIndex;
             public int length;
         }
-        
         [Serializable]
         public struct RemoveStep
         {
             public string regex;
         }
-        
         [Serializable]
         public struct ReplaceStep
         {
             public string regex;
             public string newString;
         }
-        
         [Serializable]
         public struct InsertStep
         {
@@ -57,7 +51,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
             public int index;
             public string content;
         }
-
         [Serializable]
         public struct SortStep
         {
