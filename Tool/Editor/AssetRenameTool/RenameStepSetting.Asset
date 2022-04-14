@@ -12,38 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RenameStepSetting
   m_EditorClassIdentifier: Assembly-CSharp-Editor:Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool:RenameStepScriptableObject
-  steps:
-  - operaType: 2
-    insertStep:
-      paramType: 1
-      index: 0
-      content: _High
-    deleteStep:
-      beginIndex: 0
-      length: 0
-    removeStep:
-      regex: _High
-    replaceStep:
-      regex: 
-      newString: 
-    sortStep:
-      sortType: 0
-      BeginNumber: 0
-      length: 0
-  - operaType: 3
-    insertStep:
-      paramType: 0
-      index: 0
-      content: 
-    deleteStep:
-      beginIndex: 0
-      length: 0
-    removeStep:
-      regex: 
-    replaceStep:
-      regex: Ak
-      newString: AK_
-    sortStep:
-      sortType: 0
-      BeginNumber: 0
-      length: 0
+  steps: []
