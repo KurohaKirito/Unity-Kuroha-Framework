@@ -47,7 +47,6 @@ namespace Script.Effect.Editor.AssetTool
                         }
                                 
                         EditorUtility.SetDirty(prefab);
-                        Debug.Log("123123");
                     }
 
                     AssetDatabase.SaveAssets();
