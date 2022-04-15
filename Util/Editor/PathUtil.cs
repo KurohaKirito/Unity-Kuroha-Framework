@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Script.Effect.Editor.AssetTool.Util.Editor {
     public static class PathUtil {
@@ -9,13 +8,20 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
         /// </summary>
         /// <param name="absolutePaths">待转换路径</param>
         /// <returns></returns>
-        public static List<string> GetAssetPath(in string[] absolutePaths)
-        {
-            return (from path in absolutePaths
-                where string.IsNullOrEmpty(path) == false && path.IndexOf(".meta", StringComparison.OrdinalIgnoreCase) < 0
-                let assetsIndex = path.IndexOf("Assets", StringComparison.OrdinalIgnoreCase)
-                let assetPath = path.Substring(assetsIndex)
-                select assetPath).ToList();
+        public static List<string> GetAssetPath(in string[] absolutePaths) {
+            var result = new List<string>();
+
+            foreach (var path in absolutePaths) {
+                if (string.IsNullOrEmpty(path) == false) {
+                    var assetsIndex = path.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                    var assetPath = path.Substring(assetsIndex);
+                    if (assetPath.IndexOf(".meta", StringComparison.OrdinalIgnoreCase) < 0) {
+                        result.Add(assetPath);
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>

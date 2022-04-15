@@ -264,12 +264,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
             
             foreach (var asset in objects)
             {
-                var match = regex.Match(asset.name);
-                if (match.Success == false) continue;
-                
                 var path = AssetDatabase.GetAssetPath(asset);
-                var newName = asset.name.Replace(match.Value, string.Empty);
-                AssetDatabase.RenameAsset(path, newName);
+                var newName = regex.Replace(asset.name, "");
+                if (newName != asset.name)
+                {
+                    AssetDatabase.RenameAsset(path, newName);
+                }
             }
         }
         private static void Do_Replace(in UnityEngine.Object[] objects, RenameStepScriptableObject.ReplaceStep info)
@@ -278,12 +278,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
             
             foreach (var asset in objects)
             {
-                var match = regex.Match(asset.name);
-                if (match.Success == false) continue;
-                
                 var path = AssetDatabase.GetAssetPath(asset);
-                var newName = asset.name.Replace(match.Value, info.newString);
-                AssetDatabase.RenameAsset(path, newName);
+                var newName = regex.Replace(asset.name, info.newString);
+                if (newName != asset.name)
+                {
+                    AssetDatabase.RenameAsset(path, newName);
+                }
             }
         }
         private static void Do_Insert(in UnityEngine.Object[] objects, RenameStepScriptableObject.InsertStep info)
