@@ -14,9 +14,9 @@ namespace Kuroha.Util.Editor
         public static List<string> GetAssetPath(in string[] absolutePaths)
         {
             return (from path in absolutePaths
-                where string.IsNullOrEmpty(path) == false
-                let assetPath = path.Substring(path.IndexOf("Assets", StringComparison.OrdinalIgnoreCase))
-                where assetPath.IndexOf(".meta", StringComparison.OrdinalIgnoreCase) < 0
+                where string.IsNullOrEmpty(path) == false && path.IndexOf(".meta", StringComparison.OrdinalIgnoreCase) < 0
+                let assetsIndex = path.IndexOf("Assets", StringComparison.OrdinalIgnoreCase)
+                let assetPath = path.Substring(assetsIndex)
                 select assetPath).ToList();
         }
 
@@ -39,7 +39,7 @@ namespace Kuroha.Util.Editor
 
             return result;
         }
-        
+
         /// <summary>
         /// 将 AssetPath 转换为 AbsolutePath
         /// </summary>

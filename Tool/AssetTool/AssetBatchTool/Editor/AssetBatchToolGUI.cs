@@ -15,6 +15,7 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
         {
             AssetMoveTool,
             AssetDeleteTool,
+            AssetRenameTool,
             UnusedAssetChecker,
             AnimationClipCompress,
             MaterialShaderChecker,
@@ -31,6 +32,7 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
         {
             "资源批量移动工具",
             "资源批量删除工具",
+            "资源批量重命名工具",
             "废弃资源检测工具",
             "动画片段压缩工具",
             "着色器引用检测工具",
@@ -87,20 +89,20 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
                 scrollView = GUILayout.BeginScrollView(scrollView);
                 {
                     GUILayout.Space(5);
-                    
+
                     for (var index = 0; index < batches.Length; index++)
                     {
                         var oldColor = UnityEngine.GUI.backgroundColor;
-                        if (currentBatch == (BatchType)index)
+                        if (currentBatch == (BatchType) index)
                         {
                             UnityEngine.GUI.backgroundColor = new Color(92 / 255f, 223 / 255f, 240 / 255f);
                         }
-                        
+
                         if (GUILayout.Button(batches[index], buttonStyle, GUILayout.Width(196), GUILayout.Height(30)))
                         {
-                            currentBatch = (BatchType)index;
+                            currentBatch = (BatchType) index;
                         }
-                        
+
                         UnityEngine.GUI.backgroundColor = oldColor;
 
                         if (index + 1 < batches.Length)
@@ -135,7 +137,11 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
                     case BatchType.AssetDeleteTool:
                         AssetDeleteTool.OnGUI();
                         break;
-                    
+
+                    case BatchType.AssetRenameTool:
+                        AssetRenameTool.Editor.AssetRenameTool.OnGUI();
+                        break;
+
                     case BatchType.AssetMoveTool:
                         AssetMoveTool.OnGUI();
                         break;
@@ -143,7 +149,7 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
                     case BatchType.MaterialShaderChecker:
                         ShaderChecker.OnGUI();
                         break;
-                    
+
                     case BatchType.UnusedAssetChecker:
                         UnusedAssetCleaner.OnGUI();
                         break;
@@ -155,7 +161,7 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
                     case BatchType.AnimationClipCompress:
                         AnimationClipCompress.OnGUI();
                         break;
-                    
+
                     case BatchType.SetTextureImportSettings:
                         SetTextureImportSettings.OnGUI();
                         break;
