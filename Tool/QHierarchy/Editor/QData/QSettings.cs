@@ -8,9 +8,10 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
 {
     public delegate void QSettingChangedHandler();
 
-	public class QSettings 
+	public class QSettings
 	{
-		private const string PREFS_PREFIX = "QTools.QHierarchy_";
+        private const string SETTINGS_FILE_NAME = "QHierarchySettingsObjectAsset";
+		private const string PREFS_PREFIX = "QHierarchy_";
         private const string PREFS_DARK = "Dark_";
         private const string PREFS_LIGHT = "Light_";
         public const string DEFAULT_ORDER = "0;1;2;3;4;5;6;7;8;9;10;11;12";
@@ -19,12 +20,11 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         /// 默认情况下参与排序的功能的数量
         /// </summary>
         public const int DEFAULT_ORDER_COUNT = 13;
-        private const string SETTINGS_FILE_NAME = "QSettingsObjectAsset";
         
-        private QSettingsObject settingsObject;
-        private Dictionary<EM_QHierarchySettings, object> defaultSettings = new Dictionary<EM_QHierarchySettings, object>();
-        private HashSet<int> skinDependedSettings = new HashSet<int>();
-        private Dictionary<int, QSettingChangedHandler> settingChangedHandlerList = new Dictionary<int, QSettingChangedHandler>();
+        private readonly QSettingsObject settingsObject;
+        private readonly Dictionary<EM_QHierarchySettings, object> defaultSettings = new Dictionary<EM_QHierarchySettings, object>();
+        private readonly HashSet<int> skinDependedSettings = new HashSet<int>();
+        private readonly Dictionary<int, QSettingChangedHandler> settingChangedHandlerList = new Dictionary<int, QSettingChangedHandler>();
         
         /// <summary>
         /// 单例
@@ -32,12 +32,7 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
         private static QSettings instance;
         public static QSettings Instance()
         {
-            if (instance == null)
-            {
-                instance = new QSettings();
-            }
-            
-            return instance;
+            return instance ??= new QSettings();
         }
         
         /// <summary>
@@ -169,22 +164,6 @@ namespace Kuroha.Tool.QHierarchy.Editor.QData
             InitSetting(EM_QHierarchySettings.AdditionalInactiveColor                    , "FF4F4F4F", "1E000000");
             InitSetting(EM_QHierarchySettings.AdditionalSpecialColor                     , "FF2CA8CA", "FF1D78D5");
 		}
-
-        /// <summary>
-        /// 销毁事件
-        /// </summary>
-        public void OnDestroy()
-        {
-            skinDependedSettings = null;
-            
-            defaultSettings = null;
-            
-            settingsObject = null;
-            
-            settingChangedHandlerList = null;
-            
-            instance = null;
-        }
 
         /// <summary>
         /// 获取配置
