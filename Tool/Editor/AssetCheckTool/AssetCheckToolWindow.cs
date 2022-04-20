@@ -109,7 +109,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool {
         /// 界面绘制
         /// </summary>
         private void OnGUI() {
-            CheckLabelAlignment();
+            CheckLabel();
             GUILayout.BeginVertical();
 
             // draw the title
@@ -128,10 +128,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool {
         }
 
         /// <summary>
-        /// 检查 Label 对齐方式
+        /// 检查 Label
         /// </summary>
-        [System.Diagnostics.Conditional("UNITY_2018_4_1")]
-        private static void CheckLabelAlignment() {
+        private static void CheckLabel() {
+            UnityEngine.GUI.skin.label.normal.textColor = EditorGUIUtility.isProSkin ? new Color(0.7f, 0.7f, 0.7f) : Color.black;
+            
             if (UnityEngine.GUI.skin.label.alignment != TextAnchor.MiddleLeft) {
                 UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleLeft;
             }

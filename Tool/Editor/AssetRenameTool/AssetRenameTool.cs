@@ -23,7 +23,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
         private const float UI_BUTTON_HEIGHT = 25;
         
         private static bool UI_Foldout = true;
-        private static Vector2 UI_Scrollview;
+        private static Vector2 UI_ScrollView;
         private static ReorderableList UI_List;
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
 
                 if (Selection.objects != null)
                 {
-                    UI_Scrollview = GUILayout.BeginScrollView(UI_Scrollview, GUILayout.Height(527));
+                    UI_ScrollView = GUILayout.BeginScrollView(UI_ScrollView, GUILayout.Height(527));
                     for (int index = 0; index < Selection.objects.Length; index++)
                     {
                         EditorGUILayout.ObjectField($"序号:   {index + 1}", Selection.objects[index], typeof(UnityEngine.Object), false);

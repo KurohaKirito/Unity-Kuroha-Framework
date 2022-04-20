@@ -68,8 +68,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 remarkStringBuilder.Append("\n　(3) 场景中动画状态机的剔除模式设置.");
                 remarkStringBuilder.Append("\n　(4) 场景中引用的模型资源的法线导入设置.");
                 remarkStringBuilder.Append("\n　(5) 场景中所有隐藏的游戏物体.");
+                remarkStringBuilder.Append("\n　(6) 场景中所有挂载了多个碰撞器的物体.");
 
-                oneKeyContent = new GUIContent(EditorGUIUtility.IconContent("console.infoicon.sml")) {
+                oneKeyContent = new GUIContent(EditorGUIUtility.IconContent("console.infoIcon.sml")) {
                     tooltip = remarkStringBuilder.ToString(), text = "  开始检测       "
                 };
             }
@@ -97,11 +98,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                         CheckAnimatorCullMode();
                         CheckColliderModelNormals();
                         CheckDisableGameObject();
+                        CheckMoreCollider();
                     }
 
                     GUILayout.EndHorizontal();
-
-
+                    
                     GUILayout.Space(2 * UI_DEFAULT_MARGIN);
                     GUILayout.Label("2. 统计当前场景中所有碰撞体组件引用的 Mesh 网格资源的详细面数和顶点数.");
                     GUILayout.BeginVertical("Box");
@@ -111,7 +112,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
 
                     GUILayout.EndVertical();
 
-
                     GUILayout.Space(2 * UI_DEFAULT_MARGIN);
                     GUILayout.Label("3. 统计当前场景中所有渲染类组件引用的 Mesh 网格资源的详细面数和顶点数");
                     GUILayout.BeginVertical("Box");
@@ -120,8 +120,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     }
 
                     GUILayout.EndVertical();
-
-
+                    
                     GUILayout.Space(2 * UI_DEFAULT_MARGIN);
                     GUILayout.Label("4. 高级模式. (高级模式下可以单独执行特定的检查项)");
                     GUILayout.BeginVertical("Box");
@@ -130,9 +129,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     }
 
                     GUILayout.EndVertical();
-
-
-                    if (isAdvanceMode) {
+                    
+                    if (isAdvanceMode)
+                    {
                         GUILayout.Space(UI_DEFAULT_MARGIN);
                         GUILayout.Label("    (1) 检查当前场景中所有的相机, 并在控制台输出.");
                         GUILayout.BeginVertical("Box");
@@ -141,8 +140,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                         }
 
                         GUILayout.EndVertical();
-
-
+                        
                         GUILayout.Space(UI_DEFAULT_MARGIN);
                         GUILayout.Label("    (2) 检查当前场景中引用的所有纹理的尺寸, 控制台输出超出最大尺寸的纹理名称.");
                         GUILayout.BeginVertical("Box");
@@ -151,8 +149,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                         }
 
                         GUILayout.EndVertical();
-
-
+                        
                         GUILayout.Space(UI_DEFAULT_MARGIN);
                         GUILayout.Label("    (3) 检查当前场景中动画状态机的剔除模式设置, 控制台输出所有未设置为 Cull Completely 的状态机.");
                         GUILayout.BeginVertical("Box");
@@ -161,8 +158,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                         }
 
                         GUILayout.EndVertical();
-
-
+                        
                         GUILayout.Space(UI_DEFAULT_MARGIN);
                         GUILayout.Label("    (4) 检查当前场景中引用的所有模型资源的法线导入设置.");
                         GUILayout.BeginVertical("Box");
@@ -171,13 +167,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                         }
 
                         GUILayout.EndVertical();
-
-
+                        
                         GUILayout.Space(UI_DEFAULT_MARGIN);
                         GUILayout.Label("    (5) 检查当前场景中所有隐藏的游戏物体并在控制台输出.");
                         GUILayout.BeginVertical("Box");
                         if (GUILayout.Button("隐藏物体检查", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                             CheckDisableGameObject();
+                        }
+                        
+                        GUILayout.EndVertical();
+                                                
+                        GUILayout.Space(UI_DEFAULT_MARGIN);
+                        GUILayout.Label("    (6) 检查当前场景中挂载了多个碰撞器的物体.");
+                        GUILayout.BeginVertical("Box");
+                        if (GUILayout.Button("多碰撞器检查", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
+                            CheckMoreCollider();
                         }
 
                         GUILayout.EndVertical();
@@ -294,6 +298,22 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 DebugUtil.LogError($"场景中一共有 {objects.Count} 个隐藏物体!");
                 foreach (var obj in objects) {
                     DebugUtil.LogError($"游戏物体 {obj.name} 为隐藏状态", obj);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 检查物体是否挂载了多个碰撞器
+        /// </summary>
+        private static void CheckMoreCollider() {
+            var objects = AssetUtil.GetAllTransformInScene(AssetUtil.FindType.All);
+            if (objects.Count > 0) {
+                foreach (var obj in objects) {
+                    var colliders = obj.GetComponents<Collider>();
+                    if (colliders.Length > 1) {
+                        DebugUtil.LogError($"游戏物体 {obj.name} 挂载了 {colliders.Length} 个 Collider", obj, "yellow");
+                        Selection.activeTransform = obj;
+                    }
                 }
             }
         }
