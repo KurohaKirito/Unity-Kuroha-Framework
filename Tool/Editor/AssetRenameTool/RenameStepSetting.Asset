@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: bc35bd88bcdf4cf883ee7a37f2809d55, type: 3}
   m_Name: RenameStepSetting
-  m_EditorClassIdentifier: Assembly-CSharp-Editor:Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool:RenameStepScriptableObject
+  m_EditorClassIdentifier: 
   steps:
   - operaType: 3
     insertStep:
@@ -22,78 +22,10 @@ MonoBehaviour:
       beginIndex: 0
       length: 0
     removeStep:
-      regex: 
-    replaceStep:
-      regex: _LOD_0
-      newString: _High
-    sortStep:
-      sortType: 0
-      BeginNumber: 0
-      length: 0
-  - operaType: 1
-    insertStep:
-      paramType: 0
-      index: 0
-      content: 
-    deleteStep:
-      beginIndex: 0
-      length: 0
-    removeStep:
-      regex: _LOD_1
-    replaceStep:
-      regex: 
-      newString: 
-    sortStep:
-      sortType: 0
-      BeginNumber: 0
-      length: 0
-  - operaType: 3
-    insertStep:
-      paramType: 0
-      index: 0
-      content: 
-    deleteStep:
-      beginIndex: 0
-      length: 0
-    removeStep:
-      regex: 
-    replaceStep:
-      regex: _LOD_2
-      newString: _Lod
-    sortStep:
-      sortType: 0
-      BeginNumber: 0
-      length: 0
-  - operaType: 3
-    insertStep:
-      paramType: 0
-      index: 0
-      content: 
-    deleteStep:
-      beginIndex: 0
-      length: 0
-    removeStep:
-      regex: 
-    replaceStep:
-      regex: _Lod0
-      newString: _Lod
-    sortStep:
-      sortType: 0
-      BeginNumber: 0
-      length: 0
-  - operaType: 1
-    insertStep:
-      paramType: 0
-      index: 0
-      content: 
-    deleteStep:
-      beginIndex: 0
-      length: 0
-    removeStep:
       regex: _Lv4
     replaceStep:
-      regex: 
-      newString: 
+      regex: _High$
+      newString: _Lobby
     sortStep:
       sortType: 0
       BeginNumber: 0
