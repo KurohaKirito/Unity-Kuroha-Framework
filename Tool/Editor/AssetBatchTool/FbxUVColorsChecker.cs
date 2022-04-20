@@ -163,52 +163,28 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         /// </summary>
         private static void Detect()
         {
-            // 获取目录下所有的模型路径
-            var assetPath = PathUtil.GetAssetPath(folderPath);
-            var guids = AssetDatabase.FindAssets("t:Model", new[] {assetPath});
-            var assetPaths = new List<string>(guids.Select(AssetDatabase.GUIDToAssetPath));
-
-            #region 打印文件名
-
-            var allFBXName = assetPaths
-                .Select(file => file.Split('/').Last())
-                .Select(fileName => fileName.Split('\\').Last()).ToList();
-            File.WriteAllLines(@"C:\PrintVirtual.md", allFBXName);
-
-            #endregion
-            
             var uv2Counter = 0;
             var uv3Counter = 0;
             var uv4Counter = 0;
             var colorsCounter = 0;
             var result = new List<string>();
-
+            
+            // 获取目录下所有的模型路径
+            var assetPath = PathUtil.GetAssetPath(folderPath);
+            var guids = AssetDatabase.FindAssets("t:Mesh", new[] {assetPath});
+            var assetPaths = new List<string>(guids.Select(AssetDatabase.GUIDToAssetPath));
+            
             // 开始检测
             for (var i = 0; i < assetPaths.Count; i++)
             {
-                if (ProgressBar.DisplayProgressBarCancel($"模型 UV 信息分析工具: {allFBXName[i]}", $"分析中: {i + 1} / {assetPaths.Count}", i + 1, assetPaths.Count))
+                if (ProgressBar.DisplayProgressBarCancel("UV 分析工具", $"分析中: {i + 1} / {assetPaths.Count}", i + 1, assetPaths.Count))
                 {
                     LogResult(uv2Counter, uv3Counter, uv4Counter, colorsCounter);
                     return;
                 }
 
-                var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPaths[i]);
-
-                // 检测 MeshFilter
-                var meshFilters = asset.GetComponentsInChildren<MeshFilter>(true);
-                foreach (var meshFilter in meshFilters)
-                {
-                    CheckMesh("Mesh Filter", assetPaths[i], result, meshFilter.sharedMesh,
-                        ref uv2Counter, ref uv3Counter, ref uv4Counter, ref colorsCounter);
-                }
-
-                // 检测 SkinnedMeshRenderer
-                var skinnedMeshRenderers = asset.GetComponentsInChildren<SkinnedMeshRenderer>(true);
-                foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
-                {
-                    CheckMesh("Skinned Mesh Renderer", assetPaths[i], result, skinnedMeshRenderer.sharedMesh,
-                        ref uv2Counter, ref uv3Counter, ref uv4Counter, ref colorsCounter);
-                }
+                var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(assetPaths[i]);
+                CheckMesh("Mesh", assetPaths[i], result, mesh, ref uv2Counter, ref uv3Counter, ref uv4Counter, ref colorsCounter);
             }
             
             // 保存刷新
@@ -235,7 +211,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
 
                 if (clearUV2)
                 {
-                    mesh.uv2 = null;
+                    mesh.SetUVs(2, (List<Vector2>) null);
+                    // mesh.uv2 = null;
                     EditorUtility.SetDirty(mesh);
                 }
             }
@@ -248,7 +225,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 
                 if (clearUV3)
                 {
-                    mesh.uv3 = null;
+                    mesh.SetUVs(3, (List<Vector2>) null);
+                    // mesh.uv3 = null;
                     EditorUtility.SetDirty(mesh);
                 }
             }
@@ -261,7 +239,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 
                 if (clearUV4)
                 {
-                    mesh.uv4 = null;
+                    mesh.SetUVs(4, (List<Vector2>) null);
+                    // mesh.uv4 = null;
                     EditorUtility.SetDirty(mesh);
                 }
             }
@@ -274,7 +253,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 
                 if (clearColors)
                 {
-                    mesh.colors = null;
+                    mesh.SetColors((List<Color>) null);
+                    // mesh.colors = null;
                     EditorUtility.SetDirty(mesh);
                 }
             }
