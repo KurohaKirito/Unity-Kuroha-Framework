@@ -24,9 +24,9 @@ namespace Kuroha.Tool.AssetTool.AssetRenameTool.Editor
         /// </summary>
         private const float UI_BUTTON_HEIGHT = 25;
 
-        private static bool UI_Foldout = true;
-        private static Vector2 UI_ScrollView;
-        private static ReorderableList UI_List;
+        private static bool foldout = true;
+        private static Vector2 scrollView;
+        private static ReorderableList list;
 
         /// <summary>
         /// 重命名步骤设置
@@ -42,14 +42,14 @@ namespace Kuroha.Tool.AssetTool.AssetRenameTool.Editor
 
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            UI_Foldout = EditorGUILayout.Foldout(UI_Foldout, AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.AssetRenameTool], true);
-            if (UI_Foldout == false) return;
+            foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.AssetRenameTool], true);
+            if (foldout == false) return;
 
             GUILayout.Space(UI_DEFAULT_MARGIN);
             GUILayout.BeginVertical("Box");
             {
                 CheckList();
-                UI_List.DoLayoutList();
+                list.DoLayoutList();
 
                 GUILayout.Space(UI_DEFAULT_MARGIN);
 
@@ -62,7 +62,7 @@ namespace Kuroha.Tool.AssetTool.AssetRenameTool.Editor
 
                 if (Selection.objects != null)
                 {
-                    UI_ScrollView = GUILayout.BeginScrollView(UI_ScrollView, GUILayout.Height(527));
+                    scrollView = GUILayout.BeginScrollView(scrollView, GUILayout.Height(527));
                     for (int index = 0; index < Selection.objects.Length; index++)
                     {
                         EditorGUILayout.ObjectField($"序号:   {index + 1}", Selection.objects[index], typeof(UnityEngine.Object), false);
@@ -139,12 +139,12 @@ namespace Kuroha.Tool.AssetTool.AssetRenameTool.Editor
         /// </summary>
         private static void CheckList()
         {
-            if (UI_List != null)
+            if (list != null)
             {
                 return;
             }
 
-            UI_List = new ReorderableList(renameSetting.steps, typeof(RenameStep))
+            list = new ReorderableList(renameSetting.steps, typeof(RenameStep))
             {
                 draggable = true,
                 displayAdd = true,

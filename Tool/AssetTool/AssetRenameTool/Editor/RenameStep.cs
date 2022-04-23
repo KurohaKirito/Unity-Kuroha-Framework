@@ -56,7 +56,7 @@ namespace Kuroha.Tool.AssetTool.AssetRenameTool.Editor
     public struct SortStep
     {
         public SortType sortType;
-        public int BeginNumber;
+        public int beginNumber;
         public int length;
     }
 
