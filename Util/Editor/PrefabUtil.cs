@@ -25,7 +25,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                     meshList.Add(meshHashCode);
                     var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh);
                     var size = EditorUtility.FormatBytes(runTimeSize);
-                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, "yellow");
+                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, EditorGUIUtility.isProSkin ? "yellow" : "black");
                 }
             }
 
@@ -36,7 +36,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                     meshList.Add(meshHashCode);
                     var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh);
                     var size = EditorUtility.FormatBytes(runTimeSize);
-                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, "yellow");
+                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, EditorGUIUtility.isProSkin ? "yellow" : "black");
                 }
             }
 
@@ -47,7 +47,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                     meshList.Add(meshHashCode);
                     var runTimeSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh);
                     var size = EditorUtility.FormatBytes(runTimeSize);
-                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, "yellow");
+                    DebugUtil.Log($"{mesh.name}: 当前设备的运行内存占用 (Profiler): {size}", mesh, EditorGUIUtility.isProSkin ? "yellow" : "black");
                 }
             }
 
@@ -68,8 +68,8 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
                             textureGuids.Add(textures[i].guid);
                             var runTimeSize = EditorUtility.FormatBytes(UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(textures[i].asset));
                             var storageSize = EditorUtility.FormatBytes(TextureUtil.GetTextureStorageMemorySize(textures[i].asset));
-                            DebugUtil.Log($"{textures[i].asset.name}: 当前设备的运行内存占用 (Profiler): {runTimeSize}", textures[i].asset, "yellow");
-                            DebugUtil.Log($"{textures[i].asset.name}: 当前设备的硬盘空间占用 (Inspector): {storageSize}", textures[i].asset, "yellow");
+                            DebugUtil.Log($"{textures[i].asset.name}: 当前设备的运行内存占用 (Profiler): {runTimeSize}", textures[i].asset, EditorGUIUtility.isProSkin ? "yellow" : "black");
+                            DebugUtil.Log($"{textures[i].asset.name}: 当前设备的硬盘空间占用 (Inspector): {storageSize}", textures[i].asset, EditorGUIUtility.isProSkin ? "yellow" : "black");
                         }
                     }
                 }

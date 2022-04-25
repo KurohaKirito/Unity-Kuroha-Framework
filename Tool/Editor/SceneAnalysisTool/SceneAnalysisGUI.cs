@@ -311,7 +311,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 foreach (var obj in objects) {
                     var colliders = obj.GetComponents<Collider>();
                     if (colliders.Length > 1) {
-                        DebugUtil.LogError($"游戏物体 {obj.name} 挂载了 {colliders.Length} 个 Collider", obj, "yellow");
+                        DebugUtil.LogError($"游戏物体 {obj.name} 挂载了 {colliders.Length} 个 Collider", obj,  EditorGUIUtility.isProSkin ? "yellow" : "black");
                         Selection.activeTransform = obj;
                     }
                 }

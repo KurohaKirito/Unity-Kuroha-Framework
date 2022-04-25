@@ -133,7 +133,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                                 if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                                 {
                                     Detect();
-                                    DebugUtil.Log("检测结束!", null, "yellow");
+                                    DebugUtil.Log("检测结束!", null, EditorGUIUtility.isProSkin ? "yellow" : "black");
                                 }
                             }
                             GUILayout.EndHorizontal();
