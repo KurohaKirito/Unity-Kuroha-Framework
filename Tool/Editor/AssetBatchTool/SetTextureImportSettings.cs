@@ -2,8 +2,10 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
-    public static class SetTextureImportSettings {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
+{
+    public static class SetTextureImportSettings
+    {
         /// <summary>
         /// 整合了需要批量移动的资源所在路径的文件
         /// </summary>
@@ -32,12 +34,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
         /// <summary>
         /// 绘制界面
         /// </summary>
-        public static void OnGUI() {
+        public static void OnGUI()
+        {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
-            foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int)AssetBatchToolGUI.BatchType.SetTextureImportSettings], true);
+            foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.SetTextureImportSettings], true);
 
-            if (foldout) {
+            if (foldout)
+            {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 GUILayout.BeginVertical("Box");
                 {
@@ -52,7 +56,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                         {
                             GUILayout.BeginHorizontal("Box");
                             {
-                                if (GUILayout.Button("Select File", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
+                                if (GUILayout.Button("Select File", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                                {
                                     filePath = EditorUtility.OpenFilePanel("Select File", filePath, "");
                                 }
                             }
@@ -63,8 +68,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                             GUILayout.Label("2. 点击按钮, 移动资源.");
                             GUILayout.BeginHorizontal("Box");
                             {
-                                if (GUILayout.Button("Move Assets", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
-                                    AssetUtil.SetTextureImport(ref filePath);
+                                if (GUILayout.Button("Move Assets", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                                {
+                                    // ...
                                 }
                             }
                             GUILayout.EndHorizontal();
@@ -73,7 +79,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
                         GUILayout.BeginVertical();
                         GUILayout.Space(UI_DEFAULT_MARGIN);
-                        if (string.IsNullOrEmpty(filePath)) {
+                        if (string.IsNullOrEmpty(filePath))
+                        {
                             filePath = "请选择文件...";
                         }
 
@@ -82,6 +89,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                     }
 
                     GUILayout.EndHorizontal();
+
+
+                    // 新
+                    if (GUILayout.Button("Select File", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                    {
+                        filePath = EditorUtility.OpenFilePanel("Select File", filePath, "");
+                    }
+                    
+                    
                 }
 
                 GUILayout.EndVertical();

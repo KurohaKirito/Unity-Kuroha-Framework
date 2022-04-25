@@ -204,7 +204,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
             {
                 #region Android
                 
-                if (TextureUtil.GetTextureFormatAndroid(textureImporter, out var formatAndroid))
+                if (textureImporter.GetPlatformTextureSettings("Android", out _, out var formatAndroid))
                 {
                     if (formatAndroid != TextureImporterFormat.ETC2_RGB4 && formatAndroid != TextureImporterFormat.ETC2_RGBA8)
                     {
@@ -224,7 +224,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                 #region iPhone
 
-                if (TextureUtil.GetTextureFormatIPhone(textureImporter, out var formatIOS))
+                if (textureImporter.GetPlatformTextureSettings("iPhone", out _, out var formatIOS))
                 {
                     if (formatIOS != TextureImporterFormat.PVRTC_RGB4 && formatIOS != TextureImporterFormat.PVRTC_RGBA4)
                     {
