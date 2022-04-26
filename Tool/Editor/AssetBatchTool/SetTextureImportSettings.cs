@@ -45,7 +45,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             if (foldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
-               
+
                 DrawFromFile();
 
                 GUILayout.Space(UI_DEFAULT_MARGIN);
@@ -111,6 +111,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                         {
                             filePath = "请选择文件...";
                         }
+
                         GUILayout.Label(filePath, "WordWrapLabel", GUILayout.Width(120));
                     }
                     GUILayout.EndVertical();
@@ -193,6 +194,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                         {
                             fileFolder = "请选择路径...";
                         }
+
                         GUILayout.Label(fileFolder, "WordWrapLabel", GUILayout.Width(120));
                     }
                     GUILayout.EndVertical();
@@ -214,6 +216,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                     maxTextureSize = 512,
                     format = importer.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.DXT5 : TextureImporterFormat.DXT1
                 };
+                
+                if (assetPath.Substring(assetPath.LastIndexOf('/')).Contains("_N"))
+                {
+                    newSetting.format = TextureImporterFormat.DXT5;
+                }
+
                 importer.SetPlatformTextureSettings(newSetting);
                 importer.SaveAndReimport();
                 counter++;
