@@ -1,4 +1,6 @@
-﻿using Script.Effect.Editor.AssetTool.Util.Editor;
+﻿using Script.Effect.Editor.AssetTool.GUI.Editor;
+using Script.Effect.Editor.AssetTool.Util.Editor;
+using Script.Effect.Editor.AssetTool.Util.RunTime;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,10 +8,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
 {
     public static class SetTextureImportSettings
     {
-        /// <summary>
-        /// 整合了需要批量移动的资源所在路径的文件
-        /// </summary>
-        private static string filePath = string.Empty;
+        private static string filePath;
+        private static string fileFolder;
+        private static string[] guids;
+        private static int counter;
 
         /// <summary>
         /// 折叠框
@@ -43,64 +45,178 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             if (foldout)
             {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
-                GUILayout.BeginVertical("Box");
+               
+                DrawFromFile();
+
+                GUILayout.Space(UI_DEFAULT_MARGIN);
+
+                DrawFromFolder();
+            }
+        }
+
+        private static void DrawFromFile()
+        {
+            GUILayout.BeginVertical("Box");
+            {
+                EditorGUILayout.LabelField("1. 请选择整合了需要批量移动目录的资源所在路径的文件.");
+                EditorGUI.indentLevel++;
+                EditorGUILayout.LabelField("注: 文件中的路径必须以 Assets 开头或者绝对路径.");
+                EditorGUI.indentLevel--;
+
+                GUILayout.BeginHorizontal();
                 {
-                    EditorGUILayout.LabelField("1. 请选择整合了需要批量移动目录的资源所在路径的文件.");
-                    EditorGUI.indentLevel++;
-                    EditorGUILayout.LabelField("注: 文件中的路径必须以 Assets 开头或者绝对路径.");
-                    EditorGUI.indentLevel--;
-
-                    GUILayout.BeginHorizontal();
+                    GUILayout.BeginVertical(GUILayout.Width(UI_BUTTON_WIDTH + 60));
                     {
-                        GUILayout.BeginVertical(GUILayout.Width(UI_BUTTON_WIDTH + 60));
+                        GUILayout.BeginHorizontal("Box");
                         {
-                            GUILayout.BeginHorizontal("Box");
+                            if (GUILayout.Button("Select File", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
                             {
-                                if (GUILayout.Button("Select File", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                                {
-                                    filePath = EditorUtility.OpenFilePanel("Select File", filePath, "");
-                                }
+                                filePath = EditorUtility.OpenFilePanel("Select File", filePath, "");
                             }
-                            GUILayout.EndHorizontal();
-
-                            GUILayout.Space(UI_DEFAULT_MARGIN);
-
-                            GUILayout.Label("2. 点击按钮, 移动资源.");
-                            GUILayout.BeginHorizontal("Box");
-                            {
-                                if (GUILayout.Button("Move Assets", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                                {
-                                    // ...
-                                }
-                            }
-                            GUILayout.EndHorizontal();
                         }
-                        GUILayout.EndVertical();
+                        GUILayout.EndHorizontal();
 
-                        GUILayout.BeginVertical();
+                        GUILayout.Space(UI_DEFAULT_MARGIN);
+
+                        GUILayout.Label("2. 点击按钮, 设置导入.");
+                        GUILayout.BeginHorizontal("Box");
+                        {
+                            if (GUILayout.Button("Set Importer", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                            {
+                                counter = 0;
+                                var toSets = System.IO.File.ReadAllLines(filePath);
+
+                                for (var i = 0; i < toSets.Length; i++)
+                                {
+                                    if (ProgressBar.DisplayProgressBarCancel("正在设置导入", $"{i + 1}/{toSets.Length}", i + 1, toSets.Length))
+                                    {
+                                        break;
+                                    }
+
+                                    SetImporterForTexture(toSets[i]);
+                                }
+
+                                DebugUtil.Log($"共成功移动了 {counter}/{toSets.Length} 项资源!", null, "green");
+                                filePath = "已设置导入!";
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    GUILayout.EndVertical();
+
+                    GUILayout.BeginVertical();
+                    {
                         GUILayout.Space(UI_DEFAULT_MARGIN);
                         if (string.IsNullOrEmpty(filePath))
                         {
                             filePath = "请选择文件...";
                         }
-
                         GUILayout.Label(filePath, "WordWrapLabel", GUILayout.Width(120));
-                        GUILayout.EndVertical();
                     }
-
-                    GUILayout.EndHorizontal();
-
-
-                    // 新
-                    if (GUILayout.Button("Select File", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                    {
-                        filePath = EditorUtility.OpenFilePanel("Select File", filePath, "");
-                    }
-                    
-                    
+                    GUILayout.EndVertical();
                 }
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndVertical();
+        }
 
-                GUILayout.EndVertical();
+        private static void DrawFromFolder()
+        {
+            GUILayout.BeginVertical("Box");
+            {
+                EditorGUILayout.LabelField("1. 请选择待设置纹理所在的文件夹.");
+
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.BeginVertical(GUILayout.Width(UI_BUTTON_WIDTH + 60));
+                    {
+                        GUILayout.BeginHorizontal("Box");
+                        {
+                            if (GUILayout.Button("Select Folder", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                            {
+                                fileFolder = EditorUtility.OpenFolderPanel("Select Folder", fileFolder, "");
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.Space(UI_DEFAULT_MARGIN);
+
+                        GUILayout.Label("2. 点击按钮, 查找资源.");
+                        GUILayout.BeginHorizontal("Box");
+                        {
+                            if (GUILayout.Button("Search Texture", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                            {
+                                if (fileFolder != null)
+                                {
+                                    fileFolder = PathUtil.GetAssetPath(fileFolder);
+                                    guids = AssetDatabase.FindAssets("t:Texture", new[] {fileFolder});
+                                    GUI.Editor.Dialog.Display($"一共找到了 {guids.Length} 张贴图", Dialog.DialogType.Message, "我知道了!");
+                                    counter = 0;
+                                }
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.Space(UI_DEFAULT_MARGIN);
+
+                        GUILayout.Label("3. 点击按钮, 设置导入.");
+                        GUILayout.BeginHorizontal("Box");
+                        {
+                            if (GUILayout.Button("Set Importer", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                            {
+                                if (guids != null)
+                                {
+                                    for (var index = 0; index < guids.Length; index++)
+                                    {
+                                        if (GUI.Editor.ProgressBar.DisplayProgressBarCancel("贴图处理中", $"{index + 1}/{guids.Length}", index + 1, guids.Length))
+                                        {
+                                            break;
+                                        }
+
+                                        var path = AssetDatabase.GUIDToAssetPath(guids[index]);
+                                        SetImporterForTexture(path);
+                                    }
+
+                                    GUI.Editor.Dialog.Display($"一共设置了 {counter} 张贴图", Dialog.DialogType.Message, "Nice!");
+                                    fileFolder = "已设置导入!";
+                                }
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    GUILayout.EndVertical();
+
+                    GUILayout.BeginVertical();
+                    {
+                        GUILayout.Space(UI_DEFAULT_MARGIN);
+                        if (string.IsNullOrEmpty(fileFolder))
+                        {
+                            fileFolder = "请选择路径...";
+                        }
+                        GUILayout.Label(fileFolder, "WordWrapLabel", GUILayout.Width(120));
+                    }
+                    GUILayout.EndVertical();
+                }
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndVertical();
+        }
+
+        private static void SetImporterForTexture(string assetPath)
+        {
+            var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+            if (importer != null)
+            {
+                var newSetting = new TextureImporterPlatformSettings
+                {
+                    name = "Standalone",
+                    overridden = true,
+                    maxTextureSize = 512,
+                    format = importer.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.DXT5 : TextureImporterFormat.DXT1
+                };
+                importer.SetPlatformTextureSettings(newSetting);
+                importer.SaveAndReimport();
+                counter++;
             }
         }
     }
