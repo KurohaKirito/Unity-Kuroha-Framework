@@ -265,7 +265,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
             {
                 #region Android
 
-                if (TextureUtil.GetTextureSizeAndroid(importer, out var maxSizeAndroid))
+                if (importer.GetPlatformTextureSettings("Android", out var maxSizeAndroid, out _))
                 {
                     if (maxSizeAndroid > width && maxSizeAndroid > height)
                     {
@@ -276,7 +276,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
                 }
                 else
                 {
-                    TextureUtil.GetTextureSizeDefault(importer, out var maxSizeDefault);
+                    var maxSizeDefault = importer.GetDefaultPlatformTextureSettings().maxTextureSize;
                     if (maxSizeDefault > width && maxSizeDefault > height)
                     {
                         var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);
@@ -289,7 +289,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
 
                 #region iPhone
 
-                if (TextureUtil.GetTextureSizeIPhone(importer, out var maxSizeIPhone))
+                if (importer.GetPlatformTextureSettings("iPhone", out var maxSizeIPhone, out _))
                 {
                     if (maxSizeIPhone > width && maxSizeIPhone > height)
                     {
@@ -300,7 +300,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
                 }
                 else
                 {
-                    TextureUtil.GetTextureSizeDefault(importer, out var maxSizeDefault);
+                    var maxSizeDefault = importer.GetDefaultPlatformTextureSettings().maxTextureSize;
                     if (maxSizeDefault > width && maxSizeDefault > height)
                     {
                         var asset = AssetDatabase.LoadAssetAtPath<Texture>(path);

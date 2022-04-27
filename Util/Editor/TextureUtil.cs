@@ -193,40 +193,6 @@ namespace Kuroha.Util.Editor
         }
 
         /// <summary>
-        /// 获取纹理导入设置的最大尺寸 (Default)
-        /// </summary>
-        /// <param name="textureImporter">纹理导入器</param>
-        /// <param name="maxSize">返回: 最大尺寸</param>
-        public static void GetTextureSizeDefault(TextureImporter textureImporter, out int maxSize)
-        {
-            maxSize = textureImporter.GetDefaultPlatformTextureSettings().maxTextureSize;
-        }
-
-        /// <summary>
-        /// 获取纹理导入设置的最大尺寸 (Android)
-        /// </summary>
-        /// <param name="textureImporter">纹理导入器</param>
-        /// <param name="maxSize">返回: 最大尺寸</param>
-        /// <returns>是否存在 Android 平台覆写</returns>
-        public static bool GetTextureSizeAndroid(TextureImporter textureImporter, out int maxSize)
-        {
-            // 参数名可选: "Standalone", "Web", "iPhone", "Android", "WebGL", "Windows Store Apps", "PS4", "XboxOne", "Nintendo Switch", "tvOS".
-            return textureImporter.GetPlatformTextureSettings("Android", out maxSize, out _);
-        }
-
-        /// <summary>
-        /// 获取纹理导入设置的最大尺寸 (iPhone)
-        /// </summary>
-        /// <param name="textureImporter">纹理导入器</param>
-        /// <param name="maxSize">返回: 最大尺寸</param>
-        /// <returns>是否存在 iPhone 平台覆写</returns>
-        public static bool GetTextureSizeIPhone(TextureImporter textureImporter, out int maxSize)
-        {
-            // 参数名可选: "Standalone", "Web", "iPhone", "Android", "WebGL", "Windows Store Apps", "PS4", "XboxOne", "Nintendo Switch", "tvOS".
-            return textureImporter.GetPlatformTextureSettings("iPhone", out maxSize, out _);
-        }
-
-        /// <summary>
         /// 获取场景中 MeshRenderer 和 SkinnedMeshRenderer 所引用到的全部纹理  (不包含冗余纹理)
         /// </summary>
         /// <param name="assets">返回查询到的纹理资源本身</param>
