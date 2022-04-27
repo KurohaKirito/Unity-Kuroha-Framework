@@ -153,17 +153,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 if (originWidth > width && originHeight > height) {
                     #region Android
 
-                    if (TextureUtil.GetTextureSizeAndroid(textureImporter, out var maxSizeAndroid)) {
+                    if (textureImporter.GetPlatformTextureSettings("Android", out var maxSizeAndroid, out _)) {
                         if (maxSizeAndroid > width && maxSizeAndroid > height) {
                             var content = $"Android: 纹理尺寸过大, 路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Android 导入设置: {maxSizeAndroid} >>> 规范: ({width}X{height})";
                             var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
                         }
                     } else {
-                        TextureUtil.GetTextureSizeDefault(textureImporter, out var maxSizeDefault);
-                        if (maxSizeDefault > width && maxSizeDefault > height) {
+                        var settings = textureImporter.GetDefaultPlatformTextureSettings();
+                        if (settings.maxTextureSize > width && settings.maxTextureSize > height) {
                             var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
-                            var content = $"未启用 Android 导入, 资源路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {maxSizeDefault} >>> 规范: ({width}X{height})";
+                            var content = $"未启用 Android 导入, 资源路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {settings.maxTextureSize} >>> 规范: ({width}X{height})";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
                         }
                     }
@@ -172,17 +172,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
 
                     #region iPhone
 
-                    if (TextureUtil.GetTextureSizeIPhone(textureImporter, out var maxSizeIPhone)) {
+                    if (textureImporter.GetPlatformTextureSettings("iPhone", out var maxSizeIPhone, out _)) {
                         if (maxSizeIPhone > width && maxSizeIPhone > height) {
                             var content = $"iPhone: 纹理尺寸过大, 路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 iPhone 导入设置: {maxSizeIPhone} >>> 规范: ({width}X{height})";
                             var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
                         }
                     } else {
-                        TextureUtil.GetTextureSizeDefault(textureImporter, out var maxSizeDefault);
-                        if (maxSizeDefault > width && maxSizeDefault > height) {
+                        var settings = textureImporter.GetDefaultPlatformTextureSettings();
+                        if (settings.maxTextureSize > width && settings.maxTextureSize > height) {
                             var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
-                            var content = $"未启用 iPhone 导入, 资源路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {maxSizeDefault} >>> 规范: ({width}X{height})";
+                            var content = $"未启用 iPhone 导入, 资源路径为: {assetInfo.FullName}, 纹理原始尺寸: ({originWidth}X{originHeight}), 当前 Default 导入设置: {settings.maxTextureSize} >>> 规范: ({width}X{height})";
                             report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureSize, content, item));
                         }
                     }
