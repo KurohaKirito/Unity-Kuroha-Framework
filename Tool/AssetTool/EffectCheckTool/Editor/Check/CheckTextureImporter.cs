@@ -366,7 +366,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
             var androidContent = string.Empty;
             var android = (TextureImporterFormat) Convert.ToInt32(checkOptionParameterArray[0]);
 
-            if (TextureUtil.GetTextureFormatAndroid(importer, out var formatAndroid))
+            if (importer.GetPlatformTextureSettings("Android", out _, out var formatAndroid))
             {
                 if (android == TextureImporterFormat.ETC2_RGB4 || android == TextureImporterFormat.ETC2_RGBA8)
                 {
@@ -397,7 +397,7 @@ namespace Kuroha.Tool.AssetTool.EffectCheckTool.Editor.Check
             var iphoneContent = string.Empty;
             var iphone = (TextureImporterFormat) Convert.ToInt32(checkOptionParameterArray[1]);
 
-            if (TextureUtil.GetTextureFormatIPhone(importer, out var formatIOS))
+            if (importer.GetPlatformTextureSettings("iPhone", out _, out var formatIOS))
             {
                 if (iphone == TextureImporterFormat.PVRTC_RGB4 || android == TextureImporterFormat.PVRTC_RGBA4)
                 {

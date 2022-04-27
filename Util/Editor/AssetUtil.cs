@@ -17,88 +17,25 @@ namespace Kuroha.Util.Editor
             EnableOnly,
             DisableOnly
         }
-        
-        /// <summary>
-        /// 设置纹理设置
-        /// </summary>
-        public static void SetTextureImport(ref string assetFilePath)
-        {
-            var counter = 0;
-            var index = 0;
-
-            var assets = System.IO.File.ReadAllLines(assetFilePath);
-            var totalCount = assets.Length;
-
-            while (true)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("正在处理资源", $"{index + 1}/{totalCount}", index + 1, totalCount))
-                {
-                    DebugUtil.Log($"共成功处理了 {counter}/{totalCount} 项资源!", null, "green");
-                    break;
-                }
-
-                if (index < totalCount)
-                {
-                    if (SetTextureImportSettings(assets[index]))
-                    {
-                        ++counter;
-                    }
-                    else
-                    {
-                        DebugUtil.LogError($"处理失败: {assets[index]}", null, "red");
-                    }
-
-                    index++;
-                }
-
-                if (index >= totalCount)
-                {
-                    break;
-                }
-            }
-
-            DebugUtil.Log($"共成功处理了 {counter}/{totalCount} 项资源!", null, "green");
-
-            assetFilePath = "已执行处理!";
-        }
 
         /// <summary>
         /// 设置纹理设置
         /// </summary>
-        private static bool SetTextureImportSettings(string assetPath)
+        public static bool SetTextureImportSettings(string assetPath, string platformName, int size, TextureImporterFormat rgba, TextureImporterFormat rgb)
         {
             var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
             if (textureImporter != null)
             {
-                // Android 端单独设置
-                var settingAndroid = new TextureImporterPlatformSettings
+                var setting = new TextureImporterPlatformSettings
                 {
-                    overridden = true,
-                    name = "Android",
-                    maxTextureSize = 32,
-                    
-                    // 根据是否有透明度，选择 RGBA 还是 RGB
-                    format = textureImporter.DoesSourceTextureHaveAlpha()? TextureImporterFormat.ETC2_RGBA8 : TextureImporterFormat.ETC2_RGB4
+                    name = platformName,
+                    maxTextureSize = size,
+                    format = textureImporter.DoesSourceTextureHaveAlpha() ? rgba : rgb
                 };
-                textureImporter.SetPlatformTextureSettings(settingAndroid);
-        
-                // iOS 端单独设置
-                var settingIphone = new TextureImporterPlatformSettings
-                {
-                    overridden = true,
-                    name = "iOS",
-                    maxTextureSize = 32,
-                    
-                    // 根据是否有透明度，选择 RGBA 还是 RGB
-                    format = textureImporter.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.PVRTC_RGBA4 : TextureImporterFormat.PVRTC_RGB4
-                };
-                textureImporter.SetPlatformTextureSettings(settingIphone);
-                
-                // 重新导入设置
+                textureImporter.SetPlatformTextureSettings(setting);
                 AssetDatabase.ImportAsset(assetPath);
                 return true;
             }
-
             return false;
         }
 
