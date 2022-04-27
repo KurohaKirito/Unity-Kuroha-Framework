@@ -214,17 +214,26 @@ namespace Kuroha.Tool.AssetTool.AssetBatchTool.Editor
         private static void SetImporterForTexture(string assetPath)
         {
             var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+
             if (importer != null)
             {
+                if (importer.GetPlatformTextureSettings("Standalone", out var curSize, out var format))
+                {
+                    if (curSize <= 512 && (format == TextureImporterFormat.DXT1 || format == TextureImporterFormat.DXT5))
+                    {
+                        return;
+                    }
+                }
+                
                 var newSetting = new TextureImporterPlatformSettings
                 {
                     name = "Standalone",
                     overridden = true,
-                    maxTextureSize = 512,
+                    maxTextureSize = curSize <= 512 ? curSize : 512,
                     format = importer.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.DXT5 : TextureImporterFormat.DXT1
                 };
-                
-                if (assetPath.Substring(assetPath.LastIndexOf('/')).Contains("_N"))
+
+                if (importer.textureType == TextureImporterType.NormalMap)
                 {
                     newSetting.format = TextureImporterFormat.DXT5;
                 }
