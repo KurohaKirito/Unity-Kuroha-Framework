@@ -13,29 +13,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         private static string[] guids;
         private static int counter;
 
-        /// <summary>
-        /// 折叠框
-        /// </summary>
         private static bool foldout = true;
-
-        /// <summary>
-        /// 全局默认 margin
-        /// </summary>
         private const float UI_DEFAULT_MARGIN = 5;
-
-        /// <summary>
-        /// 全局按钮的宽度
-        /// </summary>
         private const float UI_BUTTON_WIDTH = 120;
-
-        /// <summary>
-        /// 全局按钮的高度
-        /// </summary>
         private const float UI_BUTTON_HEIGHT = 25;
 
-        /// <summary>
-        /// 绘制界面
-        /// </summary>
         public static void OnGUI()
         {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
@@ -226,7 +208,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                     format = importer.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.DXT5 : TextureImporterFormat.DXT1
                 };
 
-                if (importer.textureType == TextureImporterType.NormalMap)
+                if (importer.textureType == TextureImporterType.NormalMap || importer.textureType == TextureImporterType.Lightmap)
                 {
                     newSetting.format = TextureImporterFormat.DXT5;
                 }
