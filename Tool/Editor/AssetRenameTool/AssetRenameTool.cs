@@ -61,7 +61,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
                 if (Selection.objects != null)
                 {
                     UI_ScrollView = GUILayout.BeginScrollView(UI_ScrollView, GUILayout.Height(527));
-                    for (int index = 0; index < Selection.objects.Length; index++)
+                    for (var index = 0; index < Selection.objects.Length; index++)
                     {
                         EditorGUILayout.ObjectField($"序号:   {index + 1}", Selection.objects[index], typeof(UnityEngine.Object), false);
                     }
