@@ -12,11 +12,121 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9eba1ecab4c43c41869985e270bbe09, type: 3}
   m_Name: QHierarchySettingsObjectAsset
   m_EditorClassIdentifier: 
-  settingStringNames: []
-  settingStringValues: []
-  settingFloatNames: []
-  settingFloatValues: []
-  settingIntNames: []
-  settingIntValues: 
-  settingBoolNames: []
-  settingBoolValues: 
+  settingStringNames:
+  - QHierarchy_Dark_TreeMapColor
+  - QHierarchy_MonoBehaviourIconColor
+  - QHierarchy_Dark_SeparatorColor
+  - QHierarchy_Dark_SeparatorEvenRowShadingColor
+  - QHierarchy_Dark_SeparatorOddRowShadingColor
+  - QHierarchy_ErrorIgnoreString
+  - QHierarchy_Dark_TagAndLayerTagLabelColor
+  - QHierarchy_Dark_TagAndLayerLayerLabelColor
+  - QHierarchy_TagIconList
+  - QHierarchy_LayerIconList
+  - QHierarchy_Dark_ChildrenCountLabelColor
+  - QHierarchy_Dark_VerticesAndTrianglesVerticesLabelColor
+  - QHierarchy_Dark_VerticesAndTrianglesTrianglesLabelColor
+  - QHierarchy_ComponentsIgnore
+  - QHierarchy_ComponentsOrder
+  - QHierarchy_Dark_AdditionalBackgroundColor
+  - QHierarchy_Dark_AdditionalActiveColor
+  - QHierarchy_Dark_AdditionalInactiveColor
+  - QHierarchy_Dark_AdditionalSpecialColor
+  settingStringValues:
+  - FF00FFFF
+  - A01B6DBB
+  - FF303030
+  - 13000000
+  - 00000000
+  - 
+  - FFCCCCCC
+  - FFCCCCCC
+  - 
+  - 
+  - FF00FFFF
+  - FFCCCCCC
+  - FFCCCCCC
+  - 
+  - 0;1;2;3;4;5;6;7;8;9;10;11;12
+  - 00383838
+  - FFFFFF80
+  - FF4F4F4F
+  - FF2CA8CA
+  settingFloatNames:
+  - QHierarchy_TagAndLayerSizeValuePercent
+  - QHierarchy_TagAndLayerLabelAlpha
+  settingFloatValues:
+  - 0.25
+  - 0.35
+  settingIntNames:
+  - QHierarchy_TagAndLayerSizeShowType
+  - QHierarchy_TagAndLayerType
+  - QHierarchy_TagAndLayerAlignment
+  - QHierarchy_TagAndLayerSizeValueType
+  - QHierarchy_TagAndLayerSizeValuePixel
+  - QHierarchy_TagAndLayerLabelSize
+  - QHierarchy_GameObjectIconSize
+  - QHierarchy_TagIconSize
+  - QHierarchy_LayerIconSize
+  - QHierarchy_ChildrenCountLabelSize
+  - QHierarchy_VerticesAndTrianglesLabelSize
+  - QHierarchy_ComponentsIconSize
+  - QHierarchy_AdditionalIndentation
+  settingIntValues: 000000000100000000000000000000004b0000000000000000000000000000000000000001000000000000000100000000000000
+  settingBoolNames:
+  - QHierarchy_TreeMapShow
+  - QHierarchy_TreeMapEnhanced
+  - QHierarchy_TreeMapTransparentBackground
+  - QHierarchy_MonoBehaviourIconShow
+  - QHierarchy_MonoBehaviourIconShowDuringPlayMode
+  - QHierarchy_MonoBehaviourIconIgnoreUnityMonoBehaviour
+  - QHierarchy_SeparatorShow
+  - QHierarchy_SeparatorShowRowShading
+  - QHierarchy_VisibilityShow
+  - QHierarchy_VisibilityShowDuringPlayMode
+  - QHierarchy_LockShow
+  - QHierarchy_LockShowDuringPlayMode
+  - QHierarchy_LockPreventSelectionOfLockedObjects
+  - QHierarchy_StaticShow
+  - QHierarchy_StaticShowDuringPlayMode
+  - QHierarchy_ErrorShow
+  - QHierarchy_ErrorShowDuringPlayMode
+  - QHierarchy_ErrorShowIconOnParent
+  - QHierarchy_ErrorShowScriptIsMissing
+  - QHierarchy_ErrorShowReferenceIsNull
+  - QHierarchy_ErrorShowReferenceIsMissing
+  - QHierarchy_ErrorShowStringIsEmpty
+  - QHierarchy_ErrorShowMissingEventMethod
+  - QHierarchy_ErrorShowWhenTagOrLayerIsUndefined
+  - QHierarchy_ErrorShowForDisabledComponents
+  - QHierarchy_ErrorShowForDisabledGameObjects
+  - QHierarchy_RendererShow
+  - QHierarchy_RendererShowDuringPlayMode
+  - QHierarchy_PrefabShow
+  - QHierarchy_PrefabShowBrakedPrefabsOnly
+  - QHierarchy_TagAndLayerShow
+  - QHierarchy_TagAndLayerShowDuringPlayMode
+  - QHierarchy_ColorShow
+  - QHierarchy_ColorShowDuringPlayMode
+  - QHierarchy_GameObjectIconShow
+  - QHierarchy_GameObjectIconShowDuringPlayMode
+  - QHierarchy_TagIconShow
+  - QHierarchy_TagIconShowDuringPlayMode
+  - QHierarchy_TagIconListFoldout
+  - QHierarchy_LayerIconShow
+  - QHierarchy_LayerIconShowDuringPlayMode
+  - QHierarchy_LayerIconListFoldout
+  - QHierarchy_ChildrenCountShow
+  - QHierarchy_ChildrenCountShowDuringPlayMode
+  - QHierarchy_VerticesAndTrianglesShow
+  - QHierarchy_VerticesAndTrianglesShowDuringPlayMode
+  - QHierarchy_VerticesAndTrianglesCalculateTotalCount
+  - QHierarchy_VerticesAndTrianglesShowTriangles
+  - QHierarchy_VerticesAndTrianglesShowVertices
+  - QHierarchy_ComponentsShow
+  - QHierarchy_ComponentsShowDuringPlayMode
+  - QHierarchy_AdditionalShowObjectListContent
+  - QHierarchy_AdditionalShowHiddenQHierarchyObjectList
+  - QHierarchy_AdditionalHideIconsIfNotFit
+  - QHierarchy_AdditionalShowModifierWarning
+  settingBoolValues: 01010101010101010101000000000000000001000100010101010000000100010001000100010000010001010000000001010100010101
