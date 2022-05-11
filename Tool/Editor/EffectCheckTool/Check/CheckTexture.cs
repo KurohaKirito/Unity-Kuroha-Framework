@@ -64,6 +64,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                             }
                         }
 
+                        // 后缀非法错误无法自动修复, 而 TextureSize 就无法自动修复, 于是使用了 TextureSize
                         switch ((CheckOptions)itemData.checkType) {
                             case CheckOptions.Size:
                                 if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureSize, files[index], itemData, ref reportInfos) == false) {
@@ -73,21 +74,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                                 break;
 
                             case CheckOptions.ReadWriteEnable:
-                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureReadWriteEnable, files[index], itemData, ref reportInfos) == false) {
+                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureSize, files[index], itemData, ref reportInfos) == false) {
                                     CheckReadWriteEnable(assetPath, files[index], itemData, ref reportInfos);
                                 }
 
                                 break;
 
                             case CheckOptions.MipMaps:
-                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, files[index], itemData, ref reportInfos) == false) {
+                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureSize, files[index], itemData, ref reportInfos) == false) {
                                     CheckMipMaps(assetPath, files[index], itemData, ref reportInfos);
                                 }
 
                                 break;
 
                             case CheckOptions.CompressFormat:
-                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureMipMaps, files[index], itemData, ref reportInfos) == false) {
+                                if (IsInvalid(EffectCheckReportInfo.EffectCheckReportType.TextureSize, files[index], itemData, ref reportInfos) == false) {
                                     CheckCompressFormat(assetPath, files[index], itemData, ref reportInfos);
                                 }
                                 break;
