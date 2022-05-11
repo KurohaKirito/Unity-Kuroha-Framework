@@ -21,12 +21,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
 
         private static bool pcSetting;
         private static int pcMaxSize = 512;
+        private static bool pcUseOriginalSize;
         private static TextureResizeAlgorithm pcResizeAlgorithm = TextureResizeAlgorithm.Mitchell;
         private const TextureImporterFormat PC_FORMAT_RGB = TextureImporterFormat.DXT1;
         private const TextureImporterFormat PC_FORMAT_RGBA = TextureImporterFormat.DXT5;
 
         private static bool iosSetting;
         private static int iosMaxSize = 256;
+        private static bool iosUseOriginalSize;
         private static TextureResizeAlgorithm iosResizeAlgorithm = TextureResizeAlgorithm.Mitchell;
         private static TextureCompressionQuality iosCompressionQuality = TextureCompressionQuality.Normal;
         private const TextureImporterFormat IOS_FORMAT_RGB = TextureImporterFormat.ASTC_RGB_6x6;
@@ -34,6 +36,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
 
         private static bool androidSetting;
         private static int androidMaxSize = 256;
+        private static bool androidUseOriginalSize;
         private static TextureResizeAlgorithm androidResizeAlgorithm = TextureResizeAlgorithm.Mitchell;
         private static TextureCompressionQuality androidCompressionQuality = TextureCompressionQuality.Normal;
         private const TextureImporterFormat ANDROID_FORMAT_RGB = TextureImporterFormat.ETC2_RGB4;
@@ -96,7 +99,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 pcSetting = EditorGUILayout.ToggleLeft("PC Importer Settings", pcSetting);
                 if (pcSetting)
                 {
+                    pcUseOriginalSize = EditorGUILayout.ToggleLeft("Use Original Size", pcUseOriginalSize);
+                    UnityEngine.GUI.enabled = !pcUseOriginalSize;
                     pcMaxSize = EditorGUILayout.IntPopup("Max Size", pcMaxSize, arrayMaxSizeText, arrayMaxSize);
+                    UnityEngine.GUI.enabled = true;
                     pcResizeAlgorithm = (TextureResizeAlgorithm) EditorGUILayout.EnumPopup("Resize Algorithm", pcResizeAlgorithm);
                     UnityEngine.GUI.enabled = false;
                     EditorGUILayout.EnumPopup("RGB Format", PC_FORMAT_RGB);
@@ -114,7 +120,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 iosSetting = EditorGUILayout.ToggleLeft("IOS Importer Settings", iosSetting);
                 if (iosSetting)
                 {
+                    iosUseOriginalSize = EditorGUILayout.ToggleLeft("Use Original Size", iosUseOriginalSize);
+                    UnityEngine.GUI.enabled = !iosUseOriginalSize;
                     iosMaxSize = EditorGUILayout.IntPopup("Max Size", iosMaxSize, arrayMaxSizeText, arrayMaxSize);
+                    UnityEngine.GUI.enabled = true;
                     iosResizeAlgorithm = (TextureResizeAlgorithm) EditorGUILayout.EnumPopup("Resize Algorithm", iosResizeAlgorithm);
                     iosCompressionQuality = (UnityEditor.TextureCompressionQuality) EditorGUILayout.EnumPopup("Compression Quality", iosCompressionQuality);
                     UnityEngine.GUI.enabled = false;
@@ -133,7 +142,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 androidSetting = EditorGUILayout.ToggleLeft("Android Importer Settings", androidSetting);
                 if (androidSetting)
                 {
+                    androidUseOriginalSize = EditorGUILayout.ToggleLeft("Use Original Size", androidUseOriginalSize);
+                    UnityEngine.GUI.enabled = !androidUseOriginalSize;
                     androidMaxSize = EditorGUILayout.IntPopup("Max Size", androidMaxSize, arrayMaxSizeText, arrayMaxSize);
+                    UnityEngine.GUI.enabled = true;
                     androidResizeAlgorithm = (TextureResizeAlgorithm) EditorGUILayout.EnumPopup("Resize Algorithm", androidResizeAlgorithm);
                     androidCompressionQuality = (UnityEditor.TextureCompressionQuality) EditorGUILayout.EnumPopup("Compression Quality", androidCompressionQuality);
                     UnityEngine.GUI.enabled = false;
@@ -429,6 +441,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
 
         private static bool PCSetImporterForTexture(TextureImporter importer)
         {
+            if (pcUseOriginalSize)
+            {
+                TextureUtil.GetTextureOriginalSize(importer, out var originWidth, out var originHeight);
+                pcMaxSize = Mathf.Min(originWidth, originHeight);
+            }
+            
             if (importer.GetPlatformTextureSettings("Standalone", out var curSize, out var format))
             {
                 if (curSize <= pcMaxSize && (format == PC_FORMAT_RGB || format == PC_FORMAT_RGBA))
@@ -452,6 +470,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
 
         private static bool IOSSetImporterForTexture(TextureImporter importer)
         {
+            if (iosUseOriginalSize)
+            {
+                TextureUtil.GetTextureOriginalSize(importer, out var originWidth, out var originHeight);
+                iosMaxSize = Mathf.Min(originWidth, originHeight);
+            }
+            
             if (importer.GetPlatformTextureSettings("iPhone", out var curSize, out var format))
             {
                 if (curSize <= iosMaxSize && (format == IOS_FORMAT_RGB || format == IOS_FORMAT_RGBA))
@@ -476,6 +500,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
 
         private static bool AndroidSetImporterForTexture(TextureImporter importer)
         {
+            if (androidUseOriginalSize)
+            {
+                TextureUtil.GetTextureOriginalSize(importer, out var originWidth, out var originHeight);
+                androidMaxSize = Mathf.Min(originWidth, originHeight);
+            }
+            
             if (importer.GetPlatformTextureSettings("Android", out var curSize, out var format))
             {
                 if (curSize <= androidMaxSize && (format == ANDROID_FORMAT_RGB || format == ANDROID_FORMAT_RGBA))
