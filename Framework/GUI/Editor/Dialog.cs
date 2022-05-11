@@ -77,7 +77,7 @@ namespace Kuroha.Framework.GUI.Editor
         /// 处理按钮事件前的窗口 ID
         /// </summary>
         private static int windowIDBeforeEvent;
-        
+
         /// <summary>
         /// 处理按钮事件后的窗口 ID
         /// </summary>
@@ -115,22 +115,22 @@ namespace Kuroha.Framework.GUI.Editor
         /// <param name="okAction">OK 按钮事件</param>
         /// <param name="cancelAction">Cancel 按钮事件</param>
         /// <param name="altAction">Alt 按钮事件</param>
-        public static void Display(string titleText, string info, DialogType type, string buttonOkName, string buttonCancelName, string buttonAltName, Action okAction = null, Action cancelAction = null, Action altAction = null)
+        public static void Display(string titleText, string info, DialogType type, string buttonOkName, string buttonCancelName = null, string buttonAltName = null, Action okAction = null, Action cancelAction = null, Action altAction = null)
         {
             if (windowTitle == titleText && message == info && windowType == type && buttonOk == buttonOkName && buttonCancel == buttonCancelName && buttonAlt == buttonAltName)
             {
                 return;
             }
-            
+
             if (window != null)
             {
                 CloseWindow();
             }
-            
+
             windowTitle = titleText;
             message = info;
             windowType = type;
-            
+
             buttonOk = string.IsNullOrEmpty(buttonOkName) ? "OK" : buttonOkName;
             buttonCancel = buttonCancelName;
             buttonAlt = buttonAltName;
@@ -146,11 +146,22 @@ namespace Kuroha.Framework.GUI.Editor
                 DialogType.Error => new GUIContent(windowTitle, EditorGUIUtility.IconContent("console.errorIcon.sml").image as Texture2D, "错误"),
                 _ => throw new Exception()
             };
-            
-            if (okAction != null) { okEvent = okAction; }
-            if (cancelAction != null) { cancelEvent = cancelAction; }
-            if (altAction != null) { altEvent = altAction; }
-            
+
+            if (okAction != null)
+            {
+                okEvent = okAction;
+            }
+
+            if (cancelAction != null)
+            {
+                cancelEvent = cancelAction;
+            }
+
+            if (altAction != null)
+            {
+                altEvent = altAction;
+            }
+
             defaultColor = UnityEngine.GUI.backgroundColor;
         }
 
@@ -277,24 +288,24 @@ namespace Kuroha.Framework.GUI.Editor
         {
             // 清空 ID
             windowIDAfterEvent = 0;
-            
+
             // 重置枚举
             windowType = DialogType.Message;
             pressedButton = DialogButtonType.Null;
-            
+
             // 清空消息
             message = string.Empty;
-            
+
             // 清空按钮
             buttonOk = string.Empty;
             buttonCancel = string.Empty;
             buttonAlt = string.Empty;
-            
+
             // 清空事件
             okEvent = null;
             cancelEvent = null;
             altEvent = null;
-            
+
             // 关闭窗口
             window.Close();
             DestroyImmediate(window);
@@ -309,7 +320,7 @@ namespace Kuroha.Framework.GUI.Editor
             {
                 // 记录 ID
                 windowIDBeforeEvent = windowIDAfterEvent;
-                
+
                 switch (pressedButton)
                 {
                     case DialogButtonType.Ok:
@@ -323,15 +334,15 @@ namespace Kuroha.Framework.GUI.Editor
                     case DialogButtonType.Alt:
                         altEvent?.Invoke();
                         break;
-                    
+
                     case DialogButtonType.Null:
                         break;
-                    
+
                     default:
                         DebugUtil.LogError("Kuroha.GUI.Editor.Dialog 枚举错误!");
                         break;
                 }
-                
+
                 if (windowIDBeforeEvent == 0 || windowIDBeforeEvent == windowIDAfterEvent)
                 {
                     CloseWindow();
