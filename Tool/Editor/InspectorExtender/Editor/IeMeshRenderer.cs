@@ -12,13 +12,14 @@ namespace Kuroha.Tool.InspectorExtender.Editor
     /// <summary>
     /// 扩展 Mesh Renderer
     /// </summary>
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(MeshRenderer))]
     public class IeMeshRenderer : IeBase
     {
         private Mesh selfMesh;
+        private Mesh selfMeshOld;
         private MeshFilter selfFilter;
         private MeshRenderer selfMeshRenderer;
-        private MeshRenderer selfMeshRendererOld;
 
         private bool meshFoldout = true;
         private bool rwEnable;
@@ -34,39 +35,48 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         /// <summary>
         /// 构造方法
         /// </summary>
-        public IeMeshRenderer() : base("UnityEditor.MeshRendererEditor")
+        public IeMeshRenderer() : base("UnityEditor.MeshRendererEditor") { }
+
+        private void ReloadComponent()
         {
+            selfMeshRenderer = target as MeshRenderer;
+            if (selfMeshRenderer != null)
+            {
+                selfFilter = selfMeshRenderer.GetComponent<MeshFilter>();
+            }
         }
 
-        private void ReloadTarget()
+        private void ReloadMesh()
         {
-            selfMeshRendererOld = selfMeshRenderer;
+            selfMesh = selfFilter.sharedMesh;
+        }
 
-            selfFilter = selfMeshRenderer.GetComponent<MeshFilter>();
-
-            if (selfFilter != null)
-            {
-                selfMesh = selfFilter.sharedMesh;
-            }
-
-            if (selfMesh != null)
-            {
-                meshPath = AssetDatabase.GetAssetPath(selfMesh);
-                rwEnable = selfMesh.isReadable;
-                compression = MeshUtility.GetMeshCompression(selfMesh);
-            }
+        private void ReloadSetting()
+        {
+            selfMeshOld = selfMesh;
+            meshPath = AssetDatabase.GetAssetPath(selfMesh);
+            rwEnable = selfMesh.isReadable;
+            compression = MeshUtility.GetMeshCompression(selfMesh);
         }
 
         private void UpdateTarget()
         {
-            selfMeshRenderer = target as MeshRenderer;
-
-            if (selfFilter == null || selfMesh == null || selfMeshRenderer != selfMeshRendererOld)
+            if (selfMeshRenderer == null || selfFilter == null)
             {
-                ReloadTarget();
+                ReloadComponent();
+            }
+            
+            if (selfFilter != null)
+            {
+                ReloadMesh();
+            }
+
+            if (selfMesh != null && selfMesh != selfMeshOld)
+            {
+                ReloadSetting();
             }
         }
-
+        
         private async void OnMeshGUI()
         {
             if (selfMesh == null)
@@ -74,14 +84,15 @@ namespace Kuroha.Tool.InspectorExtender.Editor
                 return;
             }
 
-            meshFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(meshFoldout, "Mesh");
+            // meshFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(meshFoldout, "Mesh");
+            meshFoldout = EditorGUILayout.Foldout(meshFoldout, "Mesh", true);
             if (meshFoldout)
             {
                 OnApplyButtonGUI();
 
                 if (revertButton)
                 {
-                    ReloadTarget();
+                    ReloadSetting();
                 }
 
                 if (applyButton)
@@ -98,12 +109,15 @@ namespace Kuroha.Tool.InspectorExtender.Editor
                     }
                 }
             }
-
-            EditorGUILayout.EndFoldoutHeaderGroup();
+            // EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
         private void OnApplyButtonGUI()
         {
+            GUI.enabled = false;
+            EditorGUILayout.ObjectField("Current Mesh", selfMeshOld, typeof(Mesh), true);
+            GUI.enabled = true;
+            
             // Unity 内置资源不可修改
             if (meshPath.IndexOf("Assets", StringComparison.Ordinal) < 0)
             {
@@ -144,7 +158,7 @@ namespace Kuroha.Tool.InspectorExtender.Editor
             }
 
             AssetDatabase.Refresh();
-            ReloadTarget();
+            UpdateTarget();
         }
 
         private void SetMeshCompression()
@@ -168,32 +182,13 @@ namespace Kuroha.Tool.InspectorExtender.Editor
 
         private void OnLayerSortGUI()
         {
-            layerSortFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(layerSortFoldout, "Sorting Layer");
+            // layerSortFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(layerSortFoldout, "Sorting Layer");
+            layerSortFoldout = EditorGUILayout.Foldout(layerSortFoldout, "Layer", true);
             if (layerSortFoldout)
             {
                 ShowSortingLayer();
-                // if (selfFilter == null)
-                // {
-                //     selfFilter = selfMeshRenderer.GetComponent<MeshFilter>();
-                // }
-                //
-                // if (selfFilter != null)
-                // {
-                //     var mesh = selfFilter.sharedMesh;
-                //
-                //     if (GUILayout.Button("Save Mesh..."))
-                //     {
-                //         SaveMesh(mesh, mesh.name, false, true);
-                //     }
-                //
-                //     if (GUILayout.Button("Save Mesh As New Instance..."))
-                //     {
-                //         SaveMesh(mesh, mesh.name, true, true);
-                //     }
-                // }
             }
-
-            EditorGUILayout.EndFoldoutHeaderGroup();
+            // EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
         private void ShowSortingLayer()
