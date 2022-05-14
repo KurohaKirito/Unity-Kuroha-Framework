@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Script.Effect.Editor.AssetTool.Util.Unity;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,7 +26,6 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         private ModelImporterMeshCompression compression;
         private bool revertButton;
         private bool applyButton;
-        private readonly Regex regexReadWrite = new Regex(@"m_IsReadable: [\d]");
 
         private bool layerSortFoldout = true;
         private readonly List<string> layerNames = new List<string>();
@@ -142,21 +140,7 @@ namespace Kuroha.Tool.InspectorExtender.Editor
 
         private async Task SetMeshReadable()
         {
-            string meshData;
-            var meshFullPath = Path.GetFullPath(meshPath);
-
-            using (var reader = new StreamReader(meshFullPath))
-            {
-                meshData = await reader.ReadToEndAsync();
-                var readWriteString = "m_IsReadable: " + (rwEnable ? 1 : 0);
-                meshData = regexReadWrite.Replace(meshData, readWriteString);
-            }
-
-            using (var writer = new StreamWriter(meshFullPath))
-            {
-                await writer.WriteAsync(meshData);
-            }
-
+            await selfMesh.SetReadable(rwEnable);
             AssetDatabase.Refresh();
             UpdateTarget();
         }

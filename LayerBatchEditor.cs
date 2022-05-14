@@ -10,6 +10,8 @@ namespace Script.Effect.Editor.AssetTool
     {
         private string filePath;
         private int layerIndex;
+        private ModelImporterMeshCompression compress;
+        private int counter;
         
         [MenuItem("Funny/层级批量设置工具")]
         public static void Open()
@@ -78,6 +80,31 @@ namespace Script.Effect.Editor.AssetTool
                         counterX += 2;
                     }
                 }
+            }
+            
+            compress = (ModelImporterMeshCompression) EditorGUILayout.EnumPopup("选择压缩格式", compress);
+
+            if (GUILayout.Button("设置压缩等级"))
+            {
+                counter = 0;
+                var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                var assetPath = filePath.Substring(assetsIndex);
+                var guids = AssetDatabase.FindAssets("t:mesh", new [] { assetPath });
+                Debug.Log($"个数: {guids.Length}");
+
+                foreach (var guid in guids)
+                {
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+                    MeshUtility.SetMeshCompression(mesh, compress);
+                    EditorUtility.SetDirty(mesh);
+                    counter++;
+                }
+                
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                
+                Debug.Log($"设置个数: {counter}");
             }
         }
     }
