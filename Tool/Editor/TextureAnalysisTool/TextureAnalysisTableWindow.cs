@@ -14,7 +14,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// <summary>
         /// 表格
         /// </summary>
-        private TextureAnalysisTable table;
+        private static TextureAnalysisTable table;
 
         /// <summary>
         /// 宽度警告线
@@ -45,11 +45,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// 内存错误线
         /// </summary>
         private static int memoryError;
-
+        
+        private static TextureAnalysisTableWindow window;
         private const int WARN_ERROR_TEXT_WIDTH = 100;
         private const int WARN_ERROR_TEXT_NUMBER_SPACE = 10;
         private const int WARN_ERROR_NUMBER_WIDTH = 60;
 
+        /// <summary>
+        /// 是否时装
+        /// </summary>
+        private static bool isFashion;
+        
         /// <summary>
         /// 是否是对场景进行检测
         /// </summary>
@@ -69,17 +75,27 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// 待检测游戏物体
         /// </summary>
         private static GameObject detectGameObject;
-
+        
         /// <summary>
         /// 打开窗口
         /// </summary>
-        public static void Open(TextureAnalysisData.DetectType type, TextureAnalysisData.DetectTypeAtPath typeAtPath, string path, GameObject obj) {
+        public static void Open(TextureAnalysisData.DetectType type, TextureAnalysisData.DetectTypeAtPath typeAtPath, string path, GameObject obj, bool fashionDetect) {
+            isFashion = fashionDetect;
             detectType = type;
             detectPath = path;
             detectGameObject = obj;
             detectTypeAtPath = typeAtPath;
-            var window = GetWindow<TextureAnalysisTableWindow>("纹理资源分析", true);
-            window.minSize = new Vector2(1200, 1000);
+
+            if (window != null)
+            {
+                InitTable(true);
+                window.Repaint();
+            }
+            else
+            {
+                window = GetWindow<TextureAnalysisTableWindow>("纹理资源分析", true);
+                window.minSize = new Vector2(1200, 1000);
+            }
         }
 
         /// <summary>
@@ -103,7 +119,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// </summary>
         protected void OnGUI() {
             // 顶部留白
-            GUILayout.Space(20);
+            GUILayout.Space(10);
+            
             GUILayout.BeginHorizontal("Box");
             {
                 // 左侧留白
@@ -167,7 +184,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// 初始化表格
         /// </summary>
         /// <param name="forceUpdate">是否强制刷新</param>
-        private void InitTable(bool forceUpdate = false) {
+        private static void InitTable(bool forceUpdate = false) {
             if (forceUpdate || table == null) {
                 var dataList = InitData();
                 if (dataList != null) {
@@ -295,15 +312,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
             
             // 判断是否可以进行特殊检测
             var isSolid = false;
-            if (assetPath.IndexOf(".jpg", StringComparison.OrdinalIgnoreCase) > 0 ||
-                assetPath.IndexOf(".png", StringComparison.OrdinalIgnoreCase) > 0 ||
-                assetPath.IndexOf(".tga", StringComparison.OrdinalIgnoreCase) > 0 ||
-                assetPath.IndexOf(".psd", StringComparison.OrdinalIgnoreCase) > 0 ||
-                assetPath.IndexOf(".tif", StringComparison.OrdinalIgnoreCase) > 0) {
+            if (AssetImporter.GetAtPath(assetPath) is TextureImporter textureImporter)
+            {
+                if (assetPath.IndexOf(".jpg", StringComparison.OrdinalIgnoreCase) > 0 ||
+                    assetPath.IndexOf(".png", StringComparison.OrdinalIgnoreCase) > 0 ||
+                    assetPath.IndexOf(".tga", StringComparison.OrdinalIgnoreCase) > 0 ||
+                    assetPath.IndexOf(".psd", StringComparison.OrdinalIgnoreCase) > 0 ||
+                    assetPath.IndexOf(".tif", StringComparison.OrdinalIgnoreCase) > 0) {
                 
-                // 纯色纹理判断
-                var textureImporter = (TextureImporter)AssetImporter.GetAtPath(assetPath);
-                if (!ReferenceEquals(textureImporter, null)) {
+                    // 纯色纹理判断
                     if (textureImporter.textureShape == TextureImporterShape.Texture2D && TextureUtil.IsSolidColor(asset)) {
                         isSolid = true;
                     }
@@ -312,24 +329,33 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 // 重复纹理检测
                 var isBegin = counter == 1;
                 TextureRepeatChecker.CheckOneTexture(assetPath, isBegin);
+                
+                // 计数
+                counter++;
+            
+                // 统计内存占用
+                var memoryLong = TextureUtil.GetTextureStorageMemorySize(asset);
+            
+                // 获取压缩格式
+                textureImporter.GetPlatformTextureSettings("Android", out _, out var androidFormat);
+                textureImporter.GetPlatformTextureSettings("iPhone", out _, out var iOSFormat);
+                textureImporter.GetPlatformTextureSettings("Standalone", out _, out var pcFormat);
+            
+                // 汇总数据
+                dataList.Add(new TextureAnalysisData {
+                    id = counter,
+                    width = asset.width,
+                    height = asset.height,
+                    mipMaps = textureImporter.mipmapEnabled,
+                    androidFormat = androidFormat,
+                    iOSFormat = iOSFormat,
+                    pcFormat = pcFormat,
+                    memory = memoryLong / 1024f,
+                    isSolid = isSolid,
+                    textureName = asset.name,
+                    texturePath = assetPath
+                });
             }
-
-            // 计数
-            counter++;
-            
-            // 统计内存占用
-            var memoryLong = TextureUtil.GetTextureStorageMemorySize(asset);
-            
-            // 汇总数据
-            dataList.Add(new TextureAnalysisData {
-                id = counter,
-                width = asset.width,
-                height = asset.height,
-                memory = memoryLong / 1024f,
-                isSolid = isSolid,
-                textureName = asset.name,
-                texturePath = assetPath
-            });
         }
 
         /// <summary>
@@ -434,8 +460,125 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         }
                     }
                 },
-                new CustomTableColumn<TextureAnalysisData>
-                {
+                new CustomTableColumn<TextureAnalysisData> {
+                    headerContent = new GUIContent("Mip Maps"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 100,
+                    minWidth = 80,
+                    maxWidth = 120,
+                    allowToggleVisibility = false,
+                    autoResize = false,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.mipMaps.CompareTo(dataB.mipMaps),
+                    DrawCell = (cellRect, data) => {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+
+                        EditorGUI.LabelField(cellRect, data.mipMaps.ToString());
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData> {
+                    headerContent = new GUIContent("Format : Android"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 180,
+                    minWidth = 80,
+                    maxWidth = 240,
+                    allowToggleVisibility = false,
+                    autoResize = false,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.androidFormat.CompareTo(dataB.androidFormat),
+                    DrawCell = (cellRect, data) => {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        var iconRect = cellRect;
+                        iconRect.width = 20f;
+                        cellRect.xMin += 20f;
+                        
+                        string iconName;
+                        if (data.androidFormat == TextureImporterFormat.ETC2_RGB4 || data.androidFormat == TextureImporterFormat.ETC2_RGBA8)
+                        {
+                            iconName = "console.infoIcon.sml";
+                        }
+                        else if(data.androidFormat == TextureImporterFormat.ETC_RGB4)
+                        {
+                            iconName = "console.warnIcon.sml";
+                        }
+                        else
+                        {
+                            iconName = "console.errorIcon.sml";
+                        }
+                        
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent(iconName));
+                        EditorGUI.LabelField(cellRect, data.androidFormat.ToString());
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData> {
+                    headerContent = new GUIContent("Format : iOS"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 180,
+                    minWidth = 80,
+                    maxWidth = 240,
+                    allowToggleVisibility = false,
+                    autoResize = false,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.iOSFormat.CompareTo(dataB.iOSFormat),
+                    DrawCell = (cellRect, data) => {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        var iconRect = cellRect;
+                        iconRect.width = 20f;
+                        cellRect.xMin += 20f;
+
+                        string iconName;
+                        if (data.iOSFormat == TextureImporterFormat.PVRTC_RGB4 || data.iOSFormat == TextureImporterFormat.PVRTC_RGBA4)
+                        {
+                            iconName = "console.infoIcon.sml";
+                        }
+                        else if(data.iOSFormat == TextureImporterFormat.ASTC_RGB_6x6 || data.iOSFormat == TextureImporterFormat.ASTC_RGBA_6x6)
+                        {
+                            iconName = isFashion ? "console.warnIcon.sml" : "console.infoIcon.sml";
+                        }
+                        else
+                        {
+                            iconName = "console.errorIcon.sml";
+                        }
+                        
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent(iconName));
+                        EditorGUI.LabelField(cellRect, data.iOSFormat.ToString());
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData> {
+                    headerContent = new GUIContent("Format : PC"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 180,
+                    minWidth = 80,
+                    maxWidth = 240,
+                    allowToggleVisibility = false,
+                    autoResize = false,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.pcFormat.CompareTo(dataB.pcFormat),
+                    DrawCell = (cellRect, data) => {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        var iconRect = cellRect;
+                        iconRect.width = 20f;
+                        cellRect.xMin += 20f;
+                        
+                        string iconName;
+                        if (data.pcFormat == TextureImporterFormat.DXT1 || data.pcFormat == TextureImporterFormat.DXT5)
+                        {
+                            iconName = "console.infoIcon.sml";
+                        }
+                        else
+                        {
+                            iconName = "console.errorIcon.sml";
+                        }
+                        
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent(iconName));
+                        EditorGUI.LabelField(cellRect, data.pcFormat.ToString());
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Memory"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 100,

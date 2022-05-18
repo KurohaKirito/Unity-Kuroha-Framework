@@ -134,7 +134,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
         /// 统计分析 Textures
         /// </summary>
         private static void CollectTextures() {
-            TextureAnalysisTableWindow.Open(TextureAnalysisData.DetectType.GameObject, TextureAnalysisData.DetectTypeAtPath.Prefabs, null, role.gameObject);
+            TextureAnalysisTableWindow.Open(TextureAnalysisData.DetectType.GameObject, TextureAnalysisData.DetectTypeAtPath.Prefabs, null, role.gameObject, true);
         }
 
         /// <summary>

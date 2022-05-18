@@ -1,4 +1,6 @@
-﻿namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
+﻿using UnityEditor;
+
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
     public class TextureAnalysisData {
         /// <summary>
         /// 检测类型
@@ -35,6 +37,10 @@
         public int id;
         public int width;
         public int height;
+        public bool mipMaps;
+        public TextureImporterFormat androidFormat;
+        public TextureImporterFormat iOSFormat;
+        public TextureImporterFormat pcFormat;
         public float memory;
         public bool isSolid;
         public string repeatInfo;
@@ -45,7 +51,11 @@
             if (other != null) {
                 if (width == other.width &&
                     height == other.height &&
-                    textureName == other.textureName) {
+                    mipMaps == other.mipMaps &&
+                    androidFormat == other.androidFormat &&
+                    iOSFormat == other.iOSFormat &&
+                    pcFormat == other.pcFormat &&
+                    texturePath == other.texturePath) {
                     return true;
                 }
             }

@@ -107,7 +107,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     GUILayout.BeginVertical("Box");
                     {
                         if (GUILayout.Button("开始", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
-                            TextureAnalysisTableWindow.Open(detectType, detectTypeAtPath, detectPath, detectGameObject);
+                            TextureAnalysisTableWindow.Open(detectType, detectTypeAtPath, detectPath, detectGameObject, false);
                         }
                     }
                     GUILayout.EndVertical();
