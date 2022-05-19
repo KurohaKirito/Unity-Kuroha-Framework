@@ -38,6 +38,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         public int width;
         public int height;
         public bool mipMaps;
+        public bool readable;
+        public bool streaming;
         public TextureImporterFormat androidFormat;
         public TextureImporterFormat iOSFormat;
         public TextureImporterFormat pcFormat;

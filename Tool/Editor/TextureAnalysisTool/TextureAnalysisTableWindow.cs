@@ -86,32 +86,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
             detectGameObject = obj;
             detectTypeAtPath = typeAtPath;
 
-            if (window != null)
-            {
-                InitTable(true);
-                window.Repaint();
-            }
-            else
+            if (window == null)
             {
                 window = GetWindow<TextureAnalysisTableWindow>("纹理资源分析", true);
                 window.minSize = new Vector2(1200, 1000);
             }
-        }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        private void OnEnable() {
-            // 初始化界限值
-            if (widthWarn == 0)   { widthWarn = 250; }
-            if (widthError == 0)  { widthError = 500; }
-            if (heightWarn == 0)  { heightWarn = 250; }
-            if (heightError == 0) { heightError = 500; }
-            if (memoryWarn == 0)  { memoryWarn = 512; }
-            if (memoryError == 0) { memoryError = 1024; }
-
-            // 初始化表格
-            InitTable();
+            
+            InitTable(true);
+            window.Repaint();
         }
 
         /// <summary>
@@ -181,16 +163,24 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         }
 
         /// <summary>
-        /// 初始化表格
+        /// 初始化
         /// </summary>
         /// <param name="forceUpdate">是否强制刷新</param>
         private static void InitTable(bool forceUpdate = false) {
+            // 初始化界限值
+            if (widthWarn == 0)   { widthWarn = 250; }
+            if (widthError == 0)  { widthError = 500; }
+            if (heightWarn == 0)  { heightWarn = 250; }
+            if (heightError == 0) { heightError = 500; }
+            if (memoryWarn == 0)  { memoryWarn = 512; }
+            if (memoryError == 0) { memoryError = 1024; }
+            
             if (forceUpdate || table == null) {
                 var dataList = InitData();
                 if (dataList != null) {
                     var columns = InitColumns();
                     if (columns != null) {
-                        var space = new Vector2(20, 20);
+                        var space = new Vector2(10, 10);
                         var min = new Vector2(300, 300);
                         table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns, 
                             OnFilterEnter, null, OnExportPressed, OnRowSelect, OnDistinctPressed);
@@ -347,6 +337,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     width = asset.width,
                     height = asset.height,
                     mipMaps = textureImporter.mipmapEnabled,
+                    readable = textureImporter.isReadable,
+                    streaming = textureImporter.streamingMipmaps,
                     androidFormat = androidFormat,
                     iOSFormat = iOSFormat,
                     pcFormat = pcFormat,
@@ -369,10 +361,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     headerTextAlignment = TextAlignment.Center,
                     width = 50,
                     minWidth = 50,
-                    maxWidth = 120,
+                    maxWidth = 70,
                     allowToggleVisibility = true,
                     canSort = true,
-                    autoResize = false,
+                    autoResize = true,
                     Compare = (dataA, dataB, sortType) => dataA.id.CompareTo(dataB.id), // 排序
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
@@ -382,15 +374,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     }
                 },
                 new CustomTableColumn<TextureAnalysisData> {
-                    headerContent = new GUIContent("Name"),
+                    headerContent = new GUIContent("Asset"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 240,
                     minWidth = 240,
-                    maxWidth = 500,
+                    maxWidth = 1000,
                     allowToggleVisibility = false,
                     autoResize = false,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.textureName, dataB.textureName, StringComparison.Ordinal),
+                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.texturePath, dataB.texturePath, StringComparison.Ordinal),
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;
@@ -399,17 +391,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         cellRect.xMin += 20f;
 
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("RawImage Icon"));
-                        EditorGUI.LabelField(cellRect, data.textureName.Contains("/")? data.textureName.Split('/').Last() : data.textureName.Split('\\').Last());
+                        EditorGUI.LabelField(cellRect, data.texturePath);
                     }
                 },
                 new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Width"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 80,
-                    minWidth = 80,
-                    maxWidth = 120,
+                    width = 70,
+                    minWidth = 70,
+                    maxWidth = 100,
                     allowToggleVisibility = false,
-                    autoResize = false,
+                    autoResize = true,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) => dataA.width.CompareTo(dataB.width),
                     DrawCell = (cellRect, data) => {
@@ -434,11 +426,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Height"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 80,
-                    minWidth = 80,
-                    maxWidth = 120,
+                    width = 70,
+                    minWidth = 70,
+                    maxWidth = 100,
                     allowToggleVisibility = false,
-                    autoResize = false,
+                    autoResize = true,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) => dataA.height.CompareTo(dataB.height),
                     DrawCell = (cellRect, data) => {
@@ -461,13 +453,30 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     }
                 },
                 new CustomTableColumn<TextureAnalysisData> {
+                    headerContent = new GUIContent("R/W"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 50,
+                    minWidth = 50,
+                    maxWidth = 70,
+                    allowToggleVisibility = false,
+                    autoResize = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.readable.CompareTo(dataB.readable),
+                    DrawCell = (cellRect, data) => {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+
+                        EditorGUI.LabelField(cellRect, data.readable.ToString());
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Mip Maps"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 100,
-                    minWidth = 80,
-                    maxWidth = 120,
+                    width = 70,
+                    minWidth = 70,
+                    maxWidth = 70,
                     allowToggleVisibility = false,
-                    autoResize = false,
+                    autoResize = true,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) => dataA.mipMaps.CompareTo(dataB.mipMaps),
                     DrawCell = (cellRect, data) => {
@@ -478,13 +487,30 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     }
                 },
                 new CustomTableColumn<TextureAnalysisData> {
+                    headerContent = new GUIContent("Streaming"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 80,
+                    minWidth = 80,
+                    maxWidth = 80,
+                    allowToggleVisibility = false,
+                    autoResize = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.streaming.CompareTo(dataB.streaming),
+                    DrawCell = (cellRect, data) => {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+
+                        EditorGUI.LabelField(cellRect, data.streaming.ToString());
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Format : Android"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 180,
-                    minWidth = 80,
-                    maxWidth = 240,
+                    width = 175,
+                    minWidth = 175,
+                    maxWidth = 200,
                     allowToggleVisibility = false,
-                    autoResize = false,
+                    autoResize = true,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) => dataA.androidFormat.CompareTo(dataB.androidFormat),
                     DrawCell = (cellRect, data) => {
@@ -515,11 +541,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Format : iOS"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 180,
-                    minWidth = 80,
-                    maxWidth = 240,
+                    width = 175,
+                    minWidth = 175,
+                    maxWidth = 200,
                     allowToggleVisibility = false,
-                    autoResize = false,
+                    autoResize = true,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) => dataA.iOSFormat.CompareTo(dataB.iOSFormat),
                     DrawCell = (cellRect, data) => {
@@ -550,11 +576,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Format : PC"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 180,
-                    minWidth = 80,
-                    maxWidth = 240,
+                    width = 175,
+                    minWidth = 175,
+                    maxWidth = 200,
                     allowToggleVisibility = false,
-                    autoResize = false,
+                    autoResize = true,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) => dataA.pcFormat.CompareTo(dataB.pcFormat),
                     DrawCell = (cellRect, data) => {
@@ -582,7 +608,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     headerContent = new GUIContent("Memory"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 100,
-                    minWidth = 80,
+                    minWidth = 100,
                     maxWidth = 120,
                     allowToggleVisibility = false,
                     autoResize = true,
@@ -645,9 +671,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     headerTextAlignment = TextAlignment.Center,
                     width = 80,
                     minWidth = 80,
-                    maxWidth = 400,
+                    maxWidth = 120,
                     allowToggleVisibility = false,
-                    autoResize = false,
+                    autoResize = true,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) => AssetTool.Util.RunTime.StringUtil.CompareByNumber(dataA.repeatInfo, dataB.repeatInfo, sortType),
                     DrawCell = (cellRect, data) => {
