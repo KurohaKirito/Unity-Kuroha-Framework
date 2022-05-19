@@ -362,7 +362,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     width = 50,
                     minWidth = 50,
                     maxWidth = 70,
-                    allowToggleVisibility = true,
+                    allowToggleVisibility = false,
                     canSort = true,
                     autoResize = true,
                     Compare = (dataA, dataB, sortType) => dataA.id.CompareTo(dataB.id), // 排序
@@ -376,7 +376,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Asset"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 240,
+                    width = 600,
                     minWidth = 240,
                     maxWidth = 1000,
                     allowToggleVisibility = false,
@@ -646,7 +646,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     width = 80,
                     minWidth = 80,
                     maxWidth = 140,
-                    allowToggleVisibility = true,
+                    allowToggleVisibility = false,
+                    autoResize = true,
                     canSort = true,
                     Compare = (dataA, dataB, sortType) => AssetTool.Util.RunTime.StringUtil.CompareByBoolAndString(dataA.isSolid, dataB.isSolid, dataA.textureName, dataB.textureName, sortType),
                     DrawCell = (cellRect, data) => {
@@ -662,7 +663,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                             } else {
                                 EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("d_FilterSelectedOnly"));
                             }
-                            UnityEngine.GUI.Label(cellRect, "纯色纹理");
+                            EditorGUI.LabelField(cellRect, "纯色纹理");
                         }
                     }
                 },
