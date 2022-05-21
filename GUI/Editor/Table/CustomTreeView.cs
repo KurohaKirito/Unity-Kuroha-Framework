@@ -132,8 +132,8 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
 
         private List<T> Filter(IEnumerable<T> rows)
         {
-            var isHadColumsShowing = multiColumnHeader.state.visibleColumns.Any(visible => visible == 0);
-            if (isHadColumsShowing && MethodFilter != null) {
+            var isHadColumnsShowing = multiColumnHeader.state.visibleColumns.Any(visible => visible == 0);
+            if (isHadColumnsShowing && MethodFilter != null) {
                 rows = rows.Where(item => MethodFilter(filterMask, item, filterText));
             }
             isReBuildRows = true;
