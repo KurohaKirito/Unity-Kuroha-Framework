@@ -15,7 +15,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool {
         /// <summary>
         /// 全局默认 margin
         /// </summary>
-        private const float UI_DEFAULT_MARGIN = 5;
+        public const float UI_DEFAULT_MARGIN = 5;
 
         /// <summary>
         /// 标签页数据
