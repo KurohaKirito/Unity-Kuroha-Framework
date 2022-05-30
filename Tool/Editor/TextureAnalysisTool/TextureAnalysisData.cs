@@ -49,7 +49,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         public string textureName;
         public string texturePath;
         
-        public bool Equal(TextureAnalysisData other) {
+        public bool IsEqual(TextureAnalysisData other) {
             if (other != null) {
                 if (width == other.width &&
                     height == other.height &&

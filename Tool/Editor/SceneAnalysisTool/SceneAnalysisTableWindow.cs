@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
 using Script.Effect.Editor.AssetTool.GUI.Editor.Table;
 using UnityEditor;
@@ -24,13 +25,16 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         private int resultNormals;
 
         private SceneAnalysisTable table;
-        private GUIStyle fontStyleRed;
-        private GUIStyle fontStyleYellow;
 
         private static int vertsWarn;
         private static int vertsError;
         private static int trisWarn;
         private static int trisError;
+
+        private static bool isDistinct;
+        private static List<SceneAnalysisData> originList = new List<SceneAnalysisData>();
+        private static readonly List<SceneAnalysisData> distinctList = new List<SceneAnalysisData>();
+        private static CustomTableColumn<SceneAnalysisData>[] columns;
 
         /// <summary>
         /// 打开窗口
@@ -64,12 +68,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 trisError = 1000;
             }
 
-            fontStyleRed = new GUIStyle();
-            fontStyleYellow = new GUIStyle();
             resultTris = 0;
             resultVerts = 0;
-            fontStyleRed.normal.textColor = new Color((float)203 / 255, (float)27 / 255, (float)69 / 255);
-            fontStyleYellow.normal.textColor = new Color((float)226 / 255, (float)148 / 255, (float)59 / 255);
 
             InitTable();
         }
@@ -124,18 +124,28 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             {
                 if (ReferenceEquals(prefab, null) == false || isDetectCurrentScene)
                 {
-                    var dataList = InitRows(isCollider);
-                    if (dataList != null)
+                    originList = InitRows(isCollider);
+                    if (originList != null)
                     {
-                        var columns = InitColumns(isCollider);
+                        columns = InitColumns(isCollider);
                         if (columns != null)
                         {
-                            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), dataList,
-                                true, true, true, columns, OnFilterEnter, OnAfterFilter, OnExportPressed, OnRowSelect, OnDistinctPressed);
+                            GenerateTable(originList, columns);
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 生成表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="column"></param>
+        private void GenerateTable(List<SceneAnalysisData> data, CustomTableColumn<SceneAnalysisData>[] column)
+        {
+            table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), data,
+                true, true, true, column, OnFilterEnter, OnAfterFilter, OnExportPressed, OnRowSelect, OnDistinctPressed);
         }
 
         /// <summary>
@@ -155,13 +165,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 var meshFilters = isDetectCurrentScene? FindObjectsOfType<MeshFilter>() : prefab.GetComponentsInChildren<MeshFilter>();
                 DetectMeshFilter(in dataList, in meshFilters);
                 meshCount += meshFilters.Length;
-
-
+                
                 var skinnedMeshRenderers = isDetectCurrentScene? FindObjectsOfType<SkinnedMeshRenderer>() : prefab.GetComponentsInChildren<SkinnedMeshRenderer>();
                 DetectSkinnedMeshRenderer(in dataList, in skinnedMeshRenderers);
                 meshCount += skinnedMeshRenderers.Length;
-
-
+                
                 var particleSystems = isDetectCurrentScene? FindObjectsOfType<ParticleSystem>() : prefab.GetComponentsInChildren<ParticleSystem>();
                 DetectParticleSystem(in dataList, in particleSystems);
                 meshCount += particleSystems.Length;
@@ -194,7 +202,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 normals = resultNormals,
                 tangents = resultTangents,
                 assetName = "Sum",
-                assetPath = string.Empty, });
+                assetPath = "Sum"
+            });
         }
 
         /// <summary>
@@ -223,7 +232,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 colors = mesh.colors.Length,
                 normals = mesh.normals.Length,
                 tangents = mesh.tangents.Length,
-                assetName = AssetDatabase.GetAssetPath(mesh),
+                assetName = mesh.name,
                 assetPath = AssetDatabase.GetAssetPath(mesh)
             });
         }
@@ -376,14 +385,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     cellRect.xMin += 3f;
                     var iconRect = cellRect;
                     iconRect.width = 20f;
-                    EditorGUI.LabelField(iconRect, data.assetName.Equals("Sum")? EditorGUIUtility.IconContent("console.infoicon.sml") : EditorGUIUtility.IconContent("PrefabModel Icon"));
+                    EditorGUI.LabelField(iconRect, data.assetName.Equals("Sum")? EditorGUIUtility.IconContent("console.InfoIcon.sml") : EditorGUIUtility.IconContent("PrefabModel Icon"));
                     cellRect.xMin += 20f;
-                    EditorGUI.LabelField(cellRect, data.assetName.Contains("/")? data.assetName.Split('/').Last() : data.assetName.Split('\\').Last());
+                    EditorGUI.LabelField(cellRect, data.assetName);
                 },
             };
         }
 
-        private CustomTableColumn<SceneAnalysisData> CreateColumn_Verts() {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Verts() {
             return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Verts"),
                 headerTextAlignment = TextAlignment.Center,
@@ -400,20 +409,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     iconRect.width = 20f;
                     cellRect.xMin += 20f;
                     if (data.verts > vertsError) {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
-                        EditorGUI.LabelField(cellRect, data.verts.ToString(), fontStyleRed);
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.ErrorIcon.sml"));
+                        EditorGUI.LabelField(cellRect, data.verts.ToString());
                     } else if (data.verts > vertsWarn) {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
-                        EditorGUI.LabelField(cellRect, data.verts.ToString(), fontStyleYellow);
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.WarnIcon.sml"));
+                        EditorGUI.LabelField(cellRect, data.verts.ToString());
                     } else {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.InfoIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.verts.ToString());
                     }
                 },
             };
         }
 
-        private CustomTableColumn<SceneAnalysisData> CreateColumn_Tris() {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Tris() {
             return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Tris"),
                 headerTextAlignment = TextAlignment.Center,
@@ -430,13 +439,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     iconRect.width = 20f;
                     cellRect.xMin += 20f;
                     if (data.tris > trisError) {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.erroricon.sml"));
-                        EditorGUI.LabelField(cellRect, data.tris.ToString(), fontStyleRed);
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.ErrorIcon.sml"));
+                        EditorGUI.LabelField(cellRect, data.tris.ToString());
                     } else if (data.tris > trisWarn) {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnicon.sml"));
-                        EditorGUI.LabelField(cellRect, data.tris.ToString(), fontStyleYellow);
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
+                        EditorGUI.LabelField(cellRect, data.tris.ToString());
                     } else {
-                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoicon.sml"));
+                        EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.tris.ToString());
                     }
                 },
@@ -593,8 +602,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private CustomTableColumn<SceneAnalysisData>[] InitColumns(bool collider) {
-            var columns = new List<CustomTableColumn<SceneAnalysisData>> {
+        private static CustomTableColumn<SceneAnalysisData>[] InitColumns(bool collider) {
+            var newColumns = new List<CustomTableColumn<SceneAnalysisData>> {
                 CreateColumn_ID(),
                 CreateColumn_Name(),
                 CreateColumn_Verts(),
@@ -609,10 +618,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             };
 
             if (collider) {
-                columns.Add(CreateColumn_ReadWrite());
+                newColumns.Add(CreateColumn_ReadWrite());
             }
 
-            return columns.ToArray();
+            return newColumns.ToArray();
         }
 
         /// <summary>
@@ -640,8 +649,22 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 File.Delete(file);
             }
 
+            var stringBuilder = new StringBuilder();
             foreach (var data in dataList) {
-                File.AppendAllText(file, $"{data.id}\t{data.assetName}\t{data.verts}\t{data.tris}\n");
+                stringBuilder.Clear();
+                stringBuilder.Append($"{data.id}\t");
+                stringBuilder.Append(data.assetName == "Sum" ? "无路径\t" : $"{Path.GetFullPath(data.assetPath)}\t");
+                stringBuilder.Append($"{data.tris}\t");
+                stringBuilder.Append($"{data.verts}\t");
+                stringBuilder.Append($"{data.uv}\t");
+                stringBuilder.Append($"{data.uv2}\t");
+                stringBuilder.Append($"{data.uv3}\t");
+                stringBuilder.Append($"{data.uv4}\t");
+                stringBuilder.Append($"{data.colors}\t");
+                stringBuilder.Append($"{data.tangents}\t");
+                stringBuilder.Append($"{data.normals}\t");
+                stringBuilder.Append("\r\n");
+                File.AppendAllText(file, stringBuilder.ToString());
             }
         }
 
@@ -716,7 +739,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         }
         
         /// <summary>
-        /// 查找按钮事件
+        /// 查找结束事件
         /// </summary>
         private void OnAfterFilter(List<SceneAnalysisData> dataList)
         {
@@ -745,7 +768,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         
             var sumIndex = 0;
 
-            for (int i = 0; i < dataList.Count; i++)
+            for (var i = 0; i < dataList.Count; i++)
             {
                 if (dataList[i].assetName == "Sum")
                 {
@@ -766,7 +789,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             }
             dataList.RemoveAt(sumIndex);
 
-            for (int i = 0; i < dataList.Count; i++)
+            for (var i = 0; i < dataList.Count; i++)
             {
                 dataList[i].id = i + 1;
             }
@@ -777,41 +800,62 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         /// <summary>
         /// 数据去重事件
         /// </summary>
-        private void OnDistinctPressed(ref List<SceneAnalysisData> dataList) {
-            var newList = new List<SceneAnalysisData>();
-            foreach (var data in dataList) {
-                if (data.assetName != "Sum" && newList.Exists(analysisData => analysisData.Equal(data)) == false) {
-                    newList.Add(data);
+        private void OnDistinctPressed(List<SceneAnalysisData> dataList) {
+            if (isDistinct) {
+                // 恢复去重
+                isDistinct = false;
+                dataList = originList;
+
+                // 重新编号
+                for (var index = 0; index < dataList.Count; ++index) {
+                    dataList[index].id = index + 1;
                 }
             }
+            else
+            {
+                // 去重
+                isDistinct = true;
+                distinctList.Clear();
+                foreach (var data in dataList) {
+                    if (data.assetName == "Sum") {
+                        continue;
+                    }
+                    if (distinctList.Exists(t => t.IsEqual(data))) {
+                        continue;
+                    }
+                    distinctList.Add(data);
+                }
+                dataList = distinctList;
+                
+                // 重新编号并重新求和
+                resultTris = 0;
+                resultVerts = 0;
+                resultUV = 0;
+                resultUV2 = 0;
+                resultUV3 = 0;
+                resultUV4 = 0;
+                resultColors = 0;
+                resultNormals = 0;
+                resultTangents = 0;
+                for (var index = 0; index < dataList.Count; ++index) {
+                    dataList[index].id = index + 1;
+                    resultTris += dataList[index].tris;
+                    resultVerts += dataList[index].verts;
+                    resultUV += dataList[index].uv;
+                    resultUV2 += dataList[index].uv2;
+                    resultUV3 += dataList[index].uv3;
+                    resultUV4 += dataList[index].uv4;
+                    resultColors += dataList[index].colors;
+                    resultNormals += dataList[index].normals;
+                    resultTangents += dataList[index].tangents;
+                }
             
-            dataList = newList;
-
-            resultTris = 0;
-            resultVerts = 0;
-            resultUV = 0;
-            resultUV2 = 0;
-            resultUV3 = 0;
-            resultUV4 = 0;
-            resultColors = 0;
-            resultNormals = 0;
-            resultTangents = 0;
-
-            // 重新编号并求和
-            for (var index = 0; index < dataList.Count; ++index) {
-                dataList[index].id = index + 1;
-                resultTris += dataList[index].tris;
-                resultVerts += dataList[index].verts;
-                resultUV += dataList[index].uv;
-                resultUV2 += dataList[index].uv2;
-                resultUV3 += dataList[index].uv3;
-                resultUV4 += dataList[index].uv4;
-                resultColors += dataList[index].colors;
-                resultNormals += dataList[index].normals;
-                resultTangents += dataList[index].tangents;
+                // 添加 Sum
+                AddRowsSum(dataList);
             }
             
-            AddRowsSum(dataList);
+            // 重新生成表格
+            GenerateTable(dataList, columns);
         }
     }
 }

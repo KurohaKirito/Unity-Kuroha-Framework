@@ -90,9 +90,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             }
 
             if (UnityEngine.GUI.Button(new Rect(position.x, position.y - 1, width, height), "Distinct")) {
-                MethodDistinct(ref dataListToShow);
-                isReBuildRows = true;
-                Reload();
+                MethodDistinct(dataListToShow);
             }
         }
         

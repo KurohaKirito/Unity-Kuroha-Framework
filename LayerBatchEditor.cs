@@ -60,10 +60,10 @@ namespace Script.Effect.Editor.AssetTool
             {
                 var assetPath = PathUtil.GetAssetPath(filePath);
                 var guids = AssetDatabase.FindAssets("t:Prefab", new[] { assetPath });
-                DebugUtil.LogError($"一共找到了 {guids.Length} 个预制体", null, "yellow");
+                DebugUtil.Log($"一共找到了 {guids.Length} 个预制体", null, "yellow");
 
-                var counterX = 0;
-                var counterY = 0;
+                var counterX = 20;
+                var counterY = 20;
                 
                 foreach (var guid in guids)
                 {
@@ -74,9 +74,9 @@ namespace Script.Effect.Editor.AssetTool
                     transform.SetPositionAndRotation(new Vector3(counterX, counterY, 0), Quaternion.Euler(0, 90, 0));
 
                     counterY++;
-                    if (counterY % 9 == 0)
+                    if (counterY % 19 == 0)
                     {
-                        counterY = 0;
+                        counterY = 20;
                         counterX += 2;
                     }
                 }

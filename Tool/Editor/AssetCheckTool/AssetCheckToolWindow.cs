@@ -53,7 +53,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool {
         public static void Open() {
             var window = GetWindow<AssetCheckToolWindow>("资源检测工具");
             window.minSize = new Vector2(800, 800);
-            window.maxSize = window.minSize;
         }
 
         /// <summary>

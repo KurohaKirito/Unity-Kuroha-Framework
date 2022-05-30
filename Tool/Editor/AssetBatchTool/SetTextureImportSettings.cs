@@ -31,8 +31,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         private static bool iosUseOriginalSize;
         private static TextureResizeAlgorithm iosResizeAlgorithm = TextureResizeAlgorithm.Mitchell;
         private static TextureCompressionQuality iosCompressionQuality = TextureCompressionQuality.Normal;
-        private const TextureImporterFormat IOS_FORMAT_RGB = TextureImporterFormat.ASTC_RGB_6x6;
-        private const TextureImporterFormat IOS_FORMAT_RGBA = TextureImporterFormat.ASTC_RGBA_6x6;
+        private const TextureImporterFormat IOS_FORMAT = TextureImporterFormat.ASTC_6x6;
 
         private static bool androidSetting;
         private static int androidMaxSize = 256;
@@ -127,8 +126,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                     iosResizeAlgorithm = (TextureResizeAlgorithm) EditorGUILayout.EnumPopup("Resize Algorithm", iosResizeAlgorithm);
                     iosCompressionQuality = (UnityEditor.TextureCompressionQuality) EditorGUILayout.EnumPopup("Compression Quality", iosCompressionQuality);
                     UnityEngine.GUI.enabled = false;
-                    EditorGUILayout.EnumPopup("RGB Format", IOS_FORMAT_RGB);
-                    EditorGUILayout.EnumPopup("RGBA Format", IOS_FORMAT_RGBA);
+                    EditorGUILayout.EnumPopup("Format", IOS_FORMAT);
                     UnityEngine.GUI.enabled = true;
                 }
             }
@@ -446,13 +444,18 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 TextureUtil.GetTextureOriginalSize(importer, out var originWidth, out var originHeight);
                 pcMaxSize = Mathf.Min(originWidth, originHeight);
             }
+
+            if (importer.textureType != TextureImporterType.NormalMap)
+            {
+                return false;
+            }
             
             if (importer.GetPlatformTextureSettings("Standalone", out var curSize, out var format))
             {
-                if (curSize <= pcMaxSize && (format == PC_FORMAT_RGB || format == PC_FORMAT_RGBA))
-                {
-                    return false;
-                }
+                // if (curSize <= pcMaxSize && (format == PC_FORMAT_RGB || format == PC_FORMAT_RGBA))
+                // {
+                //     return false;
+                // }
             }
 
             var newSetting = new TextureImporterPlatformSettings
@@ -463,6 +466,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 resizeAlgorithm = pcResizeAlgorithm,
                 format = importer.DoesSourceTextureHaveAlpha() ? PC_FORMAT_RGBA : PC_FORMAT_RGB
             };
+
+            if (importer.textureType == TextureImporterType.NormalMap)
+            {
+                newSetting.format = PC_FORMAT_RGBA;
+            }
 
             importer.SetPlatformTextureSettings(newSetting);
             return true;
@@ -478,12 +486,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             
             if (importer.GetPlatformTextureSettings("iPhone", out var curSize, out var format))
             {
-                if (curSize <= iosMaxSize && (format == IOS_FORMAT_RGB || format == IOS_FORMAT_RGBA))
-                {
-                    return false;
-                }
+                // if (curSize <= iosMaxSize && format == IOS_FORMAT)
+                // {
+                //     return false;
+                // }
             }
-
+            
             var newSetting = new TextureImporterPlatformSettings
             {
                 name = "iPhone",
@@ -491,7 +499,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 maxTextureSize = curSize <= iosMaxSize ? curSize : iosMaxSize,
                 resizeAlgorithm = iosResizeAlgorithm,
                 compressionQuality = Convert.ToInt32(iosCompressionQuality),
-                format = importer.DoesSourceTextureHaveAlpha() ? IOS_FORMAT_RGBA : IOS_FORMAT_RGB
+                format = IOS_FORMAT
             };
 
             importer.SetPlatformTextureSettings(newSetting);
@@ -508,10 +516,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             
             if (importer.GetPlatformTextureSettings("Android", out var curSize, out var format))
             {
-                if (curSize <= androidMaxSize && (format == ANDROID_FORMAT_RGB || format == ANDROID_FORMAT_RGBA))
-                {
-                    return false;
-                }
+                // if (curSize <= androidMaxSize && (format == ANDROID_FORMAT_RGB || format == ANDROID_FORMAT_RGBA))
+                // {
+                //     return false;
+                // }
             }
 
             var newSetting = new TextureImporterPlatformSettings

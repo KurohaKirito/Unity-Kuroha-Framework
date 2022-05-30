@@ -11,69 +11,27 @@ using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
     public class TextureAnalysisTableWindow : EditorWindow {
-        /// <summary>
-        /// 表格
-        /// </summary>
-        private static TextureAnalysisTable table;
-
-        /// <summary>
-        /// 宽度警告线
-        /// </summary>
-        private static int widthWarn;
-
-        /// <summary>
-        /// 宽度错误线
-        /// </summary>
-        private static int widthError;
-
-        /// <summary>
-        /// 高度警告线
-        /// </summary>
-        private static int heightWarn;
-
-        /// <summary>
-        /// 高度错误线
-        /// </summary>
-        private static int heightError;
-        
-        /// <summary>
-        /// 内存警告线
-        /// </summary>
-        private static int memoryWarn;
-
-        /// <summary>
-        /// 内存错误线
-        /// </summary>
-        private static int memoryError;
-        
         private static TextureAnalysisTableWindow window;
         private const int WARN_ERROR_TEXT_WIDTH = 100;
         private const int WARN_ERROR_TEXT_NUMBER_SPACE = 10;
         private const int WARN_ERROR_NUMBER_WIDTH = 60;
-
-        /// <summary>
-        /// 是否时装
-        /// </summary>
+        
+        private static TextureAnalysisTable table;
+        private static List<TextureAnalysisData> originList;
+        private static List<TextureAnalysisData> distinctList;
+        private static CustomTableColumn<TextureAnalysisData>[] columns;
+        
+        private static int widthWarn;
+        private static int widthError;
+        private static int heightWarn;
+        private static int heightError;
+        private static int memoryWarn;
+        private static int memoryError;
+        
         private static bool isFashion;
-        
-        /// <summary>
-        /// 是否是对场景进行检测
-        /// </summary>
         private static TextureAnalysisData.DetectType detectType;
-        
-        /// <summary>
-        /// 对路径中资源检测的类型
-        /// </summary>
         private static TextureAnalysisData.DetectTypeAtPath detectTypeAtPath;
-
-        /// <summary>
-        /// 待检测路径
-        /// </summary>
         private static string detectPath;
-
-        /// <summary>
-        /// 待检测游戏物体
-        /// </summary>
         private static GameObject detectGameObject;
         
         /// <summary>
@@ -176,17 +134,27 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
             if (memoryError == 0) { memoryError = 1024; }
             
             if (forceUpdate || table == null) {
-                var dataList = InitData();
-                if (dataList != null) {
-                    var columns = InitColumns();
+                originList = InitData();
+                if (originList != null) {
+                    columns = InitColumns();
                     if (columns != null) {
-                        var space = new Vector2(10, 10);
-                        var min = new Vector2(300, 300);
-                        table = new TextureAnalysisTable(space, min, dataList, true, true, true, columns, 
-                            OnFilterEnter, null, OnExportPressed, OnRowSelect, OnDistinctPressed);
+                        GenerateTable(originList, columns);
                     }
                 }
             }
+        }
+        
+        /// <summary>
+        /// 生成表格
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="column"></param>
+        private static void GenerateTable(List<TextureAnalysisData> data, CustomTableColumn<TextureAnalysisData>[] column)
+        {
+            var space = new Vector2(10, 10);
+            var min = new Vector2(300, 300);
+            table = new TextureAnalysisTable(space, min, data, true, true, true, column,
+                OnFilterEnter, null, OnExportPressed, OnRowSelect, OnDistinctPressed);
         }
 
         /// <summary>
@@ -812,20 +780,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         /// <summary>
         /// 数据去重事件
         /// </summary>
-        private static void OnDistinctPressed(ref List<TextureAnalysisData> dataList) {
+        private static void OnDistinctPressed(List<TextureAnalysisData> dataList) {
             var newList = new List<TextureAnalysisData>();
             foreach (var data in dataList) {
-                if (newList.Exists(analysisData => analysisData.Equal(data)) == false) {
-                    newList.Add(data);
+                if (newList.Exists(analysisData => analysisData.IsEqual(data))) {
+                    continue;
                 }
+                newList.Add(data);
             }
-
-            dataList = newList;
 
             // 重新编号
-            for (var index = 0; index < dataList.Count; ++index) {
-                dataList[index].id = index + 1;
+            for (var index = 0; index < newList.Count; ++index) {
+                newList[index].id = index + 1;
             }
+            
+            GenerateTable(newList, columns);
         }
     }
 }

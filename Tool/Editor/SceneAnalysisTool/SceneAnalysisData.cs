@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
+﻿namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
     public class SceneAnalysisData {
         public int id;
         public int tris;
@@ -16,18 +14,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         public string assetName;
         public string assetPath;
 
-        public bool Equal(SceneAnalysisData other) {
+        public bool IsEqual(SceneAnalysisData other) {
             if (other != null) {
                 if (tris == other.tris &&
                     verts == other.verts &&
                     uv == other.uv &&
-                    uv2 == other.uv2 &&
-                    uv3 == other.uv3 &&
-                    uv4 == other.uv4 &&
-                    colors == other.colors &&
-                    tangents == other.tangents &&
-                    normals == other.normals &&
-                    assetName == other.assetName) {
+                    uv2 == other.uv2) {
                     return true;
                 }
             }
