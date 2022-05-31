@@ -442,20 +442,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             if (pcUseOriginalSize)
             {
                 TextureUtil.GetTextureOriginalSize(importer, out var originWidth, out var originHeight);
-                pcMaxSize = Mathf.Min(originWidth, originHeight);
+                pcMaxSize = Mathf.Max(originWidth, originHeight);
             }
-
-            if (importer.textureType != TextureImporterType.NormalMap)
-            {
-                return false;
-            }
+            
+            importer.alphaSource = importer.DoesSourceTextureHaveAlpha() ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
             
             if (importer.GetPlatformTextureSettings("Standalone", out var curSize, out var format))
             {
-                // if (curSize <= pcMaxSize && (format == PC_FORMAT_RGB || format == PC_FORMAT_RGBA))
-                // {
-                //     return false;
-                // }
+                if (curSize <= pcMaxSize && (format == PC_FORMAT_RGB || format == PC_FORMAT_RGBA))
+                {
+                    //return false;
+                }
             }
 
             var newSetting = new TextureImporterPlatformSettings
@@ -484,12 +481,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 iosMaxSize = Mathf.Min(originWidth, originHeight);
             }
             
+            importer.alphaSource = importer.DoesSourceTextureHaveAlpha() ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
+            
             if (importer.GetPlatformTextureSettings("iPhone", out var curSize, out var format))
             {
-                // if (curSize <= iosMaxSize && format == IOS_FORMAT)
-                // {
-                //     return false;
-                // }
+                if (curSize <= iosMaxSize && format == IOS_FORMAT)
+                {
+                    //return false;
+                }
             }
             
             var newSetting = new TextureImporterPlatformSettings
@@ -514,12 +513,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 androidMaxSize = Mathf.Min(originWidth, originHeight);
             }
             
+            importer.alphaSource = importer.DoesSourceTextureHaveAlpha() ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
+            
             if (importer.GetPlatformTextureSettings("Android", out var curSize, out var format))
             {
-                // if (curSize <= androidMaxSize && (format == ANDROID_FORMAT_RGB || format == ANDROID_FORMAT_RGBA))
-                // {
-                //     return false;
-                // }
+                if (curSize <= androidMaxSize && (format == ANDROID_FORMAT_RGB || format == ANDROID_FORMAT_RGBA))
+                {
+                    //return false;
+                }
             }
 
             var newSetting = new TextureImporterPlatformSettings
