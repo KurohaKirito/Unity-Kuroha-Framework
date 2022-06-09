@@ -23,16 +23,14 @@ public static class MaterialShaderDetect {
         var assetPaths = new List<string>(guids.Select(AssetDatabase.GUIDToAssetPath));
 
         // 加载全部的材质球
-        var shaderCheckerDataList = new List<ShaderChecker.ShaderCheckerData>();
+        var shaderCheckerDataList = new List<Material>();
         if (assetPaths.Count > 0) {
             for (var index = 0; index < assetPaths.Count; index++) {
                 ProgressBar.DisplayProgressBar("指定 Shader 引用检测工具", $"加载材质中: {index + 1}/{assetPaths.Count}", index + 1, assetPaths.Count);
 
                 var material = AssetDatabase.LoadAssetAtPath<Material>(assetPaths[index]);
 
-                shaderCheckerDataList.Add(new ShaderChecker.ShaderCheckerData {
-                    prefabPath = null, subObjectName = null, material = material
-                });
+                shaderCheckerDataList.Add(material);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using Script.Effect.Editor.AssetTool.Util.Editor;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
+using Script.Effect.Editor.AssetTool.Util.Unity;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,8 +20,10 @@ namespace Script.Effect.Editor.AssetTool
             GetWindow<LayerBatchEditor>();
         }
         
-        private void OnGUI()
+        private async void OnGUI()
         {
+            Debug.Log($"设置个数: {counter}");
+            
             if (GUILayout.Button("选择路径"))
             {
                 filePath = EditorUtility.OpenFolderPanel("Select Folder", filePath, "");
@@ -103,8 +106,57 @@ namespace Script.Effect.Editor.AssetTool
                 
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-                
-                Debug.Log($"设置个数: {counter}");
+            }
+            
+            if (GUILayout.Button("Select File"))
+            {
+                filePath = EditorUtility.OpenFilePanel("Select File", filePath, "");
+            }
+            
+            if (GUILayout.Button("Material"))
+            {
+                var toSets = System.IO.File.ReadAllLines(filePath);
+
+                foreach (var set in toSets) {
+                    var modelImporter = AssetImporter.GetAtPath(set) as ModelImporter;
+
+                    if (modelImporter != null) {
+                        #region 删除模型的内嵌材质
+
+                        // 开启材质导入, 提取出模型的内嵌材质到 Materials 文件夹
+                        modelImporter.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
+                        modelImporter.materialLocation = ModelImporterMaterialLocation.External;
+                        modelImporter.SaveAndReimport();
+
+                        // 删除提取出来的材质球
+                        var subPath = set.Substring(0, set.LastIndexOf("/", StringComparison.Ordinal)) + "/Materials";
+                        AssetDatabase.DeleteAsset(subPath);
+
+                        // 修改模型材质引用类型为内嵌材质
+                        modelImporter.materialLocation = ModelImporterMaterialLocation.InPrefab;
+                        modelImporter.SaveAndReimport();
+
+                        #endregion
+                    }
+                }
+            }
+
+            if (GUILayout.Button("设置 Mesh")) {
+                counter = 0;
+                var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                var assetPath = filePath.Substring(assetsIndex);
+                var guids = AssetDatabase.FindAssets("t:mesh", new [] { assetPath });
+                Debug.Log($"个数: {guids.Length}");
+
+                foreach (var guid in guids)
+                {
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+                    
+                    await mesh.SetReadable(false);
+                    AssetDatabase.Refresh();
+                    counter++;
+                }
             }
         }
     }

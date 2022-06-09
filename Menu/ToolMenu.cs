@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Menu {
     public class ToolMenu : MonoBehaviour {
-        [MenuItem("GameObject/Scene Batch Tool/LODTool", false, 12)]
+        [MenuItem("GameObject/Scene Tool/LODTool", false, 12)]
         public static void Tool1() {
             LODBatchWindow.Open();
         }

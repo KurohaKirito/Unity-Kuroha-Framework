@@ -26,16 +26,19 @@ namespace Script.Effect.Editor.AssetTool.Util.RunTime {
         /// <param name="isAsc">是否是升序排序</param>
         /// <returns></returns>
         public static int CompareByNumber(string strA, string strB, bool isAsc) {
+            var leftIsFront  = isAsc ? -1 : 1;
+            var rightIsFront = isAsc ? 1 : -1;
+            
             if (strA == strB) {
                 return 0;
             }
 
             if (string.IsNullOrEmpty(strA)) {
-                return isAsc? 1 : -1;
+                return leftIsFront;
             }
 
             if (string.IsNullOrEmpty(strB)) {
-                return isAsc? -1 : 1;
+                return rightIsFront;
             }
 
             var charArrayA = strA.ToCharArray();
@@ -61,19 +64,19 @@ namespace Script.Effect.Editor.AssetTool.Util.RunTime {
                     }
 
                     if (int.Parse(numberA) > int.Parse(numberB)) {
-                        return 1;
+                        return rightIsFront;
                     }
 
                     if (int.Parse(numberA) < int.Parse(numberB)) {
-                        return -1;
+                        return leftIsFront;
                     }
                 } else {
                     if (charArrayA[indexA] > charArrayB[indexB]) {
-                        return 1;
+                        return rightIsFront;
                     }
 
                     if (charArrayA[indexA] < charArrayB[indexB]) {
-                        return -1;
+                        return leftIsFront;
                     }
 
                     indexA++;
@@ -85,7 +88,7 @@ namespace Script.Effect.Editor.AssetTool.Util.RunTime {
                 return 0;
             }
 
-            return charArrayA.Length > charArrayB.Length? 1 : -1;
+            return charArrayA.Length > charArrayB.Length ? rightIsFront : leftIsFront;
         }
 
         /// <summary>
@@ -99,12 +102,15 @@ namespace Script.Effect.Editor.AssetTool.Util.RunTime {
         /// <param name="isAsc"></param>
         /// <returns></returns>
         public static int CompareByBoolAndString(bool boolA, bool boolB, string strA, string strB, bool isAsc) {
+            var leftIsFront  = isAsc ? -1 : 1;
+            var rightIsFront = isAsc ? 1 : -1;
+            
             if (boolA == false) {
-                return isAsc? 1 : -1;
+                return leftIsFront;
             }
 
             if (boolB == false) {
-                return isAsc? -1 : 1;
+                return rightIsFront;
             }
 
             return CompareByNumber(strA, strB, isAsc);

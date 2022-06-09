@@ -207,10 +207,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                 
                 if (textureImporter.GetPlatformTextureSettings("Android", out _, out var formatAndroid))
                 {
-                    if (formatAndroid != TextureImporterFormat.ETC2_RGB4 && formatAndroid != TextureImporterFormat.ETC2_RGBA8)
+                    if (formatAndroid != TextureImporterFormat.ETC_RGB4 && formatAndroid != TextureImporterFormat.ETC2_RGB4 && formatAndroid != TextureImporterFormat.ETC2_RGBA8)
                     {
                         var asset = AssetDatabase.LoadAssetAtPath<Texture>(assetPath);
-                        var content = $"Android: 纹理压缩格式不是 ETC2, 路径为: {assetInfo.FullName}, 当前压缩格式: {formatAndroid}";
+                        var content = $"Android: 纹理压缩格式不是 ETC, 路径为: {assetInfo.FullName}, 当前压缩格式: {formatAndroid}";
                         report.Add(EffectCheckReport.AddReportInfo(asset, assetPath, EffectCheckReportInfo.EffectCheckReportType.TextureCompressFormat, content, item));
                     }
                 }
