@@ -44,7 +44,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         /// </summary>
         protected CustomTable(Vector2 space, Vector2 minSize, List<T> dataList,
             bool isDrawFilter, bool isDrawExport, bool isDrawDistinct,
-            CustomTableColumn<T>[] columns,
+            MultiColumnHeaderState.Column[] columns,
             CustomTableDelegate.FilterMethod<T> onFilterFunction, CustomTableDelegate.AfterFilterMethod<T> afterFilterMethod,
             CustomTableDelegate.ExportMethod<T> onExportFunction, CustomTableDelegate.SelectMethod<T> onSelectFunction,
             CustomTableDelegate.DistinctMethod<T> onDistinctFunction)
@@ -67,7 +67,6 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             SelectFunction = onSelectFunction;
             DistinctFunction = onDistinctFunction;
 
-            // ReSharper disable once CoVariantArrayConversion
             MultiColumnHeaderState = new MultiColumnHeaderState(columns);
             treeView = new CustomTreeView<T>(new TreeViewState(), new MultiColumnHeader(MultiColumnHeaderState), dataList,
                 FilterFunction, AfterFilterMethod, ExportFunction, SelectFunction, DistinctFunction);

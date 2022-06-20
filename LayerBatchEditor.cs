@@ -158,6 +158,27 @@ namespace Script.Effect.Editor.AssetTool
                     counter++;
                 }
             }
+
+            if (GUILayout.Button("动画表情"))
+            {
+                var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                var assetPath = filePath.Substring(assetsIndex);
+                var guids = AssetDatabase.FindAssets("t:Prefab", new [] { assetPath });
+                Debug.Log($"Prefab 个数: {guids.Length}");
+                
+                foreach (var guid in guids)
+                {
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+
+                    var animators = obj.GetComponentsInChildren<Animator>();
+                    if (animators != null && animators.Length > 0)
+                    {
+                        counter++;
+                        Debug.Log($"动画表情 {counter}: {obj.name}", obj);
+                    }
+                }
+            }
         }
     }
 }
