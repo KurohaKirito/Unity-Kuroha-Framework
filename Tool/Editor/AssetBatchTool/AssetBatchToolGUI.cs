@@ -10,6 +10,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
         /// 批处理工具类型
         /// </summary>
         public enum BatchType {
+            SetMeshReadWrite,
             SetTextureImportSettings,
             RedundantTextureReferencesCleaner,
             GunAttachmentsCloseCastShadows,
@@ -22,13 +23,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             CheckSubEmitterInAllScene,
             FbxUVColorsChecker,
             AnimationClipCompress,
-            AutoCheckTool = 12
+            AutoCheckTool = 13
         }
 
         /// <summary>
         /// 批处理工具类型
         /// </summary>
         public static readonly string[] batches = {
+            "批量设置网格读写工具",
             "批量修改纹理导入设置工具",
             "材质球冗余纹理引用清除器",
             "关闭枪械配件阴影投射",
@@ -174,6 +176,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
                     case BatchType.AutoCheckTool:
                         AutoCheckToolGUI.OnGUI();
+                        break;
+
+                    case BatchType.SetMeshReadWrite:
+                        SetMeshReadWrite.OnGUI();
                         break;
                     
                     default:
