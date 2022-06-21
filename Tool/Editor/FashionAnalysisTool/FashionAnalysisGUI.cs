@@ -4,16 +4,19 @@ using UnityEngine;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
 using Script.Effect.Editor.AssetTool.GUI.Editor;
 using Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool;
+using Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool;
 using Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool;
 using Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool;
 using Script.Effect.Editor.AssetTool.Util.Editor;
 using UnityEngine.Rendering;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool
+{
     /// <summary>
     /// GUI 绘制类
     /// </summary>
-    public class FashionAnalysisGUI : UnityEditor.Editor {
+    public class FashionAnalysisGUI : UnityEditor.Editor
+    {
         /// <summary>
         /// 全局默认 margin
         /// </summary>
@@ -52,16 +55,23 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
         /// <summary>
         /// 绘制界面
         /// </summary>
-        public static void OnGUI(AssetCheckToolWindow window) {
-            if (EditorApplication.isPlaying == false) {
+        public static void OnGUI(AssetCheckToolWindow window)
+        {
+            if (EditorApplication.isPlaying == false)
+            {
                 Dialog.SetListener(window.ResetToolBarIndex);
                 Dialog.Display("请先运行游戏", Dialog.DialogType.Message, "OK");
-            } else {
-                if (players == null) {
+            } else
+            {
+                if (players == null)
+                {
                     var transforms = AssetUtil.GetAllTransformInScene(AssetUtil.FindType.All);
-                    foreach (var transform in transforms) {
-                        if (transform.name == "Players") {
-                            if (transform.parent.name.IndexOf("LobbyScreen", StringComparison.Ordinal) >= 0) {
+                    foreach (var transform in transforms)
+                    {
+                        if (transform.name == "Players")
+                        {
+                            if (transform.parent.name.IndexOf("LobbyScreen", StringComparison.Ordinal) >= 0)
+                            {
                                 players = transform;
                                 break;
                             }
@@ -69,21 +79,26 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
                     }
                 }
 
-                if (players == null) {
+                if (players == null)
+                {
                     Dialog.SetListener(window.ResetToolBarIndex);
                     Dialog.Display("请先登录进入大厅", Dialog.DialogType.Message, "OK");
-                } else {
+                } else
+                {
                     GUILayout.Space(2 * UI_SPACE_PIXELS);
 
                     fashionAnalysisFoldout = EditorGUILayout.Foldout(fashionAnalysisFoldout, "时装分析工具", true);
-                    if (fashionAnalysisFoldout) {
+                    if (fashionAnalysisFoldout)
+                    {
                         GUILayout.Space(UI_SPACE_PIXELS);
                         GUILayout.BeginVertical("Box");
                         {
                             GUILayout.Space(UI_SPACE_PIXELS);
-                            if (player == null) {
+                            if (player == null)
+                            {
                                 player = players.Find("Player1");
-                            } else if (role == null) {
+                            } else if (role == null)
+                            {
                                 role = player.transform.Find("UIRolePoint1/Role");
                             }
 
@@ -112,11 +127,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
         /// <param name="label"></param>
         /// <param name="button"></param>
         /// <param name="action"></param>
-        private static void DrawButton(string label, string button, Action action) {
+        private static void DrawButton(string label, string button, Action action)
+        {
             GUILayout.Label(label);
             GUILayout.BeginVertical("Box");
             {
-                if (GUILayout.Button(button, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
+                if (GUILayout.Button(button, GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                {
                     action?.Invoke();
                 }
             }
@@ -126,27 +143,34 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
         /// <summary>
         /// 统计分析 Mesh
         /// </summary>
-        private static void CollectMesh() {
-            SceneAnalysisTableWindow.Open(false, role.gameObject, false);
+        private static void CollectMesh()
+        {
+            SceneAnalysisTableWindow.Open(MeshAnalysisData.DetectType.GameObject,
+                MeshAnalysisData.DetectTypeAtPath.Meshes, MeshAnalysisData.DetectMeshType.RendererMesh, role.gameObject, null);
         }
 
         /// <summary>
         /// 统计分析 Textures
         /// </summary>
-        private static void CollectTextures() {
+        private static void CollectTextures()
+        {
             TextureAnalysisTableWindow.Open(TextureAnalysisData.DetectType.GameObject, TextureAnalysisData.DetectTypeAtPath.Prefabs, null, role.gameObject, true);
         }
 
         /// <summary>
         /// 统计分析动画状态机
         /// </summary>
-        private static void CheckAnimator() {
+        private static void CheckAnimator()
+        {
             var hadError = false;
             var animators = role.gameObject.GetComponentsInChildren<Animator>(true);
 
-            foreach (var animator in animators) {
-                if (animator.cullingMode != AnimatorCullingMode.CullCompletely) {
-                    if (animator.transform.name != "Role") {
+            foreach (var animator in animators)
+            {
+                if (animator.cullingMode != AnimatorCullingMode.CullCompletely)
+                {
+                    if (animator.transform.name != "Role")
+                    {
                         hadError = true;
                         var content1 = $"游戏物体 {animator.transform.name} 的动画剔除方式不正确!";
                         var content2 = $"<color='red'>{animator.cullingMode}</color> => <color='green'>{AnimatorCullingMode.CullCompletely}</color>";
@@ -155,7 +179,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
                 }
             }
 
-            if (hadError == false) {
+            if (hadError == false)
+            {
                 DebugUtil.Log($"动画状态机检测完毕, 共检测了 {animators.Length} 个动画状态机, 未检测到问题", null, "green");
             }
         }
@@ -163,17 +188,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
         /// <summary>
         /// 检测是否有隐藏游戏物体
         /// </summary>
-        private static void CheckDisableObject() {
+        private static void CheckDisableObject()
+        {
             var hadError = false;
             var transforms = role.gameObject.GetComponentsInChildren<Transform>(true);
-            foreach (var transform in transforms) {
-                if (transform.gameObject.activeSelf == false) {
+            foreach (var transform in transforms)
+            {
+                if (transform.gameObject.activeSelf == false)
+                {
                     hadError = true;
                     DebugUtil.LogError($"游戏物体 {transform.name} 为隐藏状态!", transform.gameObject, "red");
                 }
             }
 
-            if (hadError == false) {
+            if (hadError == false)
+            {
                 DebugUtil.Log($"隐藏游戏物体检测完毕, 共检测了 {transforms.Length} 个游戏物体, 未检测到问题.", null, "green");
             }
         }
@@ -181,49 +210,59 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.FashionAnalysisTool {
         /// <summary>
         /// 统计分析粒子系统
         /// </summary>
-        private static void CheckParticleSystem() {
+        private static void CheckParticleSystem()
+        {
             var hadError = false;
             var particleSystems = role.gameObject.GetComponentsInChildren<ParticleSystem>(true);
 
-            foreach (var particleSystem in particleSystems) {
+            foreach (var particleSystem in particleSystems)
+            {
                 var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
 
                 // 是否是 Mesh 粒子
-                if (renderer.renderMode == ParticleSystemRenderMode.Mesh) {
+                if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
+                {
                     var mesh = renderer.mesh;
-                    if (mesh == null) {
+                    if (mesh == null)
+                    {
                         DebugUtil.LogError($"特效 {particleSystem.transform.name} 使用了 Mesh 粒子但是没有指定 Mesh!", particleSystem.gameObject, "red");
-                    } else if (mesh.triangles.Length >= 900) {
+                    } else if (mesh.triangles.Length >= 900)
+                    {
                         DebugUtil.LogError($"特效 {particleSystem.transform.name} 使用的 Mesh 粒子面数大于 300!", particleSystem.gameObject, "red");
                     }
                 }
 
                 // 预热是否关闭
-                if (particleSystem.main.prewarm) {
+                if (particleSystem.main.prewarm)
+                {
                     hadError = true;
                     DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭预热!", particleSystem.gameObject, "red");
                 }
 
                 // 阴影是否关闭
-                if (renderer.shadowCastingMode != ShadowCastingMode.Off) {
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off)
+                {
                     hadError = true;
                     DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭阴影投射!", particleSystem.gameObject, "red");
                 }
 
                 // 是否开启了碰撞器
-                if (particleSystem.collision.enabled) {
+                if (particleSystem.collision.enabled)
+                {
                     hadError = true;
                     DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭碰撞!", particleSystem.gameObject, "red");
                 }
 
                 // 是否开启了触发器
-                if (particleSystem.trigger.enabled) {
+                if (particleSystem.trigger.enabled)
+                {
                     hadError = true;
                     DebugUtil.LogError($"特效 {particleSystem.transform.name} 未关闭触发器!", particleSystem.gameObject, "red");
                 }
             }
 
-            if (hadError == false) {
+            if (hadError == false)
+            {
                 DebugUtil.Log($"粒子系统检测完毕, 共检测了 {particleSystems.Length} 个粒子系统, 未检测到问题.", null, "green");
             }
         }

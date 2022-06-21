@@ -17,7 +17,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 枪械路径
         /// </summary>
-        private static string checkPath = "ToBundle/Skin/Items";
+        private static string checkPath = "Assets/Scenes/Models/CombatIsland/DinoLand";
 
         /// <summary>
         /// 全局默认 margin
@@ -132,7 +132,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                     continue;
                 }
 
-                if (path.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0)
+                if (path.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0 ||
+                    path.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0)
                 {
                     try
                     {

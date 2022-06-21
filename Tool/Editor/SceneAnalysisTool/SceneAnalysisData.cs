@@ -19,7 +19,9 @@
                 if (tris == other.tris &&
                     verts == other.verts &&
                     uv == other.uv &&
-                    uv2 == other.uv2) {
+                    uv2 == other.uv2 &&
+                    uv3 == other.uv3 &&
+                    colors == other.colors) {
                     return true;
                 }
             }
