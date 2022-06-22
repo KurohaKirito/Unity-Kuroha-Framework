@@ -16,7 +16,8 @@
 
         public bool IsEqual(SceneAnalysisData other) {
             if (other != null) {
-                if (tris == other.tris &&
+                if (assetPath == other.assetPath &&
+                    tris == other.tris &&
                     verts == other.verts &&
                     uv == other.uv &&
                     uv2 == other.uv2 &&

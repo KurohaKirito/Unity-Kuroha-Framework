@@ -464,7 +464,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 headerTextAlignment = TextAlignment.Center,
                 width = 300,
                 minWidth = 300,
-                maxWidth = 500,
+                maxWidth = 1200,
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => string.Compare(dataA.assetPath, dataB.assetPath, StringComparison.Ordinal),
