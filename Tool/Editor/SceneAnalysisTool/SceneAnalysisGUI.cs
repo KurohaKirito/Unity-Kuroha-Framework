@@ -205,6 +205,16 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                         }
 
                         GUILayout.EndVertical();
+                        
+                        GUILayout.Space(UI_DEFAULT_MARGIN);
+                        GUILayout.Label("    (7) 检查当前场景中挂载了多个材质球的渲染器.");
+                        GUILayout.BeginVertical("Box");
+                        if (GUILayout.Button("多材质球检查", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                        {
+                            CheckMoreMaterial();
+                        }
+
+                        GUILayout.EndVertical();
                     }
                 }
                 GUILayout.EndVertical();
@@ -365,6 +375,28 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                     {
                         DebugUtil.LogError($"游戏物体 {obj.name} 挂载了 {colliders.Length} 个 Collider", obj, EditorGUIUtility.isProSkin? "yellow" : "black");
                         Selection.activeTransform = obj;
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 检查物体是否挂载了多个材质球
+        /// </summary>
+        private static void CheckMoreMaterial()
+        {
+            var objects = AssetUtil.GetAllTransformInScene(AssetUtil.FindType.All);
+            if (objects.Count > 0)
+            {
+                foreach (var obj in objects)
+                {
+                    var renderers = obj.GetComponents<Renderer>();
+                    foreach (var renderer in renderers)
+                    {
+                        if (renderer.sharedMaterials.Length > 1)
+                        {
+                            DebugUtil.LogError($"游戏物体 {obj.name} 挂载了 {renderer.sharedMaterials.Length} 个 Material", renderer, EditorGUIUtility.isProSkin? "yellow" : "black");
+                        }
                     }
                 }
             }

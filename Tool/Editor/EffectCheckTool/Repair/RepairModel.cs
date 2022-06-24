@@ -42,7 +42,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
         }
 
         /// <summary>
-        /// 修复模型的读写权限设置
+        /// 修复模型的 "读写权限" 设置
         /// </summary>
         /// <param name="effectCheckReportInfo"></param>
         private static void RepairReadWriteEnable(EffectCheckReportInfo effectCheckReportInfo) {
@@ -50,7 +50,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
             if (ReferenceEquals(modelImporter, null) == false) {
                 if (modelImporter.isReadable) {
                     modelImporter.isReadable = false;
-                    AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                    modelImporter.SaveAndReimport();
                 }
 
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
@@ -58,14 +58,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
         }
 
         /// <summary>
-        /// 修复模型的法线导入设置
+        /// 修复模型的 "法线导入" 设置
         /// </summary>
         /// <param name="effectCheckReportInfo"></param>
         private static void RepairNormals(EffectCheckReportInfo effectCheckReportInfo) {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
             if (ReferenceEquals(modelImporter, null) == false) {
                 modelImporter.importNormals = ModelImporterNormals.None;
-                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                modelImporter.SaveAndReimport();
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }
@@ -78,7 +78,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
             if (ReferenceEquals(modelImporter, null) == false) {
                 modelImporter.optimizeMesh = true;
-                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                modelImporter.SaveAndReimport();
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }
@@ -91,7 +91,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
             if (ReferenceEquals(modelImporter, null) == false) {
                 modelImporter.meshCompression = ModelImporterMeshCompression.Low;
-                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                modelImporter.SaveAndReimport();
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }
@@ -104,7 +104,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Repair {
             var modelImporter = AssetImporter.GetAtPath(effectCheckReportInfo.assetPath) as ModelImporter;
             if (ReferenceEquals(modelImporter, null) == false) {
                 modelImporter.weldVertices = true;
-                AssetDatabase.ImportAsset(effectCheckReportInfo.assetPath);
+                modelImporter.SaveAndReimport();
                 EffectCheckReport.reportInfos.Remove(effectCheckReportInfo);
             }
         }

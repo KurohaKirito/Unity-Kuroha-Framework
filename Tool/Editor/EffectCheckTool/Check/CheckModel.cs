@@ -7,7 +7,6 @@ using Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.ItemListView;
 using Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Report;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
     public static class CheckModel {
@@ -113,7 +112,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
         /// <param name="item">检查项</param>
         /// <param name="report">检查结果</param>
         private static void CheckNormals(string assetPath, CheckItemInfo item, ref List<EffectCheckReportInfo> report) {
-            if (assetPath.IndexOf("collider", StringComparison.OrdinalIgnoreCase) >= 0 || assetPath.IndexOf("virtual", StringComparison.OrdinalIgnoreCase) >= 0) {
+            var regex = new System.Text.RegularExpressions.Regex("_[DE][\\d][\\d][\\d]");
+            if (regex.IsMatch(assetPath)) {
                 var assetImporter = AssetImporter.GetAtPath(assetPath);
                 if (assetImporter is ModelImporter modelImporter) {
                     if (modelImporter.importNormals != ModelImporterNormals.None) {
@@ -123,7 +123,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.EffectCheckTool.Check {
                     }
                 }
             } else {
-                DebugUtil.LogError($"资源命名中不含有 collider 以及 virtual, 请检查资源命名! {assetPath}");
+                DebugUtil.LogError($"资源命名中不含有 _D 以及 _E, 请检查资源命名! {assetPath}");
             }
         }
 
