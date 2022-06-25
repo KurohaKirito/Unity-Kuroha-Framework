@@ -21,10 +21,10 @@ namespace Script.Effect.Editor.AssetTool.Menu {
         public static void Tool3() {
             EffectCheckToolGUI.Detect(false, "飞高高产出检测工具");
         }
-        
-        [MenuItem("Assets/Scene Batch Tool/Pick Mesh Collider", false, 12)]
+
+        [MenuItem("Funny/资源检测工具/快速批量设置工具")]
         public static void Tool4() {
-            BatchToolInScene.PickUpAllCollider();
+            BatchEditorWindow.Open();
         }
         
         [MenuItem("Funny/资源检测工具/PickItem检测工具")]
@@ -43,7 +43,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
         }
         
         [MenuItem("Funny/资源检测工具/依赖分析工具")]
-        public static void FindAssetReference()
+        public static void Tool8()
         {
             ReferenceSearcher.OpenWindow();
         }
