@@ -327,6 +327,22 @@ namespace Script.Effect.Editor.AssetTool.Menu
                     }
                 }
             }
+
+            if (GUILayout.Button("模型位置检测"))
+            {
+                var path = AssetDatabase.GetAssetPath(sceneObject);
+                if (AssetImporter.GetAtPath(path) is ModelImporter modelImporter)
+                {
+                    foreach (var transformPath in modelImporter.transformPaths)
+                    {
+                        Debug.Log($"transformPath: {transformPath}");
+                    }
+                }
+                
+                Debug.Log($"sceneObject.transform: {sceneObject.transform.localPosition.ToString()}");
+                Debug.Log($"sceneObject.transform: {sceneObject.transform.localRotation.ToString()}");
+                Debug.Log($"sceneObject.transform: {sceneObject.transform.localScale.ToString()}");
+            }
         }
     }
 }
