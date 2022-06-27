@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
+using UnityEditor;
 
 namespace Script.Effect.Editor.AssetTool.Util.Editor {
     public static class ExportUtil {
@@ -41,6 +42,28 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
             } else {
                 DebugUtil.Log("没有需要导出的内容");
             }
+        }
+        
+        public static void RemoveMaterial(this ModelImporter modelImporter)
+        {
+            var path = AssetDatabase.GetAssetPath(modelImporter);
+            var remove = path.Substring(0, path.LastIndexOf('/')) + "/Materials";
+        
+            #region 删除模型的内嵌材质
+
+            // 开启材质导入, 提取出模型的内嵌材质到 Materials 文件夹
+            modelImporter.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
+            modelImporter.materialLocation = ModelImporterMaterialLocation.External;
+            modelImporter.SaveAndReimport();
+
+            // 删除提取出来的材质球
+            AssetDatabase.DeleteAsset(remove);
+
+            // 修改模型材质引用类型为内嵌材质
+            modelImporter.materialLocation = ModelImporterMaterialLocation.InPrefab;
+            modelImporter.SaveAndReimport();
+
+            #endregion
         }
     }
 }
