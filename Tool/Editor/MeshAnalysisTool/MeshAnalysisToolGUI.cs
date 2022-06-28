@@ -1,5 +1,6 @@
 ﻿using System;
 using Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool;
+using Script.Effect.Editor.AssetTool.Util.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -126,7 +127,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
                     }
 
                     GUILayout.Space(UI_DEFAULT_MARGIN);
-                    GUILayout.Label($"2. 点击按钮, 开始分析.");
+                    GUILayout.Label("2. 点击按钮, 开始分析.");
                     GUILayout.BeginVertical("Box");
                     {
                         if (GUILayout.Button("统计顶点面数", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
@@ -136,21 +137,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
                     }
                     GUILayout.EndVertical();
 
-                    // #region 计算内存占用
-                    //
-                    // GUILayout.BeginVertical("Box");
-                    // {
-                    //     UnityEngine.GUI.enabled = ReferenceEquals(prefab, null) == false;
-                    //     if (GUILayout.Button("计算内存占用", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                    //     {
-                    //         PrefabUtil.CountMemoryOfPrefab(prefab);
-                    //     }
-                    //
-                    //     UnityEngine.GUI.enabled = true;
-                    // }
-                    // GUILayout.EndVertical();
-                    //
-                    // #endregion
+                    #region 计算内存占用
+                    
+                    GUILayout.BeginVertical("Box");
+                    {
+                        UnityEngine.GUI.enabled = detectGameObject == null;
+                        if (GUILayout.Button("计算内存占用", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
+                        {
+                            PrefabUtil.CountMemoryOfPrefab(detectGameObject);
+                        }
+                    
+                        UnityEngine.GUI.enabled = true;
+                    }
+                    GUILayout.EndVertical();
+                    
+                    #endregion
                 }
                 GUILayout.EndVertical();
             }
