@@ -22,24 +22,28 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         private static bool pcSetting;
         private static int pcMaxSize = 512;
         private static bool pcUseOriginalSize;
+        private static bool pcForceOneType;
         private static TextureResizeAlgorithm pcResizeAlgorithm = TextureResizeAlgorithm.Mitchell;
-        private const TextureImporterFormat PC_FORMAT_RGB = TextureImporterFormat.DXT1;
-        private const TextureImporterFormat PC_FORMAT_RGBA = TextureImporterFormat.DXT5;
+        private static TextureImporterFormat PC_FORMAT_RGB = TextureImporterFormat.DXT1;
+        private static TextureImporterFormat PC_FORMAT_RGBA = TextureImporterFormat.DXT5;
 
         private static bool iosSetting;
         private static int iosMaxSize = 256;
         private static bool iosUseOriginalSize;
+        private static bool iosForceOneType;
         private static TextureResizeAlgorithm iosResizeAlgorithm = TextureResizeAlgorithm.Mitchell;
         private static TextureCompressionQuality iosCompressionQuality = TextureCompressionQuality.Normal;
-        private const TextureImporterFormat IOS_FORMAT = TextureImporterFormat.ASTC_6x6;
+        private static TextureImporterFormat IOS_FORMAT_RGB = TextureImporterFormat.ASTC_6x6;
+        private static TextureImporterFormat IOS_FORMAT_RGBA = TextureImporterFormat.ASTC_6x6;
 
         private static bool androidSetting;
         private static int androidMaxSize = 256;
         private static bool androidUseOriginalSize;
+        private static bool androidForceOneType;
         private static TextureResizeAlgorithm androidResizeAlgorithm = TextureResizeAlgorithm.Mitchell;
         private static TextureCompressionQuality androidCompressionQuality = TextureCompressionQuality.Normal;
-        private const TextureImporterFormat ANDROID_FORMAT_RGB = TextureImporterFormat.ETC2_RGB4;
-        private const TextureImporterFormat ANDROID_FORMAT_RGBA = TextureImporterFormat.ETC2_RGBA8;
+        private static TextureImporterFormat ANDROID_FORMAT_RGB = TextureImporterFormat.ETC2_RGB4;
+        private static TextureImporterFormat ANDROID_FORMAT_RGBA = TextureImporterFormat.ETC2_RGBA8;
 
         private static bool setFromFile;
         private static string filePath;
@@ -99,14 +103,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 if (pcSetting)
                 {
                     pcUseOriginalSize = EditorGUILayout.ToggleLeft("Use Original Size", pcUseOriginalSize);
+                    pcForceOneType = EditorGUILayout.ToggleLeft("强制指定类型", pcForceOneType);
                     UnityEngine.GUI.enabled = !pcUseOriginalSize;
                     pcMaxSize = EditorGUILayout.IntPopup("Max Size", pcMaxSize, arrayMaxSizeText, arrayMaxSize);
                     UnityEngine.GUI.enabled = true;
                     pcResizeAlgorithm = (TextureResizeAlgorithm) EditorGUILayout.EnumPopup("Resize Algorithm", pcResizeAlgorithm);
-                    UnityEngine.GUI.enabled = false;
-                    EditorGUILayout.EnumPopup("RGB Format", PC_FORMAT_RGB);
-                    EditorGUILayout.EnumPopup("RGBA Format", PC_FORMAT_RGBA);
-                    UnityEngine.GUI.enabled = true;
+                    if (pcForceOneType)
+                    {
+                        PC_FORMAT_RGB = (TextureImporterFormat) EditorGUILayout.EnumPopup("强制指定格式", PC_FORMAT_RGB);
+                    }
+                    else
+                    {
+                        PC_FORMAT_RGB = (TextureImporterFormat) EditorGUILayout.EnumPopup("RGB Format", PC_FORMAT_RGB);
+                        PC_FORMAT_RGBA = (TextureImporterFormat) EditorGUILayout.EnumPopup("RGBA Format", PC_FORMAT_RGBA);
+                    }
                 }
             }
             GUILayout.EndVertical();
@@ -120,14 +130,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 if (iosSetting)
                 {
                     iosUseOriginalSize = EditorGUILayout.ToggleLeft("Use Original Size", iosUseOriginalSize);
+                    iosForceOneType = EditorGUILayout.ToggleLeft("强制指定类型", iosForceOneType);
                     UnityEngine.GUI.enabled = !iosUseOriginalSize;
                     iosMaxSize = EditorGUILayout.IntPopup("Max Size", iosMaxSize, arrayMaxSizeText, arrayMaxSize);
                     UnityEngine.GUI.enabled = true;
                     iosResizeAlgorithm = (TextureResizeAlgorithm) EditorGUILayout.EnumPopup("Resize Algorithm", iosResizeAlgorithm);
                     iosCompressionQuality = (UnityEditor.TextureCompressionQuality) EditorGUILayout.EnumPopup("Compression Quality", iosCompressionQuality);
-                    UnityEngine.GUI.enabled = false;
-                    EditorGUILayout.EnumPopup("Format", IOS_FORMAT);
-                    UnityEngine.GUI.enabled = true;
+                    if (iosForceOneType)
+                    {
+                        IOS_FORMAT_RGB = (TextureImporterFormat) EditorGUILayout.EnumPopup("强制指定格式", IOS_FORMAT_RGB);
+                    }
+                    else
+                    {
+                        IOS_FORMAT_RGB = (TextureImporterFormat) EditorGUILayout.EnumPopup("RGB Format", IOS_FORMAT_RGB);
+                        IOS_FORMAT_RGBA = (TextureImporterFormat) EditorGUILayout.EnumPopup("RGBA Format", IOS_FORMAT_RGBA);
+                    }
                 }
             }
             GUILayout.EndVertical();
@@ -141,15 +158,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 if (androidSetting)
                 {
                     androidUseOriginalSize = EditorGUILayout.ToggleLeft("Use Original Size", androidUseOriginalSize);
+                    androidForceOneType = EditorGUILayout.ToggleLeft("强制指定类型", androidForceOneType);
                     UnityEngine.GUI.enabled = !androidUseOriginalSize;
                     androidMaxSize = EditorGUILayout.IntPopup("Max Size", androidMaxSize, arrayMaxSizeText, arrayMaxSize);
                     UnityEngine.GUI.enabled = true;
                     androidResizeAlgorithm = (TextureResizeAlgorithm) EditorGUILayout.EnumPopup("Resize Algorithm", androidResizeAlgorithm);
                     androidCompressionQuality = (UnityEditor.TextureCompressionQuality) EditorGUILayout.EnumPopup("Compression Quality", androidCompressionQuality);
-                    UnityEngine.GUI.enabled = false;
-                    EditorGUILayout.EnumPopup("RGB Format", ANDROID_FORMAT_RGB);
-                    EditorGUILayout.EnumPopup("RGBA Format", ANDROID_FORMAT_RGBA);
-                    UnityEngine.GUI.enabled = true;
+                    if (androidForceOneType)
+                    {
+                        ANDROID_FORMAT_RGB = (TextureImporterFormat) EditorGUILayout.EnumPopup("强制指定格式", ANDROID_FORMAT_RGB);
+                    }
+                    else
+                    {
+                        ANDROID_FORMAT_RGB = (TextureImporterFormat) EditorGUILayout.EnumPopup("RGB Format", ANDROID_FORMAT_RGB);
+                        ANDROID_FORMAT_RGBA = (TextureImporterFormat) EditorGUILayout.EnumPopup("RGBA Format", ANDROID_FORMAT_RGBA);
+                    }
                 }
             }
             GUILayout.EndVertical();
@@ -464,6 +487,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 format = importer.DoesSourceTextureHaveAlpha() ? PC_FORMAT_RGBA : PC_FORMAT_RGB
             };
 
+            if (pcForceOneType)
+            {
+                newSetting.format = PC_FORMAT_RGB;
+            }
+
             if (importer.textureType == TextureImporterType.NormalMap)
             {
                 newSetting.format = PC_FORMAT_RGBA;
@@ -485,7 +513,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             
             if (importer.GetPlatformTextureSettings("iPhone", out var curSize, out var format))
             {
-                if (curSize <= iosMaxSize && format == IOS_FORMAT)
+                if (curSize <= iosMaxSize && (format == IOS_FORMAT_RGB || format == IOS_FORMAT_RGBA))
                 {
                     //return false;
                 }
@@ -498,8 +526,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 maxTextureSize = curSize <= iosMaxSize ? curSize : iosMaxSize,
                 resizeAlgorithm = iosResizeAlgorithm,
                 compressionQuality = Convert.ToInt32(iosCompressionQuality),
-                format = IOS_FORMAT
+                format = importer.DoesSourceTextureHaveAlpha() ? IOS_FORMAT_RGBA : IOS_FORMAT_RGB
             };
+            
+            if (iosForceOneType)
+            {
+                newSetting.format = IOS_FORMAT_RGB;
+            }
 
             importer.SetPlatformTextureSettings(newSetting);
             return true;
@@ -532,6 +565,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 compressionQuality = Convert.ToInt32(androidCompressionQuality),
                 format = importer.DoesSourceTextureHaveAlpha() ? ANDROID_FORMAT_RGBA : ANDROID_FORMAT_RGB
             };
+            
+            if (androidForceOneType)
+            {
+                newSetting.format = ANDROID_FORMAT_RGB;
+            }
 
             importer.SetPlatformTextureSettings(newSetting);
             return true;
