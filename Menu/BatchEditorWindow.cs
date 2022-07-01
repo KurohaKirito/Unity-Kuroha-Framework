@@ -423,6 +423,16 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 var outputPaths = meshesRepeat.Select(AssetDatabase.GetAssetPath).ToList();
                 System.IO.File.WriteAllLines(resultFilePath, outputPaths);
             }
+
+            if (GUILayout.Button("场景物体静态批处理 Mesh"))
+            {
+                var children = sceneObject.GetComponentsInChildren<MeshFilter>().Select(t => t.gameObject).ToArray();
+                StaticBatchingUtility.Combine(children, sceneObject);
+                var mesh = children[0].GetComponent<MeshFilter>().sharedMesh;
+                if (mesh.name.Contains("Combined Mesh")) { // 仅判断开头也可以
+                    AssetDatabase.CreateAsset(mesh, "Assets/StaticBatchingUtility.asset");
+                }
+            }
         }
 
         private void ModifyPrefab()
