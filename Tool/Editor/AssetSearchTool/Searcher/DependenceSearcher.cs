@@ -11,7 +11,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Searcher {
         /// 公共依赖分析结果
         /// </summary>
         public static readonly Dictionary<UnityEngine.Object, List<UnityEngine.Object>> publicDependencies = new Dictionary<UnityEngine.Object, List<UnityEngine.Object>>();
-        
+
         /// <summary>
         /// 保存物体的 guid 和其依赖的物体的路径
         /// </summary>
@@ -33,37 +33,29 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Searcher {
                 }
             }
         }
-        
+
         /// <summary>
         /// 分析公共依赖
         /// </summary>
-        public static void FindPublicDependencies()
-        {
-            if (dependencies.Keys.Count > 0)
-            {
+        public static void FindPublicDependencies() {
+            if (dependencies.Keys.Count > 0) {
                 publicDependencies.Clear();
-                
-                foreach (var dKey in dependencies.Keys)
-                {
+
+                foreach (var dKey in dependencies.Keys) {
                     var path = AssetDatabase.GUIDToAssetPath(dKey);
                     var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-                
-                    foreach (var dValue in dependencies[dKey])
-                    {
+
+                    foreach (var dValue in dependencies[dKey]) {
                         var assetD = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dValue);
-                        if (assetD != null)
-                        {
-                            if (publicDependencies.ContainsKey(assetD) == false)
-                            {
-                                publicDependencies.Add(assetD, new List<UnityEngine.Object> { asset });
-                            }
-                            else
-                            {
+                        if (assetD != null) {
+                            if (publicDependencies.ContainsKey(assetD) == false) {
+                                publicDependencies.Add(assetD, new List<UnityEngine.Object> {
+                                    asset
+                                });
+                            } else {
                                 publicDependencies[assetD].Add(asset);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             DebugUtil.LogError($"加载不到资源 '{dValue}', 请检查资源是否存在 !");
                         }
                     }

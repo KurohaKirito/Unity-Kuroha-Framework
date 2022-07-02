@@ -6,15 +6,13 @@ using Script.Effect.Editor.AssetTool.Util.Unity;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.InspectorExtender.Editor
-{
+namespace Kuroha.Tool.InspectorExtender.Editor {
     /// <summary>
     /// 扩展 Mesh Renderer
     /// </summary>
     [CanEditMultipleObjects]
     [CustomEditor(typeof(MeshRenderer))]
-    public class IeMeshRenderer : IeBase
-    {
+    public class IeMeshRenderer : IeBase {
         private Mesh selfMesh;
         private Mesh selfMeshOld;
         private MeshFilter selfFilter;
@@ -35,98 +33,81 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         /// </summary>
         public IeMeshRenderer() : base("UnityEditor.MeshRendererEditor") { }
 
-        private void ReloadComponent()
-        {
+        private void ReloadComponent() {
             selfMeshRenderer = target as MeshRenderer;
-            if (selfMeshRenderer != null)
-            {
+            if (selfMeshRenderer != null) {
                 selfFilter = selfMeshRenderer.GetComponent<MeshFilter>();
             }
         }
 
-        private void ReloadMesh()
-        {
+        private void ReloadMesh() {
             selfMesh = selfFilter.sharedMesh;
         }
 
-        private void ReloadSetting()
-        {
+        private void ReloadSetting() {
             selfMeshOld = selfMesh;
             meshPath = AssetDatabase.GetAssetPath(selfMesh);
             rwEnable = selfMesh.isReadable;
             compression = MeshUtility.GetMeshCompression(selfMesh);
         }
 
-        private void UpdateTarget()
-        {
-            if (selfMeshRenderer == null || selfFilter == null)
-            {
+        private void UpdateTarget() {
+            if (selfMeshRenderer == null || selfFilter == null) {
                 ReloadComponent();
             }
-            
-            if (selfFilter != null)
-            {
+
+            if (selfFilter != null) {
                 ReloadMesh();
             }
 
-            if (selfMesh != null && selfMesh != selfMeshOld)
-            {
+            if (selfMesh != null && selfMesh != selfMeshOld) {
                 ReloadSetting();
             }
         }
-        
-        private async void OnMeshGUI()
-        {
-            if (selfMesh == null)
-            {
+
+        private async void OnMeshGUI() {
+            if (selfMesh == null) {
                 return;
             }
 
             // meshFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(meshFoldout, "Mesh");
             meshFoldout = EditorGUILayout.Foldout(meshFoldout, "Mesh", true);
-            if (meshFoldout)
-            {
+            if (meshFoldout) {
                 OnApplyButtonGUI();
 
-                if (revertButton)
-                {
+                if (revertButton) {
                     ReloadSetting();
                 }
 
-                if (applyButton)
-                {
+                if (applyButton) {
                     // 先修改压缩等级, 后修改读写, 顺序不能颠倒
-                    if (compression != MeshUtility.GetMeshCompression(selfMesh))
-                    {
+                    if (compression != MeshUtility.GetMeshCompression(selfMesh)) {
                         SetMeshCompression();
                     }
 
-                    if (rwEnable != selfMesh.isReadable)
-                    {
+                    if (rwEnable != selfMesh.isReadable) {
                         await SetMeshReadable();
                     }
                 }
             }
+
             // EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
-        private void OnApplyButtonGUI()
-        {
+        private void OnApplyButtonGUI() {
             GUI.enabled = false;
             EditorGUILayout.ObjectField("Current Mesh", selfMeshOld, typeof(Mesh), true);
             GUI.enabled = true;
-            
+
             // Unity 内置资源不可修改
-            if (meshPath.IndexOf("Assets", StringComparison.Ordinal) < 0)
-            {
+            if (meshPath.IndexOf("Assets", StringComparison.Ordinal) < 0) {
                 GUI.enabled = false;
             }
 
             rwEnable = EditorGUILayout.Toggle("Read Write Enabled", rwEnable);
             compression = (ModelImporterMeshCompression) EditorGUILayout.EnumPopup("Mesh Compression", compression);
 
-            if (rwEnable == selfMesh.isReadable && compression == MeshUtility.GetMeshCompression(selfMesh))
-            {
+            if (rwEnable == selfMesh.isReadable && compression == MeshUtility.GetMeshCompression(selfMesh)) {
                 GUI.enabled = false;
             }
 
@@ -138,23 +119,20 @@ namespace Kuroha.Tool.InspectorExtender.Editor
             GUI.enabled = true;
         }
 
-        private async Task SetMeshReadable()
-        {
+        private async Task SetMeshReadable() {
             await selfMesh.SetReadable(rwEnable);
             AssetDatabase.Refresh();
             UpdateTarget();
         }
 
-        private void SetMeshCompression()
-        {
+        private void SetMeshCompression() {
             MeshUtility.SetMeshCompression(selfMesh, compression);
             EditorUtility.SetDirty(selfMesh);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
 
-        public override void OnInspectorGUI()
-        {
+        public override void OnInspectorGUI() {
             base.OnInspectorGUI();
 
             UpdateTarget();
@@ -164,21 +142,18 @@ namespace Kuroha.Tool.InspectorExtender.Editor
             OnMeshGUI();
         }
 
-        private void OnLayerSortGUI()
-        {
+        private void OnLayerSortGUI() {
             // layerSortFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(layerSortFoldout, "Sorting Layer");
             layerSortFoldout = EditorGUILayout.Foldout(layerSortFoldout, "Layer", true);
-            if (layerSortFoldout)
-            {
+            if (layerSortFoldout) {
                 ShowSortingLayer();
             }
+
             // EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
-        private void ShowSortingLayer()
-        {
-            if (layerNames.Count <= 0 || layerNames.Count != SortingLayer.layers.Length)
-            {
+        private void ShowSortingLayer() {
+            if (layerNames.Count <= 0 || layerNames.Count != SortingLayer.layers.Length) {
                 layerNames.Clear();
                 layerNames.AddRange(SortingLayer.layers.Select(layer => layer.name));
             }
@@ -194,41 +169,34 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         }
 
         [MenuItem("CONTEXT/MeshFilter/Save Mesh...")]
-        public static void SaveMeshInPlace(MenuCommand menuCommand)
-        {
+        public static void SaveMeshInPlace(MenuCommand menuCommand) {
             var meshFilter = menuCommand.context as MeshFilter;
-            if (meshFilter!=null)
-            {
+            if (meshFilter != null) {
                 var mesh = meshFilter.sharedMesh;
                 SaveMesh(mesh, mesh.name, false, true);
             }
         }
 
         [MenuItem("CONTEXT/MeshFilter/Save Mesh As New Instance...")]
-        public static void SaveMeshNewInstanceItem(MenuCommand menuCommand)
-        {
+        public static void SaveMeshNewInstanceItem(MenuCommand menuCommand) {
             var meshFilter = menuCommand.context as MeshFilter;
-            if (meshFilter!=null)
-            {
+            if (meshFilter != null) {
                 var mesh = meshFilter.sharedMesh;
                 SaveMesh(mesh, mesh.name, true, true);
             }
         }
-        
-        private static void SaveMesh(Mesh mesh, string name, bool makeNewInstance, bool optimizeMesh)
-        {
+
+        private static void SaveMesh(Mesh mesh, string name, bool makeNewInstance, bool optimizeMesh) {
             var path = EditorUtility.SaveFilePanel("Save Separate Mesh Asset", "Assets/", name, "asset");
-            if (string.IsNullOrEmpty(path))
-            {
+            if (string.IsNullOrEmpty(path)) {
                 return;
             }
 
             path = FileUtil.GetProjectRelativePath(path);
 
-            var meshToSave = makeNewInstance ? Instantiate(mesh) : mesh;
+            var meshToSave = makeNewInstance? Instantiate(mesh) : mesh;
 
-            if (optimizeMesh)
-            {
+            if (optimizeMesh) {
                 MeshUtility.Optimize(meshToSave);
             }
 

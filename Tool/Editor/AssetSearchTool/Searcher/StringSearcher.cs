@@ -41,7 +41,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetSearchTool.Searcher {
                     var all = threadPool.taskCount;
                     ProgressBar.DisplayProgressBar("字符串引用分析工具", $"引用分析中: {com}/{all}", com, all);
                 }
-                
+
                 EditorUtility.ClearProgressBar();
 
                 #region 遍历每一个任务中的查询结果, 并汇总到字典中

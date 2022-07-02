@@ -2,66 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
-{
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool {
     [Serializable]
-    public class RenameStepScriptableObject : ScriptableObject
-    {
-        public enum OperaType
-        {
+    public class RenameStepScriptableObject : ScriptableObject {
+        public enum OperaType {
             Delete,
             Remove,
             Insert,
             Replace,
             Sort
         }
-        public enum PositionType
-        {
+
+        public enum PositionType {
             Begin,
             End,
             Index
         }
-        public enum SortType
-        {
+
+        public enum SortType {
             A_Z,
             Z_A
         }
 
         [Serializable]
-        public struct DeleteStep
-        {
+        public struct DeleteStep {
             public int beginIndex;
             public int length;
         }
+
         [Serializable]
-        public struct RemoveStep
-        {
+        public struct RemoveStep {
             public string regex;
         }
+
         [Serializable]
-        public struct ReplaceStep
-        {
+        public struct ReplaceStep {
             public string regex;
             public string newString;
         }
+
         [Serializable]
-        public struct InsertStep
-        {
+        public struct InsertStep {
             public PositionType paramType;
             public int index;
             public string content;
         }
+
         [Serializable]
-        public struct SortStep
-        {
+        public struct SortStep {
             public SortType sortType;
             public int BeginNumber;
             public int length;
         }
-        
+
         [Serializable]
-        public class RenameStep
-        {
+        public class RenameStep {
             public OperaType operaType;
 
             public InsertStep insertStep;
@@ -70,7 +65,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetRenameTool
             public ReplaceStep replaceStep;
             public SortStep sortStep;
         }
-        
+
         [SerializeField]
         public List<RenameStep> steps = new List<RenameStep>();
     }

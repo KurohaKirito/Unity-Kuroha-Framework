@@ -4,15 +4,13 @@ using Script.Effect.Editor.AssetTool.Util.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
-{
-    public class MeshAnalysisToolGUI : UnityEditor.Editor
-    {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool {
+    public class MeshAnalysisToolGUI : UnityEditor.Editor {
         /// <summary>
         /// [GUI] 折叠狂
         /// </summary>
         private static bool trisVertsFoldout = true;
-        
+
         /// <summary>
         /// 全局输入框的宽度
         /// </summary>
@@ -37,7 +35,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
         /// 待检测目录
         /// </summary>
         private static string detectPath = "Assets/Scenes/Models/CombatIsland/DinoLand";
-        
+
         /// <summary>
         /// 待检测游戏物体
         /// </summary>
@@ -47,12 +45,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
         /// 检测类型
         /// </summary>
         private static MeshAnalysisData.DetectType detectType = MeshAnalysisData.DetectType.Path;
-        
+
         /// <summary>
         /// 检测类型
         /// </summary>
         private static MeshAnalysisData.DetectMeshType detectMeshType = MeshAnalysisData.DetectMeshType.RendererMesh;
-        
+
         /// <summary>
         /// 检测类型
         /// </summary>
@@ -61,15 +59,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
         /// <summary>
         /// 绘制界面
         /// </summary>
-        public static void OnGUI()
-        {
+        public static void OnGUI() {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
             trisVertsFoldout = EditorGUILayout.Foldout(trisVertsFoldout, "网格资源统计分析工具", true);
-            if (trisVertsFoldout)
-            {
+            if (trisVertsFoldout) {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
-                
+
                 GUILayout.BeginVertical("Box");
                 {
                     EditorGUILayout.LabelField("1. 当前支持 4 种检查类型");
@@ -87,12 +83,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
                     }
                     GUILayout.EndVertical();
 
-                    switch (detectType)
-                    {
+                    switch (detectType) {
                         case MeshAnalysisData.DetectType.Scene:
                             break;
-                        case MeshAnalysisData.DetectType.Path:
-                        {
+                        case MeshAnalysisData.DetectType.Path: {
                             GUILayout.BeginVertical("Box");
                             {
                                 detectTypeAtPath = (MeshAnalysisData.DetectTypeAtPath) EditorGUILayout.EnumPopup("选择资源类型", detectTypeAtPath, GUILayout.Width(280));
@@ -106,8 +100,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
                             GUILayout.EndVertical();
                         }
                             break;
-                        case MeshAnalysisData.DetectType.GameObject:
-                        {
+                        case MeshAnalysisData.DetectType.GameObject: {
                             GUILayout.BeginVertical("Box");
                             {
                                 detectGameObject = EditorGUILayout.ObjectField("选择检测的游戏物体: ", detectGameObject, typeof(GameObject), true, GUILayout.Width(UI_INPUT_AREA_WIDTH)) as GameObject;
@@ -119,8 +112,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    if (detectType != MeshAnalysisData.DetectType.Path || detectTypeAtPath != MeshAnalysisData.DetectTypeAtPath.Meshes)
-                    {
+                    if (detectType != MeshAnalysisData.DetectType.Path || detectTypeAtPath != MeshAnalysisData.DetectTypeAtPath.Meshes) {
                         GUILayout.BeginVertical("Box");
                         detectMeshType = (MeshAnalysisData.DetectMeshType) EditorGUILayout.EnumPopup("选择 Mesh 类型", detectMeshType, GUILayout.Width(280));
                         GUILayout.EndVertical();
@@ -130,27 +122,25 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool
                     GUILayout.Label("2. 点击按钮, 开始分析.");
                     GUILayout.BeginVertical("Box");
                     {
-                        if (GUILayout.Button("统计顶点面数", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                        {
+                        if (GUILayout.Button("统计顶点面数", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                             SceneAnalysisTableWindow.Open(detectType, detectTypeAtPath, detectMeshType, detectGameObject, detectPath);
                         }
                     }
                     GUILayout.EndVertical();
 
                     #region 计算内存占用
-                    
+
                     GUILayout.BeginVertical("Box");
                     {
                         UnityEngine.GUI.enabled = detectGameObject == null;
-                        if (GUILayout.Button("计算内存占用", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                        {
+                        if (GUILayout.Button("计算内存占用", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                             PrefabUtil.CountMemoryOfPrefab(detectGameObject);
                         }
-                    
+
                         UnityEngine.GUI.enabled = true;
                     }
                     GUILayout.EndVertical();
-                    
+
                     #endregion
                 }
                 GUILayout.EndVertical();

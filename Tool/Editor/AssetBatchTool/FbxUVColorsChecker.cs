@@ -8,10 +8,8 @@ using UnityEditor;
 using UnityEngine;
 
 // 检测特定路径下 fbx 模型文件的 mesh 网格中的 uv2 uv3 uv4 colors 信息
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
-{
-    public static class FbxUVColorsChecker
-    {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
+    public static class FbxUVColorsChecker {
         /// <summary>
         /// 待检测文件夹
         /// </summary>
@@ -41,7 +39,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         private static bool checkUV3 = true;
         private static bool checkUV4 = true;
         private static bool checkColors = true;
-        
+
         private static bool clearUV2 = true;
         private static bool clearUV3 = true;
         private static bool clearUV4 = true;
@@ -50,15 +48,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 绘制界面
         /// </summary>
-        public static void OnGUI()
-        {
+        public static void OnGUI() {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
             var title = AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.FbxUVColorsChecker];
             foldout = EditorGUILayout.Foldout(foldout, title, true);
 
-            if (foldout)
-            {
+            if (foldout) {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 GUILayout.BeginVertical("Box");
                 {
@@ -70,8 +66,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                         {
                             GUILayout.BeginHorizontal("Box");
                             {
-                                if (GUILayout.Button("Select Folder", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                                {
+                                if (GUILayout.Button("Select Folder", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                                     folderPath = EditorUtility.OpenFolderPanel("Select Folder", folderPath, "Art");
                                 }
                             }
@@ -130,10 +125,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                             GUILayout.Label("3. 点击按钮, 开始检测");
                             GUILayout.BeginHorizontal("Box");
                             {
-                                if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                                {
+                                if (GUILayout.Button("Start", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                                     Detect();
-                                    DebugUtil.Log("检测结束!", null, EditorGUIUtility.isProSkin ? "yellow" : "black");
+                                    DebugUtil.Log("检测结束!", null, EditorGUIUtility.isProSkin? "yellow" : "black");
                                 }
                             }
                             GUILayout.EndHorizontal();
@@ -142,8 +136,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
 
                         GUILayout.BeginVertical();
                         GUILayout.Space(UI_DEFAULT_MARGIN);
-                        if (string.IsNullOrEmpty(folderPath))
-                        {
+                        if (string.IsNullOrEmpty(folderPath)) {
                             folderPath = "请选择待检测文件夹...";
                         }
 
@@ -161,24 +154,23 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 执行检测
         /// </summary>
-        private static void Detect()
-        {
+        private static void Detect() {
             var uv2Counter = 0;
             var uv3Counter = 0;
             var uv4Counter = 0;
             var colorsCounter = 0;
             var result = new List<string>();
-            
+
             // 获取目录下所有的模型路径
             var assetPath = PathUtil.GetAssetPath(folderPath);
-            var guids = AssetDatabase.FindAssets("t:Mesh", new[] {assetPath});
+            var guids = AssetDatabase.FindAssets("t:Mesh", new[] {
+                assetPath
+            });
             var assetPaths = new List<string>(guids.Select(AssetDatabase.GUIDToAssetPath));
-            
+
             // 开始检测
-            for (var i = 0; i < assetPaths.Count; i++)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("UV 分析工具", $"分析中: {i + 1} / {assetPaths.Count}", i + 1, assetPaths.Count))
-                {
+            for (var i = 0; i < assetPaths.Count; i++) {
+                if (ProgressBar.DisplayProgressBarCancel("UV 分析工具", $"分析中: {i + 1} / {assetPaths.Count}", i + 1, assetPaths.Count)) {
                     LogResult(uv2Counter, uv3Counter, uv4Counter, colorsCounter);
                     return;
                 }
@@ -186,7 +178,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                 var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(assetPaths[i]);
                 CheckMesh("Mesh", assetPaths[i], result, mesh, ref uv2Counter, ref uv3Counter, ref uv4Counter, ref colorsCounter);
             }
-            
+
             // 保存刷新
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -201,58 +193,49 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 检查 Mesh
         /// </summary>
-        private static void CheckMesh(string type, string path, in List<string> result, Mesh mesh, ref int uv2, ref int uv3, ref int uv4, ref int colors)
-        {
-            if (checkUV2 && mesh.uv2.Length > 0)
-            {
+        private static void CheckMesh(string type, string path, in List<string> result, Mesh mesh, ref int uv2, ref int uv3, ref int uv4, ref int colors) {
+            if (checkUV2 && mesh.uv2.Length > 0) {
                 ++uv2;
                 var log = $"{type}: 模型 {path} 中的 {mesh.name} 具有 uv2!";
                 result.Add(log);
 
-                if (clearUV2)
-                {
+                if (clearUV2) {
                     mesh.SetUVs(2, (List<Vector2>) null);
                     // mesh.uv2 = null;
                     EditorUtility.SetDirty(mesh);
                 }
             }
 
-            if (checkUV3 && mesh.uv3.Length > 0)
-            {
+            if (checkUV3 && mesh.uv3.Length > 0) {
                 ++uv3;
                 var log = $"{type}: 模型 {path} 中的 {mesh.name} 具有 uv3!";
                 result.Add(log);
-                
-                if (clearUV3)
-                {
+
+                if (clearUV3) {
                     mesh.SetUVs(3, (List<Vector2>) null);
                     // mesh.uv3 = null;
                     EditorUtility.SetDirty(mesh);
                 }
             }
 
-            if (checkUV4 && mesh.uv4.Length > 0)
-            {
+            if (checkUV4 && mesh.uv4.Length > 0) {
                 ++uv4;
                 var log = $"{type}: 模型 {path} 中的 {mesh.name} 具有 uv4!";
                 result.Add(log);
-                
-                if (clearUV4)
-                {
+
+                if (clearUV4) {
                     mesh.SetUVs(4, (List<Vector2>) null);
                     // mesh.uv4 = null;
                     EditorUtility.SetDirty(mesh);
                 }
             }
 
-            if (checkColors && mesh.colors.Length > 0)
-            {
+            if (checkColors && mesh.colors.Length > 0) {
                 ++colors;
                 var log = $"{type}: 模型 {path} 中的 {mesh.name} 具有 colors!";
                 result.Add(log);
-                
-                if (clearColors)
-                {
+
+                if (clearColors) {
                     mesh.SetColors((List<Color>) null);
                     // mesh.colors = null;
                     EditorUtility.SetDirty(mesh);
@@ -263,8 +246,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         /// <summary>
         /// Log
         /// </summary>
-        private static void LogResult(int uv2, int uv3, int uv4, int colors)
-        {
+        private static void LogResult(int uv2, int uv3, int uv4, int colors) {
             DebugUtil.Log($"一共检测出 {uv2} 个 UV2");
             DebugUtil.Log($"一共检测出 {uv3} 个 UV3");
             DebugUtil.Log($"一共检测出 {uv4} 个 UV4");

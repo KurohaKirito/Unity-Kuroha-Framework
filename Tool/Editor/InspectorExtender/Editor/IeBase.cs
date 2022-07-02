@@ -5,14 +5,12 @@ using Kuroha.Framework.Utility.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.InspectorExtender.Editor
-{
+namespace Kuroha.Tool.InspectorExtender.Editor {
     /// <summary>
     /// Uee: Unity Editor Extender
     /// Unity 编辑器原布局扩展器 - 基类
     /// </summary>
-    public abstract class IeBase : UnityEditor.Editor
-    {
+    public abstract class IeBase : UnityEditor.Editor {
         /// <summary>
         /// 用于充当反射调用方法时会使用到的空参数
         /// </summary>
@@ -42,8 +40,7 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         /// <summary>
         /// 构造方法
         /// </summary>
-        protected IeBase(string targetCustomEditorTypeName)
-        {
+        protected IeBase(string targetCustomEditorTypeName) {
             // 获取目标的 CustomEditor 类型
             targetCustomEditorClassInfo = ReflectionUtil.GetClass(ReflectionUtil.GetAssembly(typeof(UnityEditor.Editor)), targetCustomEditorTypeName);
 
@@ -52,13 +49,12 @@ namespace Kuroha.Tool.InspectorExtender.Editor
 
             // 获取自身的 CustomEditor 类型
             selfCustomEditorType = GetType();
-            
+
             // 获取自身 CustomEditor 的 Component 类型
             var selfComponentType = GetTargetComponentType(selfCustomEditorType);
 
             // 对比两个组件类型
-            if (targetComponentType != selfComponentType)
-            {
+            if (targetComponentType != selfComponentType) {
                 //// DebugUtil.LogError($"此 Editor: <{selfCustomEditorType}> 所绘制的组件类型为 : {selfComponentType},\r\n目标 Editor: <{targetCustomEditorTypeName}> 所绘制的组件类型为 : {targetComponentType}\r\n两者不匹配!", null, "red");
             }
         }
@@ -66,8 +62,7 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         /// <summary>
         /// 根绝 CustomEditor 类型得到 Component 的类型
         /// </summary>
-        private static Type GetTargetComponentType(Type customEditorType)
-        {
+        private static Type GetTargetComponentType(Type customEditorType) {
             // 得到 CustomEditor 特性
             var selfCustomEditor = ReflectionUtil.GetCustomAttribute<CustomEditor>(customEditorType, true);
 
@@ -83,17 +78,14 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         /// <summary>
         /// 创建 Inspector 面板的 Editor 脚本实例
         /// </summary>
-        private UnityEditor.Editor CreateEditorInstance()
-        {
+        private UnityEditor.Editor CreateEditorInstance() {
             UnityEditor.Editor newEditorInstance = null;
 
-            if (targets != null && targets.Length > 0)
-            {
+            if (targets != null && targets.Length > 0) {
                 newEditorInstance = CreateEditor(targets, targetCustomEditorClassInfo);
             }
 
-            if (newEditorInstance == null)
-            {
+            if (newEditorInstance == null) {
                 //// DebugUtil.LogError($"不能创建此编辑器脚本 {targetCustomEditorClassInfo} !", null, "red");
             }
 
@@ -103,10 +95,8 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         /// <summary>
         /// 初始化
         /// </summary>
-        private void OnEnable()
-        {
-            if (editorInstance == null)
-            {
+        private void OnEnable() {
+            if (editorInstance == null) {
                 editorInstance = CreateEditorInstance();
             }
         }
@@ -114,18 +104,15 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         /// <summary>
         /// OnDisable
         /// </summary>
-        private void OnDisable()
-        {
+        private void OnDisable() {
             DestroyImmediate(editorInstance);
         }
 
         /// <summary>
         /// OnInspectorGUI
         /// </summary>
-        public override void OnInspectorGUI()
-        {
-            if (editorInstance == null)
-            {
+        public override void OnInspectorGUI() {
+            if (editorInstance == null) {
                 editorInstance = CreateEditorInstance();
             }
 
@@ -135,120 +122,101 @@ namespace Kuroha.Tool.InspectorExtender.Editor
         /// <summary>
         /// DrawPreview
         /// </summary>
-        public override void DrawPreview(Rect previewArea)
-        {
+        public override void DrawPreview(Rect previewArea) {
             editorInstance.DrawPreview(previewArea);
         }
 
         /// <summary>
         /// GetInfoString
         /// </summary>
-        public override string GetInfoString()
-        {
+        public override string GetInfoString() {
             return editorInstance.GetInfoString();
         }
 
         /// <summary>
         /// GetPreviewTitle
         /// </summary>
-        public override GUIContent GetPreviewTitle()
-        {
+        public override GUIContent GetPreviewTitle() {
             return editorInstance.GetPreviewTitle();
         }
 
         /// <summary>
         /// HasPreviewGUI
         /// </summary>
-        public override bool HasPreviewGUI()
-        {
+        public override bool HasPreviewGUI() {
             return editorInstance.HasPreviewGUI();
         }
 
         /// <summary>
         /// OnInteractivePreviewGUI
         /// </summary>
-        public override void OnInteractivePreviewGUI(Rect rect, GUIStyle background)
-        {
+        public override void OnInteractivePreviewGUI(Rect rect, GUIStyle background) {
             editorInstance.OnInteractivePreviewGUI(rect, background);
         }
 
         /// <summary>
         /// OnPreviewGUI
         /// </summary>
-        public override void OnPreviewGUI(Rect rect, GUIStyle background)
-        {
+        public override void OnPreviewGUI(Rect rect, GUIStyle background) {
             editorInstance.OnPreviewGUI(rect, background);
         }
 
         /// <summary>
         /// OnPreviewSettings
         /// </summary>
-        public override void OnPreviewSettings()
-        {
+        public override void OnPreviewSettings() {
             editorInstance.OnPreviewSettings();
         }
 
         /// <summary>
         /// ReloadPreviewInstances
         /// </summary>
-        public override void ReloadPreviewInstances()
-        {
+        public override void ReloadPreviewInstances() {
             editorInstance.ReloadPreviewInstances();
         }
 
         /// <summary>
         /// RenderStaticPreview
         /// </summary>
-        public override Texture2D RenderStaticPreview(string assetPath, UnityEngine.Object[] subAssets, int width, int height)
-        {
+        public override Texture2D RenderStaticPreview(string assetPath, UnityEngine.Object[] subAssets, int width, int height) {
             return editorInstance.RenderStaticPreview(assetPath, subAssets, width, height);
         }
 
         /// <summary>
         /// RequiresConstantRepaint
         /// </summary>
-        public override bool RequiresConstantRepaint()
-        {
+        public override bool RequiresConstantRepaint() {
             return editorInstance.RequiresConstantRepaint();
         }
 
         /// <summary>
         /// UseDefaultMargins
         /// </summary>
-        public override bool UseDefaultMargins()
-        {
+        public override bool UseDefaultMargins() {
             return editorInstance.UseDefaultMargins();
         }
 
         /// <summary>
         /// OnHeaderGUI
         /// </summary>
-        protected override void OnHeaderGUI()
-        {
+        protected override void OnHeaderGUI() {
             CallInspectorMethod("OnHeaderGUI");
         }
 
         /// <summary>
         /// 调用 Inspector Editor 中的非公开方法
         /// </summary>
-        private void CallInspectorMethod(string methodName)
-        {
+        private void CallInspectorMethod(string methodName) {
             MethodInfo method;
 
-            if (decoratedMethods.ContainsKey(methodName) == false)
-            {
+            if (decoratedMethods.ContainsKey(methodName) == false) {
                 method = selfCustomEditorType.GetMethod(methodName);
-                if (method != null)
-                {
+                if (method != null) {
                     decoratedMethods[methodName] = method;
-                }
-                else
-                {
+                } else {
                     Debug.LogError($"can't find method : {methodName}");
                 }
-            }
-            else
-            {
+            } else {
                 method = decoratedMethods[methodName];
             }
 

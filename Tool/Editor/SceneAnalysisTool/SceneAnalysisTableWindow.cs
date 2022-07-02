@@ -9,10 +9,8 @@ using Script.Effect.Editor.AssetTool.Tool.Editor.MeshAnalysisTool;
 using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
-{
-    public class SceneAnalysisTableWindow : EditorWindow
-    {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
+    public class SceneAnalysisTableWindow : EditorWindow {
         private static string detectPath;
         private static GameObject detectGameObject;
         private static MeshAnalysisData.DetectType detectType;
@@ -40,18 +38,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         private static List<SceneAnalysisData> originList = new List<SceneAnalysisData>();
         private static readonly List<SceneAnalysisData> distinctList = new List<SceneAnalysisData>();
         private static CustomTableColumn<SceneAnalysisData>[] columns;
-        
+
         /// <summary>
         /// 打开窗口
         /// </summary>
-        public static void Open(MeshAnalysisData.DetectType pDetectType, MeshAnalysisData.DetectTypeAtPath pDetectTypeAtPath, MeshAnalysisData.DetectMeshType pDetectMeshType, GameObject asset, string path)
-        {
+        public static void Open(MeshAnalysisData.DetectType pDetectType, MeshAnalysisData.DetectTypeAtPath pDetectTypeAtPath, MeshAnalysisData.DetectMeshType pDetectMeshType, GameObject asset, string path) {
             detectPath = path;
             detectGameObject = asset;
             detectType = pDetectType;
             detectTypeAtPath = pDetectTypeAtPath;
             detectMeshType = pDetectMeshType;
-            
+
             var window = GetWindow<SceneAnalysisTableWindow>("场景分析", true);
             window.minSize = new Vector2(1000, 600);
         }
@@ -59,25 +56,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// <summary>
         /// 初始化
         /// </summary>
-        private void OnEnable()
-        {
-            if (vertsWarn == 0)
-            {
+        private void OnEnable() {
+            if (vertsWarn == 0) {
                 vertsWarn = 500;
             }
 
-            if (vertsError == 0)
-            {
+            if (vertsError == 0) {
                 vertsError = 1000;
             }
 
-            if (trisWarn == 0)
-            {
+            if (trisWarn == 0) {
                 trisWarn = 500;
             }
 
-            if (trisError == 0)
-            {
+            if (trisError == 0) {
                 trisError = 1000;
             }
 
@@ -90,8 +82,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// <summary>
         /// 绘制界面
         /// </summary>
-        protected void OnGUI()
-        {
+        protected void OnGUI() {
             GUILayout.Space(20);
             GUILayout.BeginHorizontal();
 
@@ -132,16 +123,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// 初始化表格
         /// </summary>
         /// <param name="forceUpdate">是否强制刷新</param>
-        private void InitTable(bool forceUpdate = false)
-        {
-            if (forceUpdate || table == null)
-            {
+        private void InitTable(bool forceUpdate = false) {
+            if (forceUpdate || table == null) {
                 originList = InitRows();
-                if (originList != null)
-                {
+                if (originList != null) {
                     columns = InitColumns();
-                    if (columns != null)
-                    {
+                    if (columns != null) {
                         GenerateTable(originList, columns);
                     }
                 }
@@ -153,8 +140,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// </summary>
         /// <param name="data"></param>
         /// <param name="column"></param>
-        private void GenerateTable(List<SceneAnalysisData> data, CustomTableColumn<SceneAnalysisData>[] column)
-        {
+        private void GenerateTable(List<SceneAnalysisData> data, CustomTableColumn<SceneAnalysisData>[] column) {
             table = new SceneAnalysisTable(new Vector2(20, 20), new Vector2(300, 300), data, true, true, true, column, OnFilterEnter, OnAfterFilter, OnExportPressed, OnRowSelect, OnDistinctPressed);
         }
 
@@ -162,16 +148,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// 初始化行数据
         /// </summary>
         /// <returns></returns>
-        private List<SceneAnalysisData> InitRows()
-        {
+        private List<SceneAnalysisData> InitRows() {
             var dataList = new List<SceneAnalysisData>();
             var meshCount = 0;
 
-            switch (detectType)
-            {
+            switch (detectType) {
                 case MeshAnalysisData.DetectType.Scene:
-                    if (detectMeshType == MeshAnalysisData.DetectMeshType.RendererMesh)
-                    {
+                    if (detectMeshType == MeshAnalysisData.DetectMeshType.RendererMesh) {
                         var meshFilters = FindObjectsOfType<MeshFilter>();
                         DetectMeshFilter(in dataList, in meshFilters);
                         meshCount += meshFilters.Length;
@@ -183,22 +166,19 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                         var particleSystems = FindObjectsOfType<ParticleSystem>();
                         DetectParticleSystem(in dataList, in particleSystems);
                         meshCount += particleSystems.Length;
-                    }
-                    else if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh)
-                    {
+                    } else if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh) {
                         var meshColliders = FindObjectsOfType<MeshCollider>();
                         DetectMeshCollider(in dataList, in meshColliders);
                         meshCount += meshColliders.Length;
                     }
+
                     break;
                 case MeshAnalysisData.DetectType.Path:
                     DetectPath(in dataList, ref meshCount);
                     break;
                 case MeshAnalysisData.DetectType.GameObject:
-                    if (detectGameObject != null)
-                    {
-                        if (detectMeshType == MeshAnalysisData.DetectMeshType.RendererMesh)
-                        {
+                    if (detectGameObject != null) {
+                        if (detectMeshType == MeshAnalysisData.DetectMeshType.RendererMesh) {
                             var meshFilters = detectGameObject.GetComponentsInChildren<MeshFilter>();
                             DetectMeshFilter(in dataList, in meshFilters);
                             meshCount += meshFilters.Length;
@@ -210,23 +190,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                             var particleSystems = detectGameObject.GetComponentsInChildren<ParticleSystem>();
                             DetectParticleSystem(in dataList, in particleSystems);
                             meshCount += particleSystems.Length;
-                        }
-                        else if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh)
-                        {
+                        } else if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh) {
                             var meshColliders = detectGameObject.GetComponentsInChildren<MeshCollider>();
                             DetectMeshCollider(in dataList, in meshColliders);
                             meshCount += meshColliders.Length;
                         }
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             AddRowsSum(dataList);
 
-            if (meshCount <= 0)
-            {
+            if (meshCount <= 0) {
                 return null;
             }
 
@@ -237,10 +215,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// <summary>
         /// 增加一行: 总和
         /// </summary>
-        private void AddRowsSum(in List<SceneAnalysisData> dataList)
-        {
-            dataList.Add(new SceneAnalysisData
-            {
+        private void AddRowsSum(in List<SceneAnalysisData> dataList) {
+            dataList.Add(new SceneAnalysisData {
                 id = dataList.Count + 1,
                 tris = resultTris,
                 verts = resultVerts,
@@ -260,8 +236,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// <summary>
         /// 增加一条检测结果
         /// </summary>
-        private void AddResult(in List<SceneAnalysisData> dataList, Mesh mesh, string readWriteEnable)
-        {
+        private void AddResult(in List<SceneAnalysisData> dataList, Mesh mesh, string readWriteEnable) {
             resultVerts += mesh.vertices.Length;
             resultTris += mesh.triangles.Length / 3;
             resultUV += mesh.uv.Length;
@@ -272,8 +247,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             resultTangents += mesh.tangents.Length;
             resultNormals += mesh.normals.Length;
 
-            dataList.Add(new SceneAnalysisData
-            {
+            dataList.Add(new SceneAnalysisData {
                 id = dataList.Count + 1,
                 tris = mesh.triangles.Length / 3,
                 verts = mesh.vertices.Length,
@@ -297,51 +271,39 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// </summary>
         /// <param name="dataList">行数据</param>
         /// <param name="meshColliders">待检测组件</param>
-        private void DetectMeshCollider(in List<SceneAnalysisData> dataList, in MeshCollider[] meshColliders)
-        {
+        private void DetectMeshCollider(in List<SceneAnalysisData> dataList, in MeshCollider[] meshColliders) {
             const MeshColliderCookingOptions DEFAULT_OPTIONS = MeshColliderCookingOptions.EnableMeshCleaning & MeshColliderCookingOptions.WeldColocatedVertices & MeshColliderCookingOptions.CookForFasterSimulation;
 
-            foreach (var meshCollider in meshColliders)
-            {
-                if (meshCollider != null)
-                {
+            foreach (var meshCollider in meshColliders) {
+                if (meshCollider != null) {
                     var sharedMesh = meshCollider.sharedMesh;
-                    if (sharedMesh == null)
-                    {
+                    if (sharedMesh == null) {
                         DebugUtil.LogError("使用了 MeshCollider 却没有指定 Mesh!", meshCollider.gameObject, "red");
-                    } else
-                    {
+                    } else {
                         var readWriteEnable = false;
 
                         // 负缩放的凸多面体
-                        if (meshCollider.transform.localScale.x < 0 || meshCollider.transform.localScale.y < 0 || meshCollider.transform.localScale.z < 0)
-                        {
-                            if (meshCollider.convex)
-                            {
+                        if (meshCollider.transform.localScale.x < 0 || meshCollider.transform.localScale.y < 0 || meshCollider.transform.localScale.z < 0) {
+                            if (meshCollider.convex) {
                                 readWriteEnable = true;
-                                if (sharedMesh.isReadable == false)
-                                {
+                                if (sharedMesh.isReadable == false) {
                                     DebugUtil.Log($"{meshCollider.name} 是一个负缩放的凸多面体, 需要开启读写!", meshCollider.gameObject, "red");
                                 }
                             }
                         }
 
                         // 倾斜
-                        else if (meshCollider.transform.localRotation != Quaternion.identity && meshCollider.transform.parent.localScale != Vector3.one)
-                        {
+                        else if (meshCollider.transform.localRotation != Quaternion.identity && meshCollider.transform.parent.localScale != Vector3.one) {
                             readWriteEnable = true;
-                            if (sharedMesh.isReadable == false)
-                            {
+                            if (sharedMesh.isReadable == false) {
                                 DebugUtil.Log($"{meshCollider.name} 的旋转是倾斜的, 需要开启读写!", meshCollider.gameObject, "red");
                             }
                         }
 
                         // 烘焙选项非默认
-                        else if (meshCollider.cookingOptions != DEFAULT_OPTIONS)
-                        {
+                        else if (meshCollider.cookingOptions != DEFAULT_OPTIONS) {
                             readWriteEnable = true;
-                            if (sharedMesh.isReadable == false)
-                            {
+                            if (sharedMesh.isReadable == false) {
                                 DebugUtil.Log($"{meshCollider.name} 的烘焙选项非默认, 需要开启读写!", meshCollider.gameObject, "red");
                             }
                         }
@@ -358,18 +320,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// </summary>
         /// <param name="dataList">行数据</param>
         /// <param name="meshFilters">待检测组件</param>
-        private void DetectMeshFilter(in List<SceneAnalysisData> dataList, in MeshFilter[] meshFilters)
-        {
-            foreach (var meshFilter in meshFilters)
-            {
-                if (ReferenceEquals(meshFilter, null))
-                {
+        private void DetectMeshFilter(in List<SceneAnalysisData> dataList, in MeshFilter[] meshFilters) {
+            foreach (var meshFilter in meshFilters) {
+                if (ReferenceEquals(meshFilter, null)) {
                     continue;
                 }
 
                 var sharedMesh = meshFilter.sharedMesh;
-                if (ReferenceEquals(sharedMesh, null))
-                {
+                if (ReferenceEquals(sharedMesh, null)) {
                     DebugUtil.LogError("使用了 MeshFilter 却没有指定 Mesh!", meshFilter.gameObject);
                     continue;
                 }
@@ -383,23 +341,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// </summary>
         /// <param name="dataList">行数据</param>
         /// <param name="particleSystems">待检测组件</param>
-        private void DetectParticleSystem(in List<SceneAnalysisData> dataList, in ParticleSystem[] particleSystems)
-        {
-            foreach (var particleSystem in particleSystems)
-            {
-                if (ReferenceEquals(particleSystem, null) == false)
-                {
+        private void DetectParticleSystem(in List<SceneAnalysisData> dataList, in ParticleSystem[] particleSystems) {
+            foreach (var particleSystem in particleSystems) {
+                if (ReferenceEquals(particleSystem, null) == false) {
                     var renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
                     var mesh = renderer.mesh;
 
-                    if (ReferenceEquals(mesh, null))
-                    {
-                        if (renderer.renderMode == ParticleSystemRenderMode.Mesh)
-                        {
+                    if (ReferenceEquals(mesh, null)) {
+                        if (renderer.renderMode == ParticleSystemRenderMode.Mesh) {
                             DebugUtil.LogError($"粒子系统 {particleSystem.transform.name} 使用 Mesh 方式渲染粒子, 却没有指定 Mesh!", particleSystem.gameObject, "red");
                         }
-                    } else
-                    {
+                    } else {
                         AddResult(dataList, mesh, "非碰撞");
                     }
                 }
@@ -411,18 +363,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// </summary>
         /// <param name="dataList">行数据</param>
         /// <param name="skinnedMeshRenderers">待检测组件</param>
-        private void DetectSkinnedMeshRenderer(in List<SceneAnalysisData> dataList, in SkinnedMeshRenderer[] skinnedMeshRenderers)
-        {
-            foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
-            {
-                if (ReferenceEquals(skinnedMeshRenderer, null))
-                {
+        private void DetectSkinnedMeshRenderer(in List<SceneAnalysisData> dataList, in SkinnedMeshRenderer[] skinnedMeshRenderers) {
+            foreach (var skinnedMeshRenderer in skinnedMeshRenderers) {
+                if (ReferenceEquals(skinnedMeshRenderer, null)) {
                     continue;
                 }
 
                 var mesh = skinnedMeshRenderer.sharedMesh;
-                if (ReferenceEquals(mesh, null))
-                {
+                if (ReferenceEquals(mesh, null)) {
                     DebugUtil.LogError("使用了 SkinnedMeshRenderer 却没有指定 Mesh!", skinnedMeshRenderer.gameObject);
                     continue;
                 }
@@ -435,10 +383,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
 
         #region 创建数据列
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ID()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ID() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("ID"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 50,
@@ -447,8 +393,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.id.CompareTo(dataB.id), // 排序
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.id.ToString());
@@ -456,10 +401,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Name()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Name() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Name"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 300,
@@ -468,23 +411,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => string.Compare(dataA.assetPath, dataB.assetPath, StringComparison.Ordinal),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     var iconRect = cellRect;
                     iconRect.width = 20f;
-                    EditorGUI.LabelField(iconRect, data.assetName.Equals("Sum") ? EditorGUIUtility.IconContent("console.InfoIcon.sml") : EditorGUIUtility.IconContent("PrefabModel Icon"));
+                    EditorGUI.LabelField(iconRect, data.assetName.Equals("Sum")? EditorGUIUtility.IconContent("console.InfoIcon.sml") : EditorGUIUtility.IconContent("PrefabModel Icon"));
                     cellRect.xMin += 20f;
                     EditorGUI.LabelField(cellRect, data.assetPath);
                 },
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Verts()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Verts() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Verts"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 80,
@@ -493,23 +433,19 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.verts.CompareTo(dataB.verts),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     var iconRect = cellRect;
                     iconRect.width = 20f;
                     cellRect.xMin += 20f;
-                    if (data.verts > vertsError)
-                    {
+                    if (data.verts > vertsError) {
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.ErrorIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.verts.ToString());
-                    } else if (data.verts > vertsWarn)
-                    {
+                    } else if (data.verts > vertsWarn) {
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.WarnIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.verts.ToString());
-                    } else
-                    {
+                    } else {
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.InfoIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.verts.ToString());
                     }
@@ -517,10 +453,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Tris()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Tris() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Tris"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 80,
@@ -529,23 +463,19 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.tris.CompareTo(dataB.tris),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     var iconRect = cellRect;
                     iconRect.width = 20f;
                     cellRect.xMin += 20f;
-                    if (data.tris > trisError)
-                    {
+                    if (data.tris > trisError) {
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.ErrorIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.tris.ToString());
-                    } else if (data.tris > trisWarn)
-                    {
+                    } else if (data.tris > trisWarn) {
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.warnIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.tris.ToString());
-                    } else
-                    {
+                    } else {
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent("console.infoIcon.sml"));
                         EditorGUI.LabelField(cellRect, data.tris.ToString());
                     }
@@ -553,10 +483,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ReadWrite()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ReadWrite() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("R/W"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 120,
@@ -565,8 +493,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => string.Compare(dataA.readwrite, dataB.readwrite, StringComparison.Ordinal),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.readwrite.ToString());
@@ -574,10 +501,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("UV"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 50,
@@ -586,8 +511,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.uv.CompareTo(dataB.uv),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.uv.ToString());
@@ -595,10 +519,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV2()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV2() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("UV2"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 50,
@@ -607,8 +529,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.uv2.CompareTo(dataB.uv2),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.uv2.ToString());
@@ -616,10 +537,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV3()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV3() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("UV3"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 40,
@@ -628,8 +547,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.uv3.CompareTo(dataB.uv3),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.uv3.ToString());
@@ -637,10 +555,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV4()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_UV4() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("UV4"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 40,
@@ -649,8 +565,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.uv4.CompareTo(dataB.uv4),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.uv4.ToString());
@@ -658,10 +573,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Colors()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Colors() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Colors"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 60,
@@ -670,8 +583,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.colors.CompareTo(dataB.colors),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.colors.ToString());
@@ -679,10 +591,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Tangents()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Tangents() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Tangents"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 70,
@@ -691,8 +601,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.tangents.CompareTo(dataB.tangents),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.tangents.ToString());
@@ -700,10 +609,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
             };
         }
 
-        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Normals()
-        {
-            return new CustomTableColumn<SceneAnalysisData>
-            {
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_Normals() {
+            return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Normals"),
                 headerTextAlignment = TextAlignment.Center,
                 width = 70,
@@ -712,8 +619,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => dataA.normals.CompareTo(dataB.normals),
-                DrawCell = (cellRect, data) =>
-                {
+                DrawCell = (cellRect, data) => {
                     cellRect.height += 5f;
                     cellRect.xMin += 3f;
                     EditorGUI.LabelField(cellRect, data.normals.ToString());
@@ -727,10 +633,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// 初始化列
         /// </summary>
         /// <returns></returns>
-        private static CustomTableColumn<SceneAnalysisData>[] InitColumns()
-        {
-            var newColumns = new List<CustomTableColumn<SceneAnalysisData>>
-            {
+        private static CustomTableColumn<SceneAnalysisData>[] InitColumns() {
+            var newColumns = new List<CustomTableColumn<SceneAnalysisData>> {
                 CreateColumn_ID(),
                 CreateColumn_Name(),
                 CreateColumn_Verts(),
@@ -744,8 +648,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 CreateColumn_Normals()
             };
 
-            if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh)
-            {
+            if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh) {
                 newColumns.Add(CreateColumn_ReadWrite());
             }
 
@@ -758,8 +661,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// 行选中事件
         /// </summary>
         /// <param name="dataList"></param>
-        private static void OnRowSelect(in List<SceneAnalysisData> dataList)
-        {
+        private static void OnRowSelect(in List<SceneAnalysisData> dataList) {
             var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(dataList[0].assetPath);
             EditorGUIUtility.PingObject(obj);
             Selection.activeObject = obj;
@@ -770,22 +672,18 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// </summary>
         /// <param name="file"></param>
         /// <param name="dataList"></param>
-        private static void OnExportPressed(string file, in List<SceneAnalysisData> dataList)
-        {
-            if (dataList.Count <= 0)
-            {
+        private static void OnExportPressed(string file, in List<SceneAnalysisData> dataList) {
+            if (dataList.Count <= 0) {
                 EditorUtility.DisplayDialog("Warning", "No Data!", "Ok");
                 return;
             }
 
-            if (File.Exists(file))
-            {
+            if (File.Exists(file)) {
                 File.Delete(file);
             }
 
             var stringBuilder = new StringBuilder();
-            foreach (var data in dataList)
-            {
+            foreach (var data in dataList) {
                 stringBuilder.Clear();
                 stringBuilder.Append($"{data.id}\t");
                 stringBuilder.Append(data.assetName == "Sum"? "无路径\t" : $"{Path.GetFullPath(data.assetPath)}\t");
@@ -810,76 +708,72 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// <param name="data"></param>
         /// <param name="filterText"></param>
         /// <returns></returns>
-        private static bool OnFilterEnter(int mask, SceneAnalysisData data, string filterText)
-        {
+        private static bool OnFilterEnter(int mask, SceneAnalysisData data, string filterText) {
             var isMatched = true;
             var maskChars = Convert.ToString(mask, 2).Reverse().ToArray();
-            
+
             var index = 0;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterString(data.id.ToString());
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterString(data.assetName);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.verts);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.tris);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.uv);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.uv2);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.uv3);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.uv4);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.colors);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.tangents);
             }
+
             index++;
-            if (maskChars.Length > index && maskChars[index] == '1')
-            {
+            if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.normals);
             }
 
             #region Local Function
 
-            bool ColumnFilterString(string sourceData)
-            {
+            bool ColumnFilterString(string sourceData) {
                 return sourceData.ToLower().Contains(filterText.ToLower());
             }
 
-            bool ColumnFilterNumber(int sourceData)
-            {
+            bool ColumnFilterNumber(int sourceData) {
                 return int.TryParse(filterText, out var number) && sourceData > number;
             }
 
@@ -891,17 +785,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// <summary>
         /// 查找结束事件
         /// </summary>
-        private void OnAfterFilter(List<SceneAnalysisData> dataList)
-        {
-            if (dataList.Count <= 0)
-            {
+        private void OnAfterFilter(List<SceneAnalysisData> dataList) {
+            if (dataList.Count <= 0) {
                 return;
             }
 
-            if (dataList.Count == 1)
-            {
-                if (dataList[0].assetName == "Sum")
-                {
+            if (dataList.Count == 1) {
+                if (dataList[0].assetName == "Sum") {
                     dataList.Clear();
                     return;
                 }
@@ -919,13 +809,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
 
             var sumIndex = 0;
 
-            for (var i = 0; i < dataList.Count; i++)
-            {
-                if (dataList[i].assetName == "Sum")
-                {
+            for (var i = 0; i < dataList.Count; i++) {
+                if (dataList[i].assetName == "Sum") {
                     sumIndex = i;
-                } else
-                {
+                } else {
                     resultTris += dataList[i].tris;
                     resultVerts += dataList[i].verts;
                     resultUV += dataList[i].uv;
@@ -940,8 +827,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
 
             dataList.RemoveAt(sumIndex);
 
-            for (var i = 0; i < dataList.Count; i++)
-            {
+            for (var i = 0; i < dataList.Count; i++) {
                 dataList[i].id = i + 1;
             }
 
@@ -951,33 +837,26 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
         /// <summary>
         /// 数据去重事件
         /// </summary>
-        private void OnDistinctPressed(List<SceneAnalysisData> dataList)
-        {
-            if (isDistinct)
-            {
+        private void OnDistinctPressed(List<SceneAnalysisData> dataList) {
+            if (isDistinct) {
                 // 恢复去重
                 isDistinct = false;
                 dataList = originList;
 
                 // 重新编号
-                for (var index = 0; index < dataList.Count; ++index)
-                {
+                for (var index = 0; index < dataList.Count; ++index) {
                     dataList[index].id = index + 1;
                 }
-            } else
-            {
+            } else {
                 // 去重
                 isDistinct = true;
                 distinctList.Clear();
-                foreach (var data in dataList)
-                {
-                    if (data.assetName == "Sum")
-                    {
+                foreach (var data in dataList) {
+                    if (data.assetName == "Sum") {
                         continue;
                     }
 
-                    if (distinctList.Exists(t => t.IsEqual(data)))
-                    {
+                    if (distinctList.Exists(t => t.IsEqual(data))) {
                         continue;
                     }
 
@@ -996,8 +875,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
                 resultColors = 0;
                 resultNormals = 0;
                 resultTangents = 0;
-                for (var index = 0; index < dataList.Count; ++index)
-                {
+                for (var index = 0; index < dataList.Count; ++index) {
                     dataList[index].id = index + 1;
                     resultTris += dataList[index].tris;
                     resultVerts += dataList[index].verts;
@@ -1020,32 +898,29 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool
 
         #endregion
 
-        private void DetectPath(in List<SceneAnalysisData> dataList, ref int meshCount)
-        {
-            switch (detectTypeAtPath)
-            {
+        private void DetectPath(in List<SceneAnalysisData> dataList, ref int meshCount) {
+            switch (detectTypeAtPath) {
                 case MeshAnalysisData.DetectTypeAtPath.Meshes:
-                    var guids = AssetDatabase.FindAssets("t:Mesh", new[] {detectPath});
+                    var guids = AssetDatabase.FindAssets("t:Mesh", new[] {
+                        detectPath
+                    });
                     meshCount = guids.Length;
-                    foreach (var guid in guids)
-                    {
+                    foreach (var guid in guids) {
                         var path = AssetDatabase.GUIDToAssetPath(guid);
-                        try
-                        {
+                        try {
                             var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
                             AddResult(dataList, mesh, $"{mesh.isReadable}");
-                        }
-                        catch
-                        {
+                        } catch {
                             Debug.LogError($"无法读取为 Mesh 资源! {path}");
                         }
                     }
+
                     break;
-                
+
                 case MeshAnalysisData.DetectTypeAtPath.Prefabs:
-                    
+
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

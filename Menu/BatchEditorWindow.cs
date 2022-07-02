@@ -9,10 +9,8 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Script.Effect.Editor.AssetTool.Menu
-{
-    public class BatchEditorWindow : EditorWindow
-    {
+namespace Script.Effect.Editor.AssetTool.Menu {
+    public class BatchEditorWindow : EditorWindow {
         private string filePath;
         private int layerIndex;
         private ModelImporterMeshCompression compress;
@@ -27,77 +25,64 @@ namespace Script.Effect.Editor.AssetTool.Menu
         private readonly List<UnityEngine.Object> objPaths = new List<UnityEngine.Object>();
         private bool filterUV2;
 
-        public static void Open()
-        {
+        public static void Open() {
             GetWindow<BatchEditorWindow>();
         }
 
-        private void OnEnable()
-        {
-            reorderableList = new ReorderableList(objPaths, typeof(UnityEngine.Object))
-            {
+        private void OnEnable() {
+            reorderableList = new ReorderableList(objPaths, typeof(UnityEngine.Object)) {
                 draggable = true,
                 displayAdd = true,
                 displayRemove = true,
                 drawElementCallback = DrawElement,
                 drawHeaderCallback = DrawHeader
             };
-            
-            reorderableList.onAddCallback += list =>
-            {
+
+            reorderableList.onAddCallback += list => {
                 objPaths.Add(null);
             };
 
-            reorderableList.onRemoveCallback += list =>
-            {
+            reorderableList.onRemoveCallback += list => {
                 objPaths.RemoveAt(list.index);
             };
         }
-        
-        private void DrawHeader(Rect rect)
-        {
+
+        private void DrawHeader(Rect rect) {
             EditorGUI.LabelField(rect, "检测路径");
         }
-        private void DrawElement(Rect rect, int index, bool isActive, bool isFocused)
-        {
+
+        private void DrawElement(Rect rect, int index, bool isActive, bool isFocused) {
             rect.height -= 2;
             rect.y += 1;
             objPaths[index] = EditorGUI.ObjectField(rect, objPaths[index], typeof(UnityEngine.Object), false);
         }
 
-        private async void OnGUI()
-        {
+        private async void OnGUI() {
             reorderableList.DoLayoutList();
-            
+
             Debug.Log($"设置个数: {counter}");
 
-            if (GUILayout.Button("选择路径"))
-            {
+            if (GUILayout.Button("选择路径")) {
                 filePath = EditorUtility.OpenFolderPanel("Select Folder", filePath, "");
             }
 
             layerIndex = EditorGUILayout.Popup("选择 Layer", layerIndex, UnityEditorInternal.InternalEditorUtility.layers);
 
-            if (GUILayout.Button("设置层级"))
-            {
-                if (string.IsNullOrEmpty(filePath) == false)
-                {
+            if (GUILayout.Button("设置层级")) {
+                if (string.IsNullOrEmpty(filePath) == false) {
                     var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                     var assetPath = filePath.Substring(assetsIndex);
-                    var guids = AssetDatabase.FindAssets("t:Prefab", new[]
-                    {
+                    var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                         assetPath
                     });
-                    foreach (var guid in guids)
-                    {
+                    foreach (var guid in guids) {
                         var path = AssetDatabase.GUIDToAssetPath(guid);
                         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                         var root = prefab.transform;
                         root.gameObject.layer = layerIndex;
 
                         var children = root.GetComponentsInChildren<Transform>();
-                        foreach (var child in children)
-                        {
+                        foreach (var child in children) {
                             child.gameObject.layer = layerIndex;
                         }
 
@@ -109,11 +94,9 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 }
             }
 
-            if (GUILayout.Button("生成全部预制体"))
-            {
+            if (GUILayout.Button("生成全部预制体")) {
                 var assetPath = PathUtil.GetAssetPath(filePath);
-                var guids = AssetDatabase.FindAssets("t:Prefab", new[]
-                {
+                var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                     assetPath
                 });
                 DebugUtil.Log($"一共找到了 {guids.Length} 个预制体", null, "yellow");
@@ -121,8 +104,7 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 var counterX = 20;
                 var counterY = 20;
 
-                foreach (var guid in guids)
-                {
+                foreach (var guid in guids) {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
                     var asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                     var prefab = Instantiate(asset);
@@ -130,8 +112,7 @@ namespace Script.Effect.Editor.AssetTool.Menu
                     transform.SetPositionAndRotation(new Vector3(counterX, counterY, 0), Quaternion.Euler(0, 90, 0));
 
                     counterY++;
-                    if (counterY % 19 == 0)
-                    {
+                    if (counterY % 19 == 0) {
                         counterY = 20;
                         counterX += 2;
                     }
@@ -140,19 +121,16 @@ namespace Script.Effect.Editor.AssetTool.Menu
 
             compress = (ModelImporterMeshCompression) EditorGUILayout.EnumPopup("选择压缩格式", compress);
 
-            if (GUILayout.Button("设置压缩等级"))
-            {
+            if (GUILayout.Button("设置压缩等级")) {
                 counter = 0;
                 var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                 var assetPath = filePath.Substring(assetsIndex);
-                var guids = AssetDatabase.FindAssets("t:mesh", new[]
-                {
+                var guids = AssetDatabase.FindAssets("t:mesh", new[] {
                     assetPath
                 });
                 Debug.Log($"个数: {guids.Length}");
 
-                foreach (var guid in guids)
-                {
+                foreach (var guid in guids) {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
                     var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
                     MeshUtility.SetMeshCompression(mesh, compress);
@@ -164,39 +142,32 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 AssetDatabase.Refresh();
             }
 
-            if (GUILayout.Button("Select File"))
-            {
+            if (GUILayout.Button("Select File")) {
                 filePath = EditorUtility.OpenFilePanel("Select File", filePath, "");
             }
 
-            if (GUILayout.Button("Material"))
-            {
+            if (GUILayout.Button("Material")) {
                 var toSets = System.IO.File.ReadAllLines(filePath);
 
-                foreach (var set in toSets)
-                {
+                foreach (var set in toSets) {
                     var modelImporter = AssetImporter.GetAtPath(set) as ModelImporter;
 
-                    if (modelImporter != null)
-                    {
+                    if (modelImporter != null) {
                         modelImporter.RemoveMaterial();
                     }
                 }
             }
 
-            if (GUILayout.Button("设置 Mesh"))
-            {
+            if (GUILayout.Button("设置 Mesh")) {
                 counter = 0;
                 var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                 var assetPath = filePath.Substring(assetsIndex);
-                var guids = AssetDatabase.FindAssets("t:mesh", new[]
-                {
+                var guids = AssetDatabase.FindAssets("t:mesh", new[] {
                     assetPath
                 });
                 Debug.Log($"个数: {guids.Length}");
 
-                foreach (var guid in guids)
-                {
+                foreach (var guid in guids) {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
                     var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
 
@@ -206,24 +177,20 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 }
             }
 
-            if (GUILayout.Button("动画表情"))
-            {
+            if (GUILayout.Button("动画表情")) {
                 var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                 var assetPath = filePath.Substring(assetsIndex);
-                var guids = AssetDatabase.FindAssets("t:Prefab", new[]
-                {
+                var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                     assetPath
                 });
                 Debug.Log($"Prefab 个数: {guids.Length}");
 
-                foreach (var guid in guids)
-                {
+                foreach (var guid in guids) {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
                     var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
                     var animators = obj.GetComponentsInChildren<Animator>();
-                    if (animators != null && animators.Length > 0)
-                    {
+                    if (animators != null && animators.Length > 0) {
                         counter++;
                         Debug.Log($"动画表情 {counter}: {obj.name}", obj);
                     }
@@ -232,8 +199,7 @@ namespace Script.Effect.Editor.AssetTool.Menu
 
             sceneObject = EditorGUILayout.ObjectField("场景物体: ", sceneObject, typeof(GameObject), true) as GameObject;
 
-            if (sceneObject != null && GUILayout.Button("场景物体: 分离 Collider 和 Renderer"))
-            {
+            if (sceneObject != null && GUILayout.Button("场景物体: 分离 Collider 和 Renderer")) {
                 // ----------------------------------- 创建所有渲染器的父物体 ----------------------------------------------
                 var parent = new GameObject("Mesh Renderer Parent").transform;
                 parent.SetParent(sceneObject.transform, true);
@@ -242,8 +208,7 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 var renderers = sceneObject.GetComponentsInChildren<MeshRenderer>(true);
 
                 // 更改层级
-                foreach (var renderer in renderers)
-                {
+                foreach (var renderer in renderers) {
                     renderer.transform.SetParent(parent, true);
                 }
 
@@ -255,18 +220,15 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 var colliders = sceneObject.GetComponentsInChildren<MeshCollider>(true);
 
                 // 更改层级
-                foreach (var collider in colliders)
-                {
+                foreach (var collider in colliders) {
                     collider.transform.SetParent(parent, true);
                 }
             }
 
-            if (sceneObject != null && GUILayout.Button("场景物体: 关闭全部的光照探针和反射探针"))
-            {
+            if (sceneObject != null && GUILayout.Button("场景物体: 关闭全部的光照探针和反射探针")) {
                 // 获得所有的 Renderer
                 var renderers = sceneObject.GetComponentsInChildren<Renderer>(true);
-                foreach (var renderer in renderers)
-                {
+                foreach (var renderer in renderers) {
                     renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
                     renderer.lightProbeUsage = LightProbeUsage.Off;
                 }
@@ -274,16 +236,13 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 EditorUtility.SetDirty(sceneObject);
             }
 
-            if (sceneObject != null)
-            {
+            if (sceneObject != null) {
                 culling = EditorGUILayout.IntField("设置 Culling 层的占比:", culling);
             }
 
-            if (sceneObject != null && GUILayout.Button("场景物体: 批量添加 Part LodGroup"))
-            {
+            if (sceneObject != null && GUILayout.Button("场景物体: 批量添加 Part LodGroup")) {
                 var trans = sceneObject.transform;
-                for (var index = 0; index < trans.childCount; index++)
-                {
+                for (var index = 0; index < trans.childCount; index++) {
                     var child = trans.GetChild(index);
                     var lodGroup = child.gameObject.AddComponent<LODGroup>();
 
@@ -298,36 +257,29 @@ namespace Script.Effect.Editor.AssetTool.Menu
             roomPartIndex = EditorGUILayout.IntField("设置 Room Part 的索引:", roomPartIndex);
             roomLayer = EditorGUILayout.TextField("设置 Room Part 的楼层:", roomLayer);
 
-            if (Selection.transforms.Length > 1 && GUILayout.Button("场景物体: 划分 Room Part 1F"))
-            {
+            if (Selection.transforms.Length > 1 && GUILayout.Button("场景物体: 划分 Room Part 1F")) {
                 var selects = Selection.transforms;
                 var root = selects[0].parent.parent;
                 var partRoot = new GameObject($"Building_{roomLayer}Part_{roomPartIndex}").transform;
                 partRoot.SetParent(root);
 
-                foreach (var sel in selects)
-                {
+                foreach (var sel in selects) {
                     sel.parent.SetParent(partRoot);
                 }
             }
 
             rendererObject = EditorGUILayout.ObjectField("rendererObject: ", rendererObject, typeof(GameObject), true) as GameObject;
             colliderObject = EditorGUILayout.ObjectField("colliderObject: ", colliderObject, typeof(GameObject), true) as GameObject;
-            if (rendererObject != null && colliderObject != null && rendererObject.transform.childCount == colliderObject.transform.childCount && GUILayout.Button("场景物体: 还原"))
-            {
-                for (var index = 0; index < colliderObject.transform.childCount; index++)
-                {
+            if (rendererObject != null && colliderObject != null && rendererObject.transform.childCount == colliderObject.transform.childCount && GUILayout.Button("场景物体: 还原")) {
+                for (var index = 0; index < colliderObject.transform.childCount; index++) {
                     rendererObject.transform.GetChild(0).SetParent(colliderObject.transform.GetChild(index));
                 }
             }
-            
-            if (GUILayout.Button("模型位置检测"))
-            {
+
+            if (GUILayout.Button("模型位置检测")) {
                 var path = AssetDatabase.GetAssetPath(sceneObject);
-                if (AssetImporter.GetAtPath(path) is ModelImporter modelImporter)
-                {
-                    foreach (var transformPath in modelImporter.transformPaths)
-                    {
+                if (AssetImporter.GetAtPath(path) is ModelImporter modelImporter) {
+                    foreach (var transformPath in modelImporter.transformPaths) {
                         Debug.Log($"transformPath: {transformPath}");
                     }
                 }
@@ -336,18 +288,15 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 Debug.Log($"sceneObject.transform: {sceneObject.transform.localRotation.ToString()}");
                 Debug.Log($"sceneObject.transform: {sceneObject.transform.localScale.ToString()}");
             }
-            
-            if (GUILayout.Button("检查预制体 Missing"))
-            {
+
+            if (GUILayout.Button("检查预制体 Missing")) {
                 var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                 var assetPath = filePath.Substring(assetsIndex);
-                var guids = AssetDatabase.FindAssets("t:Prefab", new[]
-                {
+                var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                     assetPath
                 });
-            
-                foreach (var guid in guids)
-                {
+
+                foreach (var guid in guids) {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
                     var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
@@ -355,62 +304,46 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 }
             }
 
-            if (GUILayout.Button("预制体仅 LOD0 开启阴影, 批量设置 LOD, 关闭全部探针和动态遮挡剔除"))
-            {
+            if (GUILayout.Button("预制体仅 LOD0 开启阴影, 批量设置 LOD, 关闭全部探针和动态遮挡剔除")) {
                 ModifyPrefab();
             }
 
             filterUV2 = EditorGUILayout.Toggle("含有 UV2 信息剔除", filterUV2);
-            if (GUILayout.Button("检测重复 Mesh"))
-            {
+            if (GUILayout.Button("检测重复 Mesh")) {
                 var meshesRepeat = new List<Mesh>();
                 var meshesNoRepeat = new List<Mesh>();
-                
+
                 var paths = objPaths.Select(AssetDatabase.GetAssetPath).ToArray();
                 var guids = AssetDatabase.FindAssets("t:mesh", paths);
                 var meshes = guids.Select(AssetDatabase.GUIDToAssetPath).Select(AssetDatabase.LoadAssetAtPath<Mesh>).ToList();
 
-                foreach (var mesh in meshes)
-                {
-                    if (filterUV2 && mesh.uv2 != null && mesh.uv2.Length > 0)
-                    {
+                foreach (var mesh in meshes) {
+                    if (filterUV2 && mesh.uv2 != null && mesh.uv2.Length > 0) {
                         continue;
                     }
-                    
-                    if (mesh.triangles.Length < 500 || mesh.vertices.Length < 500)
-                    {
+
+                    if (mesh.triangles.Length < 500 || mesh.vertices.Length < 500) {
                         continue;
                     }
-                    
-                    if (IsRepeat(mesh, meshesRepeat, out _))
-                    {
+
+                    if (IsRepeat(mesh, meshesRepeat, out _)) {
                         meshesRepeat.Add(mesh);
-                    }
-                    else
-                    {
-                        if (IsRepeat(mesh, meshesNoRepeat, out var index))
-                        {
+                    } else {
+                        if (IsRepeat(mesh, meshesNoRepeat, out var index)) {
                             meshesRepeat.Add(mesh);
                             meshesRepeat.Add(meshesNoRepeat[index]);
                             meshesNoRepeat.RemoveAt(index);
-                        }
-                        else
-                        {
+                        } else {
                             meshesNoRepeat.Add(mesh);
                         }
                     }
                 }
 
-                bool IsRepeat(Mesh mesh, in List<Mesh> meshList, out int index)
-                {
+                bool IsRepeat(Mesh mesh, in List<Mesh> meshList, out int index) {
                     index = 0;
-                    
-                    for (var i = 0; i < meshList.Count; i++)
-                    {
-                        if (mesh.triangles.Length == meshList[i].triangles.Length &&
-                            mesh.vertices.Length == meshList[i].vertices.Length &&
-                            mesh.uv.Length == meshList[i].uv.Length)
-                        {
+
+                    for (var i = 0; i < meshList.Count; i++) {
+                        if (mesh.triangles.Length == meshList[i].triangles.Length && mesh.vertices.Length == meshList[i].vertices.Length && mesh.uv.Length == meshList[i].uv.Length) {
                             index = i;
                             return true;
                         }
@@ -424,8 +357,7 @@ namespace Script.Effect.Editor.AssetTool.Menu
                 System.IO.File.WriteAllLines(resultFilePath, outputPaths);
             }
 
-            if (GUILayout.Button("场景物体静态批处理 Mesh"))
-            {
+            if (GUILayout.Button("场景物体静态批处理 Mesh")) {
                 var children = sceneObject.GetComponentsInChildren<MeshFilter>().Select(t => t.gameObject).ToArray();
                 StaticBatchingUtility.Combine(children, sceneObject);
                 var mesh = children[0].GetComponent<MeshFilter>().sharedMesh;
@@ -433,117 +365,101 @@ namespace Script.Effect.Editor.AssetTool.Menu
                     AssetDatabase.CreateAsset(mesh, "Assets/StaticBatchingUtility.asset");
                 }
             }
+
+            if (GUILayout.Button("检查当前场景的预制体 Missing")) {
+                var transforms = FindObjectsOfType<Transform>();
+                foreach (var child in transforms) {
+                    if (child.name.IndexOf("Missing Prefab", StringComparison.OrdinalIgnoreCase) >= 0) {
+                        DebugUtil.LogError($"Missing Prefab: {child.name}", child, "yellow");
+                    }
+                }
+            }
         }
 
-        private void ModifyPrefab()
-        {
+        private void ModifyPrefab() {
             var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
             var assetPath = filePath.Substring(assetsIndex);
-            var guids = AssetDatabase.FindAssets("t:Prefab", new[]
-            {
+            var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                 assetPath
             });
-            
-            foreach (var guid in guids)
-            {
+
+            foreach (var guid in guids) {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
                 预制体关闭全部探针和动态遮挡剔除(obj);
                 预制体批量设置LOD(obj);
                 预制体仅LOD0开启阴影(obj);
-                
+
                 EditorUtility.SetDirty(obj);
                 AssetDatabase.SaveAssets();
             }
         }
 
-        private void 预制体关闭全部探针和动态遮挡剔除(GameObject obj)
-        {
+        private void 预制体关闭全部探针和动态遮挡剔除(GameObject obj) {
             var renderers = obj.GetComponentsInChildren<Renderer>();
-            foreach (var renderer in renderers)
-            {
+            foreach (var renderer in renderers) {
                 renderer.lightProbeUsage = LightProbeUsage.Off;
                 renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
                 renderer.allowOcclusionWhenDynamic = false;
             }
         }
 
-        private void 预制体批量设置LOD(GameObject obj)
-        {
+        private void 预制体批量设置LOD(GameObject obj) {
             var lodGroups = obj.GetComponentsInChildren<LODGroup>();
-            foreach (var lodGroup in lodGroups)
-            {
+            foreach (var lodGroup in lodGroups) {
                 var lods = lodGroup.GetLODs();
-                if (lods.Length == 4)
-                {
+                if (lods.Length == 4) {
                     lods[0].screenRelativeTransitionHeight = 0.4f;
                     lods[1].screenRelativeTransitionHeight = 0.3f;
                     lods[2].screenRelativeTransitionHeight = 0.05f;
                     lods[3].screenRelativeTransitionHeight = 0.02f;
                     lodGroup.SetLODs(lods);
-                } else if (lods.Length == 3)
-                {
+                } else if (lods.Length == 3) {
                     lods[0].screenRelativeTransitionHeight = 0.3f;
                     lods[1].screenRelativeTransitionHeight = 0.05f;
                     lods[2].screenRelativeTransitionHeight = 0.02f;
                     lodGroup.SetLODs(lods);
-                } else if (lods.Length == 2)
-                {
+                } else if (lods.Length == 2) {
                     lods[0].screenRelativeTransitionHeight = 0.2f;
                     lods[1].screenRelativeTransitionHeight = 0.02f;
                     lodGroup.SetLODs(lods);
-                } else
-                {
+                } else {
                     Debug.Log($"{obj.name} 预制体中的 LODGroup 仅有 {lods.Length} 层!", obj);
                 }
             }
         }
 
-        private void 预制体仅LOD0开启阴影(GameObject obj)
-        {
+        private void 预制体仅LOD0开启阴影(GameObject obj) {
             var lodGroups = obj.GetComponentsInChildren<LODGroup>();
-            foreach (var lodGroup in lodGroups)
-            {
+            foreach (var lodGroup in lodGroups) {
                 var lods = lodGroup.GetLODs();
-                foreach (var lod in lods)
-                {
+                foreach (var lod in lods) {
                     var renderers = lod.renderers;
-                    foreach (var renderer in renderers)
-                    {
-                        if (renderer == null)
-                        {
+                    foreach (var renderer in renderers) {
+                        if (renderer == null) {
                             Debug.LogError($"renderer = null ! {obj.name}/{lodGroup.name}", obj);
-                        }
-                        else
-                        {
+                        } else {
                             renderer.shadowCastingMode = ShadowCastingMode.Off;
                         }
                     }
                 }
 
                 var renderers0 = lods[0].renderers;
-                foreach (var renderer0 in renderers0)
-                {
-                    if (renderer0 == null)
-                    {
+                foreach (var renderer0 in renderers0) {
+                    if (renderer0 == null) {
                         Debug.LogError($"renderer0 = null ! {obj.name}/{lodGroup.name}", obj);
-                    }
-                    else
-                    {
+                    } else {
                         renderer0.shadowCastingMode = ShadowCastingMode.On;
                     }
                 }
             }
         }
 
-        private void 预制体Missing(GameObject obj)
-        {
+        private void 预制体Missing(GameObject obj) {
             var children = obj.GetComponentsInChildren<Transform>();
-            foreach (var child in children)
-            {
-                if (child.name.IndexOf("Missing Prefab", StringComparison.OrdinalIgnoreCase) >= 0)
-                {
+            foreach (var child in children) {
+                if (child.name.IndexOf("Missing Prefab", StringComparison.OrdinalIgnoreCase) >= 0) {
                     DebugUtil.LogError($"Missing Prefab: {obj}", obj, "yellow");
                 }
             }

@@ -2,13 +2,11 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool
-{
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
     /// <summary>
     /// GUI 绘制类
     /// </summary>
-    public class TextureAnalysisGUI : UnityEditor.Editor
-    {
+    public class TextureAnalysisGUI : UnityEditor.Editor {
         /// <summary>
         /// 全局默认 margin
         /// </summary>
@@ -57,13 +55,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool
         /// <summary>
         /// 绘制界面
         /// </summary>
-        public static void OnGUI()
-        {
+        public static void OnGUI() {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
             textureAnalysisFoldout = EditorGUILayout.Foldout(textureAnalysisFoldout, "纹理统计分析工具", true);
-            if (textureAnalysisFoldout)
-            {
+            if (textureAnalysisFoldout) {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 GUILayout.BeginVertical("Box");
                 {
@@ -82,12 +78,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool
                     }
                     GUILayout.EndVertical();
 
-                    switch (detectType)
-                    {
+                    switch (detectType) {
                         case TextureAnalysisData.DetectType.Scene:
                             break;
-                        case TextureAnalysisData.DetectType.Path:
-                        {
+                        case TextureAnalysisData.DetectType.Path: {
                             GUILayout.BeginVertical("Box");
                             {
                                 detectTypeAtPath = (TextureAnalysisData.DetectTypeAtPath) EditorGUILayout.EnumPopup("选择检查类型", detectTypeAtPath, GUILayout.Width(240));
@@ -101,8 +95,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool
                             GUILayout.EndVertical();
                         }
                             break;
-                        case TextureAnalysisData.DetectType.GameObject:
-                        {
+                        case TextureAnalysisData.DetectType.GameObject: {
                             GUILayout.BeginVertical("Box");
                             {
                                 detectGameObject = EditorGUILayout.ObjectField("选择检测的游戏物体: ", detectGameObject, typeof(GameObject), true, GUILayout.Width(UI_INPUT_AREA_WIDTH)) as GameObject;
@@ -118,8 +111,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool
                     GUILayout.Label($"2. 点击开始按钮, 开始分析.");
                     GUILayout.BeginVertical("Box");
                     {
-                        if (GUILayout.Button("开始", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                        {
+                        if (GUILayout.Button("开始", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                             TextureAnalysisTableWindow.Open(detectType, detectTypeAtPath, detectPath, detectGameObject, false);
                         }
                     }

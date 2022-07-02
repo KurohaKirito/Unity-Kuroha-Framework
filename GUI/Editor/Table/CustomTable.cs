@@ -42,13 +42,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         /// <summary>
         /// Constructor
         /// </summary>
-        protected CustomTable(Vector2 space, Vector2 minSize, List<T> dataList,
-            bool isDrawFilter, bool isDrawExport, bool isDrawDistinct,
-            MultiColumnHeaderState.Column[] columns,
-            CustomTableDelegate.FilterMethod<T> onFilterFunction, CustomTableDelegate.AfterFilterMethod<T> afterFilterMethod,
-            CustomTableDelegate.ExportMethod<T> onExportFunction, CustomTableDelegate.SelectMethod<T> onSelectFunction,
-            CustomTableDelegate.DistinctMethod<T> onDistinctFunction)
-        {
+        protected CustomTable(Vector2 space, Vector2 minSize, List<T> dataList, bool isDrawFilter, bool isDrawExport, bool isDrawDistinct, MultiColumnHeaderState.Column[] columns, CustomTableDelegate.FilterMethod<T> onFilterFunction, CustomTableDelegate.AfterFilterMethod<T> afterFilterMethod, CustomTableDelegate.ExportMethod<T> onExportFunction, CustomTableDelegate.SelectMethod<T> onSelectFunction, CustomTableDelegate.DistinctMethod<T> onDistinctFunction) {
             minRect = minSize;
             WidthSpace = space.x;
             HeightSpace = space.y;
@@ -68,8 +62,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             DistinctFunction = onDistinctFunction;
 
             MultiColumnHeaderState = new MultiColumnHeaderState(columns);
-            treeView = new CustomTreeView<T>(new TreeViewState(), new MultiColumnHeader(MultiColumnHeaderState), dataList,
-                FilterFunction, AfterFilterMethod, ExportFunction, SelectFunction, DistinctFunction);
+            treeView = new CustomTreeView<T>(new TreeViewState(), new MultiColumnHeader(MultiColumnHeaderState), dataList, FilterFunction, AfterFilterMethod, ExportFunction, SelectFunction, DistinctFunction);
             treeView.Reload();
         }
 

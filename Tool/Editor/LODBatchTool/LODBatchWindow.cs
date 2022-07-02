@@ -12,15 +12,13 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
     /// 预设数据结构
     /// </summary>
     [Serializable]
-    public class LODBatchSet
-    {
+    public class LODBatchSet {
         public string name;
         public int lodCount;
         public List<float> lodValues;
     }
-    
-    public class LODBatchWindow : EditorWindow
-    {
+
+    public class LODBatchWindow : EditorWindow {
         /// <summary>
         /// 全局默认 margin
         /// </summary>
@@ -103,32 +101,21 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
 
         public void OnGUI() {
             GUILayout.Space(UI_DEFAULT_MARGIN);
-            
+
             #region 绘制预设按钮
 
-            for (var index = 0; index < configList.Count; ++index)
-            {
+            for (var index = 0; index < configList.Count; ++index) {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
-                
+
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Space(UI_DEFAULT_MARGIN * 2);
                     if (GUILayout.Button(configList[index].name, GUILayout.Width(UI_BUTTON_WIDTH * 0.78f))) {
                         ReadConfigToWindow(configList[index]);
                     }
+
                     GUILayout.Space(UI_DEFAULT_MARGIN * 2);
 
-                    if (++index >= configList.Count) {
-                        GUILayout.EndHorizontal();
-                        GUILayout.Space(UI_DEFAULT_MARGIN);
-                        break;
-                    }
-                    
-                    if (GUILayout.Button(configList[index].name, GUILayout.Width(UI_BUTTON_WIDTH * 0.78f))) {
-                        ReadConfigToWindow(configList[index]);
-                    }
-                    GUILayout.Space(UI_DEFAULT_MARGIN * 2);
-                    
                     if (++index >= configList.Count) {
                         GUILayout.EndHorizontal();
                         GUILayout.Space(UI_DEFAULT_MARGIN);
@@ -138,8 +125,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
                     if (GUILayout.Button(configList[index].name, GUILayout.Width(UI_BUTTON_WIDTH * 0.78f))) {
                         ReadConfigToWindow(configList[index]);
                     }
+
                     GUILayout.Space(UI_DEFAULT_MARGIN * 2);
-                    
+
                     if (++index >= configList.Count) {
                         GUILayout.EndHorizontal();
                         GUILayout.Space(UI_DEFAULT_MARGIN);
@@ -149,6 +137,19 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
                     if (GUILayout.Button(configList[index].name, GUILayout.Width(UI_BUTTON_WIDTH * 0.78f))) {
                         ReadConfigToWindow(configList[index]);
                     }
+
+                    GUILayout.Space(UI_DEFAULT_MARGIN * 2);
+
+                    if (++index >= configList.Count) {
+                        GUILayout.EndHorizontal();
+                        GUILayout.Space(UI_DEFAULT_MARGIN);
+                        break;
+                    }
+
+                    if (GUILayout.Button(configList[index].name, GUILayout.Width(UI_BUTTON_WIDTH * 0.78f))) {
+                        ReadConfigToWindow(configList[index]);
+                    }
+
                     GUILayout.Space(UI_DEFAULT_MARGIN * 2);
                 }
                 GUILayout.EndHorizontal();
@@ -156,34 +157,37 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
             }
 
             #endregion
-            
+
             GUILayout.Space(UI_DEFAULT_MARGIN * 2);
 
             #region 绘制界面
-            
+
             lodCount = EditorGUILayout.IntField("LOD Count: (1 - 10)", lodCount, GUILayout.Width(UI_INPUT_AREA_WIDTH));
             if (lodCount < 1) {
                 lodCount = 1;
             }
+
             if (lodCount > 10) {
                 lodCount = 10;
             }
-            
+
             GUILayout.Space(UI_DEFAULT_MARGIN * 2);
 
             while (lodCount > lodValues.Count) {
                 lodValues.Add(0);
             }
+
             while (lodCount < lodValues.Count) {
                 lodValues.RemoveAt(0);
             }
-            
+
             for (var index = 0; index < lodValues.Count; index++) {
                 if (index == lodValues.Count - 1) {
                     lodValues[index] = EditorGUILayout.FloatField("Culled:", lodValues[index], GUILayout.Width(UI_INPUT_AREA_WIDTH));
                 } else {
                     lodValues[index] = EditorGUILayout.FloatField($"LOD {index + 1}:", lodValues[index], GUILayout.Width(UI_INPUT_AREA_WIDTH));
                 }
+
                 GUILayout.Space(UI_DEFAULT_MARGIN * 2);
             }
 
@@ -198,43 +202,46 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
                     currentEdit = -1;
                     isSettingEditMode = !isSettingEditMode;
                 }
+
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("批量设置", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                     BatchLOD();
                 }
+
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("刷新选择", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                     RefreshSelection();
                 }
+
                 GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
 
             #endregion
-            
+
             GUILayout.Space(UI_DEFAULT_MARGIN * 2);
 
             #region 预设编辑模式
 
-            if (isSettingEditMode)
-            {
-                for (var index = 0; index < configList.Count; index++)
-                {
+            if (isSettingEditMode) {
+                for (var index = 0; index < configList.Count; index++) {
                     GUILayout.BeginHorizontal();
                     {
                         GUILayout.Space(UI_DEFAULT_MARGIN * 2);
                         GUILayout.Label(configList[index].name);
-                        
+
                         GUILayout.FlexibleSpace();
-                        
+
                         if (GUILayout.Button("编辑", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2.5f))) {
                             currentEdit = index;
                             ReadConfigToWindow(configList[index]);
                         }
+
                         GUILayout.Space(UI_DEFAULT_MARGIN * 2);
                         if (GUILayout.Button("删除", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH / 2.5f))) {
                             configList.RemoveAt(index);
                         }
+
                         GUILayout.Space(UI_DEFAULT_MARGIN * 2);
 
                         if (currentEdit == index) {
@@ -249,17 +256,18 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
                                 SaveAsConfig();
                             }
                         }
+
                         GUILayout.Space(UI_DEFAULT_MARGIN * 2);
                     }
                     GUILayout.EndHorizontal();
-                    
+
                     GUILayout.Space(UI_DEFAULT_MARGIN * 2);
                 }
 
                 configName = EditorGUILayout.TextField("预设名称", configName);
-                
+
                 GUILayout.Space(UI_DEFAULT_MARGIN * 2);
-                
+
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.FlexibleSpace();
@@ -270,23 +278,27 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
                             configList.Add(new LODBatchSet {
                                 name = configName,
                                 lodCount = 1,
-                                lodValues = new List<float>{ 0, 0 }
+                                lodValues = new List<float> {
+                                    0, 0
+                                }
                             });
                         }
                     }
+
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("保存", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                         currentEdit = -1;
                         isSettingEditMode = !isSettingEditMode;
                         SaveAsConfig();
                     }
+
                     GUILayout.FlexibleSpace();
                 }
                 GUILayout.EndHorizontal();
             }
 
             #endregion
-            
+
             GUILayout.Space(UI_DEFAULT_MARGIN * 2);
 
             #region 绘制场景物体
@@ -298,11 +310,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
                 GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
-            
+
             scroll = GUILayout.BeginScrollView(scroll);
             for (var index = 0; index < lodGroups.Count; ++index) {
                 UnityEditor.EditorGUILayout.ObjectField($"{index + 1}", lodGroups[index].gameObject, typeof(GameObject), true);
             }
+
             GUILayout.EndScrollView();
 
             #endregion
@@ -357,29 +370,31 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.LODBatchTool {
 
         private static void ReadConfigToWindow(LODBatchSet config) {
             lodCount = config.lodCount;
-            
+
             while (lodCount > lodValues.Count) {
                 lodValues.Add(0);
             }
+
             while (lodCount < lodValues.Count) {
                 lodValues.RemoveAt(0);
             }
+
             for (var index = 0; index < lodCount; index++) {
                 lodValues[index] = config.lodValues[index];
             }
         }
-        
-        private static void SetWindowToConfig(int i)
-        {
+
+        private static void SetWindowToConfig(int i) {
             configList[i].lodCount = lodCount;
-                            
+
             while (configList[i].lodValues.Count > lodCount) {
                 configList[i].lodValues.RemoveAt(0);
             }
+
             while (configList[i].lodValues.Count < lodCount) {
                 configList[i].lodValues.Add(0);
             }
-            
+
             for (var j = 0; j < configList[i].lodValues.Count; j++) {
                 configList[i].lodValues[j] = lodValues[j];
             }

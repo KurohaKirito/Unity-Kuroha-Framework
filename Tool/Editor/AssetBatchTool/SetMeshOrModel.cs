@@ -7,30 +7,24 @@ using Script.Effect.Editor.AssetTool.Util.Unity;
 using UnityEditor;
 using UnityEngine;
 
-namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
-{
-    public class SetMeshOrModel
-    {
-        private enum DetectType
-        {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
+    public class SetMeshOrModel {
+        private enum DetectType {
             Model,
             Prefab
         }
 
-        private enum FixMeshRWType
-        {
+        private enum FixMeshRWType {
             Mesh,
             Model
         }
 
-        private enum RWStatus
-        {
+        private enum RWStatus {
             开启读写,
             关闭读写
         }
 
-        private enum FixModelMaterialType
-        {
+        private enum FixModelMaterialType {
             关闭导入,
             开启导入并移除
         }
@@ -77,14 +71,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
         /// <summary>
         /// 绘制界面
         /// </summary>
-        public static async void OnGUI()
-        {
+        public static async void OnGUI() {
             GUILayout.Space(2 * UI_DEFAULT_MARGIN);
 
             foldout = EditorGUILayout.Foldout(foldout, AssetBatchToolGUI.batches[(int) AssetBatchToolGUI.BatchType.GunAttachmentsCloseCastShadows], true);
 
-            if (foldout)
-            {
+            if (foldout) {
                 GUILayout.Space(UI_DEFAULT_MARGIN);
                 {
                     GUILayout.BeginVertical("Box");
@@ -118,11 +110,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                     EditorGUILayout.LabelField("5. 点击按钮, 开始修复.");
                     GUILayout.BeginVertical("Box");
                     UnityEngine.GUI.enabled = string.IsNullOrEmpty(checkPath) == false;
-                    if (GUILayout.Button("Fix", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                    {
+                    if (GUILayout.Button("Fix", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                         Init();
-                        switch (fixMeshRwType)
-                        {
+                        switch (fixMeshRwType) {
                             case FixMeshRWType.Mesh:
                                 await FixMesh();
                                 break;
@@ -167,8 +157,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                     EditorGUILayout.LabelField("4. 点击按钮, 开始修复.");
                     GUILayout.BeginVertical("Box");
                     UnityEngine.GUI.enabled = string.IsNullOrEmpty(checkPath) == false;
-                    if (GUILayout.Button("Fix", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                    {
+                    if (GUILayout.Button("Fix", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                         Init();
                         RemoveMaterials();
                     }
@@ -206,8 +195,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                     EditorGUILayout.LabelField("5. 点击按钮, 开始检测.");
                     GUILayout.BeginVertical("Box");
                     UnityEngine.GUI.enabled = string.IsNullOrEmpty(checkPath) == false;
-                    if (GUILayout.Button("Detect", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH)))
-                    {
+                    if (GUILayout.Button("Detect", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
                         Init();
                         CheckTransform();
                     }
@@ -220,15 +208,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             }
         }
 
-        private static void Init()
-        {
-            if (string.IsNullOrEmpty(filter) == false)
-            {
+        private static void Init() {
+            if (string.IsNullOrEmpty(filter) == false) {
                 regex = new Regex(filter);
             }
 
-            switch (flagRW)
-            {
+            switch (flagRW) {
                 case RWStatus.开启读写:
                     rwSwitch = true;
                     break;
@@ -239,8 +224,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                     throw new ArgumentOutOfRangeException();
             }
 
-            switch (detectType)
-            {
+            switch (detectType) {
                 case DetectType.Model:
                     detectTypeString = "t:Model";
                     break;
@@ -252,41 +236,31 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             }
         }
 
-        private static List<ModelImporter> GetModelList(bool isRW)
-        {
+        private static List<ModelImporter> GetModelList(bool isRW) {
             var models = new List<ModelImporter>();
-            var guids = AssetDatabase.FindAssets("t:Model", new[]
-            {
+            var guids = AssetDatabase.FindAssets("t:Model", new[] {
                 checkPath
             });
 
             Debug.Log($"一共检测到 {guids.Length} 个 Model");
 
-            for (var index = 0; index < guids.Length; index++)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"查找 Model 中: {index + 1}/{guids.Length}", index + 1, guids.Length))
-                {
+            for (var index = 0; index < guids.Length; index++) {
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"查找 Model 中: {index + 1}/{guids.Length}", index + 1, guids.Length)) {
                     return models;
                 }
 
                 var path = AssetDatabase.GUIDToAssetPath(guids[index]);
-                if (string.IsNullOrEmpty(filter) == false && regex.Match(path).Success)
-                {
+                if (string.IsNullOrEmpty(filter) == false && regex.Match(path).Success) {
                     continue;
                 }
 
-                if (path.IndexOf(".fbx", StringComparison.OrdinalIgnoreCase) > 0)
-                {
-                    if (AssetImporter.GetAtPath(path) is ModelImporter modelImporter)
-                    {
-                        if (isRW)
-                        {
-                            if (modelImporter.isReadable != rwSwitch)
-                            {
+                if (path.IndexOf(".fbx", StringComparison.OrdinalIgnoreCase) > 0) {
+                    if (AssetImporter.GetAtPath(path) is ModelImporter modelImporter) {
+                        if (isRW) {
+                            if (modelImporter.isReadable != rwSwitch) {
                                 models.Add(modelImporter);
                             }
-                        } else
-                        {
+                        } else {
                             models.Add(modelImporter);
                         }
                     }
@@ -296,46 +270,35 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             return models;
         }
 
-        private static List<Mesh> GetMeshList(bool isRW)
-        {
+        private static List<Mesh> GetMeshList(bool isRW) {
             var meshes = new List<Mesh>();
-            var guids = AssetDatabase.FindAssets("t:Mesh", new[]
-            {
+            var guids = AssetDatabase.FindAssets("t:Mesh", new[] {
                 checkPath
             });
 
             Debug.Log($"一共检测到 {guids.Length} 个 Mesh");
 
-            for (var index = 0; index < guids.Length; index++)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"查找 Mesh 中: {index + 1}/{guids.Length}", index + 1, guids.Length))
-                {
+            for (var index = 0; index < guids.Length; index++) {
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"查找 Mesh 中: {index + 1}/{guids.Length}", index + 1, guids.Length)) {
                     return meshes;
                 }
 
                 var path = AssetDatabase.GUIDToAssetPath(guids[index]);
-                if (string.IsNullOrEmpty(filter) == false && regex.Match(path).Success)
-                {
+                if (string.IsNullOrEmpty(filter) == false && regex.Match(path).Success) {
                     continue;
                 }
 
-                if (path.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0 || path.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0)
-                {
-                    try
-                    {
+                if (path.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0 || path.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0) {
+                    try {
                         var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
-                        if (isRW)
-                        {
-                            if (mesh.isReadable != rwSwitch)
-                            {
+                        if (isRW) {
+                            if (mesh.isReadable != rwSwitch) {
                                 meshes.Add(mesh);
                             }
-                        } else
-                        {
+                        } else {
                             meshes.Add(mesh);
                         }
-                    } catch
-                    {
+                    } catch {
                         Debug.Log($"无法将资源读取为 Mesh, 请检查 Mesh 是否存在问题! {path}");
                     }
                 }
@@ -344,30 +307,24 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             return meshes;
         }
 
-        private static List<GameObject> GetGameObjectList()
-        {
+        private static List<GameObject> GetGameObjectList() {
             var gameObjects = new List<GameObject>();
-            var guids = AssetDatabase.FindAssets(detectTypeString, new[]
-            {
+            var guids = AssetDatabase.FindAssets(detectTypeString, new[] {
                 checkPath
             });
 
-            for (var index = 0; index < guids.Length; index++)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"查找物体中: {index + 1}/{guids.Length}", index + 1, guids.Length))
-                {
+            for (var index = 0; index < guids.Length; index++) {
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"查找物体中: {index + 1}/{guids.Length}", index + 1, guids.Length)) {
                     return gameObjects;
                 }
 
                 var path = AssetDatabase.GUIDToAssetPath(guids[index]);
-                if (string.IsNullOrEmpty(filter) == false && regex.Match(path).Success)
-                {
+                if (string.IsNullOrEmpty(filter) == false && regex.Match(path).Success) {
                     continue;
                 }
 
                 var gameObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (gameObject != null)
-                {
+                if (gameObject != null) {
                     gameObjects.Add(gameObject);
                 }
             }
@@ -375,15 +332,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             return gameObjects;
         }
 
-        private static void FixModel()
-        {
+        private static void FixModel() {
             var counter = 0;
             var models = GetModelList(true);
 
-            for (var index = 0; index < models.Count; index++)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Model 修复中: {index + 1}/{models.Count}", index + 1, models.Count))
-                {
+            for (var index = 0; index < models.Count; index++) {
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Model 修复中: {index + 1}/{models.Count}", index + 1, models.Count)) {
                     return;
                 }
 
@@ -396,15 +350,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             Debug.Log($"一共修复了 {counter} 个 Model");
         }
 
-        private static async Task FixMesh()
-        {
+        private static async Task FixMesh() {
             var counter = 0;
             var meshes = GetMeshList(true);
 
-            for (var index = 0; index < meshes.Count; index++)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Mesh 修复中: {index + 1}/{meshes.Count}", index + 1, meshes.Count))
-                {
+            for (var index = 0; index < meshes.Count; index++) {
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Mesh 修复中: {index + 1}/{meshes.Count}", index + 1, meshes.Count)) {
                     return;
                 }
 
@@ -417,23 +368,18 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             Debug.Log($"一共修复了 {counter} 个 Mesh");
         }
 
-        private static void RemoveMaterials()
-        {
+        private static void RemoveMaterials() {
             var counter = 0;
             var models = GetModelList(false);
 
-            for (var index = 0; index < models.Count; index++)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Model 材质球导入设置中: {index + 1}/{models.Count}", index + 1, models.Count))
-                {
+            for (var index = 0; index < models.Count; index++) {
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Model 材质球导入设置中: {index + 1}/{models.Count}", index + 1, models.Count)) {
                     return;
                 }
 
-                switch (fixModelMaterialType)
-                {
+                switch (fixModelMaterialType) {
                     case FixModelMaterialType.关闭导入:
-                        if (models[index].materialImportMode != ModelImporterMaterialImportMode.None)
-                        {
+                        if (models[index].materialImportMode != ModelImporterMaterialImportMode.None) {
                             models[index].materialImportMode = ModelImporterMaterialImportMode.None;
                             models[index].SaveAndReimport();
                         }
@@ -441,8 +387,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
                         break;
 
                     case FixModelMaterialType.开启导入并移除:
-                        if (models[index].materialImportMode != ModelImporterMaterialImportMode.ImportStandard)
-                        {
+                        if (models[index].materialImportMode != ModelImporterMaterialImportMode.ImportStandard) {
                             // 开启材质导入, 提取出模型的内嵌材质到 Materials 文件夹
                             models[index].materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
                             models[index].SaveAndReimport();
@@ -471,21 +416,17 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool
             Debug.Log($"一共修复了 {counter} 个 Model");
         }
 
-        private static void CheckTransform()
-        {
+        private static void CheckTransform() {
             var texts = new List<string>();
             var gameObjects = GetGameObjectList();
 
-            for (var index = 0; index < gameObjects.Count; index++)
-            {
-                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Model 材质球导入设置中: {index + 1}/{gameObjects.Count}", index + 1, gameObjects.Count))
-                {
+            for (var index = 0; index < gameObjects.Count; index++) {
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Model 材质球导入设置中: {index + 1}/{gameObjects.Count}", index + 1, gameObjects.Count)) {
                     return;
                 }
 
                 var transform = gameObjects[index].transform;
-                if (transform.localPosition != Vector3.zero || transform.localRotation != Quaternion.identity || transform.localScale != Vector3.one)
-                {
+                if (transform.localPosition != Vector3.zero || transform.localRotation != Quaternion.identity || transform.localScale != Vector3.one) {
                     texts.Add(AssetDatabase.GetAssetPath(gameObjects[index]));
                     Debug.LogError($"模型位置不符合规范: {gameObjects[index].name} ", gameObjects[index]);
                 }

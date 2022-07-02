@@ -19,19 +19,13 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
         /// <summary>
         /// 设置纹理设置
         /// </summary>
-        public static bool SetTextureImportSettings(string assetPath, string platformName, int size, TextureImporterFormat rgba, TextureImporterFormat rgb)
-        {
+        public static bool SetTextureImportSettings(string assetPath, string platformName, int size, TextureImporterFormat rgba, TextureImporterFormat rgb) {
             var textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
-            if (textureImporter != null)
-            {
-                var setting = new TextureImporterPlatformSettings
-                {
-                    name = platformName,
-                    overridden = true,
-                    maxTextureSize = size,
-                    format = textureImporter.DoesSourceTextureHaveAlpha() ? rgba : rgb
+            if (textureImporter != null) {
+                var setting = new TextureImporterPlatformSettings {
+                    name = platformName, overridden = true, maxTextureSize = size, format = textureImporter.DoesSourceTextureHaveAlpha()? rgba : rgb
                 };
-                
+
                 textureImporter.SetPlatformTextureSettings(setting);
                 AssetDatabase.ImportAsset(assetPath);
                 return true;
@@ -120,7 +114,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Editor {
 
             // 筛选是否是场景物体
             Selection.objects = objects.ToArray();
-            var resultTransforms = Selection.GetTransforms((int)SelectionMode.Editable + SelectionMode.ExcludePrefab);
+            var resultTransforms = Selection.GetTransforms((int) SelectionMode.Editable + SelectionMode.ExcludePrefab);
 
             // 还原 Selection.objects
             Selection.objects = previousSelection;

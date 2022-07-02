@@ -27,11 +27,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         /// <summary>
         /// Constructor
         /// </summary>
-        public CustomTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, List<T> dataList, 
-            CustomTableDelegate.FilterMethod<T> methodFilter, CustomTableDelegate.AfterFilterMethod<T> methodAfterFilter,
-            CustomTableDelegate.ExportMethod<T> methodExport, CustomTableDelegate.SelectMethod<T> methodSelect,
-            CustomTableDelegate.DistinctMethod<T> methodDistinct) : base(state, multiColumnHeader)
-        {
+        public CustomTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, List<T> dataList, CustomTableDelegate.FilterMethod<T> methodFilter, CustomTableDelegate.AfterFilterMethod<T> methodAfterFilter, CustomTableDelegate.ExportMethod<T> methodExport, CustomTableDelegate.SelectMethod<T> methodSelect, CustomTableDelegate.DistinctMethod<T> methodDistinct) : base(state, multiColumnHeader) {
             this.dataList = dataList;
 
             MethodFilter = methodFilter;
@@ -93,7 +89,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
                 MethodDistinct(dataListToShow);
             }
         }
-        
+
         private void FilterGUI(Rect rect, string[] displayedOptions) {
             const float FILTER_TYPE_WIDTH = 80;
             const float FILTER_TYPE_OFFSET = 1;
@@ -113,7 +109,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             rect.x += rect.width;
             rect.width = FILTER_NONE_BUTTON_WIDTH;
             var isEmpty = string.IsNullOrEmpty(filterText);
-            var buttonStyle = isEmpty ? CustomTableStyles.searchFieldCancelButtonEmpty : CustomTableStyles.searchFieldCancelButton;
+            var buttonStyle = isEmpty? CustomTableStyles.searchFieldCancelButtonEmpty : CustomTableStyles.searchFieldCancelButton;
             if (UnityEngine.GUI.Button(rect, GUIContent.none, buttonStyle) && isEmpty == false) {
                 filterText = string.Empty;
                 GUIUtility.keyboardControl = 0;
@@ -122,18 +118,18 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
 
         private void CellGUI(Rect cellRect, T item, int columnIndex) {
             CenterRectUsingSingleLineHeight(ref cellRect);
-            var column = (CustomTableColumn<T>)multiColumnHeader.GetColumn(columnIndex);
+            var column = (CustomTableColumn<T>) multiColumnHeader.GetColumn(columnIndex);
             column.DrawCell?.Invoke(cellRect, item);
         }
 
         #region private function
 
-        private List<T> Filter(IEnumerable<T> rows)
-        {
+        private List<T> Filter(IEnumerable<T> rows) {
             var isHadColumnsShowing = multiColumnHeader.state.visibleColumns.Any(visible => visible == 0);
             if (isHadColumnsShowing && MethodFilter != null) {
                 rows = rows.Where(item => MethodFilter(filterMask, item, filterText));
             }
+
             isReBuildRows = true;
             return rows.ToList();
         }
@@ -145,8 +141,8 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             var sortType = multiColumnHeader.IsSortedAscending(sortColumnIndex);
 
             // 获取排序
-            var compare = ((CustomTableColumn<T>)multiColumnHeader.state.columns[sortColumnIndex]).Compare;
-            var list = (List<TreeViewItem>)rows;
+            var compare = ((CustomTableColumn<T>) multiColumnHeader.state.columns[sortColumnIndex]).Compare;
+            var list = (List<TreeViewItem>) rows;
             if (compare == null) {
                 return;
             }
@@ -160,15 +156,15 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
 
             // 升序排序
             int ComparisonAsc(TreeViewItem rowA, TreeViewItem rowB) {
-                var itemA = (CustomTreeViewItem<T>)rowA;
-                var itemB = (CustomTreeViewItem<T>)rowB;
+                var itemA = (CustomTreeViewItem<T>) rowA;
+                var itemB = (CustomTreeViewItem<T>) rowB;
                 return compare(itemA.Data, itemB.Data, true);
             }
 
             // 降序排序
             int ComparisonDesc(TreeViewItem rowA, TreeViewItem rowB) {
-                var itemA = (CustomTreeViewItem<T>)rowA;
-                var itemB = (CustomTreeViewItem<T>)rowB;
+                var itemA = (CustomTreeViewItem<T>) rowA;
+                var itemB = (CustomTreeViewItem<T>) rowB;
                 return -compare(itemA.Data, itemB.Data, false);
             }
         }
@@ -178,7 +174,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
         #region override
 
         protected override void RowGUI(RowGUIArgs args) {
-            var item = (CustomTreeViewItem<T>)args.item;
+            var item = (CustomTreeViewItem<T>) args.item;
             for (var i = 0; i < args.GetNumVisibleColumns(); i++) {
                 CellGUI(args.GetCellRect(i), item.Data, args.GetColumn(i));
             }
@@ -192,7 +188,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
             if (dataListToShow == null) {
                 dataListToShow = new List<T>();
             }
-            
+
             if (string.IsNullOrEmpty(filterText)) {
                 if (dataListToShow.Count != dataList.Count) {
                     dataListToShow = dataList;
@@ -213,6 +209,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor.Table {
                     var data = dataListToShow[i];
                     allRow.Add(new CustomTreeViewItem<T>(i, 0, data));
                 }
+
                 isReBuildRows = false;
             }
 
