@@ -231,6 +231,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 foreach (var renderer in renderers) {
                     renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
                     renderer.lightProbeUsage = LightProbeUsage.Off;
+                    renderer.allowOcclusionWhenDynamic = false;
                 }
 
                 EditorUtility.SetDirty(sceneObject);
@@ -387,16 +388,16 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                PrefabCloseProbe(obj);
-                PrefabSetLOD(obj);
-                PrefabOpenShadow(obj);
+                PrefabCloseProbeOcclusion(obj);
+                //PrefabSetLOD(obj);
+                //PrefabOpenShadow(obj);
 
                 EditorUtility.SetDirty(obj);
                 AssetDatabase.SaveAssets();
             }
         }
 
-        private void PrefabCloseProbe(GameObject obj) {
+        private void PrefabCloseProbeOcclusion(GameObject obj) {
             var renderers = obj.GetComponentsInChildren<Renderer>();
             foreach (var renderer in renderers) {
                 renderer.lightProbeUsage = LightProbeUsage.Off;
