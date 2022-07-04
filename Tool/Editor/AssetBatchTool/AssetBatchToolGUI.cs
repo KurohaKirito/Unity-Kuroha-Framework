@@ -10,6 +10,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
         /// 批处理工具类型
         /// </summary>
         public enum BatchType {
+            DeleteEmptyFolder,
             SetMeshOrModel,
             SetTextureImportSettings,
             RedundantTextureReferencesCleaner,
@@ -23,13 +24,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             CheckSubEmitterInAllScene,
             FbxUVColorsChecker,
             AnimationClipCompress,
-            AutoCheckTool = 13
+            AutoCheckTool = 14
         }
 
         /// <summary>
         /// 批处理工具类型
         /// </summary>
         public static readonly string[] batches = {
+            "空文件夹删除工具",
             "批量设置网格及模型属性工具",
             "批量修改纹理导入设置工具",
             "材质球冗余纹理引用清除器",
@@ -180,6 +182,10 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
                     case BatchType.SetMeshOrModel:
                         SetMeshOrModel.OnGUI();
+                        break;
+
+                    case BatchType.DeleteEmptyFolder:
+                        DeleteEmptyFolder.OnGUI();
                         break;
                     
                     default:

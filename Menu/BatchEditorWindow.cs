@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Script.Effect.Editor.AssetTool.Util.Editor;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
@@ -375,10 +374,6 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     }
                 }
             }
-
-            if (GUILayout.Button("空文件夹")) {
-                EmptyFolder();
-            }
         }
 
         private void ModifyPrefab() {
@@ -468,42 +463,6 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     DebugUtil.LogError($"Missing Prefab: {obj}", obj, "yellow");
                 }
             }
-        }
-
-        private void EmptyFolder() {
-            counter = 0;
-            
-            // 创建根目录
-            var dirList = new List<DirectoryInfo>();
-            var tempDir = new DirectoryInfo(selectFullPath);
-            dirList.Add(tempDir);
-            
-            // 根据选择的目录构建目录链表
-            for (var index = 0; index < dirList.Count; index++) {
-                var tempDirs = dirList[index].GetDirectories();
-                dirList.AddRange(tempDirs);
-            }
-            
-            // ShowNotification(new GUIContent(new GUIContent($"当前有 {dirList.Count} 个目录")), 3);
-            
-            // 倒序遍历全部的目录, 单个目录如果是空的, 则可以删除
-            for (var index = dirList.Count - 1; index >= 0; index--) {
-                if (dirList[index].FullName.Contains(".git") || dirList[index].FullName.Contains("AutoCreat\\Temporary") || dirList[index].FullName.Contains("Assets\\Packages")) {
-                    continue;
-                }
-                var dirCount = dirList[index].GetDirectories().Length;
-                var files = dirList[index].GetFiles("*.*", SearchOption.TopDirectoryOnly);
-                var metaCount = files.Count(f => f.Name.EndsWith(".meta"));
-                var fileCount = files.Count(f => f.Name.EndsWith(".meta") == false);
-                if (dirCount == 0 && fileCount == 0 && metaCount == 0) {
-                    DebugUtil.Log($"目录 {dirList[index].FullName} 是空的!", null, "yellow");
-                    AssetDatabase.DeleteAsset(PathUtil.GetAssetPath(dirList[index].FullName));
-                    counter++;
-                }
-            }
-            
-            DebugUtil.Log($"一共检测了 {dirList.Count} 个目录!", null, "blue");
-            DebugUtil.Log($"一共移除了 {counter} 个空目录!", null, "green");
         }
     }
 }
