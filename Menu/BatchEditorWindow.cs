@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Script.Effect.Editor.AssetTool.Util.Editor;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
@@ -11,7 +12,7 @@ using UnityEngine.Rendering;
 
 namespace Script.Effect.Editor.AssetTool.Menu {
     public class BatchEditorWindow : EditorWindow {
-        private string filePath;
+        private string selectFullPath;
         private int layerIndex;
         private ModelImporterMeshCompression compress;
         private int counter;
@@ -63,15 +64,15 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             Debug.Log($"设置个数: {counter}");
 
             if (GUILayout.Button("选择路径")) {
-                filePath = EditorUtility.OpenFolderPanel("Select Folder", filePath, "");
+                selectFullPath = EditorUtility.OpenFolderPanel("Select Folder", selectFullPath, "");
             }
 
             layerIndex = EditorGUILayout.Popup("选择 Layer", layerIndex, UnityEditorInternal.InternalEditorUtility.layers);
 
             if (GUILayout.Button("设置层级")) {
-                if (string.IsNullOrEmpty(filePath) == false) {
-                    var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
-                    var assetPath = filePath.Substring(assetsIndex);
+                if (string.IsNullOrEmpty(selectFullPath) == false) {
+                    var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                    var assetPath = selectFullPath.Substring(assetsIndex);
                     var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                         assetPath
                     });
@@ -95,7 +96,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             }
 
             if (GUILayout.Button("生成全部预制体")) {
-                var assetPath = PathUtil.GetAssetPath(filePath);
+                var assetPath = PathUtil.GetAssetPath(selectFullPath);
                 var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                     assetPath
                 });
@@ -123,8 +124,8 @@ namespace Script.Effect.Editor.AssetTool.Menu {
 
             if (GUILayout.Button("设置压缩等级")) {
                 counter = 0;
-                var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
-                var assetPath = filePath.Substring(assetsIndex);
+                var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                var assetPath = selectFullPath.Substring(assetsIndex);
                 var guids = AssetDatabase.FindAssets("t:mesh", new[] {
                     assetPath
                 });
@@ -143,11 +144,11 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             }
 
             if (GUILayout.Button("Select File")) {
-                filePath = EditorUtility.OpenFilePanel("Select File", filePath, "");
+                selectFullPath = EditorUtility.OpenFilePanel("Select File", selectFullPath, "");
             }
 
             if (GUILayout.Button("Material")) {
-                var toSets = System.IO.File.ReadAllLines(filePath);
+                var toSets = System.IO.File.ReadAllLines(selectFullPath);
 
                 foreach (var set in toSets) {
                     var modelImporter = AssetImporter.GetAtPath(set) as ModelImporter;
@@ -160,8 +161,8 @@ namespace Script.Effect.Editor.AssetTool.Menu {
 
             if (GUILayout.Button("设置 Mesh")) {
                 counter = 0;
-                var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
-                var assetPath = filePath.Substring(assetsIndex);
+                var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                var assetPath = selectFullPath.Substring(assetsIndex);
                 var guids = AssetDatabase.FindAssets("t:mesh", new[] {
                     assetPath
                 });
@@ -178,8 +179,8 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             }
 
             if (GUILayout.Button("动画表情")) {
-                var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
-                var assetPath = filePath.Substring(assetsIndex);
+                var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                var assetPath = selectFullPath.Substring(assetsIndex);
                 var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                     assetPath
                 });
@@ -290,8 +291,8 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             }
 
             if (GUILayout.Button("检查预制体 Missing")) {
-                var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
-                var assetPath = filePath.Substring(assetsIndex);
+                var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                var assetPath = selectFullPath.Substring(assetsIndex);
                 var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                     assetPath
                 });
@@ -300,7 +301,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
                     var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                    预制体Missing(obj);
+                    PrefabMissing(obj);
                 }
             }
 
@@ -374,11 +375,15 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     }
                 }
             }
+
+            if (GUILayout.Button("空文件夹")) {
+                EmptyFolder();
+            }
         }
 
         private void ModifyPrefab() {
-            var assetsIndex = filePath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
-            var assetPath = filePath.Substring(assetsIndex);
+            var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+            var assetPath = selectFullPath.Substring(assetsIndex);
             var guids = AssetDatabase.FindAssets("t:Prefab", new[] {
                 assetPath
             });
@@ -387,16 +392,16 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                预制体关闭全部探针和动态遮挡剔除(obj);
-                预制体批量设置LOD(obj);
-                预制体仅LOD0开启阴影(obj);
+                PrefabCloseProbe(obj);
+                PrefabSetLOD(obj);
+                PrefabOpenShadow(obj);
 
                 EditorUtility.SetDirty(obj);
                 AssetDatabase.SaveAssets();
             }
         }
 
-        private void 预制体关闭全部探针和动态遮挡剔除(GameObject obj) {
+        private void PrefabCloseProbe(GameObject obj) {
             var renderers = obj.GetComponentsInChildren<Renderer>();
             foreach (var renderer in renderers) {
                 renderer.lightProbeUsage = LightProbeUsage.Off;
@@ -405,7 +410,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             }
         }
 
-        private void 预制体批量设置LOD(GameObject obj) {
+        private void PrefabSetLOD(GameObject obj) {
             var lodGroups = obj.GetComponentsInChildren<LODGroup>();
             foreach (var lodGroup in lodGroups) {
                 var lods = lodGroup.GetLODs();
@@ -430,7 +435,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             }
         }
 
-        private void 预制体仅LOD0开启阴影(GameObject obj) {
+        private void PrefabOpenShadow(GameObject obj) {
             var lodGroups = obj.GetComponentsInChildren<LODGroup>();
             foreach (var lodGroup in lodGroups) {
                 var lods = lodGroup.GetLODs();
@@ -456,13 +461,49 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             }
         }
 
-        private void 预制体Missing(GameObject obj) {
+        private void PrefabMissing(GameObject obj) {
             var children = obj.GetComponentsInChildren<Transform>();
             foreach (var child in children) {
                 if (child.name.IndexOf("Missing Prefab", StringComparison.OrdinalIgnoreCase) >= 0) {
                     DebugUtil.LogError($"Missing Prefab: {obj}", obj, "yellow");
                 }
             }
+        }
+
+        private void EmptyFolder() {
+            counter = 0;
+            
+            // 创建根目录
+            var dirList = new List<DirectoryInfo>();
+            var tempDir = new DirectoryInfo(selectFullPath);
+            dirList.Add(tempDir);
+            
+            // 根据选择的目录构建目录链表
+            for (var index = 0; index < dirList.Count; index++) {
+                var tempDirs = dirList[index].GetDirectories();
+                dirList.AddRange(tempDirs);
+            }
+            
+            // ShowNotification(new GUIContent(new GUIContent($"当前有 {dirList.Count} 个目录")), 3);
+            
+            // 倒序遍历全部的目录, 单个目录如果是空的, 则可以删除
+            for (var index = dirList.Count - 1; index >= 0; index--) {
+                if (dirList[index].FullName.Contains(".git") || dirList[index].FullName.Contains("AutoCreat\\Temporary") || dirList[index].FullName.Contains("Assets\\Packages")) {
+                    continue;
+                }
+                var dirCount = dirList[index].GetDirectories().Length;
+                var files = dirList[index].GetFiles("*.*", SearchOption.TopDirectoryOnly);
+                var metaCount = files.Count(f => f.Name.EndsWith(".meta"));
+                var fileCount = files.Count(f => f.Name.EndsWith(".meta") == false);
+                if (dirCount == 0 && fileCount == 0 && metaCount == 0) {
+                    DebugUtil.Log($"目录 {dirList[index].FullName} 是空的!", null, "yellow");
+                    AssetDatabase.DeleteAsset(PathUtil.GetAssetPath(dirList[index].FullName));
+                    counter++;
+                }
+            }
+            
+            DebugUtil.Log($"一共检测了 {dirList.Count} 个目录!", null, "blue");
+            DebugUtil.Log($"一共移除了 {counter} 个空目录!", null, "green");
         }
     }
 }
