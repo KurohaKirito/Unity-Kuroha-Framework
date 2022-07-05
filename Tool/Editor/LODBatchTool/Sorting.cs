@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using Script.Effect.Editor.AssetTool.Util.RunTime;
 using String = Script.Effect.Editor.AssetTool.Util.RunTime.StringUtil;
 
 public class Sorting : EditorWindow {
@@ -54,5 +55,18 @@ public class Sorting : EditorWindow {
 
     private static int GetLowestIndex(IEnumerable<Transform> transforms) {
         return transforms.Select(transform => transform.GetSiblingIndex()).Prepend(9999).Min();
+    }
+
+    [MenuItem("GameObject/Scene Tool/选中物体数量 %'", false, 17)]
+    private static void PrintSelectedGameObject() {
+        if (Selection.transforms != null) {
+            var color = EditorGUIUtility.isProSkin ? "yellow" : "green";
+            DebugUtil.Log($"当前选中 顶层物体 数量: {Selection.transforms.Length}", null, color);
+        }
+        
+        if (Selection.gameObjects != null) {
+            var color = EditorGUIUtility.isProSkin ? "yellow" : "green";
+            DebugUtil.Log($"当前选中 全部物体 数量: {Selection.gameObjects.Length}", null, color);
+        }
     }
 }

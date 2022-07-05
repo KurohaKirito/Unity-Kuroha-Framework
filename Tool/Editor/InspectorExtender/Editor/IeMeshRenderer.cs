@@ -120,7 +120,7 @@ namespace Kuroha.Tool.InspectorExtender.Editor {
         }
 
         private async Task SetMeshReadable() {
-            await selfMesh.SetReadable(rwEnable);
+            await selfMesh.SetReadableAsync(rwEnable);
             AssetDatabase.Refresh();
             UpdateTarget();
         }

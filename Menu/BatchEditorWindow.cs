@@ -171,7 +171,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
                     var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
 
-                    await mesh.SetReadable(false);
+                    await mesh.SetReadableAsync(false);
                     AssetDatabase.Refresh();
                     counter++;
                 }
@@ -389,7 +389,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
                 PrefabCloseProbeOcclusion(obj);
-                //PrefabSetLOD(obj);
+                PrefabSetLOD(obj);
                 //PrefabOpenShadow(obj);
 
                 EditorUtility.SetDirty(obj);
@@ -411,21 +411,23 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             foreach (var lodGroup in lodGroups) {
                 var lods = lodGroup.GetLODs();
                 if (lods.Length == 4) {
-                    lods[0].screenRelativeTransitionHeight = 0.4f;
-                    lods[1].screenRelativeTransitionHeight = 0.3f;
-                    lods[2].screenRelativeTransitionHeight = 0.05f;
-                    lods[3].screenRelativeTransitionHeight = 0.02f;
-                    lodGroup.SetLODs(lods);
-                } else if (lods.Length == 3) {
-                    lods[0].screenRelativeTransitionHeight = 0.3f;
+                    lods[0].screenRelativeTransitionHeight = 0.35f;
                     lods[1].screenRelativeTransitionHeight = 0.05f;
                     lods[2].screenRelativeTransitionHeight = 0.02f;
+                    lods[3].screenRelativeTransitionHeight = 0.01f;
                     lodGroup.SetLODs(lods);
-                } else if (lods.Length == 2) {
-                    lods[0].screenRelativeTransitionHeight = 0.2f;
-                    lods[1].screenRelativeTransitionHeight = 0.02f;
-                    lodGroup.SetLODs(lods);
-                } else {
+                }
+                // else if (lods.Length == 3) {
+                //     lods[0].screenRelativeTransitionHeight = 0.3f;
+                //     lods[1].screenRelativeTransitionHeight = 0.05f;
+                //     lods[2].screenRelativeTransitionHeight = 0.02f;
+                //     lodGroup.SetLODs(lods);
+                // } else if (lods.Length == 2) {
+                //     lods[0].screenRelativeTransitionHeight = 0.2f;
+                //     lods[1].screenRelativeTransitionHeight = 0.02f;
+                //     lodGroup.SetLODs(lods);
+                //}
+                else if (lods.Length != 1) {
                     Debug.Log($"{obj.name} 预制体中的 LODGroup 仅有 {lods.Length} 层!", obj);
                 }
             }

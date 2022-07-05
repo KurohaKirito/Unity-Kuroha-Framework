@@ -16,7 +16,7 @@ namespace Script.Effect.Editor.AssetTool.Util.Unity {
             return (component = source.GetComponent<T>()) != null;
         }
 
-        public static async Task SetReadable(this Mesh mesh, bool readable) {
+        public static async Task SetReadableAsync(this Mesh mesh, bool readable) {
             string meshData;
             var meshPath = AssetDatabase.GetAssetPath(mesh);
             var meshFullPath = Path.GetFullPath(meshPath);
@@ -29,6 +29,22 @@ namespace Script.Effect.Editor.AssetTool.Util.Unity {
 
             using (var writer = new StreamWriter(meshFullPath)) {
                 await writer.WriteAsync(meshData);
+            }
+        }
+        
+        public static void SetReadable(this Mesh mesh, bool readable) {
+            string meshData;
+            var meshPath = AssetDatabase.GetAssetPath(mesh);
+            var meshFullPath = Path.GetFullPath(meshPath);
+
+            using (var reader = new StreamReader(meshFullPath)) {
+                meshData = reader.ReadToEnd();
+                var readWriteString = "m_IsReadable: " + (readable? 1 : 0);
+                meshData = regexReadWrite.Replace(meshData, readWriteString);
+            }
+
+            using (var writer = new StreamWriter(meshFullPath)) {
+                writer.Write(meshData);
             }
         }
 

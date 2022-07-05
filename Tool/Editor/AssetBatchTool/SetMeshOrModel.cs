@@ -115,6 +115,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                         switch (fixMeshRwType) {
                             case FixMeshRWType.Mesh:
                                 await FixMesh();
+                                OptimizeMesh();
                                 break;
                             case FixMeshRWType.Model:
                                 FixModel();
@@ -236,7 +237,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             }
         }
 
-        private static List<ModelImporter> GetModelList(bool isRW) {
+        private static List<ModelImporter> GetModelList(bool isFilterOfRW) {
             var models = new List<ModelImporter>();
             var guids = AssetDatabase.FindAssets("t:Model", new[] {
                 checkPath
@@ -256,7 +257,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
 
                 if (path.IndexOf(".fbx", StringComparison.OrdinalIgnoreCase) > 0) {
                     if (AssetImporter.GetAtPath(path) is ModelImporter modelImporter) {
-                        if (isRW) {
+                        if (isFilterOfRW) {
                             if (modelImporter.isReadable != rwSwitch) {
                                 models.Add(modelImporter);
                             }
@@ -270,7 +271,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
             return models;
         }
 
-        private static List<Mesh> GetMeshList(bool isRW) {
+        private static List<Mesh> GetMeshList(bool isFilterOfRW) {
             var meshes = new List<Mesh>();
             var guids = AssetDatabase.FindAssets("t:Mesh", new[] {
                 checkPath
@@ -291,7 +292,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                 if (path.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0 || path.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0) {
                     try {
                         var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
-                        if (isRW) {
+                        if (isFilterOfRW) {
                             if (mesh.isReadable != rwSwitch) {
                                 meshes.Add(mesh);
                             }
@@ -358,14 +359,30 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                 if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Mesh 修复中: {index + 1}/{meshes.Count}", index + 1, meshes.Count)) {
                     return;
                 }
-
-                await meshes[index].SetReadable(rwSwitch);
-                AssetDatabase.Refresh();
+                await meshes[index].SetReadableAsync(rwSwitch);
                 counter++;
             }
 
             AssetDatabase.Refresh();
             Debug.Log($"一共修复了 {counter} 个 Mesh");
+        }
+
+        private static void OptimizeMesh() {
+            var counter = 0;
+            var meshes = GetMeshList(false);
+
+            for (var index = 0; index < meshes.Count; index++) {
+                if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Mesh 优化中: {index + 1}/{meshes.Count}", index + 1, meshes.Count)) {
+                    return;
+                }
+                meshes[index].Optimize();
+                EditorUtility.SetDirty(meshes[index]);
+                counter++;
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log($"一共优化了 {counter} 个 Mesh");
         }
 
         private static void RemoveMaterials() {

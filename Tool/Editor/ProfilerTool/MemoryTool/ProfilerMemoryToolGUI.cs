@@ -98,7 +98,6 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.MemoryTool {
                     GUILayout.BeginHorizontal("Box");
                     {
                         if (GUILayout.Button("Take Sample", GUILayout.Height(UI_BUTTON_HEIGHT), GUILayout.Width(UI_BUTTON_WIDTH))) {
-                            // 刷新数据
                             ProfilerWindow.RefreshMemoryData();
                         }
                     }
