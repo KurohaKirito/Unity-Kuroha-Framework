@@ -310,21 +310,30 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 var memoryLong = TextureUtil.GetTextureStorageMemorySize(asset);
 
                 // 获取压缩格式
-                textureImporter.GetPlatformTextureSettings("Android", out _, out var androidFormat);
-                textureImporter.GetPlatformTextureSettings("iPhone", out _, out var iOSFormat);
-                textureImporter.GetPlatformTextureSettings("Standalone", out _, out var pcFormat);
+                textureImporter.GetPlatformTextureSettings("Android", out var androidSize, out var androidFormat);
+                textureImporter.GetPlatformTextureSettings("iPhone", out var iOSSize, out var iOSFormat);
+                textureImporter.GetPlatformTextureSettings("Standalone", out var pcSize, out var pcFormat);
 
                 // 汇总数据
                 dataList.Add(new TextureAnalysisData {
                     id = counter,
                     width = asset.width,
                     height = asset.height,
-                    mipMaps = textureImporter.mipmapEnabled,
+                    
                     readable = textureImporter.isReadable,
+                    mipMaps = textureImporter.mipmapEnabled,
                     streaming = textureImporter.streamingMipmaps,
+                    
                     androidFormat = androidFormat,
                     iOSFormat = iOSFormat,
                     pcFormat = pcFormat,
+                    androidFormatSize = androidSize,
+                    iOSFormatSize = iOSSize,
+                    pcFormatSize = pcSize,
+                    
+                    hadAlpha = textureImporter.DoesSourceTextureHaveAlpha(),
+                    importAlpha = textureImporter.alphaSource,
+                    
                     memory = memoryLong / 1024f,
                     isSolid = isSolid,
                     textureName = asset.name,
@@ -359,9 +368,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Asset"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 600,
-                    minWidth = 240,
-                    maxWidth = 1000,
+                    width = 240,
+                    minWidth = 600,
+                    maxWidth = 1200,
                     allowToggleVisibility = false,
                     autoResize = false,
                     canSort = true,
@@ -487,11 +496,43 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     }
                 },
                 new CustomTableColumn<TextureAnalysisData> {
+                    headerContent = new GUIContent("Had Alpha"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 80,
+                    minWidth = 80,
+                    maxWidth = 80,
+                    allowToggleVisibility = false,
+                    autoResize = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.hadAlpha.CompareTo(dataB.hadAlpha),
+                    DrawCell = (cellRect, data) => {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.hadAlpha.ToString());
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData> {
+                    headerContent = new GUIContent("Alpha Source"),
+                    headerTextAlignment = TextAlignment.Center,
+                    width = 100,
+                    minWidth = 100,
+                    maxWidth = 100,
+                    allowToggleVisibility = false,
+                    autoResize = true,
+                    canSort = true,
+                    Compare = (dataA, dataB, sortType) => dataA.importAlpha.CompareTo(dataB.importAlpha),
+                    DrawCell = (cellRect, data) => {
+                        cellRect.height += 5f;
+                        cellRect.xMin += 3f;
+                        EditorGUI.LabelField(cellRect, data.importAlpha.ToString());
+                    }
+                },
+                new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Format : Android"),
                     headerTextAlignment = TextAlignment.Center,
                     width = 175,
                     minWidth = 175,
-                    maxWidth = 200,
+                    maxWidth = 240,
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
@@ -513,7 +554,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         }
 
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent(iconName));
-                        EditorGUI.LabelField(cellRect, data.androidFormat.ToString());
+                        EditorGUI.LabelField(cellRect, $"{data.androidFormatSize, 4} | {data.androidFormat.ToString()}");
                     }
                 },
                 new CustomTableColumn<TextureAnalysisData> {
@@ -521,7 +562,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     headerTextAlignment = TextAlignment.Center,
                     width = 175,
                     minWidth = 175,
-                    maxWidth = 200,
+                    maxWidth = 240,
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
@@ -543,7 +584,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         }
 
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent(iconName));
-                        EditorGUI.LabelField(cellRect, data.iOSFormat.ToString());
+                        EditorGUI.LabelField(cellRect, $"{data.iOSFormatSize, 4} | {data.iOSFormat.ToString()}");
                     }
                 },
                 new CustomTableColumn<TextureAnalysisData> {
@@ -551,7 +592,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     headerTextAlignment = TextAlignment.Center,
                     width = 175,
                     minWidth = 175,
-                    maxWidth = 200,
+                    maxWidth = 240,
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
@@ -571,7 +612,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                         }
 
                         EditorGUI.LabelField(iconRect, EditorGUIUtility.IconContent(iconName));
-                        EditorGUI.LabelField(cellRect, data.pcFormat.ToString());
+                        EditorGUI.LabelField(cellRect, $"{data.pcFormatSize, 4} | {data.pcFormat.ToString()}");
                     }
                 },
                 new CustomTableColumn<TextureAnalysisData> {
@@ -695,78 +736,51 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
             var isMatched = false;
             var maskChars = Convert.ToString(mask, 2).Reverse().ToArray();
 
-            if (ColumnFilter1() || ColumnFilter2() || ColumnFilter3() || ColumnFilter4() || ColumnFilter5() || ColumnFilter6()) {
+            if (FilterString(0, data.id.ToString()) ||
+                FilterString(1, data.textureName) ||
+                FilterInt(2, data.width) ||
+                FilterInt(3, data.height) ||
+                FilterBool(4, data.readable) ||
+                FilterBool(5, data.mipMaps) ||
+                FilterBool(6, data.streaming) ||
+                FilterBool(7, data.hadAlpha) ||
+                FilterString(8, data.importAlpha.ToString()) ||
+                FilterInt(12, (int)data.memory) ||
+                FilterBool(13, data.isSolid)) {
                 isMatched = true;
             }
 
             #region Local Function
 
-            bool ColumnFilter1() {
-                if (maskChars.Length < 1 || maskChars[0] != '1') {
+            bool FilterString(int index, string str) {
+                if (maskChars.Length < index + 1 || maskChars[index] != '1') {
                     return false;
                 }
-
-                return data.id.ToString().ToLower().Contains(filterText.ToLower());
+                
+                return str.ToLower().Contains(filterText.ToLower());
             }
-
-            bool ColumnFilter2() {
-                if (maskChars.Length < 2 || maskChars[1] != '1') {
+            
+            bool FilterInt(int index, int num) {
+                if (maskChars.Length < index + 1 || maskChars[index] != '1') {
                     return false;
                 }
-
-                return data.textureName.ToLower().Contains(filterText.ToLower());
-            }
-
-            bool ColumnFilter3() {
-                if (maskChars.Length < 3 || maskChars[2] != '1') {
-                    return false;
-                }
-
-                if (int.TryParse(filterText, out var verts)) {
-                    if (data.width > verts) {
+                
+                if (int.TryParse(filterText, out var filterNum)) {
+                    if (num > filterNum) {
                         return true;
                     }
-                } else if (data.width.ToString().ToLower().Contains(filterText.ToLower())) {
+                } else if (num.ToString().ToLower().Contains(filterText.ToLower())) {
                     return true;
                 }
 
                 return false;
             }
 
-            bool ColumnFilter4() {
-                if (maskChars.Length < 4 || maskChars[3] != '1') {
+            bool FilterBool(int index, bool flag) {
+                if (maskChars.Length < index + 1 || maskChars[index] != '1') {
                     return false;
                 }
-
-                if (int.TryParse(filterText, out int tris)) {
-                    if (data.height > tris) {
-                        return true;
-                    }
-                } else if (data.height.ToString().ToLower().Contains(filterText.ToLower())) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            bool ColumnFilter5() {
-                if (maskChars.Length < 5 || maskChars[4] != '1') {
-                    return false;
-                }
-
-                return filterText.ToLower().Contains('纯') && data.isSolid;
-            }
-
-            bool ColumnFilter6() {
-                if (maskChars.Length < 6 || maskChars[5] != '1') {
-                    return false;
-                }
-
-                if (string.IsNullOrEmpty(data.repeatInfo)) {
-                    data.repeatInfo = string.Empty;
-                }
-
-                return data.repeatInfo.ToLower().Contains(filterText.ToLower());
+                return filterText.ToLower().Equals(flag.ToString());
             }
 
             #endregion

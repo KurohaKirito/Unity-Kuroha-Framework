@@ -40,9 +40,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
         public bool mipMaps;
         public bool readable;
         public bool streaming;
+        public bool hadAlpha;
+        public TextureImporterAlphaSource importAlpha;
         public TextureImporterFormat androidFormat;
         public TextureImporterFormat iOSFormat;
         public TextureImporterFormat pcFormat;
+        public int androidFormatSize;
+        public int iOSFormatSize;
+        public int pcFormatSize;
         public float memory;
         public bool isSolid;
         public string repeatInfo;
