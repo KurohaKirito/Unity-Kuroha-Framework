@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using Kuroha.Framework.Utility.RunTime;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
 using UnityEditor;
 using UnityEngine.Profiling;
@@ -52,10 +54,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.MemoryTool {
         /// </summary>
         public static void RefreshMemoryData() {
             var memoryDetailWindow = GetClass_ProfilerWindow(ProfilerArea.Memory);
-
             if (memoryDetailWindow != null) {
-                // 调用 RefreshMemoryData() 函数
-                memoryDetailWindow.CallMethod_Private("RefreshMemoryData");
+                // private ProfilerModuleBase[] m_ProfilerModules;
+                if (memoryDetailWindow.GetFieldValue_Private("m_ProfilerModules") is IList profilerModules) {
+                    var classInstance = profilerModules[(int) ProfilerArea.Memory];
+                    var classInstanceType = classInstance.GetType();
+                    // private void RefreshMemoryData()
+                    var method = ReflectionUtil.GetMethod(classInstanceType, "RefreshMemoryData", BindingFlags.NonPublic | BindingFlags.Instance);
+                    ReflectionUtil.CallMethod(method, classInstance, null);
+                }
             } else {
                 DebugUtil.Log("请打开 Profiler 窗口的 Memory 视图, 并切换到 Detail 页面", null, "red");
             }
@@ -72,13 +79,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProfilerTool.MemoryTool {
 
             var memoryDetailWindow = GetClass_ProfilerWindow(ProfilerArea.Memory);
             if (memoryDetailWindow != null) {
-                // 得到 m_MemoryListView 变量, 其类型为: MemoryTreeListClickable
-                var listViewDynamic = new DynamicClass(memoryDetailWindow.GetFieldValue_Private("m_MemoryListView"));
-
-                // 得到 m_Root 变量, 其类型为: ProfilerMemoryElement
-                var rootDynamic = listViewDynamic.GetFieldValue_Private("m_Root");
-                if (rootDynamic != null) {
-                    element = ProfilerMemoryElement.Create(new DynamicClass(rootDynamic), 0, filterDepth, filterSize);
+                // private ProfilerModuleBase[] m_ProfilerModules;
+                if (memoryDetailWindow.GetFieldValue_Private("m_ProfilerModules") is IList profilerModules) {
+                    var classInstance = profilerModules[(int) ProfilerArea.Memory];
+                    var classInstanceType = classInstance.GetType();
+                    // private MemoryTreeListClickable m_MemoryListView
+                    var fieldInfo = ReflectionUtil.GetField(classInstanceType, "m_MemoryListView", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var valueField = ReflectionUtil.GetValueField(fieldInfo, classInstance);
+                    
+                    var listViewDynamic = new DynamicClass(valueField);
+                    // 得到 m_Root 变量, 其类型为: ProfilerMemoryElement
+                    var rootDynamic = listViewDynamic.GetFieldValue_Private("m_Root");
+                    if (rootDynamic != null) {
+                        element = ProfilerMemoryElement.Create(new DynamicClass(rootDynamic), 0, filterDepth, filterSize);
+                    }
                 }
             } else {
                 DebugUtil.Log("请打开 Profiler 窗口的 Memory 视图, 并切换到 Detail 页面", null, "red");
