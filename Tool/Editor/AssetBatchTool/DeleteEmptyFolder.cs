@@ -133,7 +133,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                 }
             }
             
-            DebugUtil.Log($"一共检测了 {dirList.Count} 个目录!", null, "#2C5D87");
+            DebugUtil.Log($"一共检测了 {dirList.Count} 个目录!", null, "#58D2BC");
             DebugUtil.Log($"一共移除了 {counter} 个空目录!", null, "green");
         }
     }
