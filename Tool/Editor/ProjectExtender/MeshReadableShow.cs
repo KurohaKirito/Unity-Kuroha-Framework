@@ -30,7 +30,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProjectExtender {
             if (assetPath.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0 ||
                 assetPath.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0) {
                 var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(assetPath);
-                UnityEngine.GUI.Label(rect, mesh.isReadable ? "ON" : "OFF");
+                if (mesh != null) {
+                    UnityEngine.GUI.Label(rect, mesh.isReadable ? "ON" : "OFF");
+                }
             } else if (assetPath.IndexOf(".fbx", StringComparison.OrdinalIgnoreCase) > 0) {
                 if (AssetImporter.GetAtPath(assetPath) is ModelImporter model) {
                     UnityEngine.GUI.Label(rect, model.isReadable ? "ON" : "OFF");
