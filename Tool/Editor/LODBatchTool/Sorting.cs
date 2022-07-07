@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
@@ -67,6 +68,25 @@ public class Sorting : EditorWindow {
         if (Selection.gameObjects != null) {
             var color = EditorGUIUtility.isProSkin ? "yellow" : "green";
             DebugUtil.Log($"当前选中 全部物体 数量: {Selection.gameObjects.Length}", null, color);
+        }
+    }
+    
+    [MenuItem("GameObject/Scene Tool/位置取整 %;", false, 17)]
+    private static void Position() {
+        if (Selection.transforms != null) {
+            foreach (var transform in Selection.transforms) {
+                var color = EditorGUIUtility.isProSkin ? "yellow" : "green";
+
+                var oldPosition = transform.localPosition;
+                var x = (int) Math.Round(oldPosition.x, 0);
+                var y = (int) Math.Round(oldPosition.y, 0);
+                var z = (int) Math.Round(oldPosition.z, 0);
+                var newPosition = new Vector3(x, y, z);
+                transform.localPosition = newPosition;
+                EditorUtility.SetDirty(transform.gameObject);
+            
+                DebugUtil.Log($"{transform.name} : {oldPosition} => {newPosition}", null, color);
+            }
         }
     }
 }
