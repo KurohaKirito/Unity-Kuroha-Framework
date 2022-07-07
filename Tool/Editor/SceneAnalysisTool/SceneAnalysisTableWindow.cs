@@ -26,6 +26,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         private int resultColors;
         private int resultTangents;
         private int resultNormals;
+        private float resultMemory;
 
         private SceneAnalysisTable table;
 
@@ -229,7 +230,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 normals = resultNormals,
                 tangents = resultTangents,
                 assetName = "Sum",
-                assetPath = "Sum"
+                assetPath = "Sum",
+                assetType = "/",
+                importCameras = "/",
+                importLights = "/",
+                importNormals = "/",
+                meshCompression = "/",
+                weldVertices = "/",
+                meshOptimizationFlags = "/",
             });
         }
 
@@ -237,6 +245,9 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         /// 增加一条检测结果
         /// </summary>
         private void AddResult(in List<SceneAnalysisData> dataList, Mesh mesh, string readWriteEnable) {
+            var path = AssetDatabase.GetAssetPath(mesh);
+            var modelImporter = AssetImporter.GetAtPath(path) as ModelImporter;
+
             resultVerts += mesh.vertices.Length;
             resultTris += mesh.triangles.Length / 3;
             resultUV += mesh.uv.Length;
@@ -247,7 +258,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             resultTangents += mesh.tangents.Length;
             resultNormals += mesh.normals.Length;
 
-            dataList.Add(new SceneAnalysisData {
+            var newData = new SceneAnalysisData {
                 id = dataList.Count + 1,
                 tris = mesh.triangles.Length / 3,
                 verts = mesh.vertices.Length,
@@ -259,9 +270,28 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 colors = mesh.colors.Length,
                 normals = mesh.normals.Length,
                 tangents = mesh.tangents.Length,
+                assetType = "网格",
+                assetPath = path,
                 assetName = mesh.name,
-                assetPath = AssetDatabase.GetAssetPath(mesh)
-            });
+                importCameras = "/",
+                importLights = "/",
+                importNormals = "/",
+                meshCompression = MeshUtility.GetMeshCompression(mesh).ToString(),
+                weldVertices = "/",
+                meshOptimizationFlags = "/",
+            };
+
+            if (modelImporter != null) {
+                newData.assetType = "模型";
+                newData.meshCompression = modelImporter.meshCompression.ToString();
+                newData.meshOptimizationFlags = modelImporter.meshOptimizationFlags.ToString();
+                newData.importNormals = modelImporter.importNormals.ToString();
+                newData.importLights = modelImporter.importLights.ToString();
+                newData.importCameras = modelImporter.importCameras.ToString();
+                newData.weldVertices = modelImporter.weldVertices.ToString();
+            }
+            
+            dataList.Add(newData);
         }
 
         #region 检测
@@ -400,13 +430,31 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 },
             };
         }
+        
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_AssetType() {
+            return new CustomTableColumn<SceneAnalysisData> {
+                headerContent = new GUIContent("Type"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 50,
+                minWidth = 50,
+                maxWidth = 120,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => string.Compare(dataA.assetType, dataB.assetType, StringComparison.Ordinal), // 排序
+                DrawCell = (cellRect, data) => {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.assetType);
+                },
+            };
+        }
 
         private static CustomTableColumn<SceneAnalysisData> CreateColumn_Name() {
             return new CustomTableColumn<SceneAnalysisData> {
                 headerContent = new GUIContent("Name"),
                 headerTextAlignment = TextAlignment.Center,
-                width = 300,
-                minWidth = 300,
+                width = 600,
+                minWidth = 600,
                 maxWidth = 1200,
                 allowToggleVisibility = true,
                 canSort = true,
@@ -485,11 +533,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
 
         private static CustomTableColumn<SceneAnalysisData> CreateColumn_ReadWrite() {
             return new CustomTableColumn<SceneAnalysisData> {
-                headerContent = new GUIContent("R/W"),
+                headerContent = new GUIContent("Readable"),
                 headerTextAlignment = TextAlignment.Center,
-                width = 120,
-                minWidth = 120,
-                maxWidth = 160,
+                width = 70,
+                minWidth = 70,
+                maxWidth = 120,
                 allowToggleVisibility = true,
                 canSort = true,
                 Compare = (dataA, dataB, sortType) => string.Compare(dataA.readwrite, dataB.readwrite, StringComparison.Ordinal),
@@ -626,6 +674,114 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 },
             };
         }
+        
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_MeshCompression() {
+            return new CustomTableColumn<SceneAnalysisData> {
+                headerContent = new GUIContent("Compression"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 100,
+                minWidth = 100,
+                maxWidth = 100,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => string.Compare(dataA.meshCompression, dataB.meshCompression, StringComparison.Ordinal), // 排序
+                DrawCell = (cellRect, data) => {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.meshCompression.ToString());
+                },
+            };
+        }
+        
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_OptimizationFlags() {
+            return new CustomTableColumn<SceneAnalysisData> {
+                headerContent = new GUIContent("Optimization"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 100,
+                minWidth = 100,
+                maxWidth = 100,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => string.Compare(dataA.meshOptimizationFlags, dataB.meshOptimizationFlags, StringComparison.Ordinal), // 排序
+                DrawCell = (cellRect, data) => {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.meshOptimizationFlags.ToString());
+                },
+            };
+        }
+        
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ImportNormals() {
+            return new CustomTableColumn<SceneAnalysisData> {
+                headerContent = new GUIContent("import Normals"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 100,
+                minWidth = 100,
+                maxWidth = 100,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => string.Compare(dataA.importNormals, dataB.importNormals, StringComparison.Ordinal), // 排序
+                DrawCell = (cellRect, data) => {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.importNormals.ToString());
+                },
+            };
+        }
+        
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ImportLights() {
+            return new CustomTableColumn<SceneAnalysisData> {
+                headerContent = new GUIContent("import Lights"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 100,
+                minWidth = 100,
+                maxWidth = 100,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => string.Compare(dataB.importLights, dataA.importLights, StringComparison.Ordinal), // 排序
+                DrawCell = (cellRect, data) => {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.importLights.ToString());
+                },
+            };
+        }
+        
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_ImportCameras() {
+            return new CustomTableColumn<SceneAnalysisData> {
+                headerContent = new GUIContent("Import Cameras"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 100,
+                minWidth = 100,
+                maxWidth = 100,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => string.Compare(dataA.importCameras, dataB.importCameras, StringComparison.Ordinal), // 排序
+                DrawCell = (cellRect, data) => {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.importCameras.ToString());
+                },
+            };
+        }
+        
+        private static CustomTableColumn<SceneAnalysisData> CreateColumn_WeldVertices() {
+            return new CustomTableColumn<SceneAnalysisData> {
+                headerContent = new GUIContent("Weld Vertices"),
+                headerTextAlignment = TextAlignment.Center,
+                width = 100,
+                minWidth = 100,
+                maxWidth = 100,
+                allowToggleVisibility = true,
+                canSort = true,
+                Compare = (dataA, dataB, sortType) => string.Compare(dataA.weldVertices, dataB.weldVertices, StringComparison.Ordinal), // 排序
+                DrawCell = (cellRect, data) => {
+                    cellRect.height += 5f;
+                    cellRect.xMin += 3f;
+                    EditorGUI.LabelField(cellRect, data.weldVertices.ToString());
+                },
+            };
+        }
 
         #endregion
 
@@ -636,6 +792,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
         private static CustomTableColumn<SceneAnalysisData>[] InitColumns() {
             var newColumns = new List<CustomTableColumn<SceneAnalysisData>> {
                 CreateColumn_ID(),
+                CreateColumn_AssetType(),
                 CreateColumn_Name(),
                 CreateColumn_Verts(),
                 CreateColumn_Tris(),
@@ -645,12 +802,15 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                 CreateColumn_UV4(),
                 CreateColumn_Colors(),
                 CreateColumn_Tangents(),
-                CreateColumn_Normals()
+                CreateColumn_Normals(),
+                CreateColumn_ReadWrite(),
+                CreateColumn_MeshCompression(),
+                CreateColumn_OptimizationFlags(),
+                CreateColumn_ImportNormals(),
+                CreateColumn_ImportLights(),
+                CreateColumn_ImportCameras(),
+                CreateColumn_WeldVertices()
             };
-
-            if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh) {
-                newColumns.Add(CreateColumn_ReadWrite());
-            }
 
             return newColumns.ToArray();
         }

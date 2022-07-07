@@ -1,6 +1,7 @@
 ﻿namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
     public class SceneAnalysisData {
         public int id;
+        public string assetType;
         public int tris;
         public int verts;
         public string readwrite;
@@ -11,6 +12,12 @@
         public int colors;
         public int tangents;
         public int normals;
+        public string meshCompression;
+        public string meshOptimizationFlags;
+        public string importNormals;
+        public string importLights;
+        public string importCameras;
+        public string weldVertices;
         public string assetName;
         public string assetPath;
 
