@@ -63,7 +63,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetCheckTool {
                 "特效资源检测", "时装检测工具", "场景统计分析", "贴图统计分析", "网格统计分析", "批处理", "性能分析辅助"
             };
             
-            toolbarData = new Toolbar.ToolbarData(800, 16, toolBarNames);
+            toolbarData = new Toolbar.ToolbarData(800, 160, toolBarNames);
 
             titleStyle = new GUIStyle {
                 fontSize = 24,

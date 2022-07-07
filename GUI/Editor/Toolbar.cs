@@ -60,7 +60,7 @@ namespace Script.Effect.Editor.AssetTool.GUI.Editor {
                     lastClick = toolbarIndex;
                     data.playAnime = true;
                     data.curPositionX = -windowRect.width;
-                    animeStepWidth = windowRect.width / data.animeTime;
+                    animeStepWidth = windowRect.width / (Application.isPlaying ? data.animeTime / 5 : data.animeTime);
                 } else if (data.curPositionX > WIDTH_SPACE) {
                     data.playAnime = false;
                     data.curPositionX = WIDTH_SPACE;

@@ -17,13 +17,27 @@ namespace Script.Effect.Editor.AssetTool.Util.RunTime {
 
             return result;
         }
+        
+        /// <summary>
+        /// 包含数字的字符串比较
+        /// </summary>
+        /// <returns></returns>
+        public static int CompareByNumberOfTable(string strA, string strB) {
+            return CompareByNumber(strA, strB, true);
+        }
+
+        /// <summary>
+        /// 对 Bool 类型进行排序后, true 在前, false 在后
+        /// 之后对 string 类型排序
+        /// </summary>
+        /// <returns></returns>
+        public static int CompareByBoolAndStringOfTable(bool boolA, bool boolB, string strA, string strB) {
+            return CompareByBoolAndString(boolA, boolB, strA, strB, true);
+        }
 
         /// <summary>
         /// 包含数字的字符串比较
         /// </summary>
-        /// <param name="strA">待比较串 A</param>
-        /// <param name="strB">待比较串 B</param>
-        /// <param name="isAsc">是否是升序排序</param>
         /// <returns></returns>
         public static int CompareByNumber(string strA, string strB, bool isAsc) {
             var leftIsFront  = isAsc ? -1 : 1;
@@ -95,21 +109,16 @@ namespace Script.Effect.Editor.AssetTool.Util.RunTime {
         /// 对 Bool 类型进行排序后, true 在前, false 在后
         /// 之后对 string 类型排序
         /// </summary>
-        /// <param name="boolA"></param>
-        /// <param name="boolB"></param>
-        /// <param name="strA"></param>
-        /// <param name="strB"></param>
-        /// <param name="isAsc"></param>
         /// <returns></returns>
-        public static int CompareByBoolAndString(bool boolA, bool boolB, string strA, string strB, bool isAsc) {
+        private static int CompareByBoolAndString(bool boolA, bool boolB, string strA, string strB, bool isAsc) {
             var leftIsFront  = isAsc ? -1 : 1;
             var rightIsFront = isAsc ? 1 : -1;
             
-            if (boolA == false) {
+            if (boolA == false && boolB) {
                 return leftIsFront;
             }
 
-            if (boolB == false) {
+            if (boolB == false && boolA) {
                 return rightIsFront;
             }
 

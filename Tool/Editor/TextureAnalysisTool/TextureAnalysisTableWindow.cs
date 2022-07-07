@@ -368,7 +368,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                 new CustomTableColumn<TextureAnalysisData> {
                     headerContent = new GUIContent("Asset"),
                     headerTextAlignment = TextAlignment.Center,
-                    width = 240,
+                    width = 600,
                     minWidth = 600,
                     maxWidth = 1200,
                     allowToggleVisibility = false,
@@ -536,7 +536,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.androidFormat.CompareTo(dataB.androidFormat),
+                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.androidFormat.ToString(), dataB.androidFormat.ToString(), StringComparison.Ordinal),
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;
@@ -566,7 +566,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.iOSFormat.CompareTo(dataB.iOSFormat),
+                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.iOSFormat.ToString(), dataB.iOSFormat.ToString(), StringComparison.Ordinal),
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;
@@ -596,7 +596,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => dataA.pcFormat.CompareTo(dataB.pcFormat),
+                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.pcFormat.ToString(), dataB.pcFormat.ToString(), StringComparison.Ordinal),
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;
@@ -654,7 +654,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => AssetTool.Util.RunTime.StringUtil.CompareByBoolAndString(dataA.isSolid, dataB.isSolid, dataA.textureName, dataB.textureName, sortType),
+                    Compare = (dataA, dataB, sortType) => AssetTool.Util.RunTime.StringUtil.CompareByBoolAndStringOfTable(dataA.isSolid, dataB.isSolid, dataA.textureName, dataB.textureName),
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;
@@ -682,7 +682,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => AssetTool.Util.RunTime.StringUtil.CompareByNumber(dataA.repeatInfo, dataB.repeatInfo, sortType),
+                    Compare = (dataA, dataB, sortType) => AssetTool.Util.RunTime.StringUtil.CompareByNumberOfTable(dataA.repeatInfo, dataB.repeatInfo),
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;
