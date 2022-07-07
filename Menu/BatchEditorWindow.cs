@@ -388,11 +388,11 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                PrefabCloseProbeOcclusion(obj);
-                PrefabSetLOD(obj);
+                //PrefabCloseProbeOcclusion(obj);
+                //PrefabSetLOD(obj);
                 //PrefabOpenShadow(obj);
+                PrefabCloseShadow(obj);
 
-                EditorUtility.SetDirty(obj);
                 AssetDatabase.SaveAssets();
             }
         }
@@ -454,6 +454,19 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                         Debug.LogError($"renderer0 = null ! {obj.name}/{lodGroup.name}", obj);
                     } else {
                         renderer0.shadowCastingMode = ShadowCastingMode.On;
+                    }
+                }
+            }
+        }
+        
+        private void PrefabCloseShadow(GameObject obj) {
+            var transforms = obj.GetComponentsInChildren<Transform>();
+            foreach (var transform in transforms) {
+                if (transform.name.EndsWith("_LBP")) {
+                    var renderer = transform.GetComponent<MeshRenderer>();
+                    if (renderer != null && renderer.shadowCastingMode != ShadowCastingMode.Off) {
+                        renderer.shadowCastingMode = ShadowCastingMode.Off;
+                        EditorUtility.SetDirty(obj);
                     }
                 }
             }
