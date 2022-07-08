@@ -85,7 +85,7 @@ public class Sorting : EditorWindow {
                 transform.localPosition = newPosition;
                 EditorUtility.SetDirty(transform.gameObject);
             
-                DebugUtil.Log($"{transform.name} : {oldPosition} => {newPosition}", null, color);
+                DebugUtil.Log($"{transform.name} : ({oldPosition.x},{oldPosition.y},{oldPosition.z}) => ({newPosition.x},{newPosition.y},{newPosition.z})", null, color);
             }
         }
     }
