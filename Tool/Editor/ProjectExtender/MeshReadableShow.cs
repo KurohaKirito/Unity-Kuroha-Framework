@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProjectExtender {
     public class MeshReadableShow {
+        public static bool switchFlag;
         private const float WIDTH = 30f;
         
         /// <summary>
@@ -18,24 +19,26 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.ProjectExtender {
         }
 
         private static void OnGUI(string guid, Rect selectionRect) {
-            // 定义绘制按钮时需要用到的矩形, selectionRect 原本是当前选中时 Unity 中的蓝色的高亮矩形框.
-            var rect = new Rect(
-                x: selectionRect.x += selectionRect.width - WIDTH - 3,
-                y: selectionRect.y + 1,
-                width: WIDTH,
-                height: selectionRect.height - 2);
+            if (switchFlag) {
+                // 定义绘制按钮时需要用到的矩形, selectionRect 原本是当前选中时 Unity 中的蓝色的高亮矩形框.
+                var rect = new Rect(
+                    x: selectionRect.x += selectionRect.width - WIDTH - 3,
+                    y: selectionRect.y + 1,
+                    width: WIDTH,
+                    height: selectionRect.height - 2);
             
-            // 获取资源
-            var assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            if (assetPath.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0 ||
-                assetPath.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0) {
-                var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(assetPath);
-                if (mesh != null) {
-                    UnityEngine.GUI.Label(rect, mesh.isReadable ? "ON" : "OFF");
-                }
-            } else if (assetPath.IndexOf(".fbx", StringComparison.OrdinalIgnoreCase) > 0) {
-                if (AssetImporter.GetAtPath(assetPath) is ModelImporter model) {
-                    UnityEngine.GUI.Label(rect, model.isReadable ? "ON" : "OFF");
+                // 获取资源
+                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                if (assetPath.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0 ||
+                    assetPath.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0) {
+                    var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(assetPath);
+                    if (mesh != null) {
+                        UnityEngine.GUI.Label(rect, mesh.isReadable ? "ON" : "OFF");
+                    }
+                } else if (assetPath.IndexOf(".fbx", StringComparison.OrdinalIgnoreCase) > 0) {
+                    if (AssetImporter.GetAtPath(assetPath) is ModelImporter model) {
+                        UnityEngine.GUI.Label(rect, model.isReadable ? "ON" : "OFF");
+                    }
                 }
             }
         }

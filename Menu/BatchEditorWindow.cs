@@ -158,23 +158,53 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 }
             }
 
-            if (GUILayout.Button("设置 Mesh")) {
+            if (string.IsNullOrEmpty(selectFullPath) == false && GUILayout.Button("设置 Mesh")) {
                 counter = 0;
+                
                 var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                 var assetPath = selectFullPath.Substring(assetsIndex);
                 var guids = AssetDatabase.FindAssets("t:mesh", new[] {
                     assetPath
                 });
+                
                 Debug.Log($"个数: {guids.Length}");
+                selectFullPath = null;
 
                 foreach (var guid in guids) {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
-                    var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
-
-                    await mesh.SetReadableAsync(false);
-                    AssetDatabase.Refresh();
-                    counter++;
+                    if (path.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0 ||
+                        path.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0) {
+                        var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+                        await mesh.SetReadableAsync(false);
+                        counter++;
+                        Repaint();
+                    }
                 }
+                AssetDatabase.Refresh();
+            }
+            
+            if (string.IsNullOrEmpty(selectFullPath) == false && GUILayout.Button("优化 Mesh")) {
+                counter = 0;
+                
+                var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+                var assetPath = selectFullPath.Substring(assetsIndex);
+                var guids = AssetDatabase.FindAssets("t:mesh", new[] {
+                    assetPath
+                });
+                
+                Debug.Log($"个数: {guids.Length}");
+                selectFullPath = null;
+                
+                foreach (var guid in guids) {
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+                    MeshUtility.Optimize(mesh);
+                    EditorUtility.SetDirty(mesh);
+                    counter++;
+                    Repaint();
+                }
+                
+                AssetDatabase.SaveAssets();
             }
 
             if (GUILayout.Button("动画表情")) {
@@ -225,7 +255,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 }
             }
 
-            if (sceneObject != null && GUILayout.Button("场景物体: 关闭全部的光照探针和反射探针")) {
+            if (sceneObject != null && GUILayout.Button("场景物体: 关闭全部的光照探针和反射探针和剔除")) {
                 // 获得所有的 Renderer
                 var renderers = sceneObject.GetComponentsInChildren<Renderer>(true);
                 foreach (var renderer in renderers) {
@@ -234,6 +264,14 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     renderer.allowOcclusionWhenDynamic = false;
                 }
 
+                EditorUtility.SetDirty(sceneObject);
+            }
+            
+            if (sceneObject != null && GUILayout.Button("场景物体: 关闭全部阴影投射")) {
+                var renderers = sceneObject.GetComponentsInChildren<Renderer>(true);
+                foreach (var renderer in renderers) {
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                }
                 EditorUtility.SetDirty(sceneObject);
             }
 
@@ -388,9 +426,11 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                //PrefabCloseProbeOcclusion(obj);
-                //PrefabSetLOD(obj);
-                //PrefabOpenShadow(obj);
+                // PrefabCloseProbeOcclusion(obj);
+                // PrefabSetLOD(obj);
+                // if (path.Contains("Environmental")) {
+                //     PrefabOpenShadow(obj);
+                // }
                 PrefabCloseShadow(obj);
 
                 AssetDatabase.SaveAssets();
@@ -437,23 +477,36 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             var lodGroups = obj.GetComponentsInChildren<LODGroup>();
             foreach (var lodGroup in lodGroups) {
                 var lods = lodGroup.GetLODs();
-                foreach (var lod in lods) {
-                    var renderers = lod.renderers;
-                    foreach (var renderer in renderers) {
-                        if (renderer == null) {
-                            Debug.LogError($"renderer = null ! {obj.name}/{lodGroup.name}", obj);
-                        } else {
-                            renderer.shadowCastingMode = ShadowCastingMode.Off;
-                        }
-                    }
-                }
+                // foreach (var lod in lods) {
+                //     var renderers = lod.renderers;
+                //     foreach (var renderer in renderers) {
+                //         if (renderer == null) {
+                //             Debug.LogError($"renderer = null ! {obj.name}/{lodGroup.name}", obj);
+                //         } else {
+                //             renderer.shadowCastingMode = ShadowCastingMode.Off;
+                //         }
+                //     }
+                // }
+                //
+                // var renderers0 = lods[0].renderers;
+                // foreach (var renderer0 in renderers0) {
+                //     if (renderer0 == null) {
+                //         Debug.LogError($"renderer0 = null ! {obj.name}/{lodGroup.name}", obj);
+                //     } else {
+                //         renderer0.shadowCastingMode = ShadowCastingMode.On;
+                //     }
+                // }
 
-                var renderers0 = lods[0].renderers;
-                foreach (var renderer0 in renderers0) {
-                    if (renderer0 == null) {
-                        Debug.LogError($"renderer0 = null ! {obj.name}/{lodGroup.name}", obj);
-                    } else {
-                        renderer0.shadowCastingMode = ShadowCastingMode.On;
+                if (lods.Length >= 3) {
+                    var renderers1 = lods[1].renderers;
+                    foreach (var renderer1 in renderers1) {
+                        if (renderer1 == null) {
+                            Debug.LogError($"renderer1 = null ! {obj.name}/{lodGroup.name}", obj);
+                        } else {
+                            if (renderer1.shadowCastingMode != ShadowCastingMode.On) {
+                                renderer1.shadowCastingMode = ShadowCastingMode.On;
+                            }
+                        }
                     }
                 }
             }

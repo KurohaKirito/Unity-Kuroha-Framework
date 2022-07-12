@@ -179,23 +179,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     break;
                 case MeshAnalysisData.DetectType.GameObject:
                     if (detectGameObject != null) {
-                        if (detectMeshType == MeshAnalysisData.DetectMeshType.RendererMesh) {
-                            var meshFilters = detectGameObject.GetComponentsInChildren<MeshFilter>();
-                            DetectMeshFilter(in dataList, in meshFilters);
-                            meshCount += meshFilters.Length;
-
-                            var skinnedMeshRenderers = detectGameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
-                            DetectSkinnedMeshRenderer(in dataList, in skinnedMeshRenderers);
-                            meshCount += skinnedMeshRenderers.Length;
-
-                            var particleSystems = detectGameObject.GetComponentsInChildren<ParticleSystem>();
-                            DetectParticleSystem(in dataList, in particleSystems);
-                            meshCount += particleSystems.Length;
-                        } else if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh) {
-                            var meshColliders = detectGameObject.GetComponentsInChildren<MeshCollider>();
-                            DetectMeshCollider(in dataList, in meshColliders);
-                            meshCount += meshColliders.Length;
-                        }
+                        DetectPrefab(in dataList, ref meshCount, detectGameObject);
                     }
 
                     break;
@@ -211,6 +195,26 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
 
             DebugUtil.Log($"共检测出 {meshCount} 个 mesh 资源");
             return dataList;
+        }
+
+        private void DetectPrefab(in List<SceneAnalysisData> dataList, ref int meshCount, GameObject obj) {
+            if (detectMeshType == MeshAnalysisData.DetectMeshType.RendererMesh) {
+                var meshFilters = obj.GetComponentsInChildren<MeshFilter>();
+                DetectMeshFilter(in dataList, in meshFilters);
+                meshCount += meshFilters.Length;
+
+                var skinnedMeshRenderers = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
+                DetectSkinnedMeshRenderer(in dataList, in skinnedMeshRenderers);
+                meshCount += skinnedMeshRenderers.Length;
+
+                var particleSystems = obj.GetComponentsInChildren<ParticleSystem>();
+                DetectParticleSystem(in dataList, in particleSystems);
+                meshCount += particleSystems.Length;
+            } else if (detectMeshType == MeshAnalysisData.DetectMeshType.ColliderMesh) {
+                var meshColliders = obj.GetComponentsInChildren<MeshCollider>();
+                DetectMeshCollider(in dataList, in meshColliders);
+                meshCount += meshColliders.Length;
+            }
         }
 
         /// <summary>
@@ -323,7 +327,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                         }
 
                         // 倾斜
-                        else if (meshCollider.transform.localRotation != Quaternion.identity && meshCollider.transform.parent.localScale != Vector3.one) {
+                        else if (meshCollider.transform.parent != null && meshCollider.transform.localRotation != Quaternion.identity && meshCollider.transform.parent.localScale != Vector3.one) {
                             readWriteEnable = true;
                             if (sharedMesh.isReadable == false) {
                                 DebugUtil.Log($"{meshCollider.name} 的旋转是倾斜的, 需要开启读写!", meshCollider.gameObject, "red");
@@ -876,6 +880,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterString(data.id.ToString());
             }
+            
+            index++;
+            if (maskChars.Length > index && maskChars[index] == '1') {
+                isMatched &= ColumnFilterString(data.assetType);
+            }
 
             index++;
             if (maskChars.Length > index && maskChars[index] == '1') {
@@ -925,6 +934,41 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
             index++;
             if (maskChars.Length > index && maskChars[index] == '1') {
                 isMatched &= ColumnFilterNumber(data.normals);
+            }
+            
+            index++;
+            if (maskChars.Length > index && maskChars[index] == '1') {
+                isMatched &= ColumnFilterString(data.readwrite);
+            }
+            
+            index++;
+            if (maskChars.Length > index && maskChars[index] == '1') {
+                isMatched &= ColumnFilterString(data.meshCompression);
+            }
+            
+            index++;
+            if (maskChars.Length > index && maskChars[index] == '1') {
+                isMatched &= ColumnFilterString(data.meshOptimizationFlags);
+            }
+            
+            index++;
+            if (maskChars.Length > index && maskChars[index] == '1') {
+                isMatched &= ColumnFilterString(data.importNormals);
+            }
+            
+            index++;
+            if (maskChars.Length > index && maskChars[index] == '1') {
+                isMatched &= ColumnFilterString(data.importLights);
+            }
+            
+            index++;
+            if (maskChars.Length > index && maskChars[index] == '1') {
+                isMatched &= ColumnFilterString(data.importCameras);
+            }
+            
+            index++;
+            if (maskChars.Length > index && maskChars[index] == '1') {
+                isMatched &= ColumnFilterString(data.weldVertices);
             }
 
             #region Local Function
@@ -1060,12 +1104,12 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
 
         private void DetectPath(in List<SceneAnalysisData> dataList, ref int meshCount) {
             switch (detectTypeAtPath) {
-                case MeshAnalysisData.DetectTypeAtPath.Meshes:
-                    var guids = AssetDatabase.FindAssets("t:Mesh", new[] {
+                case MeshAnalysisData.DetectTypeAtPath.Meshes: {
+                    var meshGuids = AssetDatabase.FindAssets("t:Mesh", new[] {
                         detectPath
                     });
-                    meshCount = guids.Length;
-                    foreach (var guid in guids) {
+                    meshCount = meshGuids.Length;
+                    foreach (var guid in meshGuids) {
                         var path = AssetDatabase.GUIDToAssetPath(guid);
                         try {
                             var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
@@ -1074,11 +1118,20 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                             Debug.LogError($"无法读取为 Mesh 资源! {path}");
                         }
                     }
-
                     break;
-
+                }
+                
                 case MeshAnalysisData.DetectTypeAtPath.Prefabs:
-
+                    var prefabGuids = AssetDatabase.FindAssets("t:Prefab", new[] {
+                        detectPath
+                    });
+                    foreach (var guid in prefabGuids) {
+                        var path = AssetDatabase.GUIDToAssetPath(guid);
+                        var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                        if (obj != null) {
+                            DetectPrefab(in dataList, ref meshCount, obj);
+                        }
+                    }
                     break;
 
                 default:
