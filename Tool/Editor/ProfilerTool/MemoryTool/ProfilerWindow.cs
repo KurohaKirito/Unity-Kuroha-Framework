@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Kuroha.Framework.Utility.RunTime;
+using Script.Effect.Editor.AssetTool.Tool.Editor.InspectorExtender;
 using Script.Effect.Editor.AssetTool.Util.RunTime;
 using UnityEditor;
 using UnityEngine.Profiling;

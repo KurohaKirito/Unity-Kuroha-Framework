@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Kuroha.Framework.Utility.RunTime {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.InspectorExtender {
     /// <summary>
     /// 反射工具类
     /// </summary>

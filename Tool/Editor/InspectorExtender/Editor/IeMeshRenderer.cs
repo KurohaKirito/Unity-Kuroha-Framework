@@ -6,7 +6,7 @@ using Script.Effect.Editor.AssetTool.Util.Unity;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.InspectorExtender.Editor {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.InspectorExtender.Editor {
     /// <summary>
     /// 扩展 Mesh Renderer
     /// </summary>
@@ -95,20 +95,20 @@ namespace Kuroha.Tool.InspectorExtender.Editor {
         }
 
         private void OnApplyButtonGUI() {
-            GUI.enabled = false;
+            UnityEngine.GUI.enabled = false;
             EditorGUILayout.ObjectField("Current Mesh", selfMeshOld, typeof(Mesh), true);
-            GUI.enabled = true;
+            UnityEngine.GUI.enabled = true;
 
             // Unity 内置资源不可修改
             if (meshPath.IndexOf("Assets", StringComparison.Ordinal) < 0) {
-                GUI.enabled = false;
+                UnityEngine.GUI.enabled = false;
             }
 
             rwEnable = EditorGUILayout.Toggle("Read Write Enabled", rwEnable);
             compression = (ModelImporterMeshCompression) EditorGUILayout.EnumPopup("Mesh Compression", compression);
 
             if (rwEnable == selfMesh.isReadable && compression == MeshUtility.GetMeshCompression(selfMesh)) {
-                GUI.enabled = false;
+                UnityEngine.GUI.enabled = false;
             }
 
             EditorGUILayout.BeginHorizontal();
@@ -116,7 +116,7 @@ namespace Kuroha.Tool.InspectorExtender.Editor {
             revertButton = GUILayout.Button("Revert");
             applyButton = GUILayout.Button("Apply");
             EditorGUILayout.EndHorizontal();
-            GUI.enabled = true;
+            UnityEngine.GUI.enabled = true;
         }
 
         private async Task SetMeshReadable() {

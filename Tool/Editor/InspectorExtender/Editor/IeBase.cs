@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Kuroha.Framework.Utility.RunTime;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kuroha.Tool.InspectorExtender.Editor {
+namespace Script.Effect.Editor.AssetTool.Tool.Editor.InspectorExtender.Editor {
     /// <summary>
     /// Uee: Unity Editor Extender
     /// Unity 编辑器原布局扩展器 - 基类
