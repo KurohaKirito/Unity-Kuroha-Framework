@@ -413,6 +413,10 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     }
                 }
             }
+            
+            if (GUILayout.Button("ScenePart")) {
+                RemoveScenePart();
+            }
         }
 
         private void ModifyPrefab() {
@@ -530,6 +534,28 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             foreach (var child in children) {
                 if (child.name.IndexOf("Missing Prefab", StringComparison.OrdinalIgnoreCase) >= 0) {
                     DebugUtil.LogError($"Missing Prefab: {obj}", obj, "yellow");
+                }
+            }
+        }
+        
+        private void RemoveScenePart() {
+            var renderers = AssetUtil.GetAllComponentsInScene<Renderer>(AssetUtil.FindType.All);
+            foreach (var renderer in renderers) {
+                if (renderer != null) {
+                    renderer.allowOcclusionWhenDynamic = false;
+                }
+            }
+            
+            var sceneParts = AssetUtil.GetAllComponentsInScene<ScenePart>(AssetUtil.FindType.All);
+            foreach (var scenePart in sceneParts) {
+                if (scenePart != null) {
+                    if (scenePart.partType != ScenePartType.House) {
+                        scenePart.prefabName = null;
+                        // if (PrefabUtility.IsPartOfPrefabInstance(scenePart)) {
+                        //     
+                        // }
+                        EditorUtility.SetDirty(scenePart);
+                    }
                 }
             }
         }
