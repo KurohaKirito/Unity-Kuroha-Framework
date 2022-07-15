@@ -203,8 +203,8 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     counter++;
                     Repaint();
                 }
-                
                 AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
             }
 
             if (GUILayout.Button("动画表情")) {
@@ -417,6 +417,10 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             if (GUILayout.Button("ScenePart")) {
                 RemoveScenePart();
             }
+
+            if (GUILayout.Button("移除多余的 Mesh Filter")) {
+                RemoveMeshFilter();
+            }
         }
 
         private void ModifyPrefab() {
@@ -556,6 +560,20 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                         // }
                         EditorUtility.SetDirty(scenePart);
                     }
+                }
+            }
+        }
+        
+        private void RemoveMeshFilter() {
+            var filters = AssetUtil.GetAllComponentsInScene<MeshFilter>(AssetUtil.FindType.All);
+            foreach (var filter in filters) {
+                if (filter.gameObject.TryGetComponent<MeshRenderer>(out var renderer) == false) {
+                    EditorUtility.SetDirty(filter.gameObject);
+                    DestroyImmediate(filter);
+                } else if (renderer.enabled == false) {
+                    EditorUtility.SetDirty(filter.gameObject);
+                    DestroyImmediate(filter);
+                    DestroyImmediate(renderer);
                 }
             }
         }
