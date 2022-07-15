@@ -414,12 +414,16 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 }
             }
             
-            if (GUILayout.Button("ScenePart")) {
+            if (GUILayout.Button("移除多余的 ScenePart")) {
                 RemoveScenePart();
             }
 
             if (GUILayout.Button("移除多余的 Mesh Filter")) {
                 RemoveMeshFilter();
+            }
+
+            if (GUILayout.Button("自动添加 Culling 层 LOD", GUILayout.Height(50))) {
+                AddLODGroup();
             }
         }
 
@@ -554,10 +558,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             foreach (var scenePart in sceneParts) {
                 if (scenePart != null) {
                     if (scenePart.partType != ScenePartType.House) {
-                        scenePart.prefabName = null;
-                        // if (PrefabUtility.IsPartOfPrefabInstance(scenePart)) {
-                        //     
-                        // }
+                        scenePart.SetPrefabName(null);
                         EditorUtility.SetDirty(scenePart);
                     }
                 }
@@ -574,6 +575,26 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     EditorUtility.SetDirty(filter.gameObject);
                     DestroyImmediate(filter);
                     DestroyImmediate(renderer);
+                }
+            }
+        }
+
+        private void AddLODGroup() {
+            if (Selection.transforms != null) {
+                foreach (var transform in Selection.transforms) {
+                    if (transform != null) {
+                        var obj = transform.gameObject;
+                        var lodGroup = obj.AddComponent<LODGroup>();
+                        lodGroup.SetLODs(new [] {
+                            new LOD {
+                                renderers = new [] {
+                                    obj.GetComponent<Renderer>()
+                                },
+                                screenRelativeTransitionHeight = 0.02f
+                            }
+                        });
+                        EditorUtility.SetDirty(obj);
+                    }
                 }
             }
         }
