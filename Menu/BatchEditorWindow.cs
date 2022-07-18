@@ -25,6 +25,9 @@ namespace Script.Effect.Editor.AssetTool.Menu {
         private readonly List<UnityEngine.Object> objPaths = new List<UnityEngine.Object>();
         private bool filterUV2;
 
+        private readonly List<Transform> hideSeekList = new List<Transform>();
+        private Transform[] rendererList;
+
         public static void Open() {
             GetWindow<BatchEditorWindow>();
         }
@@ -65,7 +68,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             if (GUILayout.Button("选择路径")) {
                 selectFullPath = EditorUtility.OpenFolderPanel("Select Folder", selectFullPath, "");
             }
-
+            
             layerIndex = EditorGUILayout.Popup("选择 Layer", layerIndex, UnityEditorInternal.InternalEditorUtility.layers);
 
             if (GUILayout.Button("设置层级")) {
@@ -203,6 +206,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     counter++;
                     Repaint();
                 }
+                
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
@@ -413,18 +417,65 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     }
                 }
             }
-            
+
             if (GUILayout.Button("移除多余的 ScenePart")) {
                 RemoveScenePart();
             }
-
+            
             if (GUILayout.Button("移除多余的 Mesh Filter")) {
                 RemoveMeshFilter();
             }
-
+            
             if (GUILayout.Button("自动添加 Culling 层 LOD", GUILayout.Height(50))) {
                 AddLODGroup();
             }
+            
+            if (GUILayout.Button("躲猫猫")) {
+                if (sceneObject != null) {
+                    for (var index = 0; index < sceneObject.transform.childCount; index++) {
+                        var child = sceneObject.transform.GetChild(index);
+                        hideSeekList.Add(child);
+                    }
+                }
+
+                var renderer = GameObject.Find("Renderer");
+                if (renderer != null) {
+                    rendererList = renderer.transform.GetComponentsInChildren<Transform>();
+                }
+                
+                Debug.Log($"hideSeekList: {hideSeekList.Count}, rendererList: {rendererList.Length}");
+
+                foreach (var collider in hideSeekList) {
+                    
+                    var flag = false;
+                    
+                    foreach (var render in rendererList) {
+                        if (PositionE(render.position, collider.position)) {
+                            var part = render.parent;
+                            collider.SetParent(part);
+                            render.SetParent(collider); // Debug.Log($"hideSeekList: {collider.name}", collider); // Debug.Log($"rendererList: {render.name}", render);
+                            flag = true;
+                            render.localPosition = new Vector3(0, 0, 0);
+                            render.localScale = new Vector3(1, 1, 1);
+                            break;
+                        }
+                    }
+
+                    if (flag == false) {
+                        DebugUtil.Log($"hideSeekList 没有找到: {collider.name}", collider, "red");
+                    }
+                }
+            }
+        }
+
+        private bool PositionE(Vector3 a, Vector3 b) {
+            var aX = Math.Round(a.x, 2);
+            var aY = Math.Round(a.y, 2);
+            var aZ = Math.Round(a.z, 2);
+            var bX = Math.Round(b.x, 2);
+            var bY = Math.Round(b.y, 2);
+            var bZ = Math.Round(b.z, 2);
+            return Math.Abs(aX - bX) < 0.01f && Math.Abs(aY - bY) < 0.01f && Math.Abs(aZ - bZ) < 0.01f;
         }
 
         private void ModifyPrefab() {
@@ -558,7 +609,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             foreach (var scenePart in sceneParts) {
                 if (scenePart != null) {
                     if (scenePart.partType != ScenePartType.House) {
-                        scenePart.SetPrefabName(null);
+                        //scenePart.SetPrefabName(null);
                         EditorUtility.SetDirty(scenePart);
                     }
                 }
