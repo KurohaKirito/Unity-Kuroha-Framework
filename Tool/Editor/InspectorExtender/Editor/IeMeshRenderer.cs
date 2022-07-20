@@ -70,8 +70,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.InspectorExtender.Editor {
                 return;
             }
 
-            // meshFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(meshFoldout, "Mesh");
-            meshFoldout = EditorGUILayout.Foldout(meshFoldout, "Mesh", true);
+            meshFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(meshFoldout, "Mesh");
             if (meshFoldout) {
                 OnApplyButtonGUI();
 
@@ -90,8 +89,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.InspectorExtender.Editor {
                     }
                 }
             }
-
-            // EditorGUILayout.EndFoldoutHeaderGroup();
+            EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
         private void OnApplyButtonGUI() {
@@ -143,13 +141,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.InspectorExtender.Editor {
         }
 
         private void OnLayerSortGUI() {
-            // layerSortFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(layerSortFoldout, "Sorting Layer");
-            layerSortFoldout = EditorGUILayout.Foldout(layerSortFoldout, "Layer", true);
+            layerSortFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(layerSortFoldout, "Sorting Layer");
             if (layerSortFoldout) {
                 ShowSortingLayer();
             }
-
-            // EditorGUILayout.EndFoldoutHeaderGroup();
+            EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
         private void ShowSortingLayer() {
