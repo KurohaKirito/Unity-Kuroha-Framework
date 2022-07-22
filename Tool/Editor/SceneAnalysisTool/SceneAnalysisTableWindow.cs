@@ -366,7 +366,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                     continue;
                 }
 
-                AddResult(dataList, sharedMesh, "非碰撞");
+                AddResult(dataList, sharedMesh, sharedMesh.isReadable.ToString());
             }
         }
 
@@ -386,7 +386,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
                             DebugUtil.LogError($"粒子系统 {particleSystem.transform.name} 使用 Mesh 方式渲染粒子, 却没有指定 Mesh!", particleSystem.gameObject, "red");
                         }
                     } else {
-                        AddResult(dataList, mesh, "非碰撞");
+                        AddResult(dataList, mesh, mesh.isReadable.ToString());
                     }
                 }
             }
@@ -405,11 +405,11 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.SceneAnalysisTool {
 
                 var mesh = skinnedMeshRenderer.sharedMesh;
                 if (ReferenceEquals(mesh, null)) {
-                    DebugUtil.LogError("使用了 SkinnedMeshRenderer 却没有指定 Mesh!", skinnedMeshRenderer.gameObject);
+                    DebugUtil.LogError($"{skinnedMeshRenderer.name} 使用了 SkinnedMeshRenderer 却没有指定 Mesh!", skinnedMeshRenderer.gameObject);
                     continue;
                 }
 
-                AddResult(dataList, mesh, "非碰撞");
+                AddResult(dataList, mesh, mesh.isReadable.ToString());
             }
         }
 
