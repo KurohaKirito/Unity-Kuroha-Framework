@@ -536,7 +536,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.androidFormat.ToString(), dataB.androidFormat.ToString(), StringComparison.Ordinal),
+                    Compare = (dataA, dataB, sortType) => dataA.androidFormatSize - dataB.androidFormatSize,
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;
@@ -566,7 +566,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.iOSFormat.ToString(), dataB.iOSFormat.ToString(), StringComparison.Ordinal),
+                    Compare = (dataA, dataB, sortType) => dataA.iOSFormatSize - dataB.iOSFormatSize,
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;
@@ -596,7 +596,7 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.TextureAnalysisTool {
                     allowToggleVisibility = false,
                     autoResize = true,
                     canSort = true,
-                    Compare = (dataA, dataB, sortType) => string.Compare(dataA.pcFormat.ToString(), dataB.pcFormat.ToString(), StringComparison.Ordinal),
+                    Compare = (dataA, dataB, sortType) => dataA.pcFormatSize - dataB.pcFormatSize,
                     DrawCell = (cellRect, data) => {
                         cellRect.height += 5f;
                         cellRect.xMin += 3f;

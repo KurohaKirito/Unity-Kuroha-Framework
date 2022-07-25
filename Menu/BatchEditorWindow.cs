@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 namespace Script.Effect.Editor.AssetTool.Menu {
     public class BatchEditorWindow : EditorWindow {
@@ -63,12 +64,20 @@ namespace Script.Effect.Editor.AssetTool.Menu {
         private async void OnGUI() {
             reorderableList.DoLayoutList();
 
+            if (GUILayout.Button("特效检测")) {
+                EffectDetect();
+            }
+
+            if (GUILayout.Button("时装材质球的纹理引用检测")) {
+                DetectFashionMaterial();
+            }
+
             Debug.Log($"设置个数: {counter}");
 
             if (GUILayout.Button("选择路径")) {
                 selectFullPath = EditorUtility.OpenFolderPanel("Select Folder", selectFullPath, "");
             }
-            
+
             layerIndex = EditorGUILayout.Popup("选择 Layer", layerIndex, UnityEditorInternal.InternalEditorUtility.layers);
 
             if (GUILayout.Button("设置层级")) {
@@ -163,41 +172,41 @@ namespace Script.Effect.Editor.AssetTool.Menu {
 
             if (string.IsNullOrEmpty(selectFullPath) == false && GUILayout.Button("设置 Mesh")) {
                 counter = 0;
-                
+
                 var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                 var assetPath = selectFullPath.Substring(assetsIndex);
                 var guids = AssetDatabase.FindAssets("t:mesh", new[] {
                     assetPath
                 });
-                
+
                 Debug.Log($"个数: {guids.Length}");
                 selectFullPath = null;
 
                 foreach (var guid in guids) {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
-                    if (path.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0 ||
-                        path.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0) {
+                    if (path.IndexOf(".mesh", StringComparison.OrdinalIgnoreCase) > 0 || path.IndexOf(".asset", StringComparison.OrdinalIgnoreCase) > 0) {
                         var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
                         await mesh.SetReadableAsync(false);
                         counter++;
                         Repaint();
                     }
                 }
+
                 AssetDatabase.Refresh();
             }
-            
+
             if (string.IsNullOrEmpty(selectFullPath) == false && GUILayout.Button("优化 Mesh")) {
                 counter = 0;
-                
+
                 var assetsIndex = selectFullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
                 var assetPath = selectFullPath.Substring(assetsIndex);
                 var guids = AssetDatabase.FindAssets("t:mesh", new[] {
                     assetPath
                 });
-                
+
                 Debug.Log($"个数: {guids.Length}");
                 selectFullPath = null;
-                
+
                 foreach (var guid in guids) {
                     var path = AssetDatabase.GUIDToAssetPath(guid);
                     var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
@@ -206,7 +215,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     counter++;
                     Repaint();
                 }
-                
+
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
@@ -270,12 +279,13 @@ namespace Script.Effect.Editor.AssetTool.Menu {
 
                 EditorUtility.SetDirty(sceneObject);
             }
-            
+
             if (sceneObject != null && GUILayout.Button("场景物体: 关闭全部阴影投射")) {
                 var renderers = sceneObject.GetComponentsInChildren<Renderer>(true);
                 foreach (var renderer in renderers) {
                     renderer.shadowCastingMode = ShadowCastingMode.Off;
                 }
+
                 EditorUtility.SetDirty(sceneObject);
             }
 
@@ -421,15 +431,15 @@ namespace Script.Effect.Editor.AssetTool.Menu {
             if (GUILayout.Button("移除多余的 ScenePart")) {
                 RemoveScenePart();
             }
-            
+
             if (GUILayout.Button("移除多余的 Mesh Filter")) {
                 RemoveMeshFilter();
             }
-            
+
             if (GUILayout.Button("自动添加 Culling 层 LOD", GUILayout.Height(50))) {
                 AddLODGroup();
             }
-            
+
             if (GUILayout.Button("躲猫猫")) {
                 if (sceneObject != null) {
                     for (var index = 0; index < sceneObject.transform.childCount; index++) {
@@ -442,13 +452,13 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 if (renderer != null) {
                     rendererList = renderer.transform.GetComponentsInChildren<Transform>();
                 }
-                
+
                 Debug.Log($"hideSeekList: {hideSeekList.Count}, rendererList: {rendererList.Length}");
 
                 foreach (var collider in hideSeekList) {
-                    
+
                     var flag = false;
-                    
+
                     foreach (var render in rendererList) {
                         if (PositionE(render.position, collider.position)) {
                             var part = render.parent;
@@ -574,7 +584,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 }
             }
         }
-        
+
         private void PrefabCloseShadow(GameObject obj) {
             var transforms = obj.GetComponentsInChildren<Transform>();
             foreach (var transform in transforms) {
@@ -596,7 +606,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 }
             }
         }
-        
+
         private void RemoveScenePart() {
             var renderers = AssetUtil.GetAllComponentsInScene<Renderer>(AssetUtil.FindType.All);
             foreach (var renderer in renderers) {
@@ -604,7 +614,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     renderer.allowOcclusionWhenDynamic = false;
                 }
             }
-            
+
             var sceneParts = AssetUtil.GetAllComponentsInScene<ScenePart>(AssetUtil.FindType.All);
             foreach (var scenePart in sceneParts) {
                 if (scenePart != null) {
@@ -615,7 +625,7 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                 }
             }
         }
-        
+
         private void RemoveMeshFilter() {
             var filters = AssetUtil.GetAllComponentsInScene<MeshFilter>(AssetUtil.FindType.All);
             foreach (var filter in filters) {
@@ -636,9 +646,9 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     if (transform != null) {
                         var obj = transform.gameObject;
                         var lodGroup = obj.AddComponent<LODGroup>();
-                        lodGroup.SetLODs(new [] {
+                        lodGroup.SetLODs(new[] {
                             new LOD {
-                                renderers = new [] {
+                                renderers = new[] {
                                     obj.GetComponent<Renderer>()
                                 },
                                 screenRelativeTransitionHeight = 0.02f
@@ -648,6 +658,102 @@ namespace Script.Effect.Editor.AssetTool.Menu {
                     }
                 }
             }
+        }
+
+        private void EffectDetect() {
+            var fullPath = System.IO.Path.GetFullPath("Assets/ToBundle/Config/Txt/FashionEffect.txt");
+            var allLines = System.IO.File.ReadAllLines(fullPath);
+            for (var index = 0; index < allLines.Length; index++) {
+                if (index >= 3) {
+                    var line = allLines[index];
+                    var lineParts = line.Split('\t');
+                    var effectNamePart = lineParts[1];
+                    var isCombinePart = lineParts[3];
+
+                    var effectNames = effectNamePart.Split('|');
+                    var isCombines = isCombinePart.Split('|');
+
+                    for (var combineIndex = 0; combineIndex < isCombines.Length; combineIndex++) {
+                        var isCombine = isCombines[combineIndex];
+                        if (isCombine == "1") {
+                            var effectPrefabName = effectNames[combineIndex];
+                            var effectPrefabGuids = AssetDatabase.FindAssets($"{effectPrefabName} t:Prefab");
+                            if (effectPrefabGuids.Length != 1) {
+                                foreach (var guid in effectPrefabGuids) {
+                                    var effectPrefabPath = AssetDatabase.GUIDToAssetPath(guid);
+                                    var effectPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(effectPrefabPath);
+                                    if (effectPrefab.name.Equals(effectPrefabName)) {
+                                        EffectDetect(effectPrefabName, effectPrefabGuids);
+                                    }
+                                }
+                            } else {
+                                EffectDetect(effectPrefabName, effectPrefabGuids);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void EffectDetect(string effectPrefabName, in string[] effectPrefabGuids) {
+            var effectPrefabPath = AssetDatabase.GUIDToAssetPath(effectPrefabGuids[0]);
+            var effectPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(effectPrefabPath);
+            
+            var allRenderer = effectPrefab.GetComponentsInChildren<MeshRenderer>();
+            EffectDetect(allRenderer, effectPrefabName);
+            
+            var allRenderer2 = effectPrefab.GetComponentsInChildren<SkinnedMeshRenderer>();
+            EffectDetect(allRenderer2, effectPrefabName);
+        }
+
+        private void EffectDetect(IEnumerable<Renderer> allRenderer, string effectPrefabName) {
+            foreach (var renderer in allRenderer) {
+                var materials = renderer.sharedMaterials;
+                if (materials.Length != 1) {
+                    foreach (var material in materials) {
+                        DebugUtil.LogError($"特效 {effectPrefabName} 中的 Renderer {renderer.name} 有 {materials.Length} 个材质球: {material.name}", material);
+                    }
+                } else {
+                    TextureUtil.GetAllTexturesInMaterial(materials[0], out var textureDataList);
+                    if (textureDataList != null && textureDataList.Count > 0) {
+                        foreach (var textureData in textureDataList) {
+                            if (textureData.asset.isReadable == false) {
+                                if (textureData.path.ToLower().Contains("sfx_")) {
+                                    DebugUtil.LogError($"特效纹理 {textureData.path} 没有开启读写");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DetectFashionMaterial() {
+            var mainTexture = AssetDatabase.LoadAssetAtPath<Texture>("Assets/Art/Characters/Textures/Fashion_Low/Suit/Suit_1/Suit_1_D.psd");
+            
+            var export = new List<string>();
+            var guids = AssetDatabase.FindAssets("t:Material", new [] { "Assets/ToBundle/Fashion" });
+            foreach (var guid in guids) {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+                // TextureUtil.GetAllTexturesInMaterial(material, out var textureDataList);
+                // if (textureDataList.Any(textureData => textureData.path.ToLower().Contains("sfx_"))) {
+                //     export.Adds($"材质球 {material.name} 引用了特效纹理!");
+                //     DebugUtil.LogError($"材质球 {material.name} 引用了特效纹理!", material, "red");
+                // }
+                if (material.mainTexture == null) {
+                    export.Add($"材质球 {material.name} 主纹理为空!");
+                    DebugUtil.LogError($"材质球 {material.name} 主纹理为空!", material, "red");
+                    material.mainTexture = mainTexture;
+                    material.SetTexture("_MaskTex", null);
+                    material.SetTexture("_NormalMap", null);
+                    material.SetTexture("_EmissionTex", null);
+                    material.SetTexture("_MatCap", null);
+                    EditorUtility.SetDirty(material);
+                }
+            }
+            
+            System.IO.File.WriteAllLines("C:/123.txt", export);
         }
     }
 }
