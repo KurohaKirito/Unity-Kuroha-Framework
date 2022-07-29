@@ -304,6 +304,8 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                     }
                 }
             }
+            
+            Debug.Log($"一共返回了 {meshes.Count} 个 Mesh");
 
             return meshes;
         }
@@ -375,13 +377,14 @@ namespace Script.Effect.Editor.AssetTool.Tool.Editor.AssetBatchTool {
                 if (ProgressBar.DisplayProgressBarCancel("批处理工具", $"Mesh 优化中: {index + 1}/{meshes.Count}", index + 1, meshes.Count)) {
                     return;
                 }
+                
+                // MeshUtility.Optimize(meshes[index]);
                 meshes[index].Optimize();
                 EditorUtility.SetDirty(meshes[index]);
                 counter++;
             }
 
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
             Debug.Log($"一共优化了 {counter} 个 Mesh");
         }
 
